@@ -19,3 +19,9 @@
 
 # Go workspace file
 go.work
+
+# build directory
+build/
+
+# .env files
+*.env
