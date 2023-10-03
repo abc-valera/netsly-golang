@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  flugo-api:
+    build:
+      context: .
+      dockerfile: ./dev.Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_PORT=flugo-redis:6379
+      - POSTGRES_HOST=flugo-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=flugo
+      - POSTGRES_PASSWORD=flugo
+      - POSTGRES_NAME=flugo
+    depends_on:
+      - flugo-db
+      - flugo-redis
+    restart: always
+
+  flugo-redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  flugo-db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=flugo
+      - POSTGRES_PASSWORD=flugo
+      - POSTGRES_DB=flugo
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U abc_valera -d flugo"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
