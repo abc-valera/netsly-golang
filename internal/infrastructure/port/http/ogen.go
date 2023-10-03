@@ -3,13 +3,13 @@ package http
 import (
 	"net/http"
 
+	"github.com/abc-valera/flugo-api-golang/gen/ogen"
 	"github.com/abc-valera/flugo-api-golang/internal/application"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
 	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/http/handlers"
 	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/http/middlewares"
-	"github.com/abc-valera/flugo-api-golang/tools/ogen"
 )
 
 type serverHandler struct {

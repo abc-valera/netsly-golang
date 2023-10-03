@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/tools/ent"
+	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	// required by schema hooks.
-	_ "github.com/abc-valera/flugo-api-golang/tools/ent/runtime"
+	_ "github.com/abc-valera/flugo-api-golang/gen/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/abc-valera/flugo-api-golang/tools/ent/migrate"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/migrate"
 )
 
 type (

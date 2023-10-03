@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/abc-valera/flugo-api-golang/tools/ent/user"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
 
 // User is the model entity for the User schema.

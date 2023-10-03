@@ -3,9 +3,9 @@ package handlers
 import (
 	"context"
 
+	"github.com/abc-valera/flugo-api-golang/gen/ogen"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
-	"github.com/abc-valera/flugo-api-golang/tools/ogen"
 )
 
 type ErrorHandler struct {

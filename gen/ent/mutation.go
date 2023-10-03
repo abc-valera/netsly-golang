@@ -11,8 +11,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/abc-valera/flugo-api-golang/tools/ent/predicate"
-	"github.com/abc-valera/flugo-api-golang/tools/ent/user"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
 
 const (

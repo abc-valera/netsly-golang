@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/abc-valera/flugo-api-golang/tools/ent/user"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
 
 // UserCreate is the builder for creating a User entity.

@@ -1,8 +1,8 @@
 package dto
 
 import (
+	"github.com/abc-valera/flugo-api-golang/gen/ogen"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
-	"github.com/abc-valera/flugo-api-golang/tools/ogen"
 )
 
 func NewUserResponse(user *entity.User) ogen.UserResponse {

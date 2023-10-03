@@ -1,8 +1,8 @@
 package dto
 
 import (
+	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
-	"github.com/abc-valera/flugo-api-golang/tools/ent"
 )
 
 func FromEntUserToUser(entUser *ent.User) *entity.User {

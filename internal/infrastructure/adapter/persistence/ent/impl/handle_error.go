@@ -3,9 +3,9 @@ package impl
 import (
 	"strings"
 
+	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
-	"github.com/abc-valera/flugo-api-golang/tools/ent"
 )
 
 func handleErr(err error) error {

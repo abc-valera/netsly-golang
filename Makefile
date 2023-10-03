@@ -1,8 +1,15 @@
 # Code generation
-generate_http_schema:
-	go generate tools/ogen/generate.go
-generate_db_schema:
-	go generate tools/ent/generate.go
+generate_http_code:
+	go generate gen/ogen/generate.go
+
+generate_grpc_code:
+	protoc internal/infrastructure/port/grpc/proto/*.proto \
+    --go_out=gen/proto \
+    --go_opt=paths=source_relative \
+    --proto_path=.
+
+generate_db_code:
+	go generate gen/ent/generate.go
 
 # Docker commands
 run_flugo-db_container:

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/abc-valera/flugo-api-golang/tools/ent/predicate"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.
