@@ -1,0 +1,146 @@
+openapi: 3.0.2
+
+servers:
+  - url: /v3
+
+info:
+  version: 1.0.0
+  title: Flugo API openapi schema
+
+tags:
+  - name: sign
+    description: Everything about managing user sessions
+
+paths:
+  /sign_up:
+    post:
+      tags:
+        - sign
+      summary: Performs user registration
+      description: ""
+      operationId: signUp
+      requestBody:
+        description: Data to add new user to the social network
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpRequest"
+      responses:
+        "201":
+          description: Successful operation
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CodeError"
+  /sign_in:
+    post:
+      tags:
+        - sign
+      summary: Performs user authentication
+      description: ""
+      operationId: signIn
+      requestBody:
+        description: Data to perform sign in to the social network
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInRequest"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignInResponse"
+
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CodeError"
+
+components:
+  schemas:
+    SignUpRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: user1
+        email:
+          type: string
+          example: user1@gmail.com
+        password:
+          type: string
+          example: 123456789
+      required:
+        - username
+        - email
+        - password
+
+    SignInRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user1@gmail.com
+        password:
+          type: string
+          example: 123456789
+      required:
+        - email
+        - password
+
+    SignInResponse:
+      type: object
+      properties:
+        userResponse:
+          $ref: "#/components/schemas/UserResponse"
+        accessToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+        refreshToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+      required:
+        - userResponse
+        - accessToken
+        - refreshToken
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+          example: user1
+        email:
+          type: string
+          example: user1@gmail.com
+        fullname:
+          type: string
+          example: User 1
+        status:
+          type: string
+          example: Just coding
+      required:
+        - id
+        - username
+        - email
+
+    CodeError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
