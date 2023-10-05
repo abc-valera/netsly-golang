@@ -46,6 +46,6 @@ func main() {
 	}
 
 	if err := http.RunServer(config.HTTPPort, repos, services, usecases); err != nil {
-		log.Fatal("Run server error: ", err)
+		log.Fatal("HTTP server error: ", err)
 	}
 }

@@ -8,28 +8,9 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/http/handlers"
+	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/http/handler"
 	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/http/middlewares"
 )
-
-type serverHandler struct {
-	handlers.SignHandler
-	handlers.ErrorHandler
-}
-
-func newServerHandler(
-	repos repository.Repositories,
-	services service.Services,
-	usecases application.UseCases,
-) ogen.Handler {
-	return &serverHandler{
-		SignHandler: handlers.NewSignHandler(
-			repos.UserRepo,
-			usecases.SignUseCase,
-		),
-		ErrorHandler: handlers.NewErrorHandler(services.Logger),
-	}
-}
 
 func RunServer(
 	port string,
@@ -37,20 +18,30 @@ func RunServer(
 	services service.Services,
 	usecases application.UseCases,
 ) error {
-	// Init handler and server
-	handler := newServerHandler(repos, services, usecases)
-	server, err := ogen.NewServer(handler)
+	// Init handlers (ogenHandler implements ogen.Server interface)
+	ogenHandler := &struct {
+		handler.SignHandler
+		handler.ErrorHandler
+	}{
+		SignHandler:  handler.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
+		ErrorHandler: handler.NewErrorHandler(services.Logger),
+	}
+
+	// Init ogen server
+	server, err := ogen.NewServer(ogenHandler)
 	if err != nil {
-		return codeerr.NewInternal("RunServer", err)
+		return codeerr.NewInternal("newHTTPServer", err)
 	}
 
 	// Init middlewares
 	loggingMiddleware := middlewares.NewLoggingMiddleware(services.Logger)
-	loggingHandler := loggingMiddleware(server)
+
+	// Init HTTP handler
+	httpHandler := loggingMiddleware(server)
 
 	// Start HTTP server
 	services.Logger.Info("Starting HTTP server on " + port)
-	if err := http.ListenAndServe(port, loggingHandler); err != nil {
+	if err := http.ListenAndServe(port, httpHandler); err != nil {
 		return codeerr.NewInternal("RunServer", err)
 	}
 
