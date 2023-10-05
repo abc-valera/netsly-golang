@@ -11,7 +11,7 @@ func NewRepositories(dbHost, dbPort, dbUser, dbPassword, dbName string) (reposit
 		return repository.Repositories{}, err
 	}
 
-	return repository.Repositories{
-		UserRepo: userRepo,
-	}, nil
+	return repository.NewRepositories(
+		userRepo,
+	)
 }

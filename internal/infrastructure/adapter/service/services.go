@@ -21,11 +21,11 @@ func NewServices(
 	logger := logger.NewSlogLogger()
 	messageBroker := messaging.NewMessagingBroker(redisUrl, redisUser, redisPass, emailSender, logger)
 
-	return service.Services{
-		EmailSender:    emailSender,
-		PassswordMaker: passwordMaker,
-		TokenMaker:     tokenMaker,
-		Logger:         logger,
-		MessageBroker:  messageBroker,
-	}, nil
+	return service.NewServices(
+		emailSender,
+		passwordMaker,
+		tokenMaker,
+		logger,
+		messageBroker,
+	)
 }

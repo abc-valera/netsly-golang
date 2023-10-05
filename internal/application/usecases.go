@@ -16,7 +16,7 @@ func NewUseCases(
 	return UseCases{
 		SignUseCase: NewSignUseCase(
 			repos.UserRepo,
-			services.PassswordMaker,
+			services.PasswordMaker,
 			services.TokenMaker,
 			services.MessageBroker,
 		),
