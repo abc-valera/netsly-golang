@@ -19,13 +19,13 @@ type User struct {
 
 func NewUser(username, email, hashedPassword, fullname, status string) (*User, error) {
 	if username == "" {
-		return nil, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid username")
+		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid username")
 	}
 	if email == "" {
-		return nil, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid email")
+		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid email")
 	}
 	if hashedPassword == "" {
-		return nil, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid hashed password")
+		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid hashed password")
 	}
 
 	return &User{

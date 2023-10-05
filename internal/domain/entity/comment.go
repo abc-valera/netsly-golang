@@ -17,13 +17,13 @@ type Comment struct {
 
 func NewComment(userID, jokeID, text string) (*Comment, error) {
 	if userID == "" {
-		return nil, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid user ID")
+		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid user ID")
 	}
 	if jokeID == "" {
-		return nil, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid joke ID")
+		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid joke ID")
 	}
 	if text == "" {
-		return nil, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid text")
+		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid text")
 	}
 
 	return &Comment{

@@ -18,13 +18,13 @@ type Joke struct {
 
 func NewJoke(userID, title, text, explanation string) (*Joke, error) {
 	if userID == "" {
-		return nil, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid user ID")
+		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid user ID")
 	}
 	if title == "" {
-		return nil, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid title")
+		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid title")
 	}
 	if text == "" {
-		return nil, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid text")
+		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid text")
 	}
 
 	return &Joke{

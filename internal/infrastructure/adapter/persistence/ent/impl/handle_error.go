@@ -22,14 +22,14 @@ func handleErr(err error) error {
 			}
 		}
 		// all other tables...
-		return codeerr.NewErrWithMsg(codeerr.CodeAlreadyExists, "")
+		return codeerr.NewMsgErr(codeerr.CodeAlreadyExists, "")
 	}
 	if ent.IsNotFound(err) {
 		if strings.Contains(err.Error(), "user") {
 			return repository.ErrUserNotFound
 		}
 		// all other tables...
-		return codeerr.NewErrWithMsg(codeerr.CodeNotFound, "")
+		return codeerr.NewMsgErr(codeerr.CodeNotFound, "")
 	}
 	return codeerr.NewInternal("ent.handleErr", err)
 }

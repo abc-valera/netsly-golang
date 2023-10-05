@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrJokeWithIDNotFound = codeerr.NewErrWithMsg(codeerr.CodeNotFound, "Joke with such id not found")
+	ErrJokeWithIDNotFound = codeerr.NewMsgErr(codeerr.CodeNotFound, "Joke with such id not found")
 )
 
 type JokeRepository interface {

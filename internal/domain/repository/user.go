@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	ErrUserNotFound                  = codeerr.NewErrWithMsg(codeerr.CodeNotFound, "User not found")
-	ErrUserWithUsernameAlreadyExists = codeerr.NewErrWithMsg(codeerr.CodeAlreadyExists, "User with such username already exists")
-	ErrUserWithEmailAlreadyExists    = codeerr.NewErrWithMsg(codeerr.CodeAlreadyExists, "User with such email already exists")
+	ErrUserNotFound                  = codeerr.NewMsgErr(codeerr.CodeNotFound, "User not found")
+	ErrUserWithUsernameAlreadyExists = codeerr.NewMsgErr(codeerr.CodeAlreadyExists, "User with such username already exists")
+	ErrUserWithEmailAlreadyExists    = codeerr.NewMsgErr(codeerr.CodeAlreadyExists, "User with such email already exists")
 )
 
 type UserRepository interface {

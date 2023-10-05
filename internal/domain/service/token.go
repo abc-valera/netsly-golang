@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	ErrInvalidToken = codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid token")
-	ErrExpiredToken = codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided expired token")
+	ErrInvalidToken = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid token")
+	ErrExpiredToken = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided expired token")
 )
 
 type TokenMaker interface {
@@ -32,10 +32,10 @@ type Payload struct {
 
 func NewPayload(userID string, isRefresh bool, duration time.Duration) (Payload, error) {
 	if userID == "" {
-		return Payload{}, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid user ID for the token")
+		return Payload{}, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid user ID for the token")
 	}
 	if duration == 0 {
-		return Payload{}, codeerr.NewErrWithMsg(codeerr.CodeInvalidArgument, "Provided invalid token duration")
+		return Payload{}, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid token duration")
 	}
 
 	return Payload{
