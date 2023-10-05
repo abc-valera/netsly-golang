@@ -3,10 +3,13 @@ generate_http_code:
 	go generate gen/ogen/generate.go
 
 generate_grpc_code:
+	rm -f gen/pb/*.pb.go
 	protoc internal/infrastructure/port/grpc/proto/*.proto \
-    --go_out=gen/proto \
+    --go_out=gen/pb \
     --go_opt=paths=source_relative \
-    --proto_path=.
+	--go-grpc_out=gen/pb \
+    --go-grpc_opt=paths=source_relative \
+    --proto_path=internal/infrastructure/port/grpc/proto
 
 generate_db_code:
 	go generate gen/ent/generate.go
@@ -38,6 +41,10 @@ run_infrastructure_local:
 run_flugo_http_local:
 	go build -o build/flugo-api cmd/http/main.go
 	./build/flugo-api
-run_all_local:
-	make run_infrastructure_local
-	make run_flugo_http_local
+run_flugo_grpc_local:
+	go build -o build/flugo-grpc cmd/grpc/main.go
+	./build/flugo-grpc
+
+# Other commands
+evans_client:
+	evans -p 3030 -r repl

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package proto;
+
+import "msg_user.proto";
+
+option go_package = "./pb";
+
+service SignService {
+  rpc SignUp(SignUpRequest) returns (SignUpResponse);
+  rpc SignIn(SignInRequest) returns (SignInResponse);
+}
+
+message SignUpRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message SignUpResponse {}
+
+message SignInRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message SignInResponse {
+  UserResponse user_response = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+}
