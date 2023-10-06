@@ -11,16 +11,16 @@ import (
 )
 
 type userRepository struct {
-	client *ent.Client
+	baseRepository
 }
 
 func NewUserRepository(client *ent.Client) repository.UserRepository {
 	return &userRepository{
-		client: client,
+		baseRepository: NewBaseRepository(client),
 	}
 }
 
-func (r *userRepository) Create(ctx context.Context, user *entity.User) error {
+func (r userRepository) Create(ctx context.Context, user *entity.User) error {
 	_, err := r.client.User.
 		Create().
 		SetID(user.ID).
@@ -34,32 +34,7 @@ func (r *userRepository) Create(ctx context.Context, user *entity.User) error {
 	return handleErr(err)
 }
 
-func (r *userRepository) PerformTX(ctx context.Context, txFunc func(ctx context.Context) error) error {
-	tx, err := r.client.Tx(ctx)
-	if err != nil {
-		return handleErr(err)
-	}
-
-	oldClient := r.client
-	defer func() {
-		r.client = oldClient
-	}()
-
-	r.client = tx.Client()
-	if err := txFunc(ctx); err != nil {
-		if err := tx.Rollback(); err != nil {
-			return handleErr(err)
-		}
-		return err
-	}
-
-	if err := tx.Commit(); err != nil {
-		return handleErr(err)
-	}
-	return nil
-}
-
-func (r *userRepository) GetByID(ctx context.Context, id string) (*entity.User, error) {
+func (r userRepository) GetByID(ctx context.Context, id string) (*entity.User, error) {
 	entUser, err := r.client.User.
 		Query().
 		Where(user.ID(id)).
@@ -67,7 +42,7 @@ func (r *userRepository) GetByID(ctx context.Context, id string) (*entity.User, 
 	return dto.FromEntUserToUser(entUser), handleErr(err)
 }
 
-func (r *userRepository) GetByUsername(ctx context.Context, username string) (*entity.User, error) {
+func (r userRepository) GetByUsername(ctx context.Context, username string) (*entity.User, error) {
 	entUser, err := r.client.User.
 		Query().
 		Where(user.Username(username)).
@@ -75,7 +50,7 @@ func (r *userRepository) GetByUsername(ctx context.Context, username string) (*e
 	return dto.FromEntUserToUser(entUser), handleErr(err)
 }
 
-func (r *userRepository) GetByEmail(ctx context.Context, email string) (*entity.User, error) {
+func (r userRepository) GetByEmail(ctx context.Context, email string) (*entity.User, error) {
 	entUser, err := r.client.User.
 		Query().
 		Where(user.Email(email)).
@@ -83,7 +58,7 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (*entity.
 	return dto.FromEntUserToUser(entUser), handleErr(err)
 }
 
-func (r *userRepository) Update(ctx context.Context, domainUser *entity.User) error {
+func (r userRepository) Update(ctx context.Context, domainUser *entity.User) error {
 	_, err := r.client.User.
 		Update().
 		Where(user.ID(domainUser.ID)).
@@ -96,7 +71,7 @@ func (r *userRepository) Update(ctx context.Context, domainUser *entity.User) er
 	return handleErr(err)
 }
 
-func (r *userRepository) Delete(ctx context.Context, id string) error {
+func (r userRepository) Delete(ctx context.Context, id string) error {
 	return handleErr(
 		r.client.User.
 			DeleteOneID(id).

@@ -22,7 +22,7 @@ func NewTokenMaker(accessDuration, refreshDuration time.Duration) service.TokenM
 	}
 }
 
-func (s *jwtToken) createToken(userID string, isRefresh bool, duration time.Duration) (string, service.Payload, error) {
+func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Duration) (string, service.Payload, error) {
 	payload, err := service.NewPayload(userID, isRefresh, duration)
 	if err != nil {
 		return "", service.Payload{}, err
@@ -46,11 +46,11 @@ func (s *jwtToken) createToken(userID string, isRefresh bool, duration time.Dura
 	return tokenString, payload, nil
 }
 
-func (s *jwtToken) CreateAccessToken(userID string) (string, service.Payload, error) {
+func (s jwtToken) CreateAccessToken(userID string) (string, service.Payload, error) {
 	return s.createToken(userID, false, s.accessDuration)
 }
 
-func (s *jwtToken) CreateRefreshToken(userID string) (string, service.Payload, error) {
+func (s jwtToken) CreateRefreshToken(userID string) (string, service.Payload, error) {
 	return s.createToken(userID, true, s.refreshDuration)
 }
 

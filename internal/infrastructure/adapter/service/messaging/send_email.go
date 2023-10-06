@@ -41,7 +41,7 @@ func newSendEmailProcessor(
 	}
 }
 
-func (p *sendEmailProcessor) ProcessTask(ctx context.Context, task *asynq.Task) error {
+func (p sendEmailProcessor) ProcessTask(ctx context.Context, task *asynq.Task) error {
 	var payload sendEmailPayload
 	if err := json.Unmarshal(task.Payload(), &payload); err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)

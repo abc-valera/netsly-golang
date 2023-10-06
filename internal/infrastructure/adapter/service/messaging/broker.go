@@ -33,7 +33,7 @@ func NewMessagingBroker(
 	}
 }
 
-func (b *broker) SendEmailTask(ctx context.Context, priority service.Priority, email service.Email) error {
+func (b broker) SendEmailTask(ctx context.Context, priority service.Priority, email service.Email) error {
 	task, err := NewSendEmailTask("email")
 	if err != nil {
 		return err

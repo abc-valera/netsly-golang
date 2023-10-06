@@ -15,18 +15,18 @@ func NewSlogLogger() service.Logger {
 	}
 }
 
-func (l *slogLogger) Debug(msg string, vals ...interface{}) {
+func (l slogLogger) Debug(msg string, vals ...interface{}) {
 	l.log.Debug(msg, vals...)
 }
 
-func (l *slogLogger) Info(msg string, vals ...interface{}) {
+func (l slogLogger) Info(msg string, vals ...interface{}) {
 	l.log.Info(msg, vals...)
 }
 
-func (l *slogLogger) Warn(msg string, vals ...interface{}) {
+func (l slogLogger) Warn(msg string, vals ...interface{}) {
 	l.log.Warn(msg, vals...)
 }
 
-func (l *slogLogger) Error(msg string, vals ...interface{}) {
+func (l slogLogger) Error(msg string, vals ...interface{}) {
 	l.log.Error(msg, vals...)
 }
