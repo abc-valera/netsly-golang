@@ -10,8 +10,8 @@
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/http",
-      "env": { "CONFIG_PATH": "${workspaceFolder}/dev.env" },
-      "envFile": "${workspaceFolder}/dev.env"
+      "env": { "CONFIG_PATH": "${workspaceFolder}/.dev.env" },
+      "envFile": "${workspaceFolder}/.dev.env"
     }
   ]
 }

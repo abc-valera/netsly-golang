@@ -4,12 +4,12 @@ import (
 	"context"
 )
 
-type Priority int
+type Priority string
 
 const (
-	Low Priority = iota + 1
-	Default
-	Critical
+	Low      Priority = "low"
+	Default  Priority = "default"
+	Critical Priority = "critical"
 )
 
 type MessageBroker interface {
