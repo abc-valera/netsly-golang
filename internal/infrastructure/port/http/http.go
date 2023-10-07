@@ -10,6 +10,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
 	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/http/handler"
 	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/http/middlewares"
+	"github.com/go-chi/chi/v5"
 )
 
 func RunServer(
@@ -32,16 +33,21 @@ func RunServer(
 	if err != nil {
 		return codeerr.NewInternal("newHTTPServer", err)
 	}
-
 	// Init middlewares
 	loggingMiddleware := middlewares.NewLoggingMiddleware(services.Logger)
 
-	// Init HTTP handler
+	// Init chi router
+	r := chi.NewRouter()
+	// Host documentation
+	r.Mount("/docs", http.StripPrefix("/docs/", http.FileServer(http.Dir("./docs/http"))))
+	// Register middlewares
 	httpHandler := loggingMiddleware(server)
+	// Register routes
+	r.Mount("/", httpHandler)
 
 	// Start HTTP server
 	services.Logger.Info("Starting HTTP server on " + port)
-	if err := http.ListenAndServe(port, httpHandler); err != nil {
+	if err := http.ListenAndServe(port, r); err != nil {
 		return codeerr.NewInternal("RunServer", err)
 	}
 

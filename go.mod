@@ -4,6 +4,7 @@ go 1.21.1
 
 require (
 	entgo.io/ent v0.12.4
+	github.com/go-chi/chi/v5 v5.0.10
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.1.0
 	github.com/golang-jwt/jwt/v5 v5.0.0

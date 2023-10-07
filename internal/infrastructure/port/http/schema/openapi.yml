@@ -1,8 +1,5 @@
 openapi: 3.0.2
 
-servers:
-  - url: /v3
-
 info:
   version: 1.0.0
   title: Flugo API openapi schema
@@ -139,6 +136,13 @@ components:
       properties:
         code:
           type: string
+          enum:
+            - unauthenticated
+            - invalid_argument
+            - not_found
+            - already_exists
+            - permission_denied
+            - internal
         message:
           type: string
       required:
