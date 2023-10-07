@@ -23,7 +23,7 @@ func (s *CodeError) Encode(e *jx.Encoder) {
 func (s *CodeError) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("code")
-		e.Str(s.Code)
+		s.Code.Encode(e)
 	}
 	{
 		e.FieldStart("message")
@@ -48,9 +48,7 @@ func (s *CodeError) Decode(d *jx.Decoder) error {
 		case "code":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Str()
-				s.Code = string(v)
-				if err != nil {
+				if err := s.Code.Decode(d); err != nil {
 					return err
 				}
 				return nil
@@ -121,6 +119,54 @@ func (s *CodeError) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *CodeError) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes CodeErrorCode as json.
+func (s CodeErrorCode) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes CodeErrorCode from json.
+func (s *CodeErrorCode) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode CodeErrorCode to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch CodeErrorCode(v) {
+	case CodeErrorCodeUnauthenticated:
+		*s = CodeErrorCodeUnauthenticated
+	case CodeErrorCodeInvalidArgument:
+		*s = CodeErrorCodeInvalidArgument
+	case CodeErrorCodeNotFound:
+		*s = CodeErrorCodeNotFound
+	case CodeErrorCodeAlreadyExists:
+		*s = CodeErrorCodeAlreadyExists
+	case CodeErrorCodePermissionDenied:
+		*s = CodeErrorCodePermissionDenied
+	case CodeErrorCodeInternal:
+		*s = CodeErrorCodeInternal
+	default:
+		*s = CodeErrorCode(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s CodeErrorCode) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *CodeErrorCode) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

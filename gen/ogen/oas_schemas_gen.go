@@ -4,6 +4,8 @@ package ogen
 
 import (
 	"fmt"
+
+	"github.com/go-faster/errors"
 )
 
 func (s *CodeErrorStatusCode) Error() string {
@@ -12,12 +14,12 @@ func (s *CodeErrorStatusCode) Error() string {
 
 // Ref: #/components/schemas/CodeError
 type CodeError struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
+	Code    CodeErrorCode `json:"code"`
+	Message string        `json:"message"`
 }
 
 // GetCode returns the value of Code.
-func (s *CodeError) GetCode() string {
+func (s *CodeError) GetCode() CodeErrorCode {
 	return s.Code
 }
 
@@ -27,13 +29,82 @@ func (s *CodeError) GetMessage() string {
 }
 
 // SetCode sets the value of Code.
-func (s *CodeError) SetCode(val string) {
+func (s *CodeError) SetCode(val CodeErrorCode) {
 	s.Code = val
 }
 
 // SetMessage sets the value of Message.
 func (s *CodeError) SetMessage(val string) {
 	s.Message = val
+}
+
+type CodeErrorCode string
+
+const (
+	CodeErrorCodeUnauthenticated  CodeErrorCode = "unauthenticated"
+	CodeErrorCodeInvalidArgument  CodeErrorCode = "invalid_argument"
+	CodeErrorCodeNotFound         CodeErrorCode = "not_found"
+	CodeErrorCodeAlreadyExists    CodeErrorCode = "already_exists"
+	CodeErrorCodePermissionDenied CodeErrorCode = "permission_denied"
+	CodeErrorCodeInternal         CodeErrorCode = "internal"
+)
+
+// AllValues returns all CodeErrorCode values.
+func (CodeErrorCode) AllValues() []CodeErrorCode {
+	return []CodeErrorCode{
+		CodeErrorCodeUnauthenticated,
+		CodeErrorCodeInvalidArgument,
+		CodeErrorCodeNotFound,
+		CodeErrorCodeAlreadyExists,
+		CodeErrorCodePermissionDenied,
+		CodeErrorCodeInternal,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CodeErrorCode) MarshalText() ([]byte, error) {
+	switch s {
+	case CodeErrorCodeUnauthenticated:
+		return []byte(s), nil
+	case CodeErrorCodeInvalidArgument:
+		return []byte(s), nil
+	case CodeErrorCodeNotFound:
+		return []byte(s), nil
+	case CodeErrorCodeAlreadyExists:
+		return []byte(s), nil
+	case CodeErrorCodePermissionDenied:
+		return []byte(s), nil
+	case CodeErrorCodeInternal:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CodeErrorCode) UnmarshalText(data []byte) error {
+	switch CodeErrorCode(data) {
+	case CodeErrorCodeUnauthenticated:
+		*s = CodeErrorCodeUnauthenticated
+		return nil
+	case CodeErrorCodeInvalidArgument:
+		*s = CodeErrorCodeInvalidArgument
+		return nil
+	case CodeErrorCodeNotFound:
+		*s = CodeErrorCodeNotFound
+		return nil
+	case CodeErrorCodeAlreadyExists:
+		*s = CodeErrorCodeAlreadyExists
+		return nil
+	case CodeErrorCodePermissionDenied:
+		*s = CodeErrorCodePermissionDenied
+		return nil
+	case CodeErrorCodeInternal:
+		*s = CodeErrorCodeInternal
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // CodeErrorStatusCode wraps CodeError with StatusCode.

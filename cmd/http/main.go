@@ -4,11 +4,11 @@ import (
 	"log"
 	"os"
 
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/config"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/service"
 	"github.com/abc-valera/flugo-api-golang/internal/application"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/adapter/config"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/adapter/persistence"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/adapter/service"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/http"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http"
 )
 
 func main() {

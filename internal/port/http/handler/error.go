@@ -21,7 +21,7 @@ func NewErrorHandler(log service.Logger) ErrorHandler {
 func (h *ErrorHandler) NewError(ctx context.Context, err error) *ogen.CodeErrorStatusCode {
 	code := codeerr.ErrorCode(err)
 	codeError := ogen.CodeError{
-		Code:    string(code),
+		Code:    ogen.CodeErrorCode(code),
 		Message: codeerr.ErrorMessage(err),
 	}
 

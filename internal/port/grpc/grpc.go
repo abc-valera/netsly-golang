@@ -7,7 +7,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/application"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/grpc/handler"
+	"github.com/abc-valera/flugo-api-golang/internal/port/grpc/handler"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

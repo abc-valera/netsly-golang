@@ -3,12 +3,12 @@ package service
 import (
 	"time"
 
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/email"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/logger"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/messaging"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/password"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/token"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/adapter/service/email"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/adapter/service/logger"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/adapter/service/messaging"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/adapter/service/password"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/adapter/service/token"
 )
 
 func NewServices(

@@ -8,8 +8,8 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/http/handler"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/port/http/middlewares"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http/middlewares"
 	"github.com/go-chi/chi/v5"
 )
 

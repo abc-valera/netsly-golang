@@ -48,6 +48,17 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+var (
+	// UsernameValidator is a validator for the "username" field. It is called by the builders before save.
+	UsernameValidator func(string) error
+	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	EmailValidator func(string) error
+	// HashedPasswordValidator is a validator for the "hashed_password" field. It is called by the builders before save.
+	HashedPasswordValidator func(string) error
+	// IDValidator is a validator for the "id" field. It is called by the builders before save.
+	IDValidator func(string) error
+)
+
 // OrderOption defines the ordering options for the User queries.
 type OrderOption func(*sql.Selector)
 

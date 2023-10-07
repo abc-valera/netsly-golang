@@ -4,19 +4,19 @@ generate_http_code:
 generate_http_docs:
 	docker run --rm -v ${PWD}:/spec redocly/cli build-docs \
 	-o /spec/docs/http/index.html \
-	/spec/internal/infrastructure/port/http/schema/openapi.yml
+	/spec/internal/port/http/schema/openapi.yml
 generate_http:
 	make generate_http_code
 	make generate_http_docs
 
 generate_grpc_code:
 	rm -f gen/pb/*.pb.go
-	protoc internal/infrastructure/port/grpc/proto/*.proto \
+	protoc internal/port/grpc/proto/*.proto \
     --go_out=gen/pb \
     --go_opt=paths=source_relative \
 	--go-grpc_out=gen/pb \
     --go-grpc_opt=paths=source_relative \
-    --proto_path=internal/infrastructure/port/grpc/proto
+    --proto_path=internal/port/grpc/proto
 
 generate_db_code:
 	go generate gen/ent/generate.go

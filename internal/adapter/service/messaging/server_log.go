@@ -11,19 +11,19 @@ type customAsynqLogger struct {
 }
 
 func (l customAsynqLogger) Debug(args ...interface{}) {
-	l.Logger.Debug("ASYNQ", args)
+	l.Logger.Debug("ASYNQ", "msg", args)
 }
 
 func (l customAsynqLogger) Info(args ...interface{}) {
-	l.Logger.Info("ASYNQ", args)
+	l.Logger.Info("ASYNQ", "msg", args)
 }
 
 func (l customAsynqLogger) Warn(args ...interface{}) {
-	l.Logger.Warn("ASYNQ", args)
+	l.Logger.Warn("ASYNQ", "msg", args)
 }
 
 func (l customAsynqLogger) Error(args ...interface{}) {
-	l.Logger.Error("ASYNQ", args)
+	l.Logger.Error("ASYNQ", "msg", args)
 }
 
 func (l customAsynqLogger) Fatal(args ...interface{}) {

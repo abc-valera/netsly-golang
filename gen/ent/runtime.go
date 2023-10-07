@@ -2,8 +2,31 @@
 
 package ent
 
+import (
+	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/schema"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	userFields := schema.User{}.Fields()
+	_ = userFields
+	// userDescUsername is the schema descriptor for username field.
+	userDescUsername := userFields[1].Descriptor()
+	// user.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
+	user.UsernameValidator = userDescUsername.Validators[0].(func(string) error)
+	// userDescEmail is the schema descriptor for email field.
+	userDescEmail := userFields[2].Descriptor()
+	// user.EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	user.EmailValidator = userDescEmail.Validators[0].(func(string) error)
+	// userDescHashedPassword is the schema descriptor for hashed_password field.
+	userDescHashedPassword := userFields[3].Descriptor()
+	// user.HashedPasswordValidator is a validator for the "hashed_password" field. It is called by the builders before save.
+	user.HashedPasswordValidator = userDescHashedPassword.Validators[0].(func(string) error)
+	// userDescID is the schema descriptor for id field.
+	userDescID := userFields[0].Descriptor()
+	// user.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	user.IDValidator = userDescID.Validators[0].(func(string) error)
 }

@@ -5,9 +5,9 @@ import (
 
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/dto"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
-	"github.com/abc-valera/flugo-api-golang/internal/infrastructure/adapter/persistence/ent/dto"
 )
 
 type userRepository struct {
