@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/common"
 )
 
 type CommentRepository interface {
@@ -13,5 +14,5 @@ type CommentRepository interface {
 	Update(ctx context.Context, comment *entity.Comment) error
 	Delete(ctx context.Context, id string) error
 
-	Transactioneer
+	common.Transactioneer
 }

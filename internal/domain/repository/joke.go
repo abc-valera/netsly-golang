@@ -5,6 +5,7 @@ import (
 
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/common"
 )
 
 var (
@@ -18,5 +19,5 @@ type JokeRepository interface {
 	Update(ctx context.Context, joke *entity.Joke) error
 	Delete(ctx context.Context, id string) error
 
-	Transactioneer
+	common.Transactioneer
 }
