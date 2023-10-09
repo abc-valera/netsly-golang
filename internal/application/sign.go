@@ -70,16 +70,21 @@ func (s SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 	return s.userRepo.PerformTX(ctx, txFunc)
 }
 
+type SignInRequest struct {
+	Email    string
+	Password string
+}
+
 // SignIn performs user sign-in: it checks if user with provided email exists,
 // then creates hash of the provided password and compares it to the hash stored in database.
 // The SignIn returns user, accessToken and refreshToken.
-func (s SignUseCase) SignIn(ctx context.Context, email, password string) (*entity.User, string, string, error) {
-	user, err := s.userRepo.GetByEmail(ctx, email)
+func (s SignUseCase) SignIn(ctx context.Context, req SignInRequest) (*entity.User, string, string, error) {
+	user, err := s.userRepo.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return nil, "", "", err
 	}
 
-	if err := s.passwordMaker.CheckPassword(password, user.HashedPassword); err != nil {
+	if err := s.passwordMaker.CheckPassword(req.Password, user.HashedPassword); err != nil {
 		return nil, "", "", err
 	}
 

@@ -33,7 +33,10 @@ func (h *SignHandler) SignUp(ctx context.Context, req *ogen.SignUpRequest) error
 }
 
 func (h *SignHandler) SignIn(ctx context.Context, req *ogen.SignInRequest) (*ogen.SignInResponse, error) {
-	user, access, refresh, err := h.signUsecase.SignIn(ctx, req.Email, req.Password)
+	user, access, refresh, err := h.signUsecase.SignIn(ctx, application.SignInRequest{
+		Email:    req.Email,
+		Password: req.Password,
+	})
 	if err != nil {
 		return nil, err
 	}
