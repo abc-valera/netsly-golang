@@ -1,4 +1,4 @@
-package impl
+package common
 
 import (
 	"strings"
@@ -8,10 +8,11 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 )
 
-func handleErr(err error) error {
+func HandleErr(err error) error {
 	if err == nil {
 		return nil
 	}
+	// Unique constraint errors
 	if ent.IsConstraintError(err) {
 		if strings.Contains(err.Error(), "users") {
 			if strings.Contains(err.Error(), "username") {
@@ -21,12 +22,21 @@ func handleErr(err error) error {
 				return repository.ErrUserWithEmailAlreadyExists
 			}
 		}
+		if strings.Contains(err.Error(), "jokes") {
+			if strings.Contains(err.Error(), "title") {
+				return repository.ErrJokeWithTitleAlreadyExists
+			}
+		}
 		// all other tables...
 		return codeerr.NewMsgErr(codeerr.CodeAlreadyExists, "")
 	}
+	// Not found errors
 	if ent.IsNotFound(err) {
 		if strings.Contains(err.Error(), "user") {
 			return repository.ErrUserNotFound
+		}
+		if strings.Contains(err.Error(), "joke") {
+			return repository.ErrJokeNotFound
 		}
 		// all other tables...
 		return codeerr.NewMsgErr(codeerr.CodeNotFound, "")

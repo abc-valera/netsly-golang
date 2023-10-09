@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
 
@@ -60,6 +61,21 @@ func (uc *UserCreate) SetCreatedAt(t time.Time) *UserCreate {
 func (uc *UserCreate) SetID(s string) *UserCreate {
 	uc.mutation.SetID(s)
 	return uc
+}
+
+// AddJokeIDs adds the "jokes" edge to the Joke entity by IDs.
+func (uc *UserCreate) AddJokeIDs(ids ...string) *UserCreate {
+	uc.mutation.AddJokeIDs(ids...)
+	return uc
+}
+
+// AddJokes adds the "jokes" edges to the Joke entity.
+func (uc *UserCreate) AddJokes(j ...*Joke) *UserCreate {
+	ids := make([]string, len(j))
+	for i := range j {
+		ids[i] = j[i].ID
+	}
+	return uc.AddJokeIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -192,6 +208,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
+	}
+	if nodes := uc.mutation.JokesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.JokesTable,
+			Columns: []string{user.JokesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

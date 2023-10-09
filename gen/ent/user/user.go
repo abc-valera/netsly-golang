@@ -4,6 +4,7 @@ package user
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -23,8 +24,17 @@ const (
 	FieldStatus = "status"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeJokes holds the string denoting the jokes edge name in mutations.
+	EdgeJokes = "jokes"
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// JokesTable is the table that holds the jokes relation/edge.
+	JokesTable = "jokes"
+	// JokesInverseTable is the table name for the Joke entity.
+	// It exists in this package in order to avoid circular dependency with the "joke" package.
+	JokesInverseTable = "jokes"
+	// JokesColumn is the table column denoting the jokes relation/edge.
+	JokesColumn = "user_jokes"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -95,4 +105,25 @@ func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByJokesCount orders the results by jokes count.
+func ByJokesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newJokesStep(), opts...)
+	}
+}
+
+// ByJokes orders the results by jokes terms.
+func ByJokes(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newJokesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newJokesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(JokesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, JokesTable, JokesColumn),
+	)
 }

@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
@@ -57,9 +58,45 @@ func (uu *UserUpdate) SetStatus(s string) *UserUpdate {
 	return uu
 }
 
+// AddJokeIDs adds the "jokes" edge to the Joke entity by IDs.
+func (uu *UserUpdate) AddJokeIDs(ids ...string) *UserUpdate {
+	uu.mutation.AddJokeIDs(ids...)
+	return uu
+}
+
+// AddJokes adds the "jokes" edges to the Joke entity.
+func (uu *UserUpdate) AddJokes(j ...*Joke) *UserUpdate {
+	ids := make([]string, len(j))
+	for i := range j {
+		ids[i] = j[i].ID
+	}
+	return uu.AddJokeIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
+}
+
+// ClearJokes clears all "jokes" edges to the Joke entity.
+func (uu *UserUpdate) ClearJokes() *UserUpdate {
+	uu.mutation.ClearJokes()
+	return uu
+}
+
+// RemoveJokeIDs removes the "jokes" edge to Joke entities by IDs.
+func (uu *UserUpdate) RemoveJokeIDs(ids ...string) *UserUpdate {
+	uu.mutation.RemoveJokeIDs(ids...)
+	return uu
+}
+
+// RemoveJokes removes "jokes" edges to Joke entities.
+func (uu *UserUpdate) RemoveJokes(j ...*Joke) *UserUpdate {
+	ids := make([]string, len(j))
+	for i := range j {
+		ids[i] = j[i].ID
+	}
+	return uu.RemoveJokeIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -136,6 +173,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.Status(); ok {
 		_spec.SetField(user.FieldStatus, field.TypeString, value)
 	}
+	if uu.mutation.JokesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.JokesTable,
+			Columns: []string{user.JokesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedJokesIDs(); len(nodes) > 0 && !uu.mutation.JokesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.JokesTable,
+			Columns: []string{user.JokesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.JokesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.JokesTable,
+			Columns: []string{user.JokesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -186,9 +268,45 @@ func (uuo *UserUpdateOne) SetStatus(s string) *UserUpdateOne {
 	return uuo
 }
 
+// AddJokeIDs adds the "jokes" edge to the Joke entity by IDs.
+func (uuo *UserUpdateOne) AddJokeIDs(ids ...string) *UserUpdateOne {
+	uuo.mutation.AddJokeIDs(ids...)
+	return uuo
+}
+
+// AddJokes adds the "jokes" edges to the Joke entity.
+func (uuo *UserUpdateOne) AddJokes(j ...*Joke) *UserUpdateOne {
+	ids := make([]string, len(j))
+	for i := range j {
+		ids[i] = j[i].ID
+	}
+	return uuo.AddJokeIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
+}
+
+// ClearJokes clears all "jokes" edges to the Joke entity.
+func (uuo *UserUpdateOne) ClearJokes() *UserUpdateOne {
+	uuo.mutation.ClearJokes()
+	return uuo
+}
+
+// RemoveJokeIDs removes the "jokes" edge to Joke entities by IDs.
+func (uuo *UserUpdateOne) RemoveJokeIDs(ids ...string) *UserUpdateOne {
+	uuo.mutation.RemoveJokeIDs(ids...)
+	return uuo
+}
+
+// RemoveJokes removes "jokes" edges to Joke entities.
+func (uuo *UserUpdateOne) RemoveJokes(j ...*Joke) *UserUpdateOne {
+	ids := make([]string, len(j))
+	for i := range j {
+		ids[i] = j[i].ID
+	}
+	return uuo.RemoveJokeIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -294,6 +412,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.Status(); ok {
 		_spec.SetField(user.FieldStatus, field.TypeString, value)
+	}
+	if uuo.mutation.JokesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.JokesTable,
+			Columns: []string{user.JokesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedJokesIDs(); len(nodes) > 0 && !uuo.mutation.JokesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.JokesTable,
+			Columns: []string{user.JokesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.JokesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.JokesTable,
+			Columns: []string{user.JokesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &User{config: uuo.config}
 	_spec.Assign = _node.assignValues

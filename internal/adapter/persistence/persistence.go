@@ -6,12 +6,13 @@ import (
 )
 
 func NewRepositories(dbHost, dbPort, dbUser, dbPassword, dbName string) (repository.Repositories, error) {
-	userRepo, err := impl.NewEntImplementation(dbHost, dbPort, dbUser, dbPassword, dbName)
+	entRepos, err := impl.NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName)
 	if err != nil {
 		return repository.Repositories{}, err
 	}
 
 	return repository.NewRepositories(
-		userRepo,
+		entRepos.UserRepository,
+		entRepos.JokeRepository,
 	)
 }

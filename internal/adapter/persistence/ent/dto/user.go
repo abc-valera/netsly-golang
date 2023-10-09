@@ -19,3 +19,11 @@ func FromEntUserToUser(entUser *ent.User) *entity.User {
 		CreatedAt:      entUser.CreatedAt,
 	}
 }
+
+func FromEntUsersToUsers(entUsers []*ent.User) entity.Users {
+	users := make(entity.Users, len(entUsers))
+	for i, entUser := range entUsers {
+		users[i] = FromEntUserToUser(entUser)
+	}
+	return users
+}

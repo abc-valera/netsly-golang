@@ -6,5 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Joke is the predicate function for joke builders.
+type Joke func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
