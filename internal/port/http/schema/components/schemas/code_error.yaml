@@ -1,0 +1,17 @@
+type: object
+title: CodeError
+properties:
+  code:
+    type: string
+    enum:
+      - unauthenticated
+      - invalid_argument
+      - not_found
+      - already_exists
+      - permission_denied
+      - internal
+  message:
+    type: string
+required:
+  - code
+  - message

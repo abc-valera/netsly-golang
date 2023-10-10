@@ -15,8 +15,8 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func (s *Server) decodeSignInRequest(r *http.Request) (
-	req *SignInRequest,
+func (s *Server) decodeSignInPostRequest(r *http.Request) (
+	req *SignInPostReq,
 	close func() error,
 	rerr error,
 ) {
@@ -55,7 +55,7 @@ func (s *Server) decodeSignInRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request SignInRequest
+		var request SignInPostReq
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -78,8 +78,8 @@ func (s *Server) decodeSignInRequest(r *http.Request) (
 	}
 }
 
-func (s *Server) decodeSignUpRequest(r *http.Request) (
-	req *SignUpRequest,
+func (s *Server) decodeSignUpPostRequest(r *http.Request) (
+	req *SignUpPostReq,
 	close func() error,
 	rerr error,
 ) {
@@ -118,7 +118,7 @@ func (s *Server) decodeSignUpRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request SignUpRequest
+		var request SignUpPostReq
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err

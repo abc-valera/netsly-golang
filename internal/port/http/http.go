@@ -9,7 +9,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
 	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler"
-	"github.com/abc-valera/flugo-api-golang/internal/port/http/middlewares"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -21,20 +21,24 @@ func RunServer(
 ) error {
 	// Init handlers (ogenHandler implements ogen.Server interface)
 	ogenHandler := &struct {
-		handler.SignHandler
 		handler.ErrorHandler
+		handler.SignHandler
+		handler.MeHandler
 	}{
-		SignHandler:  handler.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
 		ErrorHandler: handler.NewErrorHandler(services.Logger),
+		SignHandler:  handler.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
+		MeHandler:    handler.NewMeHandler(repos.UserRepo),
 	}
+	// Init security handler
+	securityHandler := handler.NewSecurityHandler(services.TokenMaker)
 
 	// Init ogen server
-	server, err := ogen.NewServer(ogenHandler)
+	server, err := ogen.NewServer(ogenHandler, securityHandler)
 	if err != nil {
 		return codeerr.NewInternal("newHTTPServer", err)
 	}
 	// Init middlewares
-	loggingMiddleware := middlewares.NewLoggingMiddleware(services.Logger)
+	loggingMiddleware := middleware.NewLoggingMiddleware(services.Logger)
 
 	// Init chi router
 	r := chi.NewRouter()

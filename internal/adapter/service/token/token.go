@@ -63,11 +63,20 @@ func (s *jwtToken) VerifyToken(token string) (service.Payload, error) {
 		return service.Payload{}, service.ErrInvalidToken
 	}
 
+	issuedAt, err := time.Parse(time.RFC3339, claims["issued_at"].(string))
+	if err != nil {
+		return service.Payload{}, codeerr.NewInternal("jwtToken.VerifyToken", err)
+	}
+	expiredAt, err := time.Parse(time.RFC3339, claims["expired_at"].(string))
+	if err != nil {
+		return service.Payload{}, codeerr.NewInternal("jwtToken.VerifyToken", err)
+	}
+
 	var payload service.Payload
 	payload.UserID = claims["user_id"].(string)
 	payload.IsRefresh = claims["is_refresh"].(bool)
-	payload.IssuedAt = claims["issued_at"].(time.Time)
-	payload.ExpiredAt = claims["expired_at"].(time.Time)
+	payload.IssuedAt = issuedAt
+	payload.ExpiredAt = expiredAt
 
 	if ok := payload.Valid(); !ok {
 		return service.Payload{}, service.ErrExpiredToken

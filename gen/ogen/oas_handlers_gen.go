@@ -17,23 +17,21 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/ogen-go/ogen/ogenerrors"
-	"github.com/ogen-go/ogen/otelogen"
 )
 
-// handleSignInRequest handles signIn operation.
+// handleMeGetRequest handles GET /me operation.
 //
-// Performs user authentication.
+// Returns current user profile.
 //
-// POST /sign_in
-func (s *Server) handleSignInRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+// GET /me
+func (s *Server) handleMeGetRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("signIn"),
-		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/sign_in"),
+		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/me"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "SignIn",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "MeGet",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -58,42 +56,73 @@ func (s *Server) handleSignInRequest(args [0]string, argsEscaped bool, w http.Re
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "SignIn",
-			ID:   "signIn",
+			Name: "MeGet",
+			ID:   "",
 		}
 	)
-	request, close, err := s.decodeSignInRequest(r)
-	if err != nil {
-		err = &ogenerrors.DecodeRequestError{
-			OperationContext: opErrContext,
-			Err:              err,
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityBearerAuth(ctx, "MeGet", r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "BearerAuth",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					recordError("Security:BearerAuth", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
 		}
-		recordError("DecodeRequest", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-	defer func() {
-		if err := close(); err != nil {
-			recordError("CloseRequest", err)
-		}
-	}()
 
-	var response *SignInResponse
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				recordError("Security", err)
+			}
+			return
+		}
+	}
+
+	var response *User
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "SignIn",
-			OperationSummary: "Performs user authentication",
-			OperationID:      "signIn",
-			Body:             request,
+			OperationName:    "MeGet",
+			OperationSummary: "Returns current user profile",
+			OperationID:      "",
+			Body:             nil,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
 
 		type (
-			Request  = *SignInRequest
+			Request  = struct{}
 			Params   = struct{}
-			Response = *SignInResponse
+			Response = *User
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -104,12 +133,12 @@ func (s *Server) handleSignInRequest(args [0]string, argsEscaped bool, w http.Re
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.SignIn(ctx, request)
+				response, err = s.h.MeGet(ctx)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.SignIn(ctx, request)
+		response, err = s.h.MeGet(ctx)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -128,7 +157,7 @@ func (s *Server) handleSignInRequest(args [0]string, argsEscaped bool, w http.Re
 		return
 	}
 
-	if err := encodeSignInResponse(response, w, span); err != nil {
+	if err := encodeMeGetResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -137,20 +166,19 @@ func (s *Server) handleSignInRequest(args [0]string, argsEscaped bool, w http.Re
 	}
 }
 
-// handleSignUpRequest handles signUp operation.
+// handleSignInPostRequest handles POST /sign_in operation.
 //
-// Performs user registration.
+// Performs user authentication.
 //
-// POST /sign_up
-func (s *Server) handleSignUpRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+// POST /sign_in
+func (s *Server) handleSignInPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("signUp"),
 		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/sign_up"),
+		semconv.HTTPRouteKey.String("/sign_in"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "SignUp",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "SignInPost",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -175,11 +203,11 @@ func (s *Server) handleSignUpRequest(args [0]string, argsEscaped bool, w http.Re
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "SignUp",
-			ID:   "signUp",
+			Name: "SignInPost",
+			ID:   "",
 		}
 	)
-	request, close, err := s.decodeSignUpRequest(r)
+	request, close, err := s.decodeSignInPostRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -195,22 +223,22 @@ func (s *Server) handleSignUpRequest(args [0]string, argsEscaped bool, w http.Re
 		}
 	}()
 
-	var response *SignUpCreated
+	var response *SignInPostOK
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "SignUp",
-			OperationSummary: "Performs user registration",
-			OperationID:      "signUp",
+			OperationName:    "SignInPost",
+			OperationSummary: "Performs user authentication",
+			OperationID:      "",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
 
 		type (
-			Request  = *SignUpRequest
+			Request  = *SignInPostReq
 			Params   = struct{}
-			Response = *SignUpCreated
+			Response = *SignInPostOK
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -221,12 +249,12 @@ func (s *Server) handleSignUpRequest(args [0]string, argsEscaped bool, w http.Re
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.SignUp(ctx, request)
+				response, err = s.h.SignInPost(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.SignUp(ctx, request)
+		response, err = s.h.SignInPost(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -245,7 +273,123 @@ func (s *Server) handleSignUpRequest(args [0]string, argsEscaped bool, w http.Re
 		return
 	}
 
-	if err := encodeSignUpResponse(response, w, span); err != nil {
+	if err := encodeSignInPostResponse(response, w, span); err != nil {
+		recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleSignUpPostRequest handles POST /sign_up operation.
+//
+// Performs user registration.
+//
+// POST /sign_up
+func (s *Server) handleSignUpPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	otelAttrs := []attribute.KeyValue{
+		semconv.HTTPMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/sign_up"),
+	}
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "SignUpPost",
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	s.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			s.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: "SignUpPost",
+			ID:   "",
+		}
+	)
+	request, close, err := s.decodeSignUpPostRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
+
+	var response *SignUpPostCreated
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    "SignUpPost",
+			OperationSummary: "Performs user registration",
+			OperationID:      "",
+			Body:             request,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = *SignUpPostReq
+			Params   = struct{}
+			Response = *SignUpPostCreated
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				err = s.h.SignUpPost(ctx, request)
+				return response, err
+			},
+		)
+	} else {
+		err = s.h.SignUpPost(ctx, request)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeSignUpPostResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)

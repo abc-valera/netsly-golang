@@ -88,11 +88,11 @@ func (s SignUseCase) SignIn(ctx context.Context, req SignInRequest) (*entity.Use
 		return nil, "", "", err
 	}
 
-	access, _, err := s.tokenMaker.CreateAccessToken(user.Username)
+	access, _, err := s.tokenMaker.CreateAccessToken(user.ID)
 	if err != nil {
 		return nil, "", "", err
 	}
-	refresh, _, err := s.tokenMaker.CreateRefreshToken(user.Username)
+	refresh, _, err := s.tokenMaker.CreateRefreshToken(user.ID)
 	if err != nil {
 		return nil, "", "", err
 	}

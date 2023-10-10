@@ -8,18 +8,24 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
-	// SignIn implements signIn operation.
+	// MeGet implements GET /me operation.
+	//
+	// Returns current user profile.
+	//
+	// GET /me
+	MeGet(ctx context.Context) (*User, error)
+	// SignInPost implements POST /sign_in operation.
 	//
 	// Performs user authentication.
 	//
 	// POST /sign_in
-	SignIn(ctx context.Context, req *SignInRequest) (*SignInResponse, error)
-	// SignUp implements signUp operation.
+	SignInPost(ctx context.Context, req *SignInPostReq) (*SignInPostOK, error)
+	// SignUpPost implements POST /sign_up operation.
 	//
 	// Performs user registration.
 	//
 	// POST /sign_up
-	SignUp(ctx context.Context, req *SignUpRequest) error
+	SignUpPost(ctx context.Context, req *SignUpPostReq) error
 	// NewError creates *CodeErrorStatusCode from error returned by handler.
 	//
 	// Used for common default response.
@@ -29,18 +35,20 @@ type Handler interface {
 // Server implements http server based on OpenAPI v3 specification and
 // calls Handler to handle requests.
 type Server struct {
-	h Handler
+	h   Handler
+	sec SecurityHandler
 	baseServer
 }
 
 // NewServer creates new Server.
-func NewServer(h Handler, opts ...ServerOption) (*Server, error) {
+func NewServer(h Handler, sec SecurityHandler, opts ...ServerOption) (*Server, error) {
 	s, err := newServerConfig(opts...).baseServer()
 	if err != nil {
 		return nil, err
 	}
 	return &Server{
 		h:          h,
+		sec:        sec,
 		baseServer: s,
 	}, nil
 }

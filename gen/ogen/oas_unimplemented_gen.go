@@ -13,21 +13,30 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
-// SignIn implements signIn operation.
+// MeGet implements GET /me operation.
+//
+// Returns current user profile.
+//
+// GET /me
+func (UnimplementedHandler) MeGet(ctx context.Context) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SignInPost implements POST /sign_in operation.
 //
 // Performs user authentication.
 //
 // POST /sign_in
-func (UnimplementedHandler) SignIn(ctx context.Context, req *SignInRequest) (r *SignInResponse, _ error) {
+func (UnimplementedHandler) SignInPost(ctx context.Context, req *SignInPostReq) (r *SignInPostOK, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
-// SignUp implements signUp operation.
+// SignUpPost implements POST /sign_up operation.
 //
 // Performs user registration.
 //
 // POST /sign_up
-func (UnimplementedHandler) SignUp(ctx context.Context, req *SignUpRequest) error {
+func (UnimplementedHandler) SignUpPost(ctx context.Context, req *SignUpPostReq) error {
 	return ht.ErrNotImplemented
 }
 

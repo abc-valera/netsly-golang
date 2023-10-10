@@ -47,5 +47,5 @@ func NewPayload(userID string, isRefresh bool, duration time.Duration) (Payload,
 }
 
 func (p Payload) Valid() bool {
-	return !p.ExpiredAt.After(time.Now())
+	return p.ExpiredAt.After(time.Now())
 }

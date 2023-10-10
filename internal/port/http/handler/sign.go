@@ -24,7 +24,7 @@ func NewSignHandler(
 	}
 }
 
-func (h *SignHandler) SignUp(ctx context.Context, req *ogen.SignUpRequest) error {
+func (h SignHandler) SignUpPost(ctx context.Context, req *ogen.SignUpPostReq) error {
 	return h.signUsecase.SignUp(ctx, application.SignUpRequest{
 		Username: req.Username,
 		Email:    req.Email,
@@ -32,7 +32,7 @@ func (h *SignHandler) SignUp(ctx context.Context, req *ogen.SignUpRequest) error
 	})
 }
 
-func (h *SignHandler) SignIn(ctx context.Context, req *ogen.SignInRequest) (*ogen.SignInResponse, error) {
+func (h SignHandler) SignInPost(ctx context.Context, req *ogen.SignInPostReq) (*ogen.SignInPostOK, error) {
 	user, access, refresh, err := h.signUsecase.SignIn(ctx, application.SignInRequest{
 		Email:    req.Email,
 		Password: req.Password,
@@ -40,8 +40,8 @@ func (h *SignHandler) SignIn(ctx context.Context, req *ogen.SignInRequest) (*oge
 	if err != nil {
 		return nil, err
 	}
-	return &ogen.SignInResponse{
-		UserResponse: dto.NewUserResponse(user),
+	return &ogen.SignInPostOK{
+		UserResponse: *dto.NewUserResponse(user),
 		AccessToken:  access,
 		RefreshToken: refresh,
 	}, nil

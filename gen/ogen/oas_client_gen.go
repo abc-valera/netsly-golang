@@ -16,29 +16,36 @@ import (
 	"go.opentelemetry.io/otel/trace"
 
 	ht "github.com/ogen-go/ogen/http"
-	"github.com/ogen-go/ogen/otelogen"
+	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/ogen-go/ogen/uri"
 )
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
-	// SignIn invokes signIn operation.
+	// MeGet invokes GET /me operation.
+	//
+	// Returns current user profile.
+	//
+	// GET /me
+	MeGet(ctx context.Context) (*User, error)
+	// SignInPost invokes POST /sign_in operation.
 	//
 	// Performs user authentication.
 	//
 	// POST /sign_in
-	SignIn(ctx context.Context, request *SignInRequest) (*SignInResponse, error)
-	// SignUp invokes signUp operation.
+	SignInPost(ctx context.Context, request *SignInPostReq) (*SignInPostOK, error)
+	// SignUpPost invokes POST /sign_up operation.
 	//
 	// Performs user registration.
 	//
 	// POST /sign_up
-	SignUp(ctx context.Context, request *SignUpRequest) error
+	SignUpPost(ctx context.Context, request *SignUpPostReq) error
 }
 
 // Client implements OAS client.
 type Client struct {
 	serverURL *url.URL
+	sec       SecuritySource
 	baseClient
 }
 type errorHandler interface {
@@ -56,7 +63,7 @@ func trimTrailingSlashes(u *url.URL) {
 }
 
 // NewClient initializes new Client defined by OAS.
-func NewClient(serverURL string, opts ...ClientOption) (*Client, error) {
+func NewClient(serverURL string, sec SecuritySource, opts ...ClientOption) (*Client, error) {
 	u, err := url.Parse(serverURL)
 	if err != nil {
 		return nil, err
@@ -69,6 +76,7 @@ func NewClient(serverURL string, opts ...ClientOption) (*Client, error) {
 	}
 	return &Client{
 		serverURL:  u,
+		sec:        sec,
 		baseClient: c,
 	}, nil
 }
@@ -88,19 +96,122 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
-// SignIn invokes signIn operation.
+// MeGet invokes GET /me operation.
+//
+// Returns current user profile.
+//
+// GET /me
+func (c *Client) MeGet(ctx context.Context) (*User, error) {
+	res, err := c.sendMeGet(ctx)
+	return res, err
+}
+
+func (c *Client) sendMeGet(ctx context.Context) (res *User, err error) {
+	otelAttrs := []attribute.KeyValue{
+		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/me"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, "MeGet",
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/me"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, "MeGet", r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeMeGetResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// SignInPost invokes POST /sign_in operation.
 //
 // Performs user authentication.
 //
 // POST /sign_in
-func (c *Client) SignIn(ctx context.Context, request *SignInRequest) (*SignInResponse, error) {
-	res, err := c.sendSignIn(ctx, request)
+func (c *Client) SignInPost(ctx context.Context, request *SignInPostReq) (*SignInPostOK, error) {
+	res, err := c.sendSignInPost(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendSignIn(ctx context.Context, request *SignInRequest) (res *SignInResponse, err error) {
+func (c *Client) sendSignInPost(ctx context.Context, request *SignInPostReq) (res *SignInPostOK, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("signIn"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign_in"),
 	}
@@ -117,7 +228,7 @@ func (c *Client) sendSignIn(ctx context.Context, request *SignInRequest) (res *S
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "SignIn",
+	ctx, span := c.cfg.Tracer.Start(ctx, "SignInPost",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -143,7 +254,7 @@ func (c *Client) sendSignIn(ctx context.Context, request *SignInRequest) (res *S
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeSignInRequest(request, r); err != nil {
+	if err := encodeSignInPostRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -155,7 +266,7 @@ func (c *Client) sendSignIn(ctx context.Context, request *SignInRequest) (res *S
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeSignInResponse(resp)
+	result, err := decodeSignInPostResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -163,19 +274,18 @@ func (c *Client) sendSignIn(ctx context.Context, request *SignInRequest) (res *S
 	return result, nil
 }
 
-// SignUp invokes signUp operation.
+// SignUpPost invokes POST /sign_up operation.
 //
 // Performs user registration.
 //
 // POST /sign_up
-func (c *Client) SignUp(ctx context.Context, request *SignUpRequest) error {
-	_, err := c.sendSignUp(ctx, request)
+func (c *Client) SignUpPost(ctx context.Context, request *SignUpPostReq) error {
+	_, err := c.sendSignUpPost(ctx, request)
 	return err
 }
 
-func (c *Client) sendSignUp(ctx context.Context, request *SignUpRequest) (res *SignUpCreated, err error) {
+func (c *Client) sendSignUpPost(ctx context.Context, request *SignUpPostReq) (res *SignUpPostCreated, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("signUp"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign_up"),
 	}
@@ -192,7 +302,7 @@ func (c *Client) sendSignUp(ctx context.Context, request *SignUpRequest) (res *S
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "SignUp",
+	ctx, span := c.cfg.Tracer.Start(ctx, "SignUpPost",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -218,7 +328,7 @@ func (c *Client) sendSignUp(ctx context.Context, request *SignUpRequest) (res *S
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeSignUpRequest(request, r); err != nil {
+	if err := encodeSignUpPostRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -230,7 +340,7 @@ func (c *Client) sendSignUp(ctx context.Context, request *SignUpRequest) (res *S
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeSignUpResponse(resp)
+	result, err := decodeSignUpPostResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

@@ -4,6 +4,7 @@ package ogen
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/go-faster/errors"
 )
@@ -12,7 +13,21 @@ func (s *CodeErrorStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
-// Ref: #/components/schemas/CodeError
+type BearerAuth struct {
+	Token string
+}
+
+// GetToken returns the value of Token.
+func (s *BearerAuth) GetToken() string {
+	return s.Token
+}
+
+// SetToken sets the value of Token.
+func (s *BearerAuth) SetToken(val string) {
+	s.Token = val
+}
+
+// Ref: #/components/schemas/code_error
 type CodeError struct {
 	Code    CodeErrorCode `json:"code"`
 	Message string        `json:"message"`
@@ -179,164 +194,172 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
-// Ref: #/components/schemas/SignInRequest
-type SignInRequest struct {
+type SignInPostOK struct {
+	UserResponse User   `json:"userResponse"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+}
+
+// GetUserResponse returns the value of UserResponse.
+func (s *SignInPostOK) GetUserResponse() User {
+	return s.UserResponse
+}
+
+// GetAccessToken returns the value of AccessToken.
+func (s *SignInPostOK) GetAccessToken() string {
+	return s.AccessToken
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *SignInPostOK) GetRefreshToken() string {
+	return s.RefreshToken
+}
+
+// SetUserResponse sets the value of UserResponse.
+func (s *SignInPostOK) SetUserResponse(val User) {
+	s.UserResponse = val
+}
+
+// SetAccessToken sets the value of AccessToken.
+func (s *SignInPostOK) SetAccessToken(val string) {
+	s.AccessToken = val
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *SignInPostOK) SetRefreshToken(val string) {
+	s.RefreshToken = val
+}
+
+type SignInPostReq struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
 // GetEmail returns the value of Email.
-func (s *SignInRequest) GetEmail() string {
+func (s *SignInPostReq) GetEmail() string {
 	return s.Email
 }
 
 // GetPassword returns the value of Password.
-func (s *SignInRequest) GetPassword() string {
+func (s *SignInPostReq) GetPassword() string {
 	return s.Password
 }
 
 // SetEmail sets the value of Email.
-func (s *SignInRequest) SetEmail(val string) {
+func (s *SignInPostReq) SetEmail(val string) {
 	s.Email = val
 }
 
 // SetPassword sets the value of Password.
-func (s *SignInRequest) SetPassword(val string) {
+func (s *SignInPostReq) SetPassword(val string) {
 	s.Password = val
 }
 
-// Ref: #/components/schemas/SignInResponse
-type SignInResponse struct {
-	UserResponse UserResponse `json:"userResponse"`
-	AccessToken  string       `json:"accessToken"`
-	RefreshToken string       `json:"refreshToken"`
-}
+// SignUpPostCreated is response for SignUpPost operation.
+type SignUpPostCreated struct{}
 
-// GetUserResponse returns the value of UserResponse.
-func (s *SignInResponse) GetUserResponse() UserResponse {
-	return s.UserResponse
-}
-
-// GetAccessToken returns the value of AccessToken.
-func (s *SignInResponse) GetAccessToken() string {
-	return s.AccessToken
-}
-
-// GetRefreshToken returns the value of RefreshToken.
-func (s *SignInResponse) GetRefreshToken() string {
-	return s.RefreshToken
-}
-
-// SetUserResponse sets the value of UserResponse.
-func (s *SignInResponse) SetUserResponse(val UserResponse) {
-	s.UserResponse = val
-}
-
-// SetAccessToken sets the value of AccessToken.
-func (s *SignInResponse) SetAccessToken(val string) {
-	s.AccessToken = val
-}
-
-// SetRefreshToken sets the value of RefreshToken.
-func (s *SignInResponse) SetRefreshToken(val string) {
-	s.RefreshToken = val
-}
-
-// SignUpCreated is response for SignUp operation.
-type SignUpCreated struct{}
-
-// Ref: #/components/schemas/SignUpRequest
-type SignUpRequest struct {
+type SignUpPostReq struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
 // GetUsername returns the value of Username.
-func (s *SignUpRequest) GetUsername() string {
+func (s *SignUpPostReq) GetUsername() string {
 	return s.Username
 }
 
 // GetEmail returns the value of Email.
-func (s *SignUpRequest) GetEmail() string {
+func (s *SignUpPostReq) GetEmail() string {
 	return s.Email
 }
 
 // GetPassword returns the value of Password.
-func (s *SignUpRequest) GetPassword() string {
+func (s *SignUpPostReq) GetPassword() string {
 	return s.Password
 }
 
 // SetUsername sets the value of Username.
-func (s *SignUpRequest) SetUsername(val string) {
+func (s *SignUpPostReq) SetUsername(val string) {
 	s.Username = val
 }
 
 // SetEmail sets the value of Email.
-func (s *SignUpRequest) SetEmail(val string) {
+func (s *SignUpPostReq) SetEmail(val string) {
 	s.Email = val
 }
 
 // SetPassword sets the value of Password.
-func (s *SignUpRequest) SetPassword(val string) {
+func (s *SignUpPostReq) SetPassword(val string) {
 	s.Password = val
 }
 
-// Ref: #/components/schemas/UserResponse
-type UserResponse struct {
-	ID       string    `json:"id"`
-	Username string    `json:"username"`
-	Email    string    `json:"email"`
-	Fullname OptString `json:"fullname"`
-	Status   OptString `json:"status"`
+// Ref: #/components/schemas/user
+type User struct {
+	ID        string    `json:"id"`
+	Username  string    `json:"username"`
+	Email     string    `json:"email"`
+	Fullname  OptString `json:"fullname"`
+	Status    OptString `json:"status"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 // GetID returns the value of ID.
-func (s *UserResponse) GetID() string {
+func (s *User) GetID() string {
 	return s.ID
 }
 
 // GetUsername returns the value of Username.
-func (s *UserResponse) GetUsername() string {
+func (s *User) GetUsername() string {
 	return s.Username
 }
 
 // GetEmail returns the value of Email.
-func (s *UserResponse) GetEmail() string {
+func (s *User) GetEmail() string {
 	return s.Email
 }
 
 // GetFullname returns the value of Fullname.
-func (s *UserResponse) GetFullname() OptString {
+func (s *User) GetFullname() OptString {
 	return s.Fullname
 }
 
 // GetStatus returns the value of Status.
-func (s *UserResponse) GetStatus() OptString {
+func (s *User) GetStatus() OptString {
 	return s.Status
 }
 
+// GetCreatedAt returns the value of CreatedAt.
+func (s *User) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
 // SetID sets the value of ID.
-func (s *UserResponse) SetID(val string) {
+func (s *User) SetID(val string) {
 	s.ID = val
 }
 
 // SetUsername sets the value of Username.
-func (s *UserResponse) SetUsername(val string) {
+func (s *User) SetUsername(val string) {
 	s.Username = val
 }
 
 // SetEmail sets the value of Email.
-func (s *UserResponse) SetEmail(val string) {
+func (s *User) SetEmail(val string) {
 	s.Email = val
 }
 
 // SetFullname sets the value of Fullname.
-func (s *UserResponse) SetFullname(val OptString) {
+func (s *User) SetFullname(val OptString) {
 	s.Fullname = val
 }
 
 // SetStatus sets the value of Status.
-func (s *UserResponse) SetStatus(val OptString) {
+func (s *User) SetStatus(val OptString) {
 	s.Status = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *User) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
 }

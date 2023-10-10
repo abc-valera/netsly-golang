@@ -5,11 +5,11 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
 )
 
-func NewUserResponse(user *entity.User) ogen.UserResponse {
+func NewUserResponse(user *entity.User) *ogen.User {
 	if user == nil {
-		return ogen.UserResponse{}
+		return &ogen.User{}
 	}
-	return ogen.UserResponse{
+	return &ogen.User{
 		ID:       user.ID,
 		Username: user.Username,
 		Email:    user.Email,

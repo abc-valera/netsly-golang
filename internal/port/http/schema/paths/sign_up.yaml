@@ -1,0 +1,30 @@
+post:
+  tags:
+    - sign
+  summary: Performs user registration
+  requestBody:
+    description: Data to add new user to the social network
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+              example: user1
+            email:
+              type: string
+              example: user1@gmail.com
+            password:
+              type: string
+              example: 123456789
+          required:
+            - username
+            - email
+            - password
+  responses:
+    "201":
+      description: Successful operation
+    default:
+      $ref: "../components/responses/code_error.yaml"

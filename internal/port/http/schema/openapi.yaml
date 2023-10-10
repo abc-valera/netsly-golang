@@ -1,0 +1,50 @@
+openapi: 3.0.0
+info:
+  version: 0.1.0
+  title: Flugo API
+  termsOfService: "https://github.com/abc-valera/flugo-api-golang"
+  contact:
+    email: zoocity14@gmail.com
+    url: "https://github.com/abc-valera/flugo-api-golang"
+  # x-logo:
+  #   url: "https://apis.guru/openapi-template/logo.png"
+  description: API for Flugo social network
+externalDocs:
+  description: Learn more about the project.
+  url: "https://github.com/abc-valera/flugo-api-golang"
+tags:
+  - name: sign
+    description: Everything about managing user sessions
+  - name: me
+    description: Everything about managing current user profile
+  - name: users
+    description: Everything about finding users
+  - name: jokes
+    description: Everything about finding jokes
+  - name: comments
+    description: Everything about finding comments
+servers:
+  - url: "http://localhost:3000"
+paths:
+  /sign_up:
+    $ref: paths/sign_up.yaml
+  /sign_in:
+    $ref: paths/sign_in.yaml
+  # /sign_refresh:
+  #   $ref: paths/sign_refresh.yaml
+  /me:
+    $ref: paths/me.yaml
+    # /me:
+    #   $ref: paths/me.yaml
+    # /users:
+    #   $ref: paths/users.yaml
+    # /jokes:
+    #   $ref: paths/jokes.yaml
+    # /comments:
+    #   $ref: paths/comments.yaml
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

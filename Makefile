@@ -1,11 +1,16 @@
 # Code generation
+generate_single_openapi_file:
+	docker run --rm -v ${PWD}:/spec redocly/cli bundle \
+	-o /spec/gen/openapi/openapi.yaml \
+	/spec/internal/port/http/schema/openapi.yaml 
 generate_http_code:
 	go generate gen/ogen/generate.go
 generate_http_docs:
 	docker run --rm -v ${PWD}:/spec redocly/cli build-docs \
 	-o /spec/docs/http/index.html \
-	/spec/internal/port/http/schema/openapi.yml
+	/spec/internal/port/http/schema/openapi.yaml
 generate_http:
+	make generate_single_openapi_file
 	make generate_http_code
 	make generate_http_docs
 
