@@ -27,13 +27,13 @@ func NewSendEmailTask(email string) (*asynq.Task, error) {
 }
 
 type sendEmailProcessor struct {
-	emailSender service.EmailSender
-	log         service.Logger
+	emailSender service.IEmailSender
+	log         service.ILogger
 }
 
 func newSendEmailProcessor(
-	emailSender service.EmailSender,
-	log service.Logger,
+	emailSender service.IEmailSender,
+	log service.ILogger,
 ) *sendEmailProcessor {
 	return &sendEmailProcessor{
 		emailSender: emailSender,

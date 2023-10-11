@@ -12,6 +12,6 @@ const (
 	Critical Priority = "critical"
 )
 
-type MessageBroker interface {
+type IMessageBroker interface {
 	SendEmailTask(ctx context.Context, priority Priority, email Email) error
 }

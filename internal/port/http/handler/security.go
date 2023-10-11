@@ -14,10 +14,10 @@ const (
 )
 
 type SecurityHandler struct {
-	tokenMaker service.TokenMaker
+	tokenMaker service.ITokenMaker
 }
 
-func NewSecurityHandler(tokenMaker service.TokenMaker) SecurityHandler {
+func NewSecurityHandler(tokenMaker service.ITokenMaker) SecurityHandler {
 	return SecurityHandler{
 		tokenMaker: tokenMaker,
 	}

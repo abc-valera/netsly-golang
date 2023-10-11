@@ -5,10 +5,10 @@ import (
 )
 
 type dummyEmailSender struct {
-	log service.Logger
+	log service.ILogger
 }
 
-func NewDummyEmailSender(log service.Logger) service.EmailSender {
+func NewDummyEmailSender(log service.ILogger) service.IEmailSender {
 	return &dummyEmailSender{
 		log: log,
 	}

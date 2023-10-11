@@ -13,10 +13,10 @@ var (
 )
 
 type JokeUseCase struct {
-	jokeRepo repository.JokeRepository
+	jokeRepo repository.IJokeRepository
 }
 
-func NewJokeUseCase(jokeRepo repository.JokeRepository) JokeUseCase {
+func NewJokeUseCase(jokeRepo repository.IJokeRepository) JokeUseCase {
 	return JokeUseCase{
 		jokeRepo: jokeRepo,
 	}

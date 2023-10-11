@@ -13,7 +13,7 @@ var (
 	ErrJokeWithTitleAlreadyExists = codeerr.NewMsgErr(codeerr.CodeAlreadyExists, "Joke with such title already exists for this user")
 )
 
-type JokeRepository interface {
+type IJokeRepository interface {
 	GetByID(ctx context.Context, id string) (*entity.Joke, error)
 	GetByUserID(ctx context.Context, userID string) (entity.Jokes, error)
 	Create(ctx context.Context, joke *entity.Joke) error

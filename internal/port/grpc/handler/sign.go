@@ -10,13 +10,13 @@ import (
 )
 
 type SignHandler struct {
-	userRepo    repository.UserRepository
+	userRepo    repository.IUserRepository
 	signUsecase application.SignUseCase
 	pb.UnimplementedSignServiceServer
 }
 
 func NewSignHandler(
-	userRepo repository.UserRepository,
+	userRepo repository.IUserRepository,
 	signUsecase application.SignUseCase,
 ) pb.SignServiceServer {
 	return SignHandler{

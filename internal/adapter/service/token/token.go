@@ -15,7 +15,7 @@ type jwtToken struct {
 	refreshDuration time.Duration
 }
 
-func NewTokenMaker(accessDuration, refreshDuration time.Duration) service.TokenMaker {
+func NewTokenMaker(accessDuration, refreshDuration time.Duration) service.ITokenMaker {
 	return &jwtToken{
 		accessDuration:  accessDuration,
 		refreshDuration: refreshDuration,

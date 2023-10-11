@@ -6,7 +6,7 @@ var (
 	ErrInvalidPassword = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided password is invalid")
 )
 
-type PasswordMaker interface {
+type IPasswordMaker interface {
 	// HashPassword returns hash of the provided password
 	HashPassword(password string) (string, error)
 

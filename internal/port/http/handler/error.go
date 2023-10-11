@@ -9,10 +9,10 @@ import (
 )
 
 type ErrorHandler struct {
-	log service.Logger
+	log service.ILogger
 }
 
-func NewErrorHandler(log service.Logger) ErrorHandler {
+func NewErrorHandler(log service.ILogger) ErrorHandler {
 	return ErrorHandler{
 		log: log,
 	}

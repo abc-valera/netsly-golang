@@ -11,13 +11,13 @@ import (
 )
 
 type MeJokesHandler struct {
-	userRepo repository.UserRepository
-	jokeRepo repository.JokeRepository
+	userRepo repository.IUserRepository
+	jokeRepo repository.IJokeRepository
 }
 
 func NewMeJokesHandler(
-	userRepo repository.UserRepository,
-	jokeRepo repository.JokeRepository,
+	userRepo repository.IUserRepository,
+	jokeRepo repository.IJokeRepository,
 ) MeJokesHandler {
 	return MeJokesHandler{
 		userRepo: userRepo,

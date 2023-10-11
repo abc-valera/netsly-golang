@@ -11,8 +11,8 @@ import (
 
 func newAsynqServer(
 	redisOpts asynq.RedisClientOpt,
-	emailSender service.EmailSender,
-	log service.Logger,
+	emailSender service.IEmailSender,
+	log service.ILogger,
 ) *asynq.Server {
 	// Custom error handler
 	errHandler := asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {

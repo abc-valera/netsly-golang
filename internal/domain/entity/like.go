@@ -4,11 +4,9 @@ import (
 	"time"
 
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
-	"github.com/google/uuid"
 )
 
 type Like struct {
-	ID        string
 	UserID    string
 	JokeID    string
 	CreatedAt time.Time
@@ -23,7 +21,6 @@ func NewLike(userID, jokeID string) (*Like, error) {
 	}
 
 	return &Like{
-		ID:        uuid.NewString(),
 		UserID:    userID,
 		JokeID:    jokeID,
 		CreatedAt: time.Now(),

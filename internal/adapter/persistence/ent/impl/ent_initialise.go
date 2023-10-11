@@ -12,14 +12,14 @@ import (
 )
 
 func NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName string) (struct {
-	repository.UserRepository
-	repository.JokeRepository
+	repository.IUserRepository
+	repository.IJokeRepository
 	// repository.CommentRepository
 	// repository.LikeRepository
 }, error) {
 	repos := struct {
-		repository.UserRepository
-		repository.JokeRepository
+		repository.IUserRepository
+		repository.IJokeRepository
 		// repository.CommentRepository
 		// repository.LikeRepository
 	}{}
@@ -37,8 +37,8 @@ func NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName string) (struct {
 		return repos, codeerr.NewInternal("NewEntImplementation", err)
 	}
 
-	repos.UserRepository = NewUserRepository(client)
-	repos.JokeRepository = NewJokeRepository(client)
+	repos.IUserRepository = NewUserRepository(client)
+	repos.IJokeRepository = NewJokeRepository(client)
 	// repos.CommentRepository = NewCommentRepository(client)
 	// repos.LikeRepository = NewLikeRepository(client)
 	return repos, nil

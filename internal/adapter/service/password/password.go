@@ -23,7 +23,7 @@ const (
 type passwordMaker struct {
 }
 
-func NewPasswordMaker() service.PasswordMaker {
+func NewPasswordMaker() service.IPasswordMaker {
 	return &passwordMaker{}
 }
 

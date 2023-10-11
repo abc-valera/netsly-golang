@@ -15,17 +15,17 @@ var (
 )
 
 type SignUseCase struct {
-	userRepo      repository.UserRepository
-	passwordMaker service.PasswordMaker
-	tokenMaker    service.TokenMaker
-	msgBroker     service.MessageBroker
+	userRepo      repository.IUserRepository
+	passwordMaker service.IPasswordMaker
+	tokenMaker    service.ITokenMaker
+	msgBroker     service.IMessageBroker
 }
 
 func NewSignUseCase(
-	userRepo repository.UserRepository,
-	passwordMaker service.PasswordMaker,
-	tokenMaker service.TokenMaker,
-	msgBroker service.MessageBroker,
+	userRepo repository.IUserRepository,
+	passwordMaker service.IPasswordMaker,
+	tokenMaker service.ITokenMaker,
+	msgBroker service.IMessageBroker,
 ) SignUseCase {
 	return SignUseCase{
 		userRepo:      userRepo,

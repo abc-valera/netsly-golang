@@ -11,14 +11,14 @@ import (
 type broker struct {
 	client *asynq.Client
 	server *asynq.Server
-	log    service.Logger
+	log    service.ILogger
 }
 
 func NewMessagingBroker(
 	redisUrl, redisUser, redisPass string,
-	emailSender service.EmailSender,
-	log service.Logger,
-) service.MessageBroker {
+	emailSender service.IEmailSender,
+	log service.ILogger,
+) service.IMessageBroker {
 	// Redis connection options
 	redisOpts := asynq.RedisClientOpt{
 		Addr:     redisUrl,

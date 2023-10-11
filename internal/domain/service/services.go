@@ -7,19 +7,19 @@ import (
 )
 
 type Services struct {
-	EmailSender   EmailSender
-	PasswordMaker PasswordMaker
-	TokenMaker    TokenMaker
-	Logger        Logger
-	MessageBroker MessageBroker
+	EmailSender   IEmailSender
+	PasswordMaker IPasswordMaker
+	TokenMaker    ITokenMaker
+	Logger        ILogger
+	MessageBroker IMessageBroker
 }
 
 func NewServices(
-	emailSender EmailSender,
-	passwordMaker PasswordMaker,
-	tokenMaker TokenMaker,
-	logger Logger,
-	messageBroker MessageBroker,
+	emailSender IEmailSender,
+	passwordMaker IPasswordMaker,
+	tokenMaker ITokenMaker,
+	logger ILogger,
+	messageBroker IMessageBroker,
 ) (Services, error) {
 	if emailSender == nil {
 		return Services{}, codeerr.NewInternal("NewServices", errors.New("emailSender is nil"))

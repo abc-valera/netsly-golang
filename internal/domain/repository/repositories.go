@@ -7,15 +7,15 @@ import (
 )
 
 type Repositories struct {
-	UserRepo UserRepository
-	JokeRepo JokeRepository
+	UserRepo IUserRepository
+	JokeRepo IJokeRepository
 	// CommentRepo CommentRepository
 	// LikeRepo    LikeRepository
 }
 
 func NewRepositories(
-	userRepo UserRepository,
-	jokeRepo JokeRepository,
+	userRepo IUserRepository,
+	jokeRepo IJokeRepository,
 	// commentRepo CommentRepository,
 	// likeRepo LikeRepository,
 ) (Repositories, error) {

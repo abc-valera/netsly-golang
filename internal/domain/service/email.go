@@ -1,6 +1,6 @@
 package service
 
-type EmailSender interface {
+type IEmailSender interface {
 	SendEmail(e Email) error
 }
 

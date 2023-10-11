@@ -33,7 +33,7 @@ func (rw *responseWriter) Write(data []byte) (int, error) {
 }
 
 // NewLoggingMiddleware logs the incoming HTTP request & its duration.
-func NewLoggingMiddleware(log service.Logger) func(http.Handler) http.Handler {
+func NewLoggingMiddleware(log service.ILogger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()

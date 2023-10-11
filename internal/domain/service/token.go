@@ -11,7 +11,7 @@ var (
 	ErrExpiredToken = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided expired token")
 )
 
-type TokenMaker interface {
+type ITokenMaker interface {
 	// CreateAccessToken creates access token with given userID
 	CreateAccessToken(userID string) (string, Payload, error)
 

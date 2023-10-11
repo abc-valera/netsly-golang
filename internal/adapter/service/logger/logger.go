@@ -9,7 +9,7 @@ type slogLogger struct {
 	log *slog.Logger
 }
 
-func NewSlogLogger() service.Logger {
+func NewSlogLogger() service.ILogger {
 	return &slogLogger{
 		log: slog.Default(),
 	}

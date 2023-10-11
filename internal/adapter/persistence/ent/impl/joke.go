@@ -15,7 +15,7 @@ type jokeRepository struct {
 	common.BaseRepository
 }
 
-func NewJokeRepository(client *ent.Client) repository.JokeRepository {
+func NewJokeRepository(client *ent.Client) repository.IJokeRepository {
 	return &jokeRepository{
 		BaseRepository: common.NewBaseRepository(client),
 	}

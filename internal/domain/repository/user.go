@@ -14,13 +14,13 @@ var (
 	ErrUserWithEmailAlreadyExists    = codeerr.NewMsgErr(codeerr.CodeAlreadyExists, "User with such email already exists")
 )
 
-type UserRepository interface {
+type IUserRepository interface {
 	GetByID(ctx context.Context, id string) (*entity.User, error)
 	GetByUsername(ctx context.Context, username string) (*entity.User, error)
 	GetByEmail(ctx context.Context, email string) (*entity.User, error)
 	Create(ctx context.Context, user *entity.User) error
 	Update(ctx context.Context, user *entity.User) error
-	Delete(ctx context.Context, id string) error
+	Delete(ctx context.Context, userID string) error
 
 	common.Transactioneer
 }

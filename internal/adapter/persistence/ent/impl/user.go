@@ -15,7 +15,7 @@ type userRepository struct {
 	common.BaseRepository
 }
 
-func NewUserRepository(client *ent.Client) repository.UserRepository {
+func NewUserRepository(client *ent.Client) repository.IUserRepository {
 	return &userRepository{
 		BaseRepository: common.NewBaseRepository(client),
 	}

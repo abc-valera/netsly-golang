@@ -10,10 +10,10 @@ import (
 )
 
 type MeHandler struct {
-	userRepo repository.UserRepository
+	userRepo repository.IUserRepository
 }
 
-func NewMeHandler(userRepo repository.UserRepository) MeHandler {
+func NewMeHandler(userRepo repository.IUserRepository) MeHandler {
 	return MeHandler{
 		userRepo: userRepo,
 	}
