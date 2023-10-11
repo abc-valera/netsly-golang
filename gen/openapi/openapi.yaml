@@ -99,6 +99,39 @@ paths:
                   - refreshToken
         default:
           $ref: '#/components/responses/code_error'
+  /sign_refresh:
+    post:
+      tags:
+        - sign
+      summary: Exchanges a refresh token for an access token
+      requestBody:
+        description: Refresh token
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+              required:
+                - refreshToken
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+                required:
+                  - accessToken
+        default:
+          $ref: '#/components/responses/code_error'
   /me:
     get:
       tags:
@@ -109,6 +142,53 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/user'
+        default:
+          $ref: '#/components/responses/code_error'
+  /me/jokes:
+    get:
+      tags:
+        - me
+      summary: Returns jokes of the current user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/jokes'
+        default:
+          $ref: '#/components/responses/code_error'
+    post:
+      tags:
+        - me
+      summary: Creates a new joke for current user
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Data to create a new joke for current user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  example: '1'
+                title:
+                  type: string
+                  example: Joke title
+                text:
+                  type: string
+                  example: Joke text
+                explanation:
+                  type: string
+                  example: Joke explanation
+              required:
+                - user_id
+                - title
+                - text
+      responses:
+        '201':
+          description: Successful operation
         default:
           $ref: '#/components/responses/code_error'
 components:
@@ -162,6 +242,32 @@ components:
         - username
         - email
         - created_at
+    joke:
+      type: object
+      properties:
+        id:
+          type: string
+        userID:
+          type: string
+        title:
+          type: string
+          example: Joke 1
+        text:
+          type: string
+          example: Text of joke 1
+        explanation:
+          type: string
+          example: Explanation of joke 1
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-08-01T00:00:00Z'
+      required:
+        - id
+        - userID
+        - title
+        - text
+        - createdAt
   responses:
     code_error:
       description: General Error
@@ -175,3 +281,16 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/user'
+    jokes:
+      description: Array of jokes
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              jokes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/joke'
+            required:
+              - jokes

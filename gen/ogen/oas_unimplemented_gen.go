@@ -22,12 +22,39 @@ func (UnimplementedHandler) MeGet(ctx context.Context) (r *User, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
+// MeJokesGet implements GET /me/jokes operation.
+//
+// Returns jokes of the current user.
+//
+// GET /me/jokes
+func (UnimplementedHandler) MeJokesGet(ctx context.Context) (r *Jokes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// MeJokesPost implements POST /me/jokes operation.
+//
+// Creates a new joke for current user.
+//
+// POST /me/jokes
+func (UnimplementedHandler) MeJokesPost(ctx context.Context, req *MeJokesPostReq) error {
+	return ht.ErrNotImplemented
+}
+
 // SignInPost implements POST /sign_in operation.
 //
 // Performs user authentication.
 //
 // POST /sign_in
 func (UnimplementedHandler) SignInPost(ctx context.Context, req *SignInPostReq) (r *SignInPostOK, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// SignRefreshPost implements POST /sign_refresh operation.
+//
+// Exchanges a refresh token for an access token.
+//
+// POST /sign_refresh
+func (UnimplementedHandler) SignRefreshPost(ctx context.Context, req *SignRefreshPostReq) (r *SignRefreshPostOK, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

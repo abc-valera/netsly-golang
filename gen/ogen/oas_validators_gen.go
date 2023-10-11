@@ -64,3 +64,22 @@ func (s *CodeErrorStatusCode) Validate() error {
 	}
 	return nil
 }
+
+func (s *Jokes) Validate() error {
+	var failures []validate.FieldError
+	if err := func() error {
+		if s.Jokes == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "jokes",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}

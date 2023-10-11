@@ -27,13 +27,15 @@ servers:
   - url: "http://localhost:3000"
 paths:
   /sign_up:
-    $ref: paths/sign_up.yaml
+    $ref: paths/sign-up.yaml
   /sign_in:
-    $ref: paths/sign_in.yaml
-  # /sign_refresh:
-  #   $ref: paths/sign_refresh.yaml
+    $ref: paths/sign-in.yaml
+  /sign_refresh:
+    $ref: paths/sign-refresh.yaml
   /me:
     $ref: paths/me.yaml
+  /me/jokes:
+    $ref: paths/me_jokes.yaml
     # /me:
     #   $ref: paths/me.yaml
     # /users:

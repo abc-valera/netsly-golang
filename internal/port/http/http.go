@@ -24,10 +24,12 @@ func RunServer(
 		handler.ErrorHandler
 		handler.SignHandler
 		handler.MeHandler
+		handler.MeJokesHandler
 	}{
-		ErrorHandler: handler.NewErrorHandler(services.Logger),
-		SignHandler:  handler.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
-		MeHandler:    handler.NewMeHandler(repos.UserRepo),
+		ErrorHandler:   handler.NewErrorHandler(services.Logger),
+		SignHandler:    handler.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
+		MeHandler:      handler.NewMeHandler(repos.UserRepo),
+		MeJokesHandler: handler.NewMeJokesHandler(repos.UserRepo, repos.JokeRepo),
 	}
 	// Init security handler
 	securityHandler := handler.NewSecurityHandler(services.TokenMaker)

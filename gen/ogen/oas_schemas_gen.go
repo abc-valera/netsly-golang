@@ -148,6 +148,140 @@ func (s *CodeErrorStatusCode) SetResponse(val CodeError) {
 	s.Response = val
 }
 
+// Ref: #/components/schemas/joke
+type Joke struct {
+	ID          string    `json:"id"`
+	UserID      string    `json:"userID"`
+	Title       string    `json:"title"`
+	Text        string    `json:"text"`
+	Explanation OptString `json:"explanation"`
+	CreatedAt   time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *Joke) GetID() string {
+	return s.ID
+}
+
+// GetUserID returns the value of UserID.
+func (s *Joke) GetUserID() string {
+	return s.UserID
+}
+
+// GetTitle returns the value of Title.
+func (s *Joke) GetTitle() string {
+	return s.Title
+}
+
+// GetText returns the value of Text.
+func (s *Joke) GetText() string {
+	return s.Text
+}
+
+// GetExplanation returns the value of Explanation.
+func (s *Joke) GetExplanation() OptString {
+	return s.Explanation
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Joke) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *Joke) SetID(val string) {
+	s.ID = val
+}
+
+// SetUserID sets the value of UserID.
+func (s *Joke) SetUserID(val string) {
+	s.UserID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *Joke) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetText sets the value of Text.
+func (s *Joke) SetText(val string) {
+	s.Text = val
+}
+
+// SetExplanation sets the value of Explanation.
+func (s *Joke) SetExplanation(val OptString) {
+	s.Explanation = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Joke) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+type Jokes struct {
+	Jokes []Joke `json:"jokes"`
+}
+
+// GetJokes returns the value of Jokes.
+func (s *Jokes) GetJokes() []Joke {
+	return s.Jokes
+}
+
+// SetJokes sets the value of Jokes.
+func (s *Jokes) SetJokes(val []Joke) {
+	s.Jokes = val
+}
+
+// MeJokesPostCreated is response for MeJokesPost operation.
+type MeJokesPostCreated struct{}
+
+type MeJokesPostReq struct {
+	UserID      string    `json:"user_id"`
+	Title       string    `json:"title"`
+	Text        string    `json:"text"`
+	Explanation OptString `json:"explanation"`
+}
+
+// GetUserID returns the value of UserID.
+func (s *MeJokesPostReq) GetUserID() string {
+	return s.UserID
+}
+
+// GetTitle returns the value of Title.
+func (s *MeJokesPostReq) GetTitle() string {
+	return s.Title
+}
+
+// GetText returns the value of Text.
+func (s *MeJokesPostReq) GetText() string {
+	return s.Text
+}
+
+// GetExplanation returns the value of Explanation.
+func (s *MeJokesPostReq) GetExplanation() OptString {
+	return s.Explanation
+}
+
+// SetUserID sets the value of UserID.
+func (s *MeJokesPostReq) SetUserID(val string) {
+	s.UserID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *MeJokesPostReq) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetText sets the value of Text.
+func (s *MeJokesPostReq) SetText(val string) {
+	s.Text = val
+}
+
+// SetExplanation sets the value of Explanation.
+func (s *MeJokesPostReq) SetExplanation(val OptString) {
+	s.Explanation = val
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -253,6 +387,34 @@ func (s *SignInPostReq) SetEmail(val string) {
 // SetPassword sets the value of Password.
 func (s *SignInPostReq) SetPassword(val string) {
 	s.Password = val
+}
+
+type SignRefreshPostOK struct {
+	AccessToken string `json:"accessToken"`
+}
+
+// GetAccessToken returns the value of AccessToken.
+func (s *SignRefreshPostOK) GetAccessToken() string {
+	return s.AccessToken
+}
+
+// SetAccessToken sets the value of AccessToken.
+func (s *SignRefreshPostOK) SetAccessToken(val string) {
+	s.AccessToken = val
+}
+
+type SignRefreshPostReq struct {
+	RefreshToken string `json:"refreshToken"`
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *SignRefreshPostReq) GetRefreshToken() string {
+	return s.RefreshToken
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *SignRefreshPostReq) SetRefreshToken(val string) {
+	s.RefreshToken = val
 }
 
 // SignUpPostCreated is response for SignUpPost operation.

@@ -14,12 +14,30 @@ type Handler interface {
 	//
 	// GET /me
 	MeGet(ctx context.Context) (*User, error)
+	// MeJokesGet implements GET /me/jokes operation.
+	//
+	// Returns jokes of the current user.
+	//
+	// GET /me/jokes
+	MeJokesGet(ctx context.Context) (*Jokes, error)
+	// MeJokesPost implements POST /me/jokes operation.
+	//
+	// Creates a new joke for current user.
+	//
+	// POST /me/jokes
+	MeJokesPost(ctx context.Context, req *MeJokesPostReq) error
 	// SignInPost implements POST /sign_in operation.
 	//
 	// Performs user authentication.
 	//
 	// POST /sign_in
 	SignInPost(ctx context.Context, req *SignInPostReq) (*SignInPostOK, error)
+	// SignRefreshPost implements POST /sign_refresh operation.
+	//
+	// Exchanges a refresh token for an access token.
+	//
+	// POST /sign_refresh
+	SignRefreshPost(ctx context.Context, req *SignRefreshPostReq) (*SignRefreshPostOK, error)
 	// SignUpPost implements POST /sign_up operation.
 	//
 	// Performs user registration.

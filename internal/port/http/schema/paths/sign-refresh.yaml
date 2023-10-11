@@ -1,0 +1,32 @@
+post:
+  tags:
+    - sign
+  summary: Exchanges a refresh token for an access token
+  requestBody:
+    description: Refresh token
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            refreshToken:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+          required:
+            - refreshToken
+  responses:
+    "200":
+      description: Successful operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              accessToken:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+            required:
+              - accessToken
+    default:
+      $ref: "../components/responses/code_error.yaml"

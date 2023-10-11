@@ -46,3 +46,13 @@ func (h SignHandler) SignInPost(ctx context.Context, req *ogen.SignInPostReq) (*
 		RefreshToken: refresh,
 	}, nil
 }
+
+func (h SignHandler) SignRefreshPost(ctx context.Context, req *ogen.SignRefreshPostReq) (*ogen.SignRefreshPostOK, error) {
+	access, err := h.signUsecase.SignRefresh(ctx, req.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+	return &ogen.SignRefreshPostOK{
+		AccessToken: access,
+	}, nil
+}

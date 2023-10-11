@@ -33,8 +33,8 @@ func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Durat
 	claims := jwt.MapClaims{
 		"user_id":    payload.UserID,
 		"is_refresh": payload.IsRefresh,
-		"issued_at":  payload.IssuedAt,
-		"expired_at": payload.ExpiredAt,
+		"issued_at":  payload.IssuedAt.Format(time.RFC3339),
+		"expired_at": payload.ExpiredAt.Format(time.RFC3339),
 	}
 	token.Claims = claims
 

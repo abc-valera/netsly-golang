@@ -67,7 +67,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
 					switch r.Method {
 					case "GET":
 						s.handleMeGetRequest([0]string{}, elemIsEscaped, w, r)
@@ -76,6 +75,28 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					}
 
 					return
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/jokes"
+					if l := len("/jokes"); len(elem) >= l && elem[0:l] == "/jokes" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleMeJokesGetRequest([0]string{}, elemIsEscaped, w, r)
+						case "POST":
+							s.handleMeJokesPostRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET,POST")
+						}
+
+						return
+					}
 				}
 			case 's': // Prefix: "sign_"
 				if l := len("sign_"); len(elem) >= l && elem[0:l] == "sign_" {
@@ -100,6 +121,24 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						switch r.Method {
 						case "POST":
 							s.handleSignInPostRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "POST")
+						}
+
+						return
+					}
+				case 'r': // Prefix: "refresh"
+					if l := len("refresh"); len(elem) >= l && elem[0:l] == "refresh" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "POST":
+							s.handleSignRefreshPostRequest([0]string{}, elemIsEscaped, w, r)
 						default:
 							s.notAllowed(w, r, "POST")
 						}
@@ -227,7 +266,6 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				if len(elem) == 0 {
 					switch method {
 					case "GET":
-						// Leaf: MeGet
 						r.name = "MeGet"
 						r.summary = "Returns current user profile"
 						r.operationID = ""
@@ -237,6 +275,39 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						return r, true
 					default:
 						return
+					}
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/jokes"
+					if l := len("/jokes"); len(elem) >= l && elem[0:l] == "/jokes" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							// Leaf: MeJokesGet
+							r.name = "MeJokesGet"
+							r.summary = "Returns jokes of the current user"
+							r.operationID = ""
+							r.pathPattern = "/me/jokes"
+							r.args = args
+							r.count = 0
+							return r, true
+						case "POST":
+							// Leaf: MeJokesPost
+							r.name = "MeJokesPost"
+							r.summary = "Creates a new joke for current user"
+							r.operationID = ""
+							r.pathPattern = "/me/jokes"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
 					}
 				}
 			case 's': // Prefix: "sign_"
@@ -265,6 +336,28 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.summary = "Performs user authentication"
 							r.operationID = ""
 							r.pathPattern = "/sign_in"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+				case 'r': // Prefix: "refresh"
+					if l := len("refresh"); len(elem) >= l && elem[0:l] == "refresh" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "POST":
+							// Leaf: SignRefreshPost
+							r.name = "SignRefreshPost"
+							r.summary = "Exchanges a refresh token for an access token"
+							r.operationID = ""
+							r.pathPattern = "/sign_refresh"
 							r.args = args
 							r.count = 0
 							return r, true

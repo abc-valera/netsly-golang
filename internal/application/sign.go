@@ -4,9 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
+)
+
+var (
+	ErrProvidedAccessToken = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Access token provided")
 )
 
 type SignUseCase struct {
@@ -102,6 +107,19 @@ func (s SignUseCase) SignIn(ctx context.Context, req SignInRequest) (*entity.Use
 
 // SignRefresh exchages given refresh token for the access token for the same user.
 func (s SignUseCase) SignRefresh(c context.Context, refreshToken string) (string, error) {
-	// TODO: add implementation
-	return "", nil
+	payload, err := s.tokenMaker.VerifyToken(refreshToken)
+	if err != nil {
+		return "", err
+	}
+
+	if !payload.IsRefresh {
+		return "", ErrProvidedAccessToken
+	}
+
+	access, _, err := s.tokenMaker.CreateAccessToken(payload.UserID)
+	if err != nil {
+		return "", err
+	}
+
+	return access, nil
 }
