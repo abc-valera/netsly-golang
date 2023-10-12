@@ -14,6 +14,12 @@ type Handler interface {
 	//
 	// GET /comments/{joke_id}
 	CommentsJokeIDGet(ctx context.Context, params CommentsJokeIDGetParams) (*Comments, error)
+	// LikesJokeIDGet implements GET /likes/{joke_id} operation.
+	//
+	// Counts likes of the joke.
+	//
+	// GET /likes/{joke_id}
+	LikesJokeIDGet(ctx context.Context, params LikesJokeIDGetParams) (int, error)
 	// MeCommentsDelete implements DELETE /me/comments operation.
 	//
 	// Deletes a comment of the current user.
@@ -68,6 +74,18 @@ type Handler interface {
 	//
 	// PUT /me/jokes
 	MeJokesPut(ctx context.Context, req *MeJokesPutReq) error
+	// MeLikesDelete implements DELETE /me/likes operation.
+	//
+	// Deletes a like of the current user.
+	//
+	// DELETE /me/likes
+	MeLikesDelete(ctx context.Context, req *MeLikesDeleteReq) error
+	// MeLikesPost implements POST /me/likes operation.
+	//
+	// Creates a like for a joke for the current user.
+	//
+	// POST /me/likes
+	MeLikesPost(ctx context.Context, req *MeLikesPostReq) error
 	// MePut implements PUT /me operation.
 	//
 	// Updates current user profile.

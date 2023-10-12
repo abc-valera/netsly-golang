@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
@@ -73,6 +74,21 @@ func (ju *JokeUpdate) AddComments(c ...*Comment) *JokeUpdate {
 	return ju.AddCommentIDs(ids...)
 }
 
+// AddLikeIDs adds the "likes" edge to the Like entity by IDs.
+func (ju *JokeUpdate) AddLikeIDs(ids ...int) *JokeUpdate {
+	ju.mutation.AddLikeIDs(ids...)
+	return ju
+}
+
+// AddLikes adds the "likes" edges to the Like entity.
+func (ju *JokeUpdate) AddLikes(l ...*Like) *JokeUpdate {
+	ids := make([]int, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return ju.AddLikeIDs(ids...)
+}
+
 // Mutation returns the JokeMutation object of the builder.
 func (ju *JokeUpdate) Mutation() *JokeMutation {
 	return ju.mutation
@@ -103,6 +119,27 @@ func (ju *JokeUpdate) RemoveComments(c ...*Comment) *JokeUpdate {
 		ids[i] = c[i].ID
 	}
 	return ju.RemoveCommentIDs(ids...)
+}
+
+// ClearLikes clears all "likes" edges to the Like entity.
+func (ju *JokeUpdate) ClearLikes() *JokeUpdate {
+	ju.mutation.ClearLikes()
+	return ju
+}
+
+// RemoveLikeIDs removes the "likes" edge to Like entities by IDs.
+func (ju *JokeUpdate) RemoveLikeIDs(ids ...int) *JokeUpdate {
+	ju.mutation.RemoveLikeIDs(ids...)
+	return ju
+}
+
+// RemoveLikes removes "likes" edges to Like entities.
+func (ju *JokeUpdate) RemoveLikes(l ...*Like) *JokeUpdate {
+	ids := make([]int, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return ju.RemoveLikeIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -245,6 +282,51 @@ func (ju *JokeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if ju.mutation.LikesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.LikesTable,
+			Columns: []string{joke.LikesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ju.mutation.RemovedLikesIDs(); len(nodes) > 0 && !ju.mutation.LikesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.LikesTable,
+			Columns: []string{joke.LikesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ju.mutation.LikesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.LikesTable,
+			Columns: []string{joke.LikesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ju.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{joke.Label}
@@ -309,6 +391,21 @@ func (juo *JokeUpdateOne) AddComments(c ...*Comment) *JokeUpdateOne {
 	return juo.AddCommentIDs(ids...)
 }
 
+// AddLikeIDs adds the "likes" edge to the Like entity by IDs.
+func (juo *JokeUpdateOne) AddLikeIDs(ids ...int) *JokeUpdateOne {
+	juo.mutation.AddLikeIDs(ids...)
+	return juo
+}
+
+// AddLikes adds the "likes" edges to the Like entity.
+func (juo *JokeUpdateOne) AddLikes(l ...*Like) *JokeUpdateOne {
+	ids := make([]int, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return juo.AddLikeIDs(ids...)
+}
+
 // Mutation returns the JokeMutation object of the builder.
 func (juo *JokeUpdateOne) Mutation() *JokeMutation {
 	return juo.mutation
@@ -339,6 +436,27 @@ func (juo *JokeUpdateOne) RemoveComments(c ...*Comment) *JokeUpdateOne {
 		ids[i] = c[i].ID
 	}
 	return juo.RemoveCommentIDs(ids...)
+}
+
+// ClearLikes clears all "likes" edges to the Like entity.
+func (juo *JokeUpdateOne) ClearLikes() *JokeUpdateOne {
+	juo.mutation.ClearLikes()
+	return juo
+}
+
+// RemoveLikeIDs removes the "likes" edge to Like entities by IDs.
+func (juo *JokeUpdateOne) RemoveLikeIDs(ids ...int) *JokeUpdateOne {
+	juo.mutation.RemoveLikeIDs(ids...)
+	return juo
+}
+
+// RemoveLikes removes "likes" edges to Like entities.
+func (juo *JokeUpdateOne) RemoveLikes(l ...*Like) *JokeUpdateOne {
+	ids := make([]int, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return juo.RemoveLikeIDs(ids...)
 }
 
 // Where appends a list predicates to the JokeUpdate builder.
@@ -504,6 +622,51 @@ func (juo *JokeUpdateOne) sqlSave(ctx context.Context) (_node *Joke, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if juo.mutation.LikesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.LikesTable,
+			Columns: []string{joke.LikesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := juo.mutation.RemovedLikesIDs(); len(nodes) > 0 && !juo.mutation.LikesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.LikesTable,
+			Columns: []string{joke.LikesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := juo.mutation.LikesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.LikesTable,
+			Columns: []string{joke.LikesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

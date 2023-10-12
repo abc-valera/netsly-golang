@@ -10,7 +10,7 @@ import (
 type ILikeRepository interface {
 	CountByJokeID(ctx context.Context, jokeID string) (int, error)
 	Create(ctx context.Context, like *entity.Like) error
-	Delete(ctx context.Context, likeID string) error
+	Delete(ctx context.Context, userID, jokeID string) error
 
 	common.Transactioneer
 }

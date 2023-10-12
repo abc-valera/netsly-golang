@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
@@ -26,6 +27,7 @@ type JokeQuery struct {
 	predicates   []predicate.Joke
 	withOwner    *UserQuery
 	withComments *CommentQuery
+	withLikes    *LikeQuery
 	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -100,6 +102,28 @@ func (jq *JokeQuery) QueryComments() *CommentQuery {
 			sqlgraph.From(joke.Table, joke.FieldID, selector),
 			sqlgraph.To(comment.Table, comment.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, joke.CommentsTable, joke.CommentsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(jq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryLikes chains the current query on the "likes" edge.
+func (jq *JokeQuery) QueryLikes() *LikeQuery {
+	query := (&LikeClient{config: jq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := jq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := jq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(joke.Table, joke.FieldID, selector),
+			sqlgraph.To(like.Table, like.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, joke.LikesTable, joke.LikesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(jq.driver.Dialect(), step)
 		return fromU, nil
@@ -301,6 +325,7 @@ func (jq *JokeQuery) Clone() *JokeQuery {
 		predicates:   append([]predicate.Joke{}, jq.predicates...),
 		withOwner:    jq.withOwner.Clone(),
 		withComments: jq.withComments.Clone(),
+		withLikes:    jq.withLikes.Clone(),
 		// clone intermediate query.
 		sql:  jq.sql.Clone(),
 		path: jq.path,
@@ -326,6 +351,17 @@ func (jq *JokeQuery) WithComments(opts ...func(*CommentQuery)) *JokeQuery {
 		opt(query)
 	}
 	jq.withComments = query
+	return jq
+}
+
+// WithLikes tells the query-builder to eager-load the nodes that are connected to
+// the "likes" edge. The optional arguments are used to configure the query builder of the edge.
+func (jq *JokeQuery) WithLikes(opts ...func(*LikeQuery)) *JokeQuery {
+	query := (&LikeClient{config: jq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	jq.withLikes = query
 	return jq
 }
 
@@ -408,9 +444,10 @@ func (jq *JokeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Joke, e
 		nodes       = []*Joke{}
 		withFKs     = jq.withFKs
 		_spec       = jq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			jq.withOwner != nil,
 			jq.withComments != nil,
+			jq.withLikes != nil,
 		}
 	)
 	if jq.withOwner != nil {
@@ -447,6 +484,13 @@ func (jq *JokeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Joke, e
 		if err := jq.loadComments(ctx, query, nodes,
 			func(n *Joke) { n.Edges.Comments = []*Comment{} },
 			func(n *Joke, e *Comment) { n.Edges.Comments = append(n.Edges.Comments, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := jq.withLikes; query != nil {
+		if err := jq.loadLikes(ctx, query, nodes,
+			func(n *Joke) { n.Edges.Likes = []*Like{} },
+			func(n *Joke, e *Like) { n.Edges.Likes = append(n.Edges.Likes, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -511,6 +555,37 @@ func (jq *JokeQuery) loadComments(ctx context.Context, query *CommentQuery, node
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "joke_comments" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (jq *JokeQuery) loadLikes(ctx context.Context, query *LikeQuery, nodes []*Joke, init func(*Joke), assign func(*Joke, *Like)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*Joke)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Like(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(joke.LikesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.joke_likes
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "joke_likes" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "joke_likes" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

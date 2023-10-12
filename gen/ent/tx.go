@@ -16,6 +16,8 @@ type Tx struct {
 	Comment *CommentClient
 	// Joke is the client for interacting with the Joke builders.
 	Joke *JokeClient
+	// Like is the client for interacting with the Like builders.
+	Like *LikeClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -151,6 +153,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Comment = NewCommentClient(tx.config)
 	tx.Joke = NewJokeClient(tx.config)
+	tx.Like = NewLikeClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

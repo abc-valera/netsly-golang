@@ -41,9 +41,11 @@ type JokeEdges struct {
 	Owner *User `json:"owner,omitempty"`
 	// Comments holds the value of the comments edge.
 	Comments []*Comment `json:"comments,omitempty"`
+	// Likes holds the value of the likes edge.
+	Likes []*Like `json:"likes,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
 // OwnerOrErr returns the Owner value or an error if the edge
@@ -66,6 +68,15 @@ func (e JokeEdges) CommentsOrErr() ([]*Comment, error) {
 		return e.Comments, nil
 	}
 	return nil, &NotLoadedError{edge: "comments"}
+}
+
+// LikesOrErr returns the Likes value or an error if the edge
+// was not loaded in eager-loading.
+func (e JokeEdges) LikesOrErr() ([]*Like, error) {
+	if e.loadedTypes[2] {
+		return e.Likes, nil
+	}
+	return nil, &NotLoadedError{edge: "likes"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -158,6 +169,11 @@ func (j *Joke) QueryOwner() *UserQuery {
 // QueryComments queries the "comments" edge of the Joke entity.
 func (j *Joke) QueryComments() *CommentQuery {
 	return NewJokeClient(j.config).QueryComments(j)
+}
+
+// QueryLikes queries the "likes" edge of the Joke entity.
+func (j *Joke) QueryLikes() *LikeQuery {
+	return NewJokeClient(j.config).QueryLikes(j)
 }
 
 // Update returns a builder for updating this Joke.

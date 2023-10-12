@@ -26,14 +26,18 @@ func RunServer(
 		handler.MeHandler
 		handler.MeJokesHandler
 		handler.MeCommentsHandler
+		handler.MeLikeHandler
 		handler.CommentsHandler
+		handler.LikesHandler
 	}{
 		ErrorHandler:      handler.NewErrorHandler(services.Logger),
 		SignHandler:       handler.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
 		MeHandler:         handler.NewMeHandler(repos.UserRepo, usecases.UserUseCase),
 		MeJokesHandler:    handler.NewMeJokesHandler(repos.JokeRepo, usecases.JokeUseCase),
 		MeCommentsHandler: handler.NewMeCommentsHandler(repos.CommentRepo, usecases.CommentUseCase),
+		MeLikeHandler:     handler.NewMeLikeHandler(repos.LikeRepo),
 		CommentsHandler:   handler.NewCommentsHandler(repos.CommentRepo),
+		LikesHandler:      handler.NewLikesHandler(repos.LikeRepo),
 	}
 	// Init security handler
 	securityHandler := handler.NewSecurityHandler(services.TokenMaker)

@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
 
@@ -77,6 +78,7 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			comment.Table: comment.ValidColumn,
 			joke.Table:    joke.ValidColumn,
+			like.Table:    like.ValidColumn,
 			user.Table:    user.ValidColumn,
 		})
 	})

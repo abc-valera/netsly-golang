@@ -22,6 +22,15 @@ func (UnimplementedHandler) CommentsJokeIDGet(ctx context.Context, params Commen
 	return r, ht.ErrNotImplemented
 }
 
+// LikesJokeIDGet implements GET /likes/{joke_id} operation.
+//
+// Counts likes of the joke.
+//
+// GET /likes/{joke_id}
+func (UnimplementedHandler) LikesJokeIDGet(ctx context.Context, params LikesJokeIDGetParams) (r int, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // MeCommentsDelete implements DELETE /me/comments operation.
 //
 // Deletes a comment of the current user.
@@ -100,6 +109,24 @@ func (UnimplementedHandler) MeJokesPost(ctx context.Context, req *MeJokesPostReq
 //
 // PUT /me/jokes
 func (UnimplementedHandler) MeJokesPut(ctx context.Context, req *MeJokesPutReq) error {
+	return ht.ErrNotImplemented
+}
+
+// MeLikesDelete implements DELETE /me/likes operation.
+//
+// Deletes a like of the current user.
+//
+// DELETE /me/likes
+func (UnimplementedHandler) MeLikesDelete(ctx context.Context, req *MeLikesDeleteReq) error {
+	return ht.ErrNotImplemented
+}
+
+// MeLikesPost implements POST /me/likes operation.
+//
+// Creates a like for a joke for the current user.
+//
+// POST /me/likes
+func (UnimplementedHandler) MeLikesPost(ctx context.Context, req *MeLikesPostReq) error {
 	return ht.ErrNotImplemented
 }
 

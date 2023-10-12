@@ -15,6 +15,6 @@ func NewRepositories(dbHost, dbPort, dbUser, dbPassword, dbName string) (reposit
 		entRepos.IUserRepository,
 		entRepos.IJokeRepository,
 		entRepos.ICommentRepository,
-		// entRepos.ILikeRepository,
+		entRepos.ILikeRepository,
 	)
 }

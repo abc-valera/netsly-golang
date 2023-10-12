@@ -85,6 +85,31 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					return
 				}
+			case 'l': // Prefix: "likes/"
+				if l := len("likes/"); len(elem) >= l && elem[0:l] == "likes/" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				// Param: "joke_id"
+				// Leaf parameter
+				args[0] = elem
+				elem = ""
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "GET":
+						s.handleLikesJokeIDGetRequest([1]string{
+							args[0],
+						}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "GET")
+					}
+
+					return
+				}
 			case 'm': // Prefix: "me"
 				if l := len("me"); len(elem) >= l && elem[0:l] == "me" {
 					elem = elem[l:]
@@ -160,6 +185,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								s.handleMeJokesPutRequest([0]string{}, elemIsEscaped, w, r)
 							default:
 								s.notAllowed(w, r, "DELETE,GET,POST,PUT")
+							}
+
+							return
+						}
+					case 'l': // Prefix: "likes"
+						if l := len("likes"); len(elem) >= l && elem[0:l] == "likes" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "DELETE":
+								s.handleMeLikesDeleteRequest([0]string{}, elemIsEscaped, w, r)
+							case "POST":
+								s.handleMeLikesPostRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "DELETE,POST")
 							}
 
 							return
@@ -351,6 +396,33 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						return
 					}
 				}
+			case 'l': // Prefix: "likes/"
+				if l := len("likes/"); len(elem) >= l && elem[0:l] == "likes/" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				// Param: "joke_id"
+				// Leaf parameter
+				args[0] = elem
+				elem = ""
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						// Leaf: LikesJokeIDGet
+						r.name = "LikesJokeIDGet"
+						r.summary = ""
+						r.operationID = ""
+						r.pathPattern = "/likes/{joke_id}"
+						r.args = args
+						r.count = 1
+						return r, true
+					default:
+						return
+					}
+				}
 			case 'm': // Prefix: "me"
 				if l := len("me"); len(elem) >= l && elem[0:l] == "me" {
 					elem = elem[l:]
@@ -479,9 +551,40 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							case "PUT":
 								// Leaf: MeJokesPut
 								r.name = "MeJokesPut"
-								r.summary = "Updates joke for current user"
+								r.summary = ""
 								r.operationID = ""
 								r.pathPattern = "/me/jokes"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+					case 'l': // Prefix: "likes"
+						if l := len("likes"); len(elem) >= l && elem[0:l] == "likes" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "DELETE":
+								// Leaf: MeLikesDelete
+								r.name = "MeLikesDelete"
+								r.summary = "Deletes a like of the current user"
+								r.operationID = ""
+								r.pathPattern = "/me/likes"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "POST":
+								// Leaf: MeLikesPost
+								r.name = "MeLikesPost"
+								r.summary = "Creates a like for a joke for the current user"
+								r.operationID = ""
+								r.pathPattern = "/me/likes"
 								r.args = args
 								r.count = 0
 								return r, true

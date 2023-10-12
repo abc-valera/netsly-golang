@@ -5,6 +5,7 @@ package ent
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/schema"
 )
@@ -49,6 +50,16 @@ func init() {
 	jokeDescID := jokeFields[0].Descriptor()
 	// joke.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	joke.IDValidator = jokeDescID.Validators[0].(func(string) error)
+	likeFields := schema.Like{}.Fields()
+	_ = likeFields
+	// likeDescUserID is the schema descriptor for user_id field.
+	likeDescUserID := likeFields[0].Descriptor()
+	// like.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	like.UserIDValidator = likeDescUserID.Validators[0].(func(string) error)
+	// likeDescJokeID is the schema descriptor for joke_id field.
+	likeDescJokeID := likeFields[1].Descriptor()
+	// like.JokeIDValidator is a validator for the "joke_id" field. It is called by the builders before save.
+	like.JokeIDValidator = likeDescJokeID.Validators[0].(func(string) error)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescUsername is the schema descriptor for username field.

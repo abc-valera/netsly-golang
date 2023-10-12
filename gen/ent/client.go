@@ -17,6 +17,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
 
@@ -29,6 +30,8 @@ type Client struct {
 	Comment *CommentClient
 	// Joke is the client for interacting with the Joke builders.
 	Joke *JokeClient
+	// Like is the client for interacting with the Like builders.
+	Like *LikeClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -46,6 +49,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Comment = NewCommentClient(c.config)
 	c.Joke = NewJokeClient(c.config)
+	c.Like = NewLikeClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -134,6 +138,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:  cfg,
 		Comment: NewCommentClient(cfg),
 		Joke:    NewJokeClient(cfg),
+		Like:    NewLikeClient(cfg),
 		User:    NewUserClient(cfg),
 	}, nil
 }
@@ -156,6 +161,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:  cfg,
 		Comment: NewCommentClient(cfg),
 		Joke:    NewJokeClient(cfg),
+		Like:    NewLikeClient(cfg),
 		User:    NewUserClient(cfg),
 	}, nil
 }
@@ -187,6 +193,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.Comment.Use(hooks...)
 	c.Joke.Use(hooks...)
+	c.Like.Use(hooks...)
 	c.User.Use(hooks...)
 }
 
@@ -195,6 +202,7 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Comment.Intercept(interceptors...)
 	c.Joke.Intercept(interceptors...)
+	c.Like.Intercept(interceptors...)
 	c.User.Intercept(interceptors...)
 }
 
@@ -205,6 +213,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Comment.mutate(ctx, m)
 	case *JokeMutation:
 		return c.Joke.mutate(ctx, m)
+	case *LikeMutation:
+		return c.Like.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	default:
@@ -517,6 +527,22 @@ func (c *JokeClient) QueryComments(j *Joke) *CommentQuery {
 	return query
 }
 
+// QueryLikes queries the likes edge of a Joke.
+func (c *JokeClient) QueryLikes(j *Joke) *LikeQuery {
+	query := (&LikeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := j.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(joke.Table, joke.FieldID, id),
+			sqlgraph.To(like.Table, like.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, joke.LikesTable, joke.LikesColumn),
+		)
+		fromV = sqlgraph.Neighbors(j.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *JokeClient) Hooks() []Hook {
 	return c.hooks.Joke
@@ -539,6 +565,171 @@ func (c *JokeClient) mutate(ctx context.Context, m *JokeMutation) (Value, error)
 		return (&JokeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Joke mutation op: %q", m.Op())
+	}
+}
+
+// LikeClient is a client for the Like schema.
+type LikeClient struct {
+	config
+}
+
+// NewLikeClient returns a client for the Like from the given config.
+func NewLikeClient(c config) *LikeClient {
+	return &LikeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `like.Hooks(f(g(h())))`.
+func (c *LikeClient) Use(hooks ...Hook) {
+	c.hooks.Like = append(c.hooks.Like, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `like.Intercept(f(g(h())))`.
+func (c *LikeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Like = append(c.inters.Like, interceptors...)
+}
+
+// Create returns a builder for creating a Like entity.
+func (c *LikeClient) Create() *LikeCreate {
+	mutation := newLikeMutation(c.config, OpCreate)
+	return &LikeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Like entities.
+func (c *LikeClient) CreateBulk(builders ...*LikeCreate) *LikeCreateBulk {
+	return &LikeCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *LikeClient) MapCreateBulk(slice any, setFunc func(*LikeCreate, int)) *LikeCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &LikeCreateBulk{err: fmt.Errorf("calling to LikeClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*LikeCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &LikeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Like.
+func (c *LikeClient) Update() *LikeUpdate {
+	mutation := newLikeMutation(c.config, OpUpdate)
+	return &LikeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LikeClient) UpdateOne(l *Like) *LikeUpdateOne {
+	mutation := newLikeMutation(c.config, OpUpdateOne, withLike(l))
+	return &LikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LikeClient) UpdateOneID(id int) *LikeUpdateOne {
+	mutation := newLikeMutation(c.config, OpUpdateOne, withLikeID(id))
+	return &LikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Like.
+func (c *LikeClient) Delete() *LikeDelete {
+	mutation := newLikeMutation(c.config, OpDelete)
+	return &LikeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *LikeClient) DeleteOne(l *Like) *LikeDeleteOne {
+	return c.DeleteOneID(l.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *LikeClient) DeleteOneID(id int) *LikeDeleteOne {
+	builder := c.Delete().Where(like.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LikeDeleteOne{builder}
+}
+
+// Query returns a query builder for Like.
+func (c *LikeClient) Query() *LikeQuery {
+	return &LikeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeLike},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Like entity by its id.
+func (c *LikeClient) Get(ctx context.Context, id int) (*Like, error) {
+	return c.Query().Where(like.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LikeClient) GetX(ctx context.Context, id int) *Like {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOwner queries the owner edge of a Like.
+func (c *LikeClient) QueryOwner(l *Like) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := l.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(like.Table, like.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, like.OwnerTable, like.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryLikedJoke queries the liked_joke edge of a Like.
+func (c *LikeClient) QueryLikedJoke(l *Like) *JokeQuery {
+	query := (&JokeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := l.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(like.Table, like.FieldID, id),
+			sqlgraph.To(joke.Table, joke.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, like.LikedJokeTable, like.LikedJokeColumn),
+		)
+		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *LikeClient) Hooks() []Hook {
+	return c.hooks.Like
+}
+
+// Interceptors returns the client interceptors.
+func (c *LikeClient) Interceptors() []Interceptor {
+	return c.inters.Like
+}
+
+func (c *LikeClient) mutate(ctx context.Context, m *LikeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&LikeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&LikeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&LikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&LikeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Like mutation op: %q", m.Op())
 	}
 }
 
@@ -682,6 +873,22 @@ func (c *UserClient) QueryComments(u *User) *CommentQuery {
 	return query
 }
 
+// QueryLikes queries the likes edge of a User.
+func (c *UserClient) QueryLikes(u *User) *LikeQuery {
+	query := (&LikeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(like.Table, like.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.LikesTable, user.LikesColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *UserClient) Hooks() []Hook {
 	return c.hooks.User
@@ -710,9 +917,9 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Comment, Joke, User []ent.Hook
+		Comment, Joke, Like, User []ent.Hook
 	}
 	inters struct {
-		Comment, Joke, User []ent.Interceptor
+		Comment, Joke, Like, User []ent.Interceptor
 	}
 )

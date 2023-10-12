@@ -21,6 +21,10 @@ tags:
     description: Everything about searching users
   - name: jokes
     description: Everything about searching jokes
+  - name: comments
+    description: Everything about searching comments
+  - name: likes
+    description: Everything about counting likes
 servers:
   - url: "http://localhost:3000"
 paths:
@@ -36,8 +40,12 @@ paths:
     $ref: paths/me_jokes.yaml
   /me/comments:
     $ref: paths/me_comments.yaml
+  /me/likes:
+    $ref: paths/me_likes.yaml
   /comments/{joke_id}:
     $ref: paths/comments_{joke_id}.yaml
+  /likes/{joke_id}:
+    $ref: paths/likes_{joke_id}.yaml
 components:
   securitySchemes:
     bearerAuth:

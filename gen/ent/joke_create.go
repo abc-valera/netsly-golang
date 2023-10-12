@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
 
@@ -82,6 +83,21 @@ func (jc *JokeCreate) AddComments(c ...*Comment) *JokeCreate {
 		ids[i] = c[i].ID
 	}
 	return jc.AddCommentIDs(ids...)
+}
+
+// AddLikeIDs adds the "likes" edge to the Like entity by IDs.
+func (jc *JokeCreate) AddLikeIDs(ids ...int) *JokeCreate {
+	jc.mutation.AddLikeIDs(ids...)
+	return jc
+}
+
+// AddLikes adds the "likes" edges to the Like entity.
+func (jc *JokeCreate) AddLikes(l ...*Like) *JokeCreate {
+	ids := make([]int, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return jc.AddLikeIDs(ids...)
 }
 
 // Mutation returns the JokeMutation object of the builder.
@@ -237,6 +253,22 @@ func (jc *JokeCreate) createSpec() (*Joke, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := jc.mutation.LikesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.LikesTable,
+			Columns: []string{joke.LikesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

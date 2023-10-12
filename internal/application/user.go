@@ -32,13 +32,13 @@ type UpdateUserRequest struct {
 }
 
 func (uc UserUseCase) UpdateUser(ctx context.Context, req UpdateUserRequest) error {
+	if req.UpdaterID != req.UserID {
+		return errUserModifyPermissionDenied
+	}
+
 	domainUser, err := uc.userRepo.GetByID(ctx, req.UserID)
 	if err != nil {
 		return err
-	}
-
-	if req.UpdaterID != domainUser.ID {
-		return errUserModifyPermissionDenied
 	}
 
 	if req.Username != "" {
@@ -60,12 +60,7 @@ type DeleteUserRequest struct {
 }
 
 func (uc UserUseCase) DeleteUser(ctx context.Context, req DeleteUserRequest) error {
-	domainUser, err := uc.userRepo.GetByID(ctx, req.UserID)
-	if err != nil {
-		return err
-	}
-
-	if domainUser.ID != req.DeleterID {
+	if req.UserID != req.DeleterID {
 		return errUserModifyPermissionDenied
 	}
 

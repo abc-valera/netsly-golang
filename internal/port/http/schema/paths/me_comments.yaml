@@ -12,9 +12,6 @@ post:
         schema:
           type: object
           properties:
-            user_id:
-              type: string
-              example: "1"
             joke_id:
               type: string
               example: "1"

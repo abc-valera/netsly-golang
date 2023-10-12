@@ -27,6 +27,20 @@ func encodeCommentsJokeIDGetResponse(response *Comments, w http.ResponseWriter, 
 	return nil
 }
 
+func encodeLikesJokeIDGetResponse(response int, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := jx.GetEncoder()
+	e.Int(response)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
 func encodeMeCommentsDeleteResponse(response *MeCommentsDeleteNoContent, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(204)
 	span.SetStatus(codes.Ok, http.StatusText(204))
@@ -98,6 +112,20 @@ func encodeMeJokesPostResponse(response *MeJokesPostCreated, w http.ResponseWrit
 }
 
 func encodeMeJokesPutResponse(response *MeJokesPutCreated, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(201)
+	span.SetStatus(codes.Ok, http.StatusText(201))
+
+	return nil
+}
+
+func encodeMeLikesDeleteResponse(response *MeLikesDeleteNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
+	span.SetStatus(codes.Ok, http.StatusText(204))
+
+	return nil
+}
+
+func encodeMeLikesPostResponse(response *MeLikesPostCreated, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(201)
 	span.SetStatus(codes.Ok, http.StatusText(201))
 

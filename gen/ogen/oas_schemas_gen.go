@@ -326,14 +326,8 @@ func (s *MeCommentsDeleteReq) SetCommentID(val string) {
 type MeCommentsPostOK struct{}
 
 type MeCommentsPostReq struct {
-	UserID string `json:"user_id"`
 	JokeID string `json:"joke_id"`
 	Text   string `json:"text"`
-}
-
-// GetUserID returns the value of UserID.
-func (s *MeCommentsPostReq) GetUserID() string {
-	return s.UserID
 }
 
 // GetJokeID returns the value of JokeID.
@@ -344,11 +338,6 @@ func (s *MeCommentsPostReq) GetJokeID() string {
 // GetText returns the value of Text.
 func (s *MeCommentsPostReq) GetText() string {
 	return s.Text
-}
-
-// SetUserID sets the value of UserID.
-func (s *MeCommentsPostReq) SetUserID(val string) {
-	s.UserID = val
 }
 
 // SetJokeID sets the value of JokeID.
@@ -427,15 +416,9 @@ func (s *MeJokesDeleteReq) SetJokeID(val string) {
 type MeJokesPostCreated struct{}
 
 type MeJokesPostReq struct {
-	UserID      string    `json:"user_id"`
 	Title       string    `json:"title"`
 	Text        string    `json:"text"`
 	Explanation OptString `json:"explanation"`
-}
-
-// GetUserID returns the value of UserID.
-func (s *MeJokesPostReq) GetUserID() string {
-	return s.UserID
 }
 
 // GetTitle returns the value of Title.
@@ -451,11 +434,6 @@ func (s *MeJokesPostReq) GetText() string {
 // GetExplanation returns the value of Explanation.
 func (s *MeJokesPostReq) GetExplanation() OptString {
 	return s.Explanation
-}
-
-// SetUserID sets the value of UserID.
-func (s *MeJokesPostReq) SetUserID(val string) {
-	s.UserID = val
 }
 
 // SetTitle sets the value of Title.
@@ -521,6 +499,40 @@ func (s *MeJokesPutReq) SetText(val OptString) {
 // SetExplanation sets the value of Explanation.
 func (s *MeJokesPutReq) SetExplanation(val OptString) {
 	s.Explanation = val
+}
+
+// MeLikesDeleteNoContent is response for MeLikesDelete operation.
+type MeLikesDeleteNoContent struct{}
+
+type MeLikesDeleteReq struct {
+	JokeID string `json:"joke_id"`
+}
+
+// GetJokeID returns the value of JokeID.
+func (s *MeLikesDeleteReq) GetJokeID() string {
+	return s.JokeID
+}
+
+// SetJokeID sets the value of JokeID.
+func (s *MeLikesDeleteReq) SetJokeID(val string) {
+	s.JokeID = val
+}
+
+// MeLikesPostCreated is response for MeLikesPost operation.
+type MeLikesPostCreated struct{}
+
+type MeLikesPostReq struct {
+	JokeID string `json:"joke_id"`
+}
+
+// GetJokeID returns the value of JokeID.
+func (s *MeLikesPostReq) GetJokeID() string {
+	return s.JokeID
+}
+
+// SetJokeID sets the value of JokeID.
+func (s *MeLikesPostReq) SetJokeID(val string) {
+	s.JokeID = val
 }
 
 // MePutNoContent is response for MePut operation.

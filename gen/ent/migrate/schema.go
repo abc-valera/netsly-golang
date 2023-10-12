@@ -69,6 +69,42 @@ var (
 			},
 		},
 	}
+	// LikesColumns holds the columns for the "likes" table.
+	LikesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "user_id", Type: field.TypeString},
+		{Name: "joke_id", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "joke_likes", Type: field.TypeString},
+		{Name: "user_likes", Type: field.TypeString},
+	}
+	// LikesTable holds the schema information for the "likes" table.
+	LikesTable = &schema.Table{
+		Name:       "likes",
+		Columns:    LikesColumns,
+		PrimaryKey: []*schema.Column{LikesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "likes_jokes_likes",
+				Columns:    []*schema.Column{LikesColumns[4]},
+				RefColumns: []*schema.Column{JokesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "likes_users_likes",
+				Columns:    []*schema.Column{LikesColumns[5]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "like_user_id_joke_id",
+				Unique:  true,
+				Columns: []*schema.Column{LikesColumns[1], LikesColumns[2]},
+			},
+		},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -89,6 +125,7 @@ var (
 	Tables = []*schema.Table{
 		CommentsTable,
 		JokesTable,
+		LikesTable,
 		UsersTable,
 	}
 )
@@ -97,4 +134,6 @@ func init() {
 	CommentsTable.ForeignKeys[0].RefTable = JokesTable
 	CommentsTable.ForeignKeys[1].RefTable = UsersTable
 	JokesTable.ForeignKeys[0].RefTable = UsersTable
+	LikesTable.ForeignKeys[0].RefTable = JokesTable
+	LikesTable.ForeignKeys[1].RefTable = UsersTable
 }

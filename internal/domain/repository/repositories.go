@@ -10,14 +10,14 @@ type Repositories struct {
 	UserRepo    IUserRepository
 	JokeRepo    IJokeRepository
 	CommentRepo ICommentRepository
-	// LikeRepo    LikeRepository
+	LikeRepo    ILikeRepository
 }
 
 func NewRepositories(
 	userRepo IUserRepository,
 	jokeRepo IJokeRepository,
 	commentRepo ICommentRepository,
-	// likeRepo LikeRepository,
+	likeRepo ILikeRepository,
 ) (Repositories, error) {
 	if userRepo == nil {
 		return Repositories{}, codeerr.NewInternal("NewRepositories", errors.New("userRepo is nil"))
@@ -28,13 +28,13 @@ func NewRepositories(
 	if commentRepo == nil {
 		return Repositories{}, codeerr.NewInternal("NewRepositories", errors.New("commentRepo is nil"))
 	}
-	// if likeRepo == nil {
-	// 	return Repositories{}, codeerr.NewInternal("NewRepositories", errors.New("likeRepo is nil"))
-	// }
+	if likeRepo == nil {
+		return Repositories{}, codeerr.NewInternal("NewRepositories", errors.New("likeRepo is nil"))
+	}
 	return Repositories{
 		UserRepo:    userRepo,
 		JokeRepo:    jokeRepo,
 		CommentRepo: commentRepo,
-		// LikeRepo:    likeRepo,
+		LikeRepo:    likeRepo,
 	}, nil
 }

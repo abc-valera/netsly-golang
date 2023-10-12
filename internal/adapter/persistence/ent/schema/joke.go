@@ -40,9 +40,11 @@ func (Joke) Edges() []ent.Edge {
 			Unique().
 			Required(),
 		edge.To("comments", Comment.Type),
+		edge.To("likes", Like.Type),
 	}
 }
 
+// Indexes of the Joke.
 func (Joke) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("user_id", "title").

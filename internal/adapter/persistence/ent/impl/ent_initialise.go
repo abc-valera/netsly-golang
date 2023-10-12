@@ -11,17 +11,18 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName string) (struct {
-	repository.IUserRepository
-	repository.IJokeRepository
-	repository.ICommentRepository
-	// repository.LikeRepository
-}, error) {
+func NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName string) (
+	struct {
+		repository.IUserRepository
+		repository.IJokeRepository
+		repository.ICommentRepository
+		repository.ILikeRepository
+	}, error) {
 	repos := struct {
 		repository.IUserRepository
 		repository.IJokeRepository
 		repository.ICommentRepository
-		// repository.LikeRepository
+		repository.ILikeRepository
 	}{}
 
 	// Connect to the database
@@ -40,6 +41,6 @@ func NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName string) (struct {
 	repos.IUserRepository = NewUserRepository(client)
 	repos.IJokeRepository = NewJokeRepository(client)
 	repos.ICommentRepository = NewCommentRepository(client)
-	// repos.LikeRepository = NewLikeRepository(client)
+	repos.ILikeRepository = NewLikeRepository(client)
 	return repos, nil
 }
