@@ -232,6 +232,40 @@ func (s *Jokes) SetJokes(val []Joke) {
 	s.Jokes = val
 }
 
+// MeDeleteNoContent is response for MeDelete operation.
+type MeDeleteNoContent struct{}
+
+type MeDeleteReq struct {
+	UserID string `json:"user_id"`
+}
+
+// GetUserID returns the value of UserID.
+func (s *MeDeleteReq) GetUserID() string {
+	return s.UserID
+}
+
+// SetUserID sets the value of UserID.
+func (s *MeDeleteReq) SetUserID(val string) {
+	s.UserID = val
+}
+
+// MeJokesDeleteNoContent is response for MeJokesDelete operation.
+type MeJokesDeleteNoContent struct{}
+
+type MeJokesDeleteReq struct {
+	JokeID string `json:"joke_id"`
+}
+
+// GetJokeID returns the value of JokeID.
+func (s *MeJokesDeleteReq) GetJokeID() string {
+	return s.JokeID
+}
+
+// SetJokeID sets the value of JokeID.
+func (s *MeJokesDeleteReq) SetJokeID(val string) {
+	s.JokeID = val
+}
+
 // MeJokesPostCreated is response for MeJokesPost operation.
 type MeJokesPostCreated struct{}
 
@@ -280,6 +314,106 @@ func (s *MeJokesPostReq) SetText(val string) {
 // SetExplanation sets the value of Explanation.
 func (s *MeJokesPostReq) SetExplanation(val OptString) {
 	s.Explanation = val
+}
+
+// MeJokesPutCreated is response for MeJokesPut operation.
+type MeJokesPutCreated struct{}
+
+type MeJokesPutReq struct {
+	JokeID      OptString `json:"joke_id"`
+	Title       OptString `json:"title"`
+	Text        OptString `json:"text"`
+	Explanation OptString `json:"explanation"`
+}
+
+// GetJokeID returns the value of JokeID.
+func (s *MeJokesPutReq) GetJokeID() OptString {
+	return s.JokeID
+}
+
+// GetTitle returns the value of Title.
+func (s *MeJokesPutReq) GetTitle() OptString {
+	return s.Title
+}
+
+// GetText returns the value of Text.
+func (s *MeJokesPutReq) GetText() OptString {
+	return s.Text
+}
+
+// GetExplanation returns the value of Explanation.
+func (s *MeJokesPutReq) GetExplanation() OptString {
+	return s.Explanation
+}
+
+// SetJokeID sets the value of JokeID.
+func (s *MeJokesPutReq) SetJokeID(val OptString) {
+	s.JokeID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *MeJokesPutReq) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetText sets the value of Text.
+func (s *MeJokesPutReq) SetText(val OptString) {
+	s.Text = val
+}
+
+// SetExplanation sets the value of Explanation.
+func (s *MeJokesPutReq) SetExplanation(val OptString) {
+	s.Explanation = val
+}
+
+// MePutNoContent is response for MePut operation.
+type MePutNoContent struct{}
+
+type MePutReq struct {
+	UserID   string    `json:"user_id"`
+	Username OptString `json:"username"`
+	Fullname OptString `json:"fullname"`
+	Status   OptString `json:"status"`
+}
+
+// GetUserID returns the value of UserID.
+func (s *MePutReq) GetUserID() string {
+	return s.UserID
+}
+
+// GetUsername returns the value of Username.
+func (s *MePutReq) GetUsername() OptString {
+	return s.Username
+}
+
+// GetFullname returns the value of Fullname.
+func (s *MePutReq) GetFullname() OptString {
+	return s.Fullname
+}
+
+// GetStatus returns the value of Status.
+func (s *MePutReq) GetStatus() OptString {
+	return s.Status
+}
+
+// SetUserID sets the value of UserID.
+func (s *MePutReq) SetUserID(val string) {
+	s.UserID = val
+}
+
+// SetUsername sets the value of Username.
+func (s *MePutReq) SetUsername(val OptString) {
+	s.Username = val
+}
+
+// SetFullname sets the value of Fullname.
+func (s *MePutReq) SetFullname(val OptString) {
+	s.Fullname = val
+}
+
+// SetStatus sets the value of Status.
+func (s *MePutReq) SetStatus(val OptString) {
+	s.Status = val
 }
 
 // NewOptString returns new OptString with value set to v.

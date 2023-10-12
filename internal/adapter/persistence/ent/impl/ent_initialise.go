@@ -14,13 +14,13 @@ import (
 func NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName string) (struct {
 	repository.IUserRepository
 	repository.IJokeRepository
-	// repository.CommentRepository
+	repository.ICommentRepository
 	// repository.LikeRepository
 }, error) {
 	repos := struct {
 		repository.IUserRepository
 		repository.IJokeRepository
-		// repository.CommentRepository
+		repository.ICommentRepository
 		// repository.LikeRepository
 	}{}
 
@@ -39,7 +39,7 @@ func NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName string) (struct {
 
 	repos.IUserRepository = NewUserRepository(client)
 	repos.IJokeRepository = NewJokeRepository(client)
-	// repos.CommentRepository = NewCommentRepository(client)
+	repos.ICommentRepository = NewCommentRepository(client)
 	// repos.LikeRepository = NewLikeRepository(client)
 	return repos, nil
 }

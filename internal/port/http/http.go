@@ -28,8 +28,8 @@ func RunServer(
 	}{
 		ErrorHandler:   handler.NewErrorHandler(services.Logger),
 		SignHandler:    handler.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
-		MeHandler:      handler.NewMeHandler(repos.UserRepo),
-		MeJokesHandler: handler.NewMeJokesHandler(repos.UserRepo, repos.JokeRepo),
+		MeHandler:      handler.NewMeHandler(repos.UserRepo, usecases.UserUseCase),
+		MeJokesHandler: handler.NewMeJokesHandler(repos.UserRepo, repos.JokeRepo, usecases.JokeUseCase),
 	}
 	// Init security handler
 	securityHandler := handler.NewSecurityHandler(services.TokenMaker)

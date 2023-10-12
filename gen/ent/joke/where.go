@@ -413,6 +413,29 @@ func HasOwnerWith(preds ...predicate.User) predicate.Joke {
 	})
 }
 
+// HasComments applies the HasEdge predicate on the "comments" edge.
+func HasComments() predicate.Joke {
+	return predicate.Joke(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CommentsTable, CommentsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCommentsWith applies the HasEdge predicate on the "comments" edge with a given conditions (other predicates).
+func HasCommentsWith(preds ...predicate.Comment) predicate.Joke {
+	return predicate.Joke(func(s *sql.Selector) {
+		step := newCommentsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Joke) predicate.Joke {
 	return predicate.Joke(sql.AndPredicates(predicates...))

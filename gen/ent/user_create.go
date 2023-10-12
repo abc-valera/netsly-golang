@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
@@ -76,6 +77,21 @@ func (uc *UserCreate) AddJokes(j ...*Joke) *UserCreate {
 		ids[i] = j[i].ID
 	}
 	return uc.AddJokeIDs(ids...)
+}
+
+// AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
+func (uc *UserCreate) AddCommentIDs(ids ...string) *UserCreate {
+	uc.mutation.AddCommentIDs(ids...)
+	return uc
+}
+
+// AddComments adds the "comments" edges to the Comment entity.
+func (uc *UserCreate) AddComments(c ...*Comment) *UserCreate {
+	ids := make([]string, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uc.AddCommentIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -218,6 +234,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.CommentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CommentsTable,
+			Columns: []string{user.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

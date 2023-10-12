@@ -9,3 +9,60 @@ get:
       $ref: "../components/responses/user.yaml"
     default:
       $ref: "../components/responses/code_error.yaml"
+put:
+  tags:
+    - me
+  summary: Updates current user profile
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Data to update the current user profile
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            user_id:
+              type: string
+              example: "48690945-c3f9-45b4-9045-c6bcfb898f20"
+            username:
+              type: string
+              example: "johndoe"
+            fullname:
+              type: string
+              example: "John Doe"
+            status:
+              type: string
+              example: "active"
+          required:
+            - user_id
+  responses:
+    "204":
+      description: Successful operation
+    default:
+      $ref: "../components/responses/code_error.yaml"
+delete:
+  tags:
+    - me
+  summary: Deletes current user profile
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Data to delete the current user profile
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            user_id:
+              type: string
+              example: "48690945-c3f9-45b4-9045-c6bcfb898f20"
+          required:
+            - user_id
+  responses:
+    "204":
+      description: Successful operation
+    default:
+      $ref: "../components/responses/code_error.yaml"

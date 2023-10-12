@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
@@ -25,27 +26,651 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeJoke = "Joke"
-	TypeUser = "User"
+	TypeComment = "Comment"
+	TypeJoke    = "Joke"
+	TypeUser    = "User"
 )
+
+// CommentMutation represents an operation that mutates the Comment nodes in the graph.
+type CommentMutation struct {
+	config
+	op                    Op
+	typ                   string
+	id                    *string
+	user_id               *string
+	joke_id               *string
+	text                  *string
+	created_at            *time.Time
+	clearedFields         map[string]struct{}
+	owner                 *string
+	clearedowner          bool
+	commented_joke        *string
+	clearedcommented_joke bool
+	done                  bool
+	oldValue              func(context.Context) (*Comment, error)
+	predicates            []predicate.Comment
+}
+
+var _ ent.Mutation = (*CommentMutation)(nil)
+
+// commentOption allows management of the mutation configuration using functional options.
+type commentOption func(*CommentMutation)
+
+// newCommentMutation creates new mutation for the Comment entity.
+func newCommentMutation(c config, op Op, opts ...commentOption) *CommentMutation {
+	m := &CommentMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeComment,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCommentID sets the ID field of the mutation.
+func withCommentID(id string) commentOption {
+	return func(m *CommentMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Comment
+		)
+		m.oldValue = func(ctx context.Context) (*Comment, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Comment.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withComment sets the old Comment of the mutation.
+func withComment(node *Comment) commentOption {
+	return func(m *CommentMutation) {
+		m.oldValue = func(context.Context) (*Comment, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CommentMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CommentMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Comment entities.
+func (m *CommentMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CommentMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *CommentMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Comment.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetUserID sets the "user_id" field.
+func (m *CommentMutation) SetUserID(s string) {
+	m.user_id = &s
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *CommentMutation) UserID() (r string, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldUserID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *CommentMutation) ResetUserID() {
+	m.user_id = nil
+}
+
+// SetJokeID sets the "joke_id" field.
+func (m *CommentMutation) SetJokeID(s string) {
+	m.joke_id = &s
+}
+
+// JokeID returns the value of the "joke_id" field in the mutation.
+func (m *CommentMutation) JokeID() (r string, exists bool) {
+	v := m.joke_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldJokeID returns the old "joke_id" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldJokeID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldJokeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldJokeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldJokeID: %w", err)
+	}
+	return oldValue.JokeID, nil
+}
+
+// ResetJokeID resets all changes to the "joke_id" field.
+func (m *CommentMutation) ResetJokeID() {
+	m.joke_id = nil
+}
+
+// SetText sets the "text" field.
+func (m *CommentMutation) SetText(s string) {
+	m.text = &s
+}
+
+// Text returns the value of the "text" field in the mutation.
+func (m *CommentMutation) Text() (r string, exists bool) {
+	v := m.text
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldText returns the old "text" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldText(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldText is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldText requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldText: %w", err)
+	}
+	return oldValue.Text, nil
+}
+
+// ResetText resets all changes to the "text" field.
+func (m *CommentMutation) ResetText() {
+	m.text = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *CommentMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *CommentMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Comment entity.
+// If the Comment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CommentMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *CommentMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *CommentMutation) SetOwnerID(id string) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *CommentMutation) ClearOwner() {
+	m.clearedowner = true
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *CommentMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *CommentMutation) OwnerID() (id string, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *CommentMutation) OwnerIDs() (ids []string) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *CommentMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
+// SetCommentedJokeID sets the "commented_joke" edge to the Joke entity by id.
+func (m *CommentMutation) SetCommentedJokeID(id string) {
+	m.commented_joke = &id
+}
+
+// ClearCommentedJoke clears the "commented_joke" edge to the Joke entity.
+func (m *CommentMutation) ClearCommentedJoke() {
+	m.clearedcommented_joke = true
+}
+
+// CommentedJokeCleared reports if the "commented_joke" edge to the Joke entity was cleared.
+func (m *CommentMutation) CommentedJokeCleared() bool {
+	return m.clearedcommented_joke
+}
+
+// CommentedJokeID returns the "commented_joke" edge ID in the mutation.
+func (m *CommentMutation) CommentedJokeID() (id string, exists bool) {
+	if m.commented_joke != nil {
+		return *m.commented_joke, true
+	}
+	return
+}
+
+// CommentedJokeIDs returns the "commented_joke" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CommentedJokeID instead. It exists only for internal usage by the builders.
+func (m *CommentMutation) CommentedJokeIDs() (ids []string) {
+	if id := m.commented_joke; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetCommentedJoke resets all changes to the "commented_joke" edge.
+func (m *CommentMutation) ResetCommentedJoke() {
+	m.commented_joke = nil
+	m.clearedcommented_joke = false
+}
+
+// Where appends a list predicates to the CommentMutation builder.
+func (m *CommentMutation) Where(ps ...predicate.Comment) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the CommentMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *CommentMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Comment, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *CommentMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *CommentMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Comment).
+func (m *CommentMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CommentMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.user_id != nil {
+		fields = append(fields, comment.FieldUserID)
+	}
+	if m.joke_id != nil {
+		fields = append(fields, comment.FieldJokeID)
+	}
+	if m.text != nil {
+		fields = append(fields, comment.FieldText)
+	}
+	if m.created_at != nil {
+		fields = append(fields, comment.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CommentMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case comment.FieldUserID:
+		return m.UserID()
+	case comment.FieldJokeID:
+		return m.JokeID()
+	case comment.FieldText:
+		return m.Text()
+	case comment.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CommentMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case comment.FieldUserID:
+		return m.OldUserID(ctx)
+	case comment.FieldJokeID:
+		return m.OldJokeID(ctx)
+	case comment.FieldText:
+		return m.OldText(ctx)
+	case comment.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown Comment field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CommentMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case comment.FieldUserID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case comment.FieldJokeID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetJokeID(v)
+		return nil
+	case comment.FieldText:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetText(v)
+		return nil
+	case comment.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Comment field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CommentMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CommentMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CommentMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Comment numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CommentMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CommentMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CommentMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Comment nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CommentMutation) ResetField(name string) error {
+	switch name {
+	case comment.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case comment.FieldJokeID:
+		m.ResetJokeID()
+		return nil
+	case comment.FieldText:
+		m.ResetText()
+		return nil
+	case comment.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown Comment field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CommentMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.owner != nil {
+		edges = append(edges, comment.EdgeOwner)
+	}
+	if m.commented_joke != nil {
+		edges = append(edges, comment.EdgeCommentedJoke)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CommentMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case comment.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
+	case comment.EdgeCommentedJoke:
+		if id := m.commented_joke; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CommentMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CommentMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CommentMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedowner {
+		edges = append(edges, comment.EdgeOwner)
+	}
+	if m.clearedcommented_joke {
+		edges = append(edges, comment.EdgeCommentedJoke)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CommentMutation) EdgeCleared(name string) bool {
+	switch name {
+	case comment.EdgeOwner:
+		return m.clearedowner
+	case comment.EdgeCommentedJoke:
+		return m.clearedcommented_joke
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CommentMutation) ClearEdge(name string) error {
+	switch name {
+	case comment.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	case comment.EdgeCommentedJoke:
+		m.ClearCommentedJoke()
+		return nil
+	}
+	return fmt.Errorf("unknown Comment unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CommentMutation) ResetEdge(name string) error {
+	switch name {
+	case comment.EdgeOwner:
+		m.ResetOwner()
+		return nil
+	case comment.EdgeCommentedJoke:
+		m.ResetCommentedJoke()
+		return nil
+	}
+	return fmt.Errorf("unknown Comment edge %s", name)
+}
 
 // JokeMutation represents an operation that mutates the Joke nodes in the graph.
 type JokeMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *string
-	user_id       *string
-	title         *string
-	text          *string
-	explanation   *string
-	created_at    *time.Time
-	clearedFields map[string]struct{}
-	owner         *string
-	clearedowner  bool
-	done          bool
-	oldValue      func(context.Context) (*Joke, error)
-	predicates    []predicate.Joke
+	op              Op
+	typ             string
+	id              *string
+	user_id         *string
+	title           *string
+	text            *string
+	explanation     *string
+	created_at      *time.Time
+	clearedFields   map[string]struct{}
+	owner           *string
+	clearedowner    bool
+	comments        map[string]struct{}
+	removedcomments map[string]struct{}
+	clearedcomments bool
+	done            bool
+	oldValue        func(context.Context) (*Joke, error)
+	predicates      []predicate.Joke
 }
 
 var _ ent.Mutation = (*JokeMutation)(nil)
@@ -371,6 +996,60 @@ func (m *JokeMutation) ResetOwner() {
 	m.clearedowner = false
 }
 
+// AddCommentIDs adds the "comments" edge to the Comment entity by ids.
+func (m *JokeMutation) AddCommentIDs(ids ...string) {
+	if m.comments == nil {
+		m.comments = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.comments[ids[i]] = struct{}{}
+	}
+}
+
+// ClearComments clears the "comments" edge to the Comment entity.
+func (m *JokeMutation) ClearComments() {
+	m.clearedcomments = true
+}
+
+// CommentsCleared reports if the "comments" edge to the Comment entity was cleared.
+func (m *JokeMutation) CommentsCleared() bool {
+	return m.clearedcomments
+}
+
+// RemoveCommentIDs removes the "comments" edge to the Comment entity by IDs.
+func (m *JokeMutation) RemoveCommentIDs(ids ...string) {
+	if m.removedcomments == nil {
+		m.removedcomments = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.comments, ids[i])
+		m.removedcomments[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedComments returns the removed IDs of the "comments" edge to the Comment entity.
+func (m *JokeMutation) RemovedCommentsIDs() (ids []string) {
+	for id := range m.removedcomments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CommentsIDs returns the "comments" edge IDs in the mutation.
+func (m *JokeMutation) CommentsIDs() (ids []string) {
+	for id := range m.comments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetComments resets all changes to the "comments" edge.
+func (m *JokeMutation) ResetComments() {
+	m.comments = nil
+	m.clearedcomments = false
+	m.removedcomments = nil
+}
+
 // Where appends a list predicates to the JokeMutation builder.
 func (m *JokeMutation) Where(ps ...predicate.Joke) {
 	m.predicates = append(m.predicates, ps...)
@@ -572,9 +1251,12 @@ func (m *JokeMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *JokeMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.owner != nil {
 		edges = append(edges, joke.EdgeOwner)
+	}
+	if m.comments != nil {
+		edges = append(edges, joke.EdgeComments)
 	}
 	return edges
 }
@@ -587,27 +1269,47 @@ func (m *JokeMutation) AddedIDs(name string) []ent.Value {
 		if id := m.owner; id != nil {
 			return []ent.Value{*id}
 		}
+	case joke.EdgeComments:
+		ids := make([]ent.Value, 0, len(m.comments))
+		for id := range m.comments {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *JokeMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.removedcomments != nil {
+		edges = append(edges, joke.EdgeComments)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *JokeMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case joke.EdgeComments:
+		ids := make([]ent.Value, 0, len(m.removedcomments))
+		for id := range m.removedcomments {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *JokeMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedowner {
 		edges = append(edges, joke.EdgeOwner)
+	}
+	if m.clearedcomments {
+		edges = append(edges, joke.EdgeComments)
 	}
 	return edges
 }
@@ -618,6 +1320,8 @@ func (m *JokeMutation) EdgeCleared(name string) bool {
 	switch name {
 	case joke.EdgeOwner:
 		return m.clearedowner
+	case joke.EdgeComments:
+		return m.clearedcomments
 	}
 	return false
 }
@@ -640,6 +1344,9 @@ func (m *JokeMutation) ResetEdge(name string) error {
 	case joke.EdgeOwner:
 		m.ResetOwner()
 		return nil
+	case joke.EdgeComments:
+		m.ResetComments()
+		return nil
 	}
 	return fmt.Errorf("unknown Joke edge %s", name)
 }
@@ -660,6 +1367,9 @@ type UserMutation struct {
 	jokes           map[string]struct{}
 	removedjokes    map[string]struct{}
 	clearedjokes    bool
+	comments        map[string]struct{}
+	removedcomments map[string]struct{}
+	clearedcomments bool
 	done            bool
 	oldValue        func(context.Context) (*User, error)
 	predicates      []predicate.User
@@ -1039,6 +1749,60 @@ func (m *UserMutation) ResetJokes() {
 	m.removedjokes = nil
 }
 
+// AddCommentIDs adds the "comments" edge to the Comment entity by ids.
+func (m *UserMutation) AddCommentIDs(ids ...string) {
+	if m.comments == nil {
+		m.comments = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.comments[ids[i]] = struct{}{}
+	}
+}
+
+// ClearComments clears the "comments" edge to the Comment entity.
+func (m *UserMutation) ClearComments() {
+	m.clearedcomments = true
+}
+
+// CommentsCleared reports if the "comments" edge to the Comment entity was cleared.
+func (m *UserMutation) CommentsCleared() bool {
+	return m.clearedcomments
+}
+
+// RemoveCommentIDs removes the "comments" edge to the Comment entity by IDs.
+func (m *UserMutation) RemoveCommentIDs(ids ...string) {
+	if m.removedcomments == nil {
+		m.removedcomments = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.comments, ids[i])
+		m.removedcomments[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedComments returns the removed IDs of the "comments" edge to the Comment entity.
+func (m *UserMutation) RemovedCommentsIDs() (ids []string) {
+	for id := range m.removedcomments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CommentsIDs returns the "comments" edge IDs in the mutation.
+func (m *UserMutation) CommentsIDs() (ids []string) {
+	for id := range m.comments {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetComments resets all changes to the "comments" edge.
+func (m *UserMutation) ResetComments() {
+	m.comments = nil
+	m.clearedcomments = false
+	m.removedcomments = nil
+}
+
 // Where appends a list predicates to the UserMutation builder.
 func (m *UserMutation) Where(ps ...predicate.User) {
 	m.predicates = append(m.predicates, ps...)
@@ -1257,9 +2021,12 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.jokes != nil {
 		edges = append(edges, user.EdgeJokes)
+	}
+	if m.comments != nil {
+		edges = append(edges, user.EdgeComments)
 	}
 	return edges
 }
@@ -1274,15 +2041,24 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeComments:
+		ids := make([]ent.Value, 0, len(m.comments))
+		for id := range m.comments {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedjokes != nil {
 		edges = append(edges, user.EdgeJokes)
+	}
+	if m.removedcomments != nil {
+		edges = append(edges, user.EdgeComments)
 	}
 	return edges
 }
@@ -1297,15 +2073,24 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeComments:
+		ids := make([]ent.Value, 0, len(m.removedcomments))
+		for id := range m.removedcomments {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedjokes {
 		edges = append(edges, user.EdgeJokes)
+	}
+	if m.clearedcomments {
+		edges = append(edges, user.EdgeComments)
 	}
 	return edges
 }
@@ -1316,6 +2101,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 	switch name {
 	case user.EdgeJokes:
 		return m.clearedjokes
+	case user.EdgeComments:
+		return m.clearedcomments
 	}
 	return false
 }
@@ -1334,6 +2121,9 @@ func (m *UserMutation) ResetEdge(name string) error {
 	switch name {
 	case user.EdgeJokes:
 		m.ResetJokes()
+		return nil
+	case user.EdgeComments:
+		m.ResetComments()
 		return nil
 	}
 	return fmt.Errorf("unknown User edge %s", name)

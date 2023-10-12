@@ -18,11 +18,9 @@ tags:
   - name: me
     description: Everything about managing current user profile
   - name: users
-    description: Everything about finding users
+    description: Everything about searching users
   - name: jokes
-    description: Everything about finding jokes
-  - name: comments
-    description: Everything about finding comments
+    description: Everything about searching jokes
 servers:
   - url: "http://localhost:3000"
 paths:

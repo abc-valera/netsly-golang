@@ -8,12 +8,24 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// MeDelete implements DELETE /me operation.
+	//
+	// Deletes current user profile.
+	//
+	// DELETE /me
+	MeDelete(ctx context.Context, req *MeDeleteReq) error
 	// MeGet implements GET /me operation.
 	//
 	// Returns current user profile.
 	//
 	// GET /me
 	MeGet(ctx context.Context) (*User, error)
+	// MeJokesDelete implements DELETE /me/jokes operation.
+	//
+	// Deletes joke for current user.
+	//
+	// DELETE /me/jokes
+	MeJokesDelete(ctx context.Context, req *MeJokesDeleteReq) error
 	// MeJokesGet implements GET /me/jokes operation.
 	//
 	// Returns jokes of the current user.
@@ -26,6 +38,18 @@ type Handler interface {
 	//
 	// POST /me/jokes
 	MeJokesPost(ctx context.Context, req *MeJokesPostReq) error
+	// MeJokesPut implements PUT /me/jokes operation.
+	//
+	// Updates joke for current user.
+	//
+	// PUT /me/jokes
+	MeJokesPut(ctx context.Context, req *MeJokesPutReq) error
+	// MePut implements PUT /me operation.
+	//
+	// Updates current user profile.
+	//
+	// PUT /me
+	MePut(ctx context.Context, req *MePutReq) error
 	// SignInPost implements POST /sign_in operation.
 	//
 	// Performs user authentication.

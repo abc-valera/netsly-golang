@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
@@ -19,11 +20,12 @@ import (
 // UserQuery is the builder for querying User entities.
 type UserQuery struct {
 	config
-	ctx        *QueryContext
-	order      []user.OrderOption
-	inters     []Interceptor
-	predicates []predicate.User
-	withJokes  *JokeQuery
+	ctx          *QueryContext
+	order        []user.OrderOption
+	inters       []Interceptor
+	predicates   []predicate.User
+	withJokes    *JokeQuery
+	withComments *CommentQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -75,6 +77,28 @@ func (uq *UserQuery) QueryJokes() *JokeQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(joke.Table, joke.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.JokesTable, user.JokesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryComments chains the current query on the "comments" edge.
+func (uq *UserQuery) QueryComments() *CommentQuery {
+	query := (&CommentClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(comment.Table, comment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.CommentsTable, user.CommentsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -269,12 +293,13 @@ func (uq *UserQuery) Clone() *UserQuery {
 		return nil
 	}
 	return &UserQuery{
-		config:     uq.config,
-		ctx:        uq.ctx.Clone(),
-		order:      append([]user.OrderOption{}, uq.order...),
-		inters:     append([]Interceptor{}, uq.inters...),
-		predicates: append([]predicate.User{}, uq.predicates...),
-		withJokes:  uq.withJokes.Clone(),
+		config:       uq.config,
+		ctx:          uq.ctx.Clone(),
+		order:        append([]user.OrderOption{}, uq.order...),
+		inters:       append([]Interceptor{}, uq.inters...),
+		predicates:   append([]predicate.User{}, uq.predicates...),
+		withJokes:    uq.withJokes.Clone(),
+		withComments: uq.withComments.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
@@ -289,6 +314,17 @@ func (uq *UserQuery) WithJokes(opts ...func(*JokeQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withJokes = query
+	return uq
+}
+
+// WithComments tells the query-builder to eager-load the nodes that are connected to
+// the "comments" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithComments(opts ...func(*CommentQuery)) *UserQuery {
+	query := (&CommentClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withComments = query
 	return uq
 }
 
@@ -370,8 +406,9 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	var (
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			uq.withJokes != nil,
+			uq.withComments != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -396,6 +433,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadJokes(ctx, query, nodes,
 			func(n *User) { n.Edges.Jokes = []*Joke{} },
 			func(n *User, e *Joke) { n.Edges.Jokes = append(n.Edges.Jokes, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withComments; query != nil {
+		if err := uq.loadComments(ctx, query, nodes,
+			func(n *User) { n.Edges.Comments = []*Comment{} },
+			func(n *User, e *Comment) { n.Edges.Comments = append(n.Edges.Comments, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -428,6 +472,37 @@ func (uq *UserQuery) loadJokes(ctx context.Context, query *JokeQuery, nodes []*U
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "user_jokes" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadComments(ctx context.Context, query *CommentQuery, nodes []*User, init func(*User), assign func(*User, *Comment)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Comment(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.CommentsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_comments
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_comments" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_comments" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

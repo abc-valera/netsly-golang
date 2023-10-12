@@ -8,15 +8,45 @@ import (
 )
 
 var (
+	// CommentsColumns holds the columns for the "comments" table.
+	CommentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "user_id", Type: field.TypeString},
+		{Name: "joke_id", Type: field.TypeString},
+		{Name: "text", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "joke_comments", Type: field.TypeString},
+		{Name: "user_comments", Type: field.TypeString},
+	}
+	// CommentsTable holds the schema information for the "comments" table.
+	CommentsTable = &schema.Table{
+		Name:       "comments",
+		Columns:    CommentsColumns,
+		PrimaryKey: []*schema.Column{CommentsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "comments_jokes_comments",
+				Columns:    []*schema.Column{CommentsColumns[5]},
+				RefColumns: []*schema.Column{JokesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "comments_users_comments",
+				Columns:    []*schema.Column{CommentsColumns[6]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// JokesColumns holds the columns for the "jokes" table.
 	JokesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
-		{Name: "user_id", Type: field.TypeString, Unique: true},
+		{Name: "user_id", Type: field.TypeString},
 		{Name: "title", Type: field.TypeString},
 		{Name: "text", Type: field.TypeString},
 		{Name: "explanation", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_jokes", Type: field.TypeString, Nullable: true},
+		{Name: "user_jokes", Type: field.TypeString},
 	}
 	// JokesTable holds the schema information for the "jokes" table.
 	JokesTable = &schema.Table{
@@ -28,7 +58,7 @@ var (
 				Symbol:     "jokes_users_jokes",
 				Columns:    []*schema.Column{JokesColumns[6]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{
@@ -57,11 +87,14 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		CommentsTable,
 		JokesTable,
 		UsersTable,
 	}
 )
 
 func init() {
+	CommentsTable.ForeignKeys[0].RefTable = JokesTable
+	CommentsTable.ForeignKeys[1].RefTable = UsersTable
 	JokesTable.ForeignKeys[0].RefTable = UsersTable
 }

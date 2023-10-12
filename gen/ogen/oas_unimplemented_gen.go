@@ -13,6 +13,15 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// MeDelete implements DELETE /me operation.
+//
+// Deletes current user profile.
+//
+// DELETE /me
+func (UnimplementedHandler) MeDelete(ctx context.Context, req *MeDeleteReq) error {
+	return ht.ErrNotImplemented
+}
+
 // MeGet implements GET /me operation.
 //
 // Returns current user profile.
@@ -20,6 +29,15 @@ var _ Handler = UnimplementedHandler{}
 // GET /me
 func (UnimplementedHandler) MeGet(ctx context.Context) (r *User, _ error) {
 	return r, ht.ErrNotImplemented
+}
+
+// MeJokesDelete implements DELETE /me/jokes operation.
+//
+// Deletes joke for current user.
+//
+// DELETE /me/jokes
+func (UnimplementedHandler) MeJokesDelete(ctx context.Context, req *MeJokesDeleteReq) error {
+	return ht.ErrNotImplemented
 }
 
 // MeJokesGet implements GET /me/jokes operation.
@@ -37,6 +55,24 @@ func (UnimplementedHandler) MeJokesGet(ctx context.Context) (r *Jokes, _ error) 
 //
 // POST /me/jokes
 func (UnimplementedHandler) MeJokesPost(ctx context.Context, req *MeJokesPostReq) error {
+	return ht.ErrNotImplemented
+}
+
+// MeJokesPut implements PUT /me/jokes operation.
+//
+// Updates joke for current user.
+//
+// PUT /me/jokes
+func (UnimplementedHandler) MeJokesPut(ctx context.Context, req *MeJokesPutReq) error {
+	return ht.ErrNotImplemented
+}
+
+// MePut implements PUT /me operation.
+//
+// Updates current user profile.
+//
+// PUT /me
+func (UnimplementedHandler) MePut(ctx context.Context, req *MePutReq) error {
 	return ht.ErrNotImplemented
 }
 

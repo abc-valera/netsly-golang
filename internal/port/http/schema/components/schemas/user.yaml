@@ -2,6 +2,7 @@ type: object
 properties:
   id:
     type: string
+    example: "48690945-c3f9-45b4-9045-c6bcfb898f20"
   username:
     type: string
     example: user1

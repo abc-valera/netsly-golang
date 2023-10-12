@@ -7,16 +7,16 @@ import (
 )
 
 type Repositories struct {
-	UserRepo IUserRepository
-	JokeRepo IJokeRepository
-	// CommentRepo CommentRepository
+	UserRepo    IUserRepository
+	JokeRepo    IJokeRepository
+	CommentRepo ICommentRepository
 	// LikeRepo    LikeRepository
 }
 
 func NewRepositories(
 	userRepo IUserRepository,
 	jokeRepo IJokeRepository,
-	// commentRepo CommentRepository,
+	commentRepo ICommentRepository,
 	// likeRepo LikeRepository,
 ) (Repositories, error) {
 	if userRepo == nil {
@@ -25,16 +25,16 @@ func NewRepositories(
 	if jokeRepo == nil {
 		return Repositories{}, codeerr.NewInternal("NewRepositories", errors.New("jokeRepo is nil"))
 	}
-	// if commentRepo == nil {
-	// 	return Repositories{}, codeerr.NewInternal("NewRepositories", errors.New("commentRepo is nil"))
-	// }
+	if commentRepo == nil {
+		return Repositories{}, codeerr.NewInternal("NewRepositories", errors.New("commentRepo is nil"))
+	}
 	// if likeRepo == nil {
 	// 	return Repositories{}, codeerr.NewInternal("NewRepositories", errors.New("likeRepo is nil"))
 	// }
 	return Repositories{
-		UserRepo: userRepo,
-		JokeRepo: jokeRepo,
-		// CommentRepo: commentRepo,
+		UserRepo:    userRepo,
+		JokeRepo:    jokeRepo,
+		CommentRepo: commentRepo,
 		// LikeRepo:    likeRepo,
 	}, nil
 }

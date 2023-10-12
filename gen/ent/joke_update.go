@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
@@ -52,17 +53,24 @@ func (ju *JokeUpdate) SetOwnerID(id string) *JokeUpdate {
 	return ju
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (ju *JokeUpdate) SetNillableOwnerID(id *string) *JokeUpdate {
-	if id != nil {
-		ju = ju.SetOwnerID(*id)
-	}
-	return ju
-}
-
 // SetOwner sets the "owner" edge to the User entity.
 func (ju *JokeUpdate) SetOwner(u *User) *JokeUpdate {
 	return ju.SetOwnerID(u.ID)
+}
+
+// AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
+func (ju *JokeUpdate) AddCommentIDs(ids ...string) *JokeUpdate {
+	ju.mutation.AddCommentIDs(ids...)
+	return ju
+}
+
+// AddComments adds the "comments" edges to the Comment entity.
+func (ju *JokeUpdate) AddComments(c ...*Comment) *JokeUpdate {
+	ids := make([]string, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return ju.AddCommentIDs(ids...)
 }
 
 // Mutation returns the JokeMutation object of the builder.
@@ -74,6 +82,27 @@ func (ju *JokeUpdate) Mutation() *JokeMutation {
 func (ju *JokeUpdate) ClearOwner() *JokeUpdate {
 	ju.mutation.ClearOwner()
 	return ju
+}
+
+// ClearComments clears all "comments" edges to the Comment entity.
+func (ju *JokeUpdate) ClearComments() *JokeUpdate {
+	ju.mutation.ClearComments()
+	return ju
+}
+
+// RemoveCommentIDs removes the "comments" edge to Comment entities by IDs.
+func (ju *JokeUpdate) RemoveCommentIDs(ids ...string) *JokeUpdate {
+	ju.mutation.RemoveCommentIDs(ids...)
+	return ju
+}
+
+// RemoveComments removes "comments" edges to Comment entities.
+func (ju *JokeUpdate) RemoveComments(c ...*Comment) *JokeUpdate {
+	ids := make([]string, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return ju.RemoveCommentIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -114,6 +143,9 @@ func (ju *JokeUpdate) check() error {
 		if err := joke.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`ent: validator failed for field "Joke.text": %w`, err)}
 		}
+	}
+	if _, ok := ju.mutation.OwnerID(); ju.mutation.OwnerCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Joke.owner"`)
 	}
 	return nil
 }
@@ -168,6 +200,51 @@ func (ju *JokeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if ju.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.CommentsTable,
+			Columns: []string{joke.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ju.mutation.RemovedCommentsIDs(); len(nodes) > 0 && !ju.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.CommentsTable,
+			Columns: []string{joke.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ju.mutation.CommentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.CommentsTable,
+			Columns: []string{joke.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ju.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{joke.Label}
@@ -212,17 +289,24 @@ func (juo *JokeUpdateOne) SetOwnerID(id string) *JokeUpdateOne {
 	return juo
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (juo *JokeUpdateOne) SetNillableOwnerID(id *string) *JokeUpdateOne {
-	if id != nil {
-		juo = juo.SetOwnerID(*id)
-	}
-	return juo
-}
-
 // SetOwner sets the "owner" edge to the User entity.
 func (juo *JokeUpdateOne) SetOwner(u *User) *JokeUpdateOne {
 	return juo.SetOwnerID(u.ID)
+}
+
+// AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
+func (juo *JokeUpdateOne) AddCommentIDs(ids ...string) *JokeUpdateOne {
+	juo.mutation.AddCommentIDs(ids...)
+	return juo
+}
+
+// AddComments adds the "comments" edges to the Comment entity.
+func (juo *JokeUpdateOne) AddComments(c ...*Comment) *JokeUpdateOne {
+	ids := make([]string, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return juo.AddCommentIDs(ids...)
 }
 
 // Mutation returns the JokeMutation object of the builder.
@@ -234,6 +318,27 @@ func (juo *JokeUpdateOne) Mutation() *JokeMutation {
 func (juo *JokeUpdateOne) ClearOwner() *JokeUpdateOne {
 	juo.mutation.ClearOwner()
 	return juo
+}
+
+// ClearComments clears all "comments" edges to the Comment entity.
+func (juo *JokeUpdateOne) ClearComments() *JokeUpdateOne {
+	juo.mutation.ClearComments()
+	return juo
+}
+
+// RemoveCommentIDs removes the "comments" edge to Comment entities by IDs.
+func (juo *JokeUpdateOne) RemoveCommentIDs(ids ...string) *JokeUpdateOne {
+	juo.mutation.RemoveCommentIDs(ids...)
+	return juo
+}
+
+// RemoveComments removes "comments" edges to Comment entities.
+func (juo *JokeUpdateOne) RemoveComments(c ...*Comment) *JokeUpdateOne {
+	ids := make([]string, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return juo.RemoveCommentIDs(ids...)
 }
 
 // Where appends a list predicates to the JokeUpdate builder.
@@ -287,6 +392,9 @@ func (juo *JokeUpdateOne) check() error {
 		if err := joke.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`ent: validator failed for field "Joke.text": %w`, err)}
 		}
+	}
+	if _, ok := juo.mutation.OwnerID(); juo.mutation.OwnerCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Joke.owner"`)
 	}
 	return nil
 }
@@ -351,6 +459,51 @@ func (juo *JokeUpdateOne) sqlSave(ctx context.Context) (_node *Joke, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if juo.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.CommentsTable,
+			Columns: []string{joke.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := juo.mutation.RemovedCommentsIDs(); len(nodes) > 0 && !juo.mutation.CommentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.CommentsTable,
+			Columns: []string{joke.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := juo.mutation.CommentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.CommentsTable,
+			Columns: []string{joke.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

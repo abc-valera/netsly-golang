@@ -13,6 +13,13 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
+func encodeMeDeleteResponse(response *MeDeleteNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
+	span.SetStatus(codes.Ok, http.StatusText(204))
+
+	return nil
+}
+
 func encodeMeGetResponse(response *User, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
@@ -23,6 +30,13 @@ func encodeMeGetResponse(response *User, w http.ResponseWriter, span trace.Span)
 	if _, err := e.WriteTo(w); err != nil {
 		return errors.Wrap(err, "write")
 	}
+
+	return nil
+}
+
+func encodeMeJokesDeleteResponse(response *MeJokesDeleteNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
+	span.SetStatus(codes.Ok, http.StatusText(204))
 
 	return nil
 }
@@ -44,6 +58,20 @@ func encodeMeJokesGetResponse(response *Jokes, w http.ResponseWriter, span trace
 func encodeMeJokesPostResponse(response *MeJokesPostCreated, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(201)
 	span.SetStatus(codes.Ok, http.StatusText(201))
+
+	return nil
+}
+
+func encodeMeJokesPutResponse(response *MeJokesPutCreated, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(201)
+	span.SetStatus(codes.Ok, http.StatusText(201))
+
+	return nil
+}
+
+func encodeMePutResponse(response *MePutNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(204)
+	span.SetStatus(codes.Ok, http.StatusText(204))
 
 	return nil
 }

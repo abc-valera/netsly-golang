@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
-	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 )
 
@@ -23,16 +22,34 @@ func NewJokeUseCase(jokeRepo repository.IJokeRepository) JokeUseCase {
 }
 
 type UpdateJokeRequest struct {
-	Joke   *entity.Joke
-	UserID string
+	JokeID      string
+	Title       string
+	Text        string
+	Explanation string
+	UserID      string
 }
 
 func (uc JokeUseCase) UpdateJoke(ctx context.Context, req UpdateJokeRequest) error {
-	if req.Joke.UserID != req.UserID {
+	domainJoke, err := uc.jokeRepo.GetByID(ctx, req.JokeID)
+	if err != nil {
+		return err
+	}
+
+	if req.UserID != domainJoke.UserID {
 		return errJokeModifyPermissionDenied
 	}
 
-	return uc.jokeRepo.Update(ctx, req.Joke)
+	if req.Title != "" {
+		domainJoke.Title = req.Title
+	}
+	if req.Text != "" {
+		domainJoke.Text = req.Text
+	}
+	if req.Explanation != "" {
+		domainJoke.Explanation = req.Explanation
+	}
+
+	return uc.jokeRepo.Update(ctx, domainJoke)
 }
 
 type DeleteJokeRequest struct {

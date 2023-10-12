@@ -21,7 +21,6 @@ func (Joke) Fields() []ent.Field {
 			Immutable(),
 		field.String("user_id").
 			NotEmpty().
-			Unique().
 			Immutable(),
 		field.String("title").
 			NotEmpty(),
@@ -38,7 +37,9 @@ func (Joke) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("owner", User.Type).
 			Ref("jokes").
-			Unique(),
+			Unique().
+			Required(),
+		edge.To("comments", Comment.Type),
 	}
 }
 

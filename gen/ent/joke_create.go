@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 )
@@ -63,17 +64,24 @@ func (jc *JokeCreate) SetOwnerID(id string) *JokeCreate {
 	return jc
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (jc *JokeCreate) SetNillableOwnerID(id *string) *JokeCreate {
-	if id != nil {
-		jc = jc.SetOwnerID(*id)
-	}
-	return jc
-}
-
 // SetOwner sets the "owner" edge to the User entity.
 func (jc *JokeCreate) SetOwner(u *User) *JokeCreate {
 	return jc.SetOwnerID(u.ID)
+}
+
+// AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
+func (jc *JokeCreate) AddCommentIDs(ids ...string) *JokeCreate {
+	jc.mutation.AddCommentIDs(ids...)
+	return jc
+}
+
+// AddComments adds the "comments" edges to the Comment entity.
+func (jc *JokeCreate) AddComments(c ...*Comment) *JokeCreate {
+	ids := make([]string, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return jc.AddCommentIDs(ids...)
 }
 
 // Mutation returns the JokeMutation object of the builder.
@@ -145,6 +153,9 @@ func (jc *JokeCreate) check() error {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "Joke.id": %w`, err)}
 		}
 	}
+	if _, ok := jc.mutation.OwnerID(); !ok {
+		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "Joke.owner"`)}
+	}
 	return nil
 }
 
@@ -215,6 +226,22 @@ func (jc *JokeCreate) createSpec() (*Joke, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.user_jokes = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := jc.mutation.CommentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   joke.CommentsTable,
+			Columns: []string{joke.CommentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(comment.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

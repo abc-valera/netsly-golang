@@ -44,3 +44,60 @@ post:
       description: Successful operation
     default:
       $ref: "../components/responses/code_error.yaml"
+put:
+  tags:
+    - me
+  summary: Updates joke for current user
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Data to update the joke for current user
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            joke_id:
+              type: string
+              example: "48690945-c3f9-45b4-9045-c6bcfb898f20"
+            title:
+              type: string
+              example: "Joke title"
+            text:
+              type: string
+              example: "Joke text"
+            explanation:
+              type: string
+              example: "Joke explanation"
+          required:
+            - joke_id
+  responses:
+    "201":
+      description: Successful operation
+    default:
+      $ref: "../components/responses/code_error.yaml"
+delete:
+  tags:
+    - me
+  summary: Deletes joke for current user
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Data to delete the joke for current user
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            joke_id:
+              type: string
+              example: "48690945-c3f9-45b4-9045-c6bcfb898f20"
+          required:
+            - joke_id
+  responses:
+    "204":
+      description: Successful operation
+    default:
+      $ref: "../components/responses/code_error.yaml"

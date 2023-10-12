@@ -4,12 +4,14 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
@@ -18,12 +20,13 @@ import (
 // JokeQuery is the builder for querying Joke entities.
 type JokeQuery struct {
 	config
-	ctx        *QueryContext
-	order      []joke.OrderOption
-	inters     []Interceptor
-	predicates []predicate.Joke
-	withOwner  *UserQuery
-	withFKs    bool
+	ctx          *QueryContext
+	order        []joke.OrderOption
+	inters       []Interceptor
+	predicates   []predicate.Joke
+	withOwner    *UserQuery
+	withComments *CommentQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -75,6 +78,28 @@ func (jq *JokeQuery) QueryOwner() *UserQuery {
 			sqlgraph.From(joke.Table, joke.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, joke.OwnerTable, joke.OwnerColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(jq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryComments chains the current query on the "comments" edge.
+func (jq *JokeQuery) QueryComments() *CommentQuery {
+	query := (&CommentClient{config: jq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := jq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := jq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(joke.Table, joke.FieldID, selector),
+			sqlgraph.To(comment.Table, comment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, joke.CommentsTable, joke.CommentsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(jq.driver.Dialect(), step)
 		return fromU, nil
@@ -269,12 +294,13 @@ func (jq *JokeQuery) Clone() *JokeQuery {
 		return nil
 	}
 	return &JokeQuery{
-		config:     jq.config,
-		ctx:        jq.ctx.Clone(),
-		order:      append([]joke.OrderOption{}, jq.order...),
-		inters:     append([]Interceptor{}, jq.inters...),
-		predicates: append([]predicate.Joke{}, jq.predicates...),
-		withOwner:  jq.withOwner.Clone(),
+		config:       jq.config,
+		ctx:          jq.ctx.Clone(),
+		order:        append([]joke.OrderOption{}, jq.order...),
+		inters:       append([]Interceptor{}, jq.inters...),
+		predicates:   append([]predicate.Joke{}, jq.predicates...),
+		withOwner:    jq.withOwner.Clone(),
+		withComments: jq.withComments.Clone(),
 		// clone intermediate query.
 		sql:  jq.sql.Clone(),
 		path: jq.path,
@@ -289,6 +315,17 @@ func (jq *JokeQuery) WithOwner(opts ...func(*UserQuery)) *JokeQuery {
 		opt(query)
 	}
 	jq.withOwner = query
+	return jq
+}
+
+// WithComments tells the query-builder to eager-load the nodes that are connected to
+// the "comments" edge. The optional arguments are used to configure the query builder of the edge.
+func (jq *JokeQuery) WithComments(opts ...func(*CommentQuery)) *JokeQuery {
+	query := (&CommentClient{config: jq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	jq.withComments = query
 	return jq
 }
 
@@ -371,8 +408,9 @@ func (jq *JokeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Joke, e
 		nodes       = []*Joke{}
 		withFKs     = jq.withFKs
 		_spec       = jq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			jq.withOwner != nil,
+			jq.withComments != nil,
 		}
 	)
 	if jq.withOwner != nil {
@@ -402,6 +440,13 @@ func (jq *JokeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Joke, e
 	if query := jq.withOwner; query != nil {
 		if err := jq.loadOwner(ctx, query, nodes, nil,
 			func(n *Joke, e *User) { n.Edges.Owner = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := jq.withComments; query != nil {
+		if err := jq.loadComments(ctx, query, nodes,
+			func(n *Joke) { n.Edges.Comments = []*Comment{} },
+			func(n *Joke, e *Comment) { n.Edges.Comments = append(n.Edges.Comments, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -437,6 +482,37 @@ func (jq *JokeQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*J
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (jq *JokeQuery) loadComments(ctx context.Context, query *CommentQuery, nodes []*Joke, init func(*Joke), assign func(*Joke, *Comment)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*Joke)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Comment(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(joke.CommentsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.joke_comments
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "joke_comments" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "joke_comments" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }

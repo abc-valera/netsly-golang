@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/schema"
@@ -12,6 +13,24 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	commentFields := schema.Comment{}.Fields()
+	_ = commentFields
+	// commentDescUserID is the schema descriptor for user_id field.
+	commentDescUserID := commentFields[1].Descriptor()
+	// comment.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	comment.UserIDValidator = commentDescUserID.Validators[0].(func(string) error)
+	// commentDescJokeID is the schema descriptor for joke_id field.
+	commentDescJokeID := commentFields[2].Descriptor()
+	// comment.JokeIDValidator is a validator for the "joke_id" field. It is called by the builders before save.
+	comment.JokeIDValidator = commentDescJokeID.Validators[0].(func(string) error)
+	// commentDescText is the schema descriptor for text field.
+	commentDescText := commentFields[3].Descriptor()
+	// comment.TextValidator is a validator for the "text" field. It is called by the builders before save.
+	comment.TextValidator = commentDescText.Validators[0].(func(string) error)
+	// commentDescID is the schema descriptor for id field.
+	commentDescID := commentFields[0].Descriptor()
+	// comment.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	comment.IDValidator = commentDescID.Validators[0].(func(string) error)
 	jokeFields := schema.Joke{}.Fields()
 	_ = jokeFields
 	// jokeDescUserID is the schema descriptor for user_id field.

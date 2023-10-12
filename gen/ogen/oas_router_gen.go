@@ -68,10 +68,14 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 				if len(elem) == 0 {
 					switch r.Method {
+					case "DELETE":
+						s.handleMeDeleteRequest([0]string{}, elemIsEscaped, w, r)
 					case "GET":
 						s.handleMeGetRequest([0]string{}, elemIsEscaped, w, r)
+					case "PUT":
+						s.handleMePutRequest([0]string{}, elemIsEscaped, w, r)
 					default:
-						s.notAllowed(w, r, "GET")
+						s.notAllowed(w, r, "DELETE,GET,PUT")
 					}
 
 					return
@@ -87,12 +91,16 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					if len(elem) == 0 {
 						// Leaf node.
 						switch r.Method {
+						case "DELETE":
+							s.handleMeJokesDeleteRequest([0]string{}, elemIsEscaped, w, r)
 						case "GET":
 							s.handleMeJokesGetRequest([0]string{}, elemIsEscaped, w, r)
 						case "POST":
 							s.handleMeJokesPostRequest([0]string{}, elemIsEscaped, w, r)
+						case "PUT":
+							s.handleMeJokesPutRequest([0]string{}, elemIsEscaped, w, r)
 						default:
-							s.notAllowed(w, r, "GET,POST")
+							s.notAllowed(w, r, "DELETE,GET,POST,PUT")
 						}
 
 						return
@@ -265,9 +273,25 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 				if len(elem) == 0 {
 					switch method {
+					case "DELETE":
+						r.name = "MeDelete"
+						r.summary = "Deletes current user profile"
+						r.operationID = ""
+						r.pathPattern = "/me"
+						r.args = args
+						r.count = 0
+						return r, true
 					case "GET":
 						r.name = "MeGet"
 						r.summary = "Returns current user profile"
+						r.operationID = ""
+						r.pathPattern = "/me"
+						r.args = args
+						r.count = 0
+						return r, true
+					case "PUT":
+						r.name = "MePut"
+						r.summary = "Updates current user profile"
 						r.operationID = ""
 						r.pathPattern = "/me"
 						r.args = args
@@ -287,6 +311,15 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 					if len(elem) == 0 {
 						switch method {
+						case "DELETE":
+							// Leaf: MeJokesDelete
+							r.name = "MeJokesDelete"
+							r.summary = "Deletes joke for current user"
+							r.operationID = ""
+							r.pathPattern = "/me/jokes"
+							r.args = args
+							r.count = 0
+							return r, true
 						case "GET":
 							// Leaf: MeJokesGet
 							r.name = "MeJokesGet"
@@ -300,6 +333,15 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							// Leaf: MeJokesPost
 							r.name = "MeJokesPost"
 							r.summary = "Creates a new joke for current user"
+							r.operationID = ""
+							r.pathPattern = "/me/jokes"
+							r.args = args
+							r.count = 0
+							return r, true
+						case "PUT":
+							// Leaf: MeJokesPut
+							r.name = "MeJokesPut"
+							r.summary = "Updates joke for current user"
 							r.operationID = ""
 							r.pathPattern = "/me/jokes"
 							r.args = args
