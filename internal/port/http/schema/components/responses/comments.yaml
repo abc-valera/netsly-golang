@@ -1,0 +1,12 @@
+description: Array of comments
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        comments:
+          type: array
+          items:
+            $ref: "../schemas/comment.yaml"
+      required:
+        - comments

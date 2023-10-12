@@ -148,6 +148,79 @@ func (s *CodeErrorStatusCode) SetResponse(val CodeError) {
 	s.Response = val
 }
 
+// Ref: #/components/schemas/comment
+type Comment struct {
+	ID        string    `json:"id"`
+	UserID    string    `json:"user_id"`
+	JokeID    string    `json:"joke_id"`
+	Text      string    `json:"text"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *Comment) GetID() string {
+	return s.ID
+}
+
+// GetUserID returns the value of UserID.
+func (s *Comment) GetUserID() string {
+	return s.UserID
+}
+
+// GetJokeID returns the value of JokeID.
+func (s *Comment) GetJokeID() string {
+	return s.JokeID
+}
+
+// GetText returns the value of Text.
+func (s *Comment) GetText() string {
+	return s.Text
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Comment) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *Comment) SetID(val string) {
+	s.ID = val
+}
+
+// SetUserID sets the value of UserID.
+func (s *Comment) SetUserID(val string) {
+	s.UserID = val
+}
+
+// SetJokeID sets the value of JokeID.
+func (s *Comment) SetJokeID(val string) {
+	s.JokeID = val
+}
+
+// SetText sets the value of Text.
+func (s *Comment) SetText(val string) {
+	s.Text = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Comment) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+type Comments struct {
+	Comments []Comment `json:"comments"`
+}
+
+// GetComments returns the value of Comments.
+func (s *Comments) GetComments() []Comment {
+	return s.Comments
+}
+
+// SetComments sets the value of Comments.
+func (s *Comments) SetComments(val []Comment) {
+	s.Comments = val
+}
+
 // Ref: #/components/schemas/joke
 type Joke struct {
 	ID          string    `json:"id"`
@@ -230,6 +303,90 @@ func (s *Jokes) GetJokes() []Joke {
 // SetJokes sets the value of Jokes.
 func (s *Jokes) SetJokes(val []Joke) {
 	s.Jokes = val
+}
+
+// MeCommentsDeleteNoContent is response for MeCommentsDelete operation.
+type MeCommentsDeleteNoContent struct{}
+
+type MeCommentsDeleteReq struct {
+	CommentID string `json:"comment_id"`
+}
+
+// GetCommentID returns the value of CommentID.
+func (s *MeCommentsDeleteReq) GetCommentID() string {
+	return s.CommentID
+}
+
+// SetCommentID sets the value of CommentID.
+func (s *MeCommentsDeleteReq) SetCommentID(val string) {
+	s.CommentID = val
+}
+
+// MeCommentsPostOK is response for MeCommentsPost operation.
+type MeCommentsPostOK struct{}
+
+type MeCommentsPostReq struct {
+	UserID string `json:"user_id"`
+	JokeID string `json:"joke_id"`
+	Text   string `json:"text"`
+}
+
+// GetUserID returns the value of UserID.
+func (s *MeCommentsPostReq) GetUserID() string {
+	return s.UserID
+}
+
+// GetJokeID returns the value of JokeID.
+func (s *MeCommentsPostReq) GetJokeID() string {
+	return s.JokeID
+}
+
+// GetText returns the value of Text.
+func (s *MeCommentsPostReq) GetText() string {
+	return s.Text
+}
+
+// SetUserID sets the value of UserID.
+func (s *MeCommentsPostReq) SetUserID(val string) {
+	s.UserID = val
+}
+
+// SetJokeID sets the value of JokeID.
+func (s *MeCommentsPostReq) SetJokeID(val string) {
+	s.JokeID = val
+}
+
+// SetText sets the value of Text.
+func (s *MeCommentsPostReq) SetText(val string) {
+	s.Text = val
+}
+
+// MeCommentsPutOK is response for MeCommentsPut operation.
+type MeCommentsPutOK struct{}
+
+type MeCommentsPutReq struct {
+	CommentID string    `json:"comment_id"`
+	Text      OptString `json:"text"`
+}
+
+// GetCommentID returns the value of CommentID.
+func (s *MeCommentsPutReq) GetCommentID() string {
+	return s.CommentID
+}
+
+// GetText returns the value of Text.
+func (s *MeCommentsPutReq) GetText() OptString {
+	return s.Text
+}
+
+// SetCommentID sets the value of CommentID.
+func (s *MeCommentsPutReq) SetCommentID(val string) {
+	s.CommentID = val
+}
+
+// SetText sets the value of Text.
+func (s *MeCommentsPutReq) SetText(val OptString) {
+	s.Text = val
 }
 
 // MeDeleteNoContent is response for MeDelete operation.
@@ -320,14 +477,14 @@ func (s *MeJokesPostReq) SetExplanation(val OptString) {
 type MeJokesPutCreated struct{}
 
 type MeJokesPutReq struct {
-	JokeID      OptString `json:"joke_id"`
+	JokeID      string    `json:"joke_id"`
 	Title       OptString `json:"title"`
 	Text        OptString `json:"text"`
 	Explanation OptString `json:"explanation"`
 }
 
 // GetJokeID returns the value of JokeID.
-func (s *MeJokesPutReq) GetJokeID() OptString {
+func (s *MeJokesPutReq) GetJokeID() string {
 	return s.JokeID
 }
 
@@ -347,7 +504,7 @@ func (s *MeJokesPutReq) GetExplanation() OptString {
 }
 
 // SetJokeID sets the value of JokeID.
-func (s *MeJokesPutReq) SetJokeID(val OptString) {
+func (s *MeJokesPutReq) SetJokeID(val string) {
 	s.JokeID = val
 }
 

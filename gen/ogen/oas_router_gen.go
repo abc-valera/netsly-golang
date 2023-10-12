@@ -40,6 +40,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r)
 		return
 	}
+	args := [1]string{}
 
 	// Static code generated router with unwrapped path search.
 	switch {
@@ -59,6 +60,31 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			switch elem[0] {
+			case 'c': // Prefix: "comments/"
+				if l := len("comments/"); len(elem) >= l && elem[0:l] == "comments/" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				// Param: "joke_id"
+				// Leaf parameter
+				args[0] = elem
+				elem = ""
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "GET":
+						s.handleCommentsJokeIDGetRequest([1]string{
+							args[0],
+						}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "GET")
+					}
+
+					return
+				}
 			case 'm': // Prefix: "me"
 				if l := len("me"); len(elem) >= l && elem[0:l] == "me" {
 					elem = elem[l:]
@@ -81,29 +107,63 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				switch elem[0] {
-				case '/': // Prefix: "/jokes"
-					if l := len("/jokes"); len(elem) >= l && elem[0:l] == "/jokes" {
+				case '/': // Prefix: "/"
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						// Leaf node.
-						switch r.Method {
-						case "DELETE":
-							s.handleMeJokesDeleteRequest([0]string{}, elemIsEscaped, w, r)
-						case "GET":
-							s.handleMeJokesGetRequest([0]string{}, elemIsEscaped, w, r)
-						case "POST":
-							s.handleMeJokesPostRequest([0]string{}, elemIsEscaped, w, r)
-						case "PUT":
-							s.handleMeJokesPutRequest([0]string{}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, "DELETE,GET,POST,PUT")
+						break
+					}
+					switch elem[0] {
+					case 'c': // Prefix: "comments"
+						if l := len("comments"); len(elem) >= l && elem[0:l] == "comments" {
+							elem = elem[l:]
+						} else {
+							break
 						}
 
-						return
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "DELETE":
+								s.handleMeCommentsDeleteRequest([0]string{}, elemIsEscaped, w, r)
+							case "POST":
+								s.handleMeCommentsPostRequest([0]string{}, elemIsEscaped, w, r)
+							case "PUT":
+								s.handleMeCommentsPutRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "DELETE,POST,PUT")
+							}
+
+							return
+						}
+					case 'j': // Prefix: "jokes"
+						if l := len("jokes"); len(elem) >= l && elem[0:l] == "jokes" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "DELETE":
+								s.handleMeJokesDeleteRequest([0]string{}, elemIsEscaped, w, r)
+							case "GET":
+								s.handleMeJokesGetRequest([0]string{}, elemIsEscaped, w, r)
+							case "POST":
+								s.handleMeJokesPostRequest([0]string{}, elemIsEscaped, w, r)
+							case "PUT":
+								s.handleMeJokesPutRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "DELETE,GET,POST,PUT")
+							}
+
+							return
+						}
 					}
 				}
 			case 's': // Prefix: "sign_"
@@ -185,7 +245,7 @@ type Route struct {
 	operationID string
 	pathPattern string
 	count       int
-	args        [0]string
+	args        [1]string
 }
 
 // Name returns ogen operation name.
@@ -264,6 +324,33 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				break
 			}
 			switch elem[0] {
+			case 'c': // Prefix: "comments/"
+				if l := len("comments/"); len(elem) >= l && elem[0:l] == "comments/" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				// Param: "joke_id"
+				// Leaf parameter
+				args[0] = elem
+				elem = ""
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						// Leaf: CommentsJokeIDGet
+						r.name = "CommentsJokeIDGet"
+						r.summary = ""
+						r.operationID = ""
+						r.pathPattern = "/comments/{joke_id}"
+						r.args = args
+						r.count = 1
+						return r, true
+					default:
+						return
+					}
+				}
 			case 'm': // Prefix: "me"
 				if l := len("me"); len(elem) >= l && elem[0:l] == "me" {
 					elem = elem[l:]
@@ -302,53 +389,105 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 				}
 				switch elem[0] {
-				case '/': // Prefix: "/jokes"
-					if l := len("/jokes"); len(elem) >= l && elem[0:l] == "/jokes" {
+				case '/': // Prefix: "/"
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						switch method {
-						case "DELETE":
-							// Leaf: MeJokesDelete
-							r.name = "MeJokesDelete"
-							r.summary = "Deletes joke for current user"
-							r.operationID = ""
-							r.pathPattern = "/me/jokes"
-							r.args = args
-							r.count = 0
-							return r, true
-						case "GET":
-							// Leaf: MeJokesGet
-							r.name = "MeJokesGet"
-							r.summary = "Returns jokes of the current user"
-							r.operationID = ""
-							r.pathPattern = "/me/jokes"
-							r.args = args
-							r.count = 0
-							return r, true
-						case "POST":
-							// Leaf: MeJokesPost
-							r.name = "MeJokesPost"
-							r.summary = "Creates a new joke for current user"
-							r.operationID = ""
-							r.pathPattern = "/me/jokes"
-							r.args = args
-							r.count = 0
-							return r, true
-						case "PUT":
-							// Leaf: MeJokesPut
-							r.name = "MeJokesPut"
-							r.summary = "Updates joke for current user"
-							r.operationID = ""
-							r.pathPattern = "/me/jokes"
-							r.args = args
-							r.count = 0
-							return r, true
-						default:
-							return
+						break
+					}
+					switch elem[0] {
+					case 'c': // Prefix: "comments"
+						if l := len("comments"); len(elem) >= l && elem[0:l] == "comments" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "DELETE":
+								// Leaf: MeCommentsDelete
+								r.name = "MeCommentsDelete"
+								r.summary = ""
+								r.operationID = ""
+								r.pathPattern = "/me/comments"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "POST":
+								// Leaf: MeCommentsPost
+								r.name = "MeCommentsPost"
+								r.summary = ""
+								r.operationID = ""
+								r.pathPattern = "/me/comments"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "PUT":
+								// Leaf: MeCommentsPut
+								r.name = "MeCommentsPut"
+								r.summary = ""
+								r.operationID = ""
+								r.pathPattern = "/me/comments"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+					case 'j': // Prefix: "jokes"
+						if l := len("jokes"); len(elem) >= l && elem[0:l] == "jokes" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "DELETE":
+								// Leaf: MeJokesDelete
+								r.name = "MeJokesDelete"
+								r.summary = "Deletes joke for current user"
+								r.operationID = ""
+								r.pathPattern = "/me/jokes"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "GET":
+								// Leaf: MeJokesGet
+								r.name = "MeJokesGet"
+								r.summary = "Returns jokes of the current user"
+								r.operationID = ""
+								r.pathPattern = "/me/jokes"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "POST":
+								// Leaf: MeJokesPost
+								r.name = "MeJokesPost"
+								r.summary = "Creates a new joke for current user"
+								r.operationID = ""
+								r.pathPattern = "/me/jokes"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "PUT":
+								// Leaf: MeJokesPut
+								r.name = "MeJokesPut"
+								r.summary = "Updates joke for current user"
+								r.operationID = ""
+								r.pathPattern = "/me/jokes"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
 						}
 					}
 				}

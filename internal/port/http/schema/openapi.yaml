@@ -34,14 +34,10 @@ paths:
     $ref: paths/me.yaml
   /me/jokes:
     $ref: paths/me_jokes.yaml
-    # /me:
-    #   $ref: paths/me.yaml
-    # /users:
-    #   $ref: paths/users.yaml
-    # /jokes:
-    #   $ref: paths/jokes.yaml
-    # /comments:
-    #   $ref: paths/comments.yaml
+  /me/comments:
+    $ref: paths/me_comments.yaml
+  /comments/{joke_id}:
+    $ref: paths/comments_{joke_id}.yaml
 components:
   securitySchemes:
     bearerAuth:

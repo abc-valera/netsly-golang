@@ -13,6 +13,42 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// CommentsJokeIDGet implements GET /comments/{joke_id} operation.
+//
+// Returns comments of the joke.
+//
+// GET /comments/{joke_id}
+func (UnimplementedHandler) CommentsJokeIDGet(ctx context.Context, params CommentsJokeIDGetParams) (r *Comments, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// MeCommentsDelete implements DELETE /me/comments operation.
+//
+// Deletes a comment of the current user.
+//
+// DELETE /me/comments
+func (UnimplementedHandler) MeCommentsDelete(ctx context.Context, req *MeCommentsDeleteReq) error {
+	return ht.ErrNotImplemented
+}
+
+// MeCommentsPost implements POST /me/comments operation.
+//
+// Creates a comment for the current user and the current joke.
+//
+// POST /me/comments
+func (UnimplementedHandler) MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) error {
+	return ht.ErrNotImplemented
+}
+
+// MeCommentsPut implements PUT /me/comments operation.
+//
+// Updates a comment of the current user.
+//
+// PUT /me/comments
+func (UnimplementedHandler) MeCommentsPut(ctx context.Context, req *MeCommentsPutReq) error {
+	return ht.ErrNotImplemented
+}
+
 // MeDelete implements DELETE /me operation.
 //
 // Deletes current user profile.

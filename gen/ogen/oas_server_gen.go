@@ -8,6 +8,30 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// CommentsJokeIDGet implements GET /comments/{joke_id} operation.
+	//
+	// Returns comments of the joke.
+	//
+	// GET /comments/{joke_id}
+	CommentsJokeIDGet(ctx context.Context, params CommentsJokeIDGetParams) (*Comments, error)
+	// MeCommentsDelete implements DELETE /me/comments operation.
+	//
+	// Deletes a comment of the current user.
+	//
+	// DELETE /me/comments
+	MeCommentsDelete(ctx context.Context, req *MeCommentsDeleteReq) error
+	// MeCommentsPost implements POST /me/comments operation.
+	//
+	// Creates a comment for the current user and the current joke.
+	//
+	// POST /me/comments
+	MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) error
+	// MeCommentsPut implements PUT /me/comments operation.
+	//
+	// Updates a comment of the current user.
+	//
+	// PUT /me/comments
+	MeCommentsPut(ctx context.Context, req *MeCommentsPutReq) error
 	// MeDelete implements DELETE /me operation.
 	//
 	// Deletes current user profile.

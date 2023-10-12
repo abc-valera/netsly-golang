@@ -1,0 +1,5 @@
+description: Joke
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/joke.yaml"

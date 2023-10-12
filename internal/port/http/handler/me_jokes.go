@@ -12,18 +12,15 @@ import (
 )
 
 type MeJokesHandler struct {
-	userRepo    repository.IUserRepository
 	jokeRepo    repository.IJokeRepository
 	jokeUsecase application.JokeUseCase
 }
 
 func NewMeJokesHandler(
-	userRepo repository.IUserRepository,
 	jokeRepo repository.IJokeRepository,
 	jokeUsecase application.JokeUseCase,
 ) MeJokesHandler {
 	return MeJokesHandler{
-		userRepo:    userRepo,
 		jokeRepo:    jokeRepo,
 		jokeUsecase: jokeUsecase,
 	}
@@ -44,16 +41,13 @@ func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostRe
 	if err != nil {
 		return err
 	}
-	if err := h.jokeRepo.Create(ctx, domainJoke); err != nil {
-		return err
-	}
-	return nil
+	return h.jokeRepo.Create(ctx, domainJoke)
 }
 
 func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq) error {
 	userID := ctx.Value(PayloadKey).(service.Payload).UserID
 	return h.jokeUsecase.UpdateJoke(ctx, application.UpdateJokeRequest{
-		JokeID:      req.JokeID.Value,
+		JokeID:      req.JokeID,
 		Title:       req.Title.Value,
 		Text:        req.Text.Value,
 		Explanation: req.Explanation.Value,

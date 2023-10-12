@@ -1,0 +1,21 @@
+type: object
+properties:
+  id:
+    type: string
+  user_id:
+    type: string
+  joke_id:
+    type: string
+  text:
+    type: string
+    example: Text of comment 1
+  createdAt:
+    type: string
+    format: date-time
+    example: "2021-08-01T00:00:00Z"
+required:
+  - id
+  - user_id
+  - joke_id
+  - text
+  - createdAt
