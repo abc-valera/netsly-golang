@@ -9,6 +9,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/impl/common"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
 )
 
 type commentRepository struct {
@@ -41,9 +42,8 @@ func (r commentRepository) GetByID(ctx context.Context, id string) (*entity.Comm
 	return dto.FromEntCommentToComment(entComment), common.HandleErr(err)
 }
 
-func (r commentRepository) GetByJokeID(ctx context.Context, jokeID string) (entity.Comments, error) {
-	entComments, err := r.Client.Comment.
-		Query().
+func (r commentRepository) GetByJokeID(ctx context.Context, jokeID string, spec spec.SelectParams) (entity.Comments, error) {
+	entComments, err := r.specToQuery(spec).
 		Where(comment.JokeID(jokeID)).
 		All(ctx)
 	return dto.FromEntCommentsToComments(entComments), common.HandleErr(err)
@@ -64,4 +64,12 @@ func (r commentRepository) Delete(ctx context.Context, commentID string) error {
 		Where(comment.ID(commentID)).
 		Exec(ctx)
 	return common.HandleErr(err)
+}
+
+func (r commentRepository) specToQuery(spec spec.SelectParams) *ent.CommentQuery {
+	return r.Client.Comment.
+		Query().
+		Order(ent.Desc(comment.FieldCreatedAt)).
+		Limit(int(spec.Limit)).
+		Offset(int(spec.Offset))
 }

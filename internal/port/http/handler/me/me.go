@@ -1,4 +1,4 @@
-package handler
+package me
 
 import (
 	"context"
@@ -8,46 +8,49 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
 	"github.com/abc-valera/flugo-api-golang/internal/port/http/dto"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/other"
 )
 
 type MeHandler struct {
 	userRepo    repository.IUserRepository
-	userUseCase application.UserUseCase
+	userUsecase application.UserUseCase
 }
 
 func NewMeHandler(
 	userRepo repository.IUserRepository,
-	userUseCase application.UserUseCase,
+	userUsecase application.UserUseCase,
 ) MeHandler {
 	return MeHandler{
-		userRepo: userRepo,
+		userRepo:    userRepo,
+		userUsecase: userUsecase,
 	}
 }
 
 func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
-	payload := ctx.Value(PayloadKey).(service.Payload)
-	domainUser, err := h.userRepo.GetByID(ctx, payload.UserID)
+	userID := ctx.Value(other.PayloadKey).(service.Payload).UserID
+	user, err := h.userRepo.GetByID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
-	return dto.NewUserResponse(domainUser), nil
+	return dto.NewUserResponse(user), nil
 }
 
 func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) error {
-	payload := ctx.Value(PayloadKey).(service.Payload)
-	return h.userUseCase.UpdateUser(ctx, application.UpdateUserRequest{
-		UpdaterID: payload.UserID,
+	userID := ctx.Value(other.PayloadKey).(service.Payload).UserID
+	return h.userUsecase.UpdateUser(ctx, application.UpdateUserRequest{
+		UpdaterID: userID,
 		UserID:    req.UserID,
 		Username:  req.Username.Value,
 		Fullanme:  req.Fullname.Value,
 		Status:    req.Status.Value,
 	})
+
 }
 
-func (h MeHandler) MeDelete(ctx context.Context, req *ogen.MeDeleteReq) error {
-	payload := ctx.Value(PayloadKey).(service.Payload)
-	return h.userUseCase.DeleteUser(ctx, application.DeleteUserRequest{
-		DeleterID: payload.UserID,
+func (h MeHandler) MeDel(ctx context.Context, req *ogen.MeDelReq) error {
+	userID := ctx.Value(other.PayloadKey).(service.Payload).UserID
+	return h.userUsecase.DeleteUser(ctx, application.DeleteUserRequest{
+		DeleterID: userID,
 		UserID:    req.UserID,
 	})
 }

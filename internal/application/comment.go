@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
 )
 
 var (
@@ -21,10 +23,31 @@ func NewCommentUseCase(commentRepo repository.ICommentRepository) CommentUseCase
 	}
 }
 
+type CreateCommentRequest struct {
+	UserID string
+	JokeID string
+	Text   string
+}
+
+func (uc CommentUseCase) CreateComment(ctx context.Context, req CreateCommentRequest) error {
+	domainComment, err := entity.NewComment(req.UserID, req.JokeID, req.Text)
+	if err != nil {
+		return err
+	}
+	return uc.commentRepo.Create(ctx, domainComment)
+}
+
+func (uc CommentUseCase) GetCommentsByJoke(ctx context.Context, jokeID string, params spec.SelectParams) (entity.Comments, error) {
+	if err := entity.ValidateCommentSelectParams(params); err != nil {
+		return nil, err
+	}
+	return uc.commentRepo.GetByJokeID(ctx, jokeID, params)
+}
+
 type UpdateCommentRequest struct {
 	CommentID   string
 	CommentText string
-	UserID      string
+	UpdaterID   string
 }
 
 func (uc CommentUseCase) UpdateComment(ctx context.Context, req UpdateCommentRequest) error {
@@ -33,7 +56,7 @@ func (uc CommentUseCase) UpdateComment(ctx context.Context, req UpdateCommentReq
 		return err
 	}
 
-	if req.UserID != domainComment.UserID {
+	if req.UpdaterID != domainComment.UserID {
 		return errCommentModifyPermissionDenied
 	}
 
@@ -46,7 +69,7 @@ func (uc CommentUseCase) UpdateComment(ctx context.Context, req UpdateCommentReq
 
 type DeleteCommentRequest struct {
 	CommentID string
-	UserID    string
+	DeleterID string
 }
 
 func (uc CommentUseCase) DeleteComment(ctx context.Context, req DeleteCommentRequest) error {
@@ -55,7 +78,7 @@ func (uc CommentUseCase) DeleteComment(ctx context.Context, req DeleteCommentReq
 		return err
 	}
 
-	if dbComment.UserID != req.UserID {
+	if dbComment.UserID != req.DeleterID {
 		return errCommentModifyPermissionDenied
 	}
 

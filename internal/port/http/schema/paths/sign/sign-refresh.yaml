@@ -2,6 +2,7 @@ post:
   tags:
     - sign
   summary: Exchanges a refresh token for an access token
+  operationId: SignRefreshPost
   requestBody:
     description: Refresh token
     required: true
@@ -29,4 +30,4 @@ post:
             required:
               - accessToken
     default:
-      $ref: "../components/responses/code_error.yaml"
+      $ref: "../../components/responses/code_error.yaml"

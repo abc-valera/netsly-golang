@@ -1,0 +1,18 @@
+get:
+  tags:
+    - comments
+  summary: Returns comments of the joke
+  operationId: CommentsByJokeIDGet
+  parameters:
+    - name: joke_id
+      in: path
+      description: ID of the joke to get comments
+      required: true
+      schema:
+        type: string
+    - $ref: "../../components/parameters/select.yaml"
+  responses:
+    "200":
+      $ref: "../../components/responses/comments.yaml"
+    default:
+      $ref: "../../components/responses/code_error.yaml"

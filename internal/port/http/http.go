@@ -8,7 +8,11 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
-	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/comments"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/likes"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/me"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/other"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/sign"
 	"github.com/abc-valera/flugo-api-golang/internal/port/http/middleware"
 	"github.com/go-chi/chi/v5"
 )
@@ -21,26 +25,26 @@ func RunServer(
 ) error {
 	// Init handlers (ogenHandler implements ogen.Server interface)
 	ogenHandler := &struct {
-		handler.ErrorHandler
-		handler.SignHandler
-		handler.MeHandler
-		handler.MeJokesHandler
-		handler.MeCommentsHandler
-		handler.MeLikeHandler
-		handler.CommentsHandler
-		handler.LikesHandler
+		other.ErrorHandler
+		sign.SignHandler
+		me.MeHandler
+		me.MeJokesHandler
+		me.MeCommentsHandler
+		me.MeLikesHandler
+		comments.CommentsHandler
+		likes.LikesHandler
 	}{
-		ErrorHandler:      handler.NewErrorHandler(services.Logger),
-		SignHandler:       handler.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
-		MeHandler:         handler.NewMeHandler(repos.UserRepo, usecases.UserUseCase),
-		MeJokesHandler:    handler.NewMeJokesHandler(repos.JokeRepo, usecases.JokeUseCase),
-		MeCommentsHandler: handler.NewMeCommentsHandler(repos.CommentRepo, usecases.CommentUseCase),
-		MeLikeHandler:     handler.NewMeLikeHandler(repos.LikeRepo),
-		CommentsHandler:   handler.NewCommentsHandler(repos.CommentRepo),
-		LikesHandler:      handler.NewLikesHandler(repos.LikeRepo),
+		ErrorHandler:      other.NewErrorHandler(services.Logger),
+		SignHandler:       sign.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
+		MeHandler:         me.NewMeHandler(repos.UserRepo, usecases.UserUseCase),
+		MeJokesHandler:    me.NewMeJokesHandler(repos.JokeRepo, usecases.JokeUseCase),
+		MeCommentsHandler: me.NewMeCommentsHandler(repos.CommentRepo, usecases.CommentUseCase),
+		MeLikesHandler:    me.NewMeLikesHandler(repos.LikeRepo, usecases.LikeUseCase),
+		CommentsHandler:   comments.NewCommentsHandler(repos.CommentRepo),
+		LikesHandler:      likes.NewLikesHandler(repos.LikeRepo),
 	}
 	// Init security handler
-	securityHandler := handler.NewSecurityHandler(services.TokenMaker)
+	securityHandler := other.NewSecurityHandler(services.TokenMaker)
 
 	// Init ogen server
 	server, err := ogen.NewServer(ogenHandler, securityHandler)

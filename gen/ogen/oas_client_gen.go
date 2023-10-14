@@ -18,108 +18,109 @@ import (
 	"github.com/ogen-go/ogen/conv"
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/ogenerrors"
+	"github.com/ogen-go/ogen/otelogen"
 	"github.com/ogen-go/ogen/uri"
 )
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
-	// CommentsJokeIDGet invokes GET /comments/{joke_id} operation.
+	// CommentsByJokeIDGet invokes CommentsByJokeIDGet operation.
 	//
 	// Returns comments of the joke.
 	//
 	// GET /comments/{joke_id}
-	CommentsJokeIDGet(ctx context.Context, params CommentsJokeIDGetParams) (*Comments, error)
-	// LikesJokeIDGet invokes GET /likes/{joke_id} operation.
+	CommentsByJokeIDGet(ctx context.Context, params CommentsByJokeIDGetParams) (*Comments, error)
+	// LikesByJokeIDGet invokes LikesByJokeIDGet operation.
 	//
 	// Counts likes of the joke.
 	//
 	// GET /likes/{joke_id}
-	LikesJokeIDGet(ctx context.Context, params LikesJokeIDGetParams) (int, error)
-	// MeCommentsDelete invokes DELETE /me/comments operation.
+	LikesByJokeIDGet(ctx context.Context, params LikesByJokeIDGetParams) (int, error)
+	// MeCommentsDel invokes MeCommentsDel operation.
 	//
 	// Deletes a comment of the current user.
 	//
 	// DELETE /me/comments
-	MeCommentsDelete(ctx context.Context, request *MeCommentsDeleteReq) error
-	// MeCommentsPost invokes POST /me/comments operation.
+	MeCommentsDel(ctx context.Context, request *MeCommentsDelReq) error
+	// MeCommentsPost invokes MeCommentsPost operation.
 	//
 	// Creates a comment for the current user and the current joke.
 	//
 	// POST /me/comments
-	MeCommentsPost(ctx context.Context, request *MeCommentsPostReq) error
-	// MeCommentsPut invokes PUT /me/comments operation.
+	MeCommentsPost(ctx context.Context, request *MeCommentsPostReq, params MeCommentsPostParams) error
+	// MeCommentsPut invokes MeCommentsPut operation.
 	//
 	// Updates a comment of the current user.
 	//
 	// PUT /me/comments
 	MeCommentsPut(ctx context.Context, request *MeCommentsPutReq) error
-	// MeDelete invokes DELETE /me operation.
+	// MeDel invokes MeDel operation.
 	//
 	// Deletes current user profile.
 	//
 	// DELETE /me
-	MeDelete(ctx context.Context, request *MeDeleteReq) error
-	// MeGet invokes GET /me operation.
+	MeDel(ctx context.Context, request *MeDelReq) error
+	// MeGet invokes MeGet operation.
 	//
 	// Returns current user profile.
 	//
 	// GET /me
 	MeGet(ctx context.Context) (*User, error)
-	// MeJokesDelete invokes DELETE /me/jokes operation.
+	// MeJokesDel invokes MeJokesDel operation.
 	//
 	// Deletes joke for current user.
 	//
 	// DELETE /me/jokes
-	MeJokesDelete(ctx context.Context, request *MeJokesDeleteReq) error
-	// MeJokesGet invokes GET /me/jokes operation.
+	MeJokesDel(ctx context.Context, request *MeJokesDelReq) error
+	// MeJokesGet invokes MeJokesGet operation.
 	//
 	// Returns jokes of the current user.
 	//
 	// GET /me/jokes
-	MeJokesGet(ctx context.Context) (*Jokes, error)
-	// MeJokesPost invokes POST /me/jokes operation.
+	MeJokesGet(ctx context.Context, params MeJokesGetParams) (*Jokes, error)
+	// MeJokesPost invokes MeJokesPost operation.
 	//
 	// Creates a new joke for current user.
 	//
 	// POST /me/jokes
 	MeJokesPost(ctx context.Context, request *MeJokesPostReq) error
-	// MeJokesPut invokes PUT /me/jokes operation.
+	// MeJokesPut invokes MeJokesPut operation.
 	//
 	// Updates joke for current user.
 	//
 	// PUT /me/jokes
 	MeJokesPut(ctx context.Context, request *MeJokesPutReq) error
-	// MeLikesDelete invokes DELETE /me/likes operation.
+	// MeLikesDel invokes MeLikesDel operation.
 	//
 	// Deletes a like of the current user.
 	//
 	// DELETE /me/likes
-	MeLikesDelete(ctx context.Context, request *MeLikesDeleteReq) error
-	// MeLikesPost invokes POST /me/likes operation.
+	MeLikesDel(ctx context.Context, request *MeLikesDelReq) error
+	// MeLikesPost invokes MeLikesPost operation.
 	//
 	// Creates a like for a joke for the current user.
 	//
 	// POST /me/likes
 	MeLikesPost(ctx context.Context, request *MeLikesPostReq) error
-	// MePut invokes PUT /me operation.
+	// MePut invokes MePut operation.
 	//
 	// Updates current user profile.
 	//
 	// PUT /me
 	MePut(ctx context.Context, request *MePutReq) error
-	// SignInPost invokes POST /sign_in operation.
+	// SignInPost invokes SignInPost operation.
 	//
 	// Performs user authentication.
 	//
 	// POST /sign_in
 	SignInPost(ctx context.Context, request *SignInPostReq) (*SignInPostOK, error)
-	// SignRefreshPost invokes POST /sign_refresh operation.
+	// SignRefreshPost invokes SignRefreshPost operation.
 	//
 	// Exchanges a refresh token for an access token.
 	//
 	// POST /sign_refresh
 	SignRefreshPost(ctx context.Context, request *SignRefreshPostReq) (*SignRefreshPostOK, error)
-	// SignUpPost invokes POST /sign_up operation.
+	// SignUpPost invokes SignUpPost operation.
 	//
 	// Performs user registration.
 	//
@@ -181,18 +182,19 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
-// CommentsJokeIDGet invokes GET /comments/{joke_id} operation.
+// CommentsByJokeIDGet invokes CommentsByJokeIDGet operation.
 //
 // Returns comments of the joke.
 //
 // GET /comments/{joke_id}
-func (c *Client) CommentsJokeIDGet(ctx context.Context, params CommentsJokeIDGetParams) (*Comments, error) {
-	res, err := c.sendCommentsJokeIDGet(ctx, params)
+func (c *Client) CommentsByJokeIDGet(ctx context.Context, params CommentsByJokeIDGetParams) (*Comments, error) {
+	res, err := c.sendCommentsByJokeIDGet(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendCommentsJokeIDGet(ctx context.Context, params CommentsJokeIDGetParams) (res *Comments, err error) {
+func (c *Client) sendCommentsByJokeIDGet(ctx context.Context, params CommentsByJokeIDGetParams) (res *Comments, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("CommentsByJokeIDGet"),
 		semconv.HTTPMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/comments/{joke_id}"),
 	}
@@ -209,7 +211,7 @@ func (c *Client) sendCommentsJokeIDGet(ctx context.Context, params CommentsJokeI
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "CommentsJokeIDGet",
+	ctx, span := c.cfg.Tracer.Start(ctx, "CommentsByJokeIDGet",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -248,43 +250,28 @@ func (c *Client) sendCommentsJokeIDGet(ctx context.Context, params CommentsJokeI
 	}
 	uri.AddPathParts(u, pathParts[:]...)
 
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "select_params" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "select_params",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return params.SelectParams.EncodeURI(e)
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "CommentsJokeIDGet", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
 	}
 
 	stage = "SendRequest"
@@ -295,7 +282,7 @@ func (c *Client) sendCommentsJokeIDGet(ctx context.Context, params CommentsJokeI
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeCommentsJokeIDGetResponse(resp)
+	result, err := decodeCommentsByJokeIDGetResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -303,18 +290,19 @@ func (c *Client) sendCommentsJokeIDGet(ctx context.Context, params CommentsJokeI
 	return result, nil
 }
 
-// LikesJokeIDGet invokes GET /likes/{joke_id} operation.
+// LikesByJokeIDGet invokes LikesByJokeIDGet operation.
 //
 // Counts likes of the joke.
 //
 // GET /likes/{joke_id}
-func (c *Client) LikesJokeIDGet(ctx context.Context, params LikesJokeIDGetParams) (int, error) {
-	res, err := c.sendLikesJokeIDGet(ctx, params)
+func (c *Client) LikesByJokeIDGet(ctx context.Context, params LikesByJokeIDGetParams) (int, error) {
+	res, err := c.sendLikesByJokeIDGet(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendLikesJokeIDGet(ctx context.Context, params LikesJokeIDGetParams) (res int, err error) {
+func (c *Client) sendLikesByJokeIDGet(ctx context.Context, params LikesByJokeIDGetParams) (res int, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("LikesByJokeIDGet"),
 		semconv.HTTPMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/likes/{joke_id}"),
 	}
@@ -331,7 +319,7 @@ func (c *Client) sendLikesJokeIDGet(ctx context.Context, params LikesJokeIDGetPa
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "LikesJokeIDGet",
+	ctx, span := c.cfg.Tracer.Start(ctx, "LikesByJokeIDGet",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -376,39 +364,6 @@ func (c *Client) sendLikesJokeIDGet(ctx context.Context, params LikesJokeIDGetPa
 		return res, errors.Wrap(err, "create request")
 	}
 
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "LikesJokeIDGet", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -417,7 +372,7 @@ func (c *Client) sendLikesJokeIDGet(ctx context.Context, params LikesJokeIDGetPa
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeLikesJokeIDGetResponse(resp)
+	result, err := decodeLikesByJokeIDGetResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -425,18 +380,19 @@ func (c *Client) sendLikesJokeIDGet(ctx context.Context, params LikesJokeIDGetPa
 	return result, nil
 }
 
-// MeCommentsDelete invokes DELETE /me/comments operation.
+// MeCommentsDel invokes MeCommentsDel operation.
 //
 // Deletes a comment of the current user.
 //
 // DELETE /me/comments
-func (c *Client) MeCommentsDelete(ctx context.Context, request *MeCommentsDeleteReq) error {
-	_, err := c.sendMeCommentsDelete(ctx, request)
+func (c *Client) MeCommentsDel(ctx context.Context, request *MeCommentsDelReq) error {
+	_, err := c.sendMeCommentsDel(ctx, request)
 	return err
 }
 
-func (c *Client) sendMeCommentsDelete(ctx context.Context, request *MeCommentsDeleteReq) (res *MeCommentsDeleteNoContent, err error) {
+func (c *Client) sendMeCommentsDel(ctx context.Context, request *MeCommentsDelReq) (res *MeCommentsDelNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeCommentsDel"),
 		semconv.HTTPMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/me/comments"),
 	}
@@ -453,7 +409,7 @@ func (c *Client) sendMeCommentsDelete(ctx context.Context, request *MeCommentsDe
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeCommentsDelete",
+	ctx, span := c.cfg.Tracer.Start(ctx, "MeCommentsDel",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -479,7 +435,7 @@ func (c *Client) sendMeCommentsDelete(ctx context.Context, request *MeCommentsDe
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeMeCommentsDeleteRequest(request, r); err != nil {
+	if err := encodeMeCommentsDelRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -488,7 +444,7 @@ func (c *Client) sendMeCommentsDelete(ctx context.Context, request *MeCommentsDe
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeCommentsDelete", r); {
+			switch err := c.securityBearerAuth(ctx, "MeCommentsDel", r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -524,7 +480,7 @@ func (c *Client) sendMeCommentsDelete(ctx context.Context, request *MeCommentsDe
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeMeCommentsDeleteResponse(resp)
+	result, err := decodeMeCommentsDelResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -532,18 +488,19 @@ func (c *Client) sendMeCommentsDelete(ctx context.Context, request *MeCommentsDe
 	return result, nil
 }
 
-// MeCommentsPost invokes POST /me/comments operation.
+// MeCommentsPost invokes MeCommentsPost operation.
 //
 // Creates a comment for the current user and the current joke.
 //
 // POST /me/comments
-func (c *Client) MeCommentsPost(ctx context.Context, request *MeCommentsPostReq) error {
-	_, err := c.sendMeCommentsPost(ctx, request)
+func (c *Client) MeCommentsPost(ctx context.Context, request *MeCommentsPostReq, params MeCommentsPostParams) error {
+	_, err := c.sendMeCommentsPost(ctx, request, params)
 	return err
 }
 
-func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPostReq) (res *MeCommentsPostOK, err error) {
+func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPostReq, params MeCommentsPostParams) (res *MeCommentsPostOK, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeCommentsPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/me/comments"),
 	}
@@ -580,6 +537,24 @@ func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPost
 	var pathParts [1]string
 	pathParts[0] = "/me/comments"
 	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "select_params" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "select_params",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return params.SelectParams.EncodeURI(e)
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -639,7 +614,7 @@ func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPost
 	return result, nil
 }
 
-// MeCommentsPut invokes PUT /me/comments operation.
+// MeCommentsPut invokes MeCommentsPut operation.
 //
 // Updates a comment of the current user.
 //
@@ -651,6 +626,7 @@ func (c *Client) MeCommentsPut(ctx context.Context, request *MeCommentsPutReq) e
 
 func (c *Client) sendMeCommentsPut(ctx context.Context, request *MeCommentsPutReq) (res *MeCommentsPutOK, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeCommentsPut"),
 		semconv.HTTPMethodKey.String("PUT"),
 		semconv.HTTPRouteKey.String("/me/comments"),
 	}
@@ -746,18 +722,19 @@ func (c *Client) sendMeCommentsPut(ctx context.Context, request *MeCommentsPutRe
 	return result, nil
 }
 
-// MeDelete invokes DELETE /me operation.
+// MeDel invokes MeDel operation.
 //
 // Deletes current user profile.
 //
 // DELETE /me
-func (c *Client) MeDelete(ctx context.Context, request *MeDeleteReq) error {
-	_, err := c.sendMeDelete(ctx, request)
+func (c *Client) MeDel(ctx context.Context, request *MeDelReq) error {
+	_, err := c.sendMeDel(ctx, request)
 	return err
 }
 
-func (c *Client) sendMeDelete(ctx context.Context, request *MeDeleteReq) (res *MeDeleteNoContent, err error) {
+func (c *Client) sendMeDel(ctx context.Context, request *MeDelReq) (res *MeDelNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeDel"),
 		semconv.HTTPMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/me"),
 	}
@@ -774,7 +751,7 @@ func (c *Client) sendMeDelete(ctx context.Context, request *MeDeleteReq) (res *M
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeDelete",
+	ctx, span := c.cfg.Tracer.Start(ctx, "MeDel",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -800,7 +777,7 @@ func (c *Client) sendMeDelete(ctx context.Context, request *MeDeleteReq) (res *M
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeMeDeleteRequest(request, r); err != nil {
+	if err := encodeMeDelRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -809,7 +786,7 @@ func (c *Client) sendMeDelete(ctx context.Context, request *MeDeleteReq) (res *M
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeDelete", r); {
+			switch err := c.securityBearerAuth(ctx, "MeDel", r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -845,7 +822,7 @@ func (c *Client) sendMeDelete(ctx context.Context, request *MeDeleteReq) (res *M
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeMeDeleteResponse(resp)
+	result, err := decodeMeDelResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -853,7 +830,7 @@ func (c *Client) sendMeDelete(ctx context.Context, request *MeDeleteReq) (res *M
 	return result, nil
 }
 
-// MeGet invokes GET /me operation.
+// MeGet invokes MeGet operation.
 //
 // Returns current user profile.
 //
@@ -865,6 +842,7 @@ func (c *Client) MeGet(ctx context.Context) (*User, error) {
 
 func (c *Client) sendMeGet(ctx context.Context) (res *User, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeGet"),
 		semconv.HTTPMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/me"),
 	}
@@ -957,18 +935,19 @@ func (c *Client) sendMeGet(ctx context.Context) (res *User, err error) {
 	return result, nil
 }
 
-// MeJokesDelete invokes DELETE /me/jokes operation.
+// MeJokesDel invokes MeJokesDel operation.
 //
 // Deletes joke for current user.
 //
 // DELETE /me/jokes
-func (c *Client) MeJokesDelete(ctx context.Context, request *MeJokesDeleteReq) error {
-	_, err := c.sendMeJokesDelete(ctx, request)
+func (c *Client) MeJokesDel(ctx context.Context, request *MeJokesDelReq) error {
+	_, err := c.sendMeJokesDel(ctx, request)
 	return err
 }
 
-func (c *Client) sendMeJokesDelete(ctx context.Context, request *MeJokesDeleteReq) (res *MeJokesDeleteNoContent, err error) {
+func (c *Client) sendMeJokesDel(ctx context.Context, request *MeJokesDelReq) (res *MeJokesDelNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeJokesDel"),
 		semconv.HTTPMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/me/jokes"),
 	}
@@ -985,7 +964,7 @@ func (c *Client) sendMeJokesDelete(ctx context.Context, request *MeJokesDeleteRe
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeJokesDelete",
+	ctx, span := c.cfg.Tracer.Start(ctx, "MeJokesDel",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -1011,7 +990,7 @@ func (c *Client) sendMeJokesDelete(ctx context.Context, request *MeJokesDeleteRe
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeMeJokesDeleteRequest(request, r); err != nil {
+	if err := encodeMeJokesDelRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -1020,7 +999,7 @@ func (c *Client) sendMeJokesDelete(ctx context.Context, request *MeJokesDeleteRe
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeJokesDelete", r); {
+			switch err := c.securityBearerAuth(ctx, "MeJokesDel", r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -1056,7 +1035,7 @@ func (c *Client) sendMeJokesDelete(ctx context.Context, request *MeJokesDeleteRe
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeMeJokesDeleteResponse(resp)
+	result, err := decodeMeJokesDelResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -1064,18 +1043,19 @@ func (c *Client) sendMeJokesDelete(ctx context.Context, request *MeJokesDeleteRe
 	return result, nil
 }
 
-// MeJokesGet invokes GET /me/jokes operation.
+// MeJokesGet invokes MeJokesGet operation.
 //
 // Returns jokes of the current user.
 //
 // GET /me/jokes
-func (c *Client) MeJokesGet(ctx context.Context) (*Jokes, error) {
-	res, err := c.sendMeJokesGet(ctx)
+func (c *Client) MeJokesGet(ctx context.Context, params MeJokesGetParams) (*Jokes, error) {
+	res, err := c.sendMeJokesGet(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendMeJokesGet(ctx context.Context) (res *Jokes, err error) {
+func (c *Client) sendMeJokesGet(ctx context.Context, params MeJokesGetParams) (res *Jokes, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeJokesGet"),
 		semconv.HTTPMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/me/jokes"),
 	}
@@ -1112,6 +1092,24 @@ func (c *Client) sendMeJokesGet(ctx context.Context) (res *Jokes, err error) {
 	var pathParts [1]string
 	pathParts[0] = "/me/jokes"
 	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "select_params" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "select_params",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return params.SelectParams.EncodeURI(e)
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
@@ -1168,7 +1166,7 @@ func (c *Client) sendMeJokesGet(ctx context.Context) (res *Jokes, err error) {
 	return result, nil
 }
 
-// MeJokesPost invokes POST /me/jokes operation.
+// MeJokesPost invokes MeJokesPost operation.
 //
 // Creates a new joke for current user.
 //
@@ -1180,6 +1178,7 @@ func (c *Client) MeJokesPost(ctx context.Context, request *MeJokesPostReq) error
 
 func (c *Client) sendMeJokesPost(ctx context.Context, request *MeJokesPostReq) (res *MeJokesPostCreated, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeJokesPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/me/jokes"),
 	}
@@ -1275,7 +1274,7 @@ func (c *Client) sendMeJokesPost(ctx context.Context, request *MeJokesPostReq) (
 	return result, nil
 }
 
-// MeJokesPut invokes PUT /me/jokes operation.
+// MeJokesPut invokes MeJokesPut operation.
 //
 // Updates joke for current user.
 //
@@ -1287,6 +1286,7 @@ func (c *Client) MeJokesPut(ctx context.Context, request *MeJokesPutReq) error {
 
 func (c *Client) sendMeJokesPut(ctx context.Context, request *MeJokesPutReq) (res *MeJokesPutCreated, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeJokesPut"),
 		semconv.HTTPMethodKey.String("PUT"),
 		semconv.HTTPRouteKey.String("/me/jokes"),
 	}
@@ -1382,18 +1382,19 @@ func (c *Client) sendMeJokesPut(ctx context.Context, request *MeJokesPutReq) (re
 	return result, nil
 }
 
-// MeLikesDelete invokes DELETE /me/likes operation.
+// MeLikesDel invokes MeLikesDel operation.
 //
 // Deletes a like of the current user.
 //
 // DELETE /me/likes
-func (c *Client) MeLikesDelete(ctx context.Context, request *MeLikesDeleteReq) error {
-	_, err := c.sendMeLikesDelete(ctx, request)
+func (c *Client) MeLikesDel(ctx context.Context, request *MeLikesDelReq) error {
+	_, err := c.sendMeLikesDel(ctx, request)
 	return err
 }
 
-func (c *Client) sendMeLikesDelete(ctx context.Context, request *MeLikesDeleteReq) (res *MeLikesDeleteNoContent, err error) {
+func (c *Client) sendMeLikesDel(ctx context.Context, request *MeLikesDelReq) (res *MeLikesDelNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeLikesDel"),
 		semconv.HTTPMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/me/likes"),
 	}
@@ -1410,7 +1411,7 @@ func (c *Client) sendMeLikesDelete(ctx context.Context, request *MeLikesDeleteRe
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeLikesDelete",
+	ctx, span := c.cfg.Tracer.Start(ctx, "MeLikesDel",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -1436,7 +1437,7 @@ func (c *Client) sendMeLikesDelete(ctx context.Context, request *MeLikesDeleteRe
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeMeLikesDeleteRequest(request, r); err != nil {
+	if err := encodeMeLikesDelRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -1445,7 +1446,7 @@ func (c *Client) sendMeLikesDelete(ctx context.Context, request *MeLikesDeleteRe
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeLikesDelete", r); {
+			switch err := c.securityBearerAuth(ctx, "MeLikesDel", r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -1481,7 +1482,7 @@ func (c *Client) sendMeLikesDelete(ctx context.Context, request *MeLikesDeleteRe
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeMeLikesDeleteResponse(resp)
+	result, err := decodeMeLikesDelResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -1489,7 +1490,7 @@ func (c *Client) sendMeLikesDelete(ctx context.Context, request *MeLikesDeleteRe
 	return result, nil
 }
 
-// MeLikesPost invokes POST /me/likes operation.
+// MeLikesPost invokes MeLikesPost operation.
 //
 // Creates a like for a joke for the current user.
 //
@@ -1501,6 +1502,7 @@ func (c *Client) MeLikesPost(ctx context.Context, request *MeLikesPostReq) error
 
 func (c *Client) sendMeLikesPost(ctx context.Context, request *MeLikesPostReq) (res *MeLikesPostCreated, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeLikesPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/me/likes"),
 	}
@@ -1596,7 +1598,7 @@ func (c *Client) sendMeLikesPost(ctx context.Context, request *MeLikesPostReq) (
 	return result, nil
 }
 
-// MePut invokes PUT /me operation.
+// MePut invokes MePut operation.
 //
 // Updates current user profile.
 //
@@ -1608,6 +1610,7 @@ func (c *Client) MePut(ctx context.Context, request *MePutReq) error {
 
 func (c *Client) sendMePut(ctx context.Context, request *MePutReq) (res *MePutNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MePut"),
 		semconv.HTTPMethodKey.String("PUT"),
 		semconv.HTTPRouteKey.String("/me"),
 	}
@@ -1703,7 +1706,7 @@ func (c *Client) sendMePut(ctx context.Context, request *MePutReq) (res *MePutNo
 	return result, nil
 }
 
-// SignInPost invokes POST /sign_in operation.
+// SignInPost invokes SignInPost operation.
 //
 // Performs user authentication.
 //
@@ -1715,6 +1718,7 @@ func (c *Client) SignInPost(ctx context.Context, request *SignInPostReq) (*SignI
 
 func (c *Client) sendSignInPost(ctx context.Context, request *SignInPostReq) (res *SignInPostOK, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("SignInPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign_in"),
 	}
@@ -1777,7 +1781,7 @@ func (c *Client) sendSignInPost(ctx context.Context, request *SignInPostReq) (re
 	return result, nil
 }
 
-// SignRefreshPost invokes POST /sign_refresh operation.
+// SignRefreshPost invokes SignRefreshPost operation.
 //
 // Exchanges a refresh token for an access token.
 //
@@ -1789,6 +1793,7 @@ func (c *Client) SignRefreshPost(ctx context.Context, request *SignRefreshPostRe
 
 func (c *Client) sendSignRefreshPost(ctx context.Context, request *SignRefreshPostReq) (res *SignRefreshPostOK, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("SignRefreshPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign_refresh"),
 	}
@@ -1851,7 +1856,7 @@ func (c *Client) sendSignRefreshPost(ctx context.Context, request *SignRefreshPo
 	return result, nil
 }
 
-// SignUpPost invokes POST /sign_up operation.
+// SignUpPost invokes SignUpPost operation.
 //
 // Performs user registration.
 //
@@ -1863,6 +1868,7 @@ func (c *Client) SignUpPost(ctx context.Context, request *SignUpPostReq) error {
 
 func (c *Client) sendSignUpPost(ctx context.Context, request *SignUpPostReq) (res *SignUpPostCreated, err error) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("SignUpPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign_up"),
 	}

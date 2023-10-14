@@ -76,7 +76,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					// Leaf node.
 					switch r.Method {
 					case "GET":
-						s.handleCommentsJokeIDGetRequest([1]string{
+						s.handleCommentsByJokeIDGetRequest([1]string{
 							args[0],
 						}, elemIsEscaped, w, r)
 					default:
@@ -101,7 +101,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					// Leaf node.
 					switch r.Method {
 					case "GET":
-						s.handleLikesJokeIDGetRequest([1]string{
+						s.handleLikesByJokeIDGetRequest([1]string{
 							args[0],
 						}, elemIsEscaped, w, r)
 					default:
@@ -120,7 +120,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				if len(elem) == 0 {
 					switch r.Method {
 					case "DELETE":
-						s.handleMeDeleteRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleMeDelRequest([0]string{}, elemIsEscaped, w, r)
 					case "GET":
 						s.handleMeGetRequest([0]string{}, elemIsEscaped, w, r)
 					case "PUT":
@@ -154,7 +154,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							// Leaf node.
 							switch r.Method {
 							case "DELETE":
-								s.handleMeCommentsDeleteRequest([0]string{}, elemIsEscaped, w, r)
+								s.handleMeCommentsDelRequest([0]string{}, elemIsEscaped, w, r)
 							case "POST":
 								s.handleMeCommentsPostRequest([0]string{}, elemIsEscaped, w, r)
 							case "PUT":
@@ -176,7 +176,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							// Leaf node.
 							switch r.Method {
 							case "DELETE":
-								s.handleMeJokesDeleteRequest([0]string{}, elemIsEscaped, w, r)
+								s.handleMeJokesDelRequest([0]string{}, elemIsEscaped, w, r)
 							case "GET":
 								s.handleMeJokesGetRequest([0]string{}, elemIsEscaped, w, r)
 							case "POST":
@@ -200,7 +200,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							// Leaf node.
 							switch r.Method {
 							case "DELETE":
-								s.handleMeLikesDeleteRequest([0]string{}, elemIsEscaped, w, r)
+								s.handleMeLikesDelRequest([0]string{}, elemIsEscaped, w, r)
 							case "POST":
 								s.handleMeLikesPostRequest([0]string{}, elemIsEscaped, w, r)
 							default:
@@ -384,10 +384,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				if len(elem) == 0 {
 					switch method {
 					case "GET":
-						// Leaf: CommentsJokeIDGet
-						r.name = "CommentsJokeIDGet"
-						r.summary = ""
-						r.operationID = ""
+						// Leaf: CommentsByJokeIDGet
+						r.name = "CommentsByJokeIDGet"
+						r.summary = "Returns comments of the joke"
+						r.operationID = "CommentsByJokeIDGet"
 						r.pathPattern = "/comments/{joke_id}"
 						r.args = args
 						r.count = 1
@@ -411,10 +411,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				if len(elem) == 0 {
 					switch method {
 					case "GET":
-						// Leaf: LikesJokeIDGet
-						r.name = "LikesJokeIDGet"
-						r.summary = ""
-						r.operationID = ""
+						// Leaf: LikesByJokeIDGet
+						r.name = "LikesByJokeIDGet"
+						r.summary = "Counts likes of the joke"
+						r.operationID = "LikesByJokeIDGet"
 						r.pathPattern = "/likes/{joke_id}"
 						r.args = args
 						r.count = 1
@@ -433,9 +433,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				if len(elem) == 0 {
 					switch method {
 					case "DELETE":
-						r.name = "MeDelete"
+						r.name = "MeDel"
 						r.summary = "Deletes current user profile"
-						r.operationID = ""
+						r.operationID = "MeDel"
 						r.pathPattern = "/me"
 						r.args = args
 						r.count = 0
@@ -443,7 +443,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					case "GET":
 						r.name = "MeGet"
 						r.summary = "Returns current user profile"
-						r.operationID = ""
+						r.operationID = "MeGet"
 						r.pathPattern = "/me"
 						r.args = args
 						r.count = 0
@@ -451,7 +451,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					case "PUT":
 						r.name = "MePut"
 						r.summary = "Updates current user profile"
-						r.operationID = ""
+						r.operationID = "MePut"
 						r.pathPattern = "/me"
 						r.args = args
 						r.count = 0
@@ -482,10 +482,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						if len(elem) == 0 {
 							switch method {
 							case "DELETE":
-								// Leaf: MeCommentsDelete
-								r.name = "MeCommentsDelete"
-								r.summary = ""
-								r.operationID = ""
+								// Leaf: MeCommentsDel
+								r.name = "MeCommentsDel"
+								r.summary = "Deletes a comment of the current user"
+								r.operationID = "MeCommentsDel"
 								r.pathPattern = "/me/comments"
 								r.args = args
 								r.count = 0
@@ -493,8 +493,8 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							case "POST":
 								// Leaf: MeCommentsPost
 								r.name = "MeCommentsPost"
-								r.summary = ""
-								r.operationID = ""
+								r.summary = "Creates a comment for the current user and the current joke"
+								r.operationID = "MeCommentsPost"
 								r.pathPattern = "/me/comments"
 								r.args = args
 								r.count = 0
@@ -502,8 +502,8 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							case "PUT":
 								// Leaf: MeCommentsPut
 								r.name = "MeCommentsPut"
-								r.summary = ""
-								r.operationID = ""
+								r.summary = "Updates a comment of the current user"
+								r.operationID = "MeCommentsPut"
 								r.pathPattern = "/me/comments"
 								r.args = args
 								r.count = 0
@@ -522,10 +522,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						if len(elem) == 0 {
 							switch method {
 							case "DELETE":
-								// Leaf: MeJokesDelete
-								r.name = "MeJokesDelete"
+								// Leaf: MeJokesDel
+								r.name = "MeJokesDel"
 								r.summary = "Deletes joke for current user"
-								r.operationID = ""
+								r.operationID = "MeJokesDel"
 								r.pathPattern = "/me/jokes"
 								r.args = args
 								r.count = 0
@@ -534,7 +534,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								// Leaf: MeJokesGet
 								r.name = "MeJokesGet"
 								r.summary = "Returns jokes of the current user"
-								r.operationID = ""
+								r.operationID = "MeJokesGet"
 								r.pathPattern = "/me/jokes"
 								r.args = args
 								r.count = 0
@@ -543,7 +543,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								// Leaf: MeJokesPost
 								r.name = "MeJokesPost"
 								r.summary = "Creates a new joke for current user"
-								r.operationID = ""
+								r.operationID = "MeJokesPost"
 								r.pathPattern = "/me/jokes"
 								r.args = args
 								r.count = 0
@@ -551,8 +551,8 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							case "PUT":
 								// Leaf: MeJokesPut
 								r.name = "MeJokesPut"
-								r.summary = ""
-								r.operationID = ""
+								r.summary = "Updates joke for current user"
+								r.operationID = "MeJokesPut"
 								r.pathPattern = "/me/jokes"
 								r.args = args
 								r.count = 0
@@ -571,10 +571,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						if len(elem) == 0 {
 							switch method {
 							case "DELETE":
-								// Leaf: MeLikesDelete
-								r.name = "MeLikesDelete"
+								// Leaf: MeLikesDel
+								r.name = "MeLikesDel"
 								r.summary = "Deletes a like of the current user"
-								r.operationID = ""
+								r.operationID = "MeLikesDel"
 								r.pathPattern = "/me/likes"
 								r.args = args
 								r.count = 0
@@ -583,7 +583,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								// Leaf: MeLikesPost
 								r.name = "MeLikesPost"
 								r.summary = "Creates a like for a joke for the current user"
-								r.operationID = ""
+								r.operationID = "MeLikesPost"
 								r.pathPattern = "/me/likes"
 								r.args = args
 								r.count = 0
@@ -618,7 +618,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							// Leaf: SignInPost
 							r.name = "SignInPost"
 							r.summary = "Performs user authentication"
-							r.operationID = ""
+							r.operationID = "SignInPost"
 							r.pathPattern = "/sign_in"
 							r.args = args
 							r.count = 0
@@ -640,7 +640,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							// Leaf: SignRefreshPost
 							r.name = "SignRefreshPost"
 							r.summary = "Exchanges a refresh token for an access token"
-							r.operationID = ""
+							r.operationID = "SignRefreshPost"
 							r.pathPattern = "/sign_refresh"
 							r.args = args
 							r.count = 0
@@ -662,7 +662,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							// Leaf: SignUpPost
 							r.name = "SignUpPost"
 							r.summary = "Performs user registration"
-							r.operationID = ""
+							r.operationID = "SignUpPost"
 							r.pathPattern = "/sign_up"
 							r.args = args
 							r.count = 0

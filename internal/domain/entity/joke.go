@@ -4,7 +4,12 @@ import (
 	"time"
 
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
 	"github.com/google/uuid"
+)
+
+var (
+	ErrJokesOrderByNotSupported = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "OrderBy is supported only for 'title' and 'created_at' field")
 )
 
 type Joke struct {
@@ -38,3 +43,10 @@ func NewJoke(userID, title, text, explanation string) (*Joke, error) {
 }
 
 type Jokes []*Joke
+
+func ValidateJokeSelectParams(params spec.SelectParams) error {
+	if params.OrderBy != "" && params.OrderBy != "title" && params.OrderBy != "created_at" {
+		return ErrJokesOrderByNotSupported
+	}
+	return nil
+}

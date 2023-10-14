@@ -9,6 +9,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/impl/common"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
 )
 
 type jokeRepository struct {
@@ -42,9 +43,8 @@ func (r jokeRepository) GetByID(ctx context.Context, id string) (*entity.Joke, e
 	return dto.FromEntJokeToJoke(entJoke), common.HandleErr(err)
 }
 
-func (r *jokeRepository) GetByUserID(ctx context.Context, userID string) (entity.Jokes, error) {
-	entJokes, err := r.Client.Joke.
-		Query().
+func (r *jokeRepository) GetByUserID(ctx context.Context, userID string, spec spec.SelectParams) (entity.Jokes, error) {
+	entJokes, err := r.specToQuery(spec).
 		Where(joke.UserID(userID)).
 		All(ctx)
 	return dto.FromEntJokesToJokes(entJokes), common.HandleErr(err)
@@ -67,4 +67,29 @@ func (r jokeRepository) Delete(ctx context.Context, jokeID string) error {
 		Where(joke.ID(jokeID)).
 		Exec(ctx)
 	return common.HandleErr(err)
+}
+
+func (r jokeRepository) specToQuery(spec spec.SelectParams) *ent.JokeQuery {
+	// Map orderBy
+	var orderBy string
+	if spec.OrderBy == "" || spec.OrderBy == "created_at" {
+		orderBy = joke.FieldCreatedAt
+	}
+	if spec.OrderBy == "title" {
+		orderBy = joke.FieldTitle
+	}
+
+	// Map order
+	entSpec := r.Client.Joke.Query()
+	if spec.Order == "asc" {
+		entSpec.Order(ent.Asc(orderBy))
+	}
+	if spec.Order == "desc" {
+		entSpec.Order(ent.Desc(orderBy))
+	}
+
+	// Map limit offset
+	return entSpec.
+		Limit(int(spec.Limit)).
+		Offset(int(spec.Offset))
 }

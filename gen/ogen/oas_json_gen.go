@@ -730,28 +730,28 @@ func (s *Jokes) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *MeCommentsDeleteReq) Encode(e *jx.Encoder) {
+func (s *MeCommentsDelReq) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *MeCommentsDeleteReq) encodeFields(e *jx.Encoder) {
+func (s *MeCommentsDelReq) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("comment_id")
 		e.Str(s.CommentID)
 	}
 }
 
-var jsonFieldsNameOfMeCommentsDeleteReq = [1]string{
+var jsonFieldsNameOfMeCommentsDelReq = [1]string{
 	0: "comment_id",
 }
 
-// Decode decodes MeCommentsDeleteReq from json.
-func (s *MeCommentsDeleteReq) Decode(d *jx.Decoder) error {
+// Decode decodes MeCommentsDelReq from json.
+func (s *MeCommentsDelReq) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MeCommentsDeleteReq to nil")
+		return errors.New("invalid: unable to decode MeCommentsDelReq to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -774,7 +774,7 @@ func (s *MeCommentsDeleteReq) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode MeCommentsDeleteReq")
+		return errors.Wrap(err, "decode MeCommentsDelReq")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -791,8 +791,8 @@ func (s *MeCommentsDeleteReq) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfMeCommentsDeleteReq) {
-					name = jsonFieldsNameOfMeCommentsDeleteReq[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfMeCommentsDelReq) {
+					name = jsonFieldsNameOfMeCommentsDelReq[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -813,14 +813,14 @@ func (s *MeCommentsDeleteReq) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *MeCommentsDeleteReq) MarshalJSON() ([]byte, error) {
+func (s *MeCommentsDelReq) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MeCommentsDeleteReq) UnmarshalJSON(data []byte) error {
+func (s *MeCommentsDelReq) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -1052,28 +1052,28 @@ func (s *MeCommentsPutReq) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *MeDeleteReq) Encode(e *jx.Encoder) {
+func (s *MeDelReq) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *MeDeleteReq) encodeFields(e *jx.Encoder) {
+func (s *MeDelReq) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("user_id")
 		e.Str(s.UserID)
 	}
 }
 
-var jsonFieldsNameOfMeDeleteReq = [1]string{
+var jsonFieldsNameOfMeDelReq = [1]string{
 	0: "user_id",
 }
 
-// Decode decodes MeDeleteReq from json.
-func (s *MeDeleteReq) Decode(d *jx.Decoder) error {
+// Decode decodes MeDelReq from json.
+func (s *MeDelReq) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MeDeleteReq to nil")
+		return errors.New("invalid: unable to decode MeDelReq to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -1096,7 +1096,7 @@ func (s *MeDeleteReq) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode MeDeleteReq")
+		return errors.Wrap(err, "decode MeDelReq")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -1113,8 +1113,8 @@ func (s *MeDeleteReq) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfMeDeleteReq) {
-					name = jsonFieldsNameOfMeDeleteReq[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfMeDelReq) {
+					name = jsonFieldsNameOfMeDelReq[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -1135,41 +1135,41 @@ func (s *MeDeleteReq) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *MeDeleteReq) MarshalJSON() ([]byte, error) {
+func (s *MeDelReq) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MeDeleteReq) UnmarshalJSON(data []byte) error {
+func (s *MeDelReq) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
 // Encode implements json.Marshaler.
-func (s *MeJokesDeleteReq) Encode(e *jx.Encoder) {
+func (s *MeJokesDelReq) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *MeJokesDeleteReq) encodeFields(e *jx.Encoder) {
+func (s *MeJokesDelReq) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("joke_id")
 		e.Str(s.JokeID)
 	}
 }
 
-var jsonFieldsNameOfMeJokesDeleteReq = [1]string{
+var jsonFieldsNameOfMeJokesDelReq = [1]string{
 	0: "joke_id",
 }
 
-// Decode decodes MeJokesDeleteReq from json.
-func (s *MeJokesDeleteReq) Decode(d *jx.Decoder) error {
+// Decode decodes MeJokesDelReq from json.
+func (s *MeJokesDelReq) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MeJokesDeleteReq to nil")
+		return errors.New("invalid: unable to decode MeJokesDelReq to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -1192,7 +1192,7 @@ func (s *MeJokesDeleteReq) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode MeJokesDeleteReq")
+		return errors.Wrap(err, "decode MeJokesDelReq")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -1209,8 +1209,8 @@ func (s *MeJokesDeleteReq) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfMeJokesDeleteReq) {
-					name = jsonFieldsNameOfMeJokesDeleteReq[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfMeJokesDelReq) {
+					name = jsonFieldsNameOfMeJokesDelReq[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -1231,14 +1231,14 @@ func (s *MeJokesDeleteReq) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *MeJokesDeleteReq) MarshalJSON() ([]byte, error) {
+func (s *MeJokesDelReq) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MeJokesDeleteReq) UnmarshalJSON(data []byte) error {
+func (s *MeJokesDelReq) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -1521,28 +1521,28 @@ func (s *MeJokesPutReq) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *MeLikesDeleteReq) Encode(e *jx.Encoder) {
+func (s *MeLikesDelReq) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *MeLikesDeleteReq) encodeFields(e *jx.Encoder) {
+func (s *MeLikesDelReq) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("joke_id")
 		e.Str(s.JokeID)
 	}
 }
 
-var jsonFieldsNameOfMeLikesDeleteReq = [1]string{
+var jsonFieldsNameOfMeLikesDelReq = [1]string{
 	0: "joke_id",
 }
 
-// Decode decodes MeLikesDeleteReq from json.
-func (s *MeLikesDeleteReq) Decode(d *jx.Decoder) error {
+// Decode decodes MeLikesDelReq from json.
+func (s *MeLikesDelReq) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MeLikesDeleteReq to nil")
+		return errors.New("invalid: unable to decode MeLikesDelReq to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -1565,7 +1565,7 @@ func (s *MeLikesDeleteReq) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode MeLikesDeleteReq")
+		return errors.Wrap(err, "decode MeLikesDelReq")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -1582,8 +1582,8 @@ func (s *MeLikesDeleteReq) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfMeLikesDeleteReq) {
-					name = jsonFieldsNameOfMeLikesDeleteReq[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfMeLikesDelReq) {
+					name = jsonFieldsNameOfMeLikesDelReq[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -1604,14 +1604,14 @@ func (s *MeLikesDeleteReq) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *MeLikesDeleteReq) MarshalJSON() ([]byte, error) {
+func (s *MeLikesDelReq) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MeLikesDeleteReq) UnmarshalJSON(data []byte) error {
+func (s *MeLikesDelReq) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

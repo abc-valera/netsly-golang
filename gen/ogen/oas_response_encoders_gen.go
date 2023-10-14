@@ -13,7 +13,7 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
-func encodeCommentsJokeIDGetResponse(response *Comments, w http.ResponseWriter, span trace.Span) error {
+func encodeCommentsByJokeIDGetResponse(response *Comments, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -27,7 +27,7 @@ func encodeCommentsJokeIDGetResponse(response *Comments, w http.ResponseWriter, 
 	return nil
 }
 
-func encodeLikesJokeIDGetResponse(response int, w http.ResponseWriter, span trace.Span) error {
+func encodeLikesByJokeIDGetResponse(response int, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -41,7 +41,7 @@ func encodeLikesJokeIDGetResponse(response int, w http.ResponseWriter, span trac
 	return nil
 }
 
-func encodeMeCommentsDeleteResponse(response *MeCommentsDeleteNoContent, w http.ResponseWriter, span trace.Span) error {
+func encodeMeCommentsDelResponse(response *MeCommentsDelNoContent, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(204)
 	span.SetStatus(codes.Ok, http.StatusText(204))
 
@@ -62,7 +62,7 @@ func encodeMeCommentsPutResponse(response *MeCommentsPutOK, w http.ResponseWrite
 	return nil
 }
 
-func encodeMeDeleteResponse(response *MeDeleteNoContent, w http.ResponseWriter, span trace.Span) error {
+func encodeMeDelResponse(response *MeDelNoContent, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(204)
 	span.SetStatus(codes.Ok, http.StatusText(204))
 
@@ -83,7 +83,7 @@ func encodeMeGetResponse(response *User, w http.ResponseWriter, span trace.Span)
 	return nil
 }
 
-func encodeMeJokesDeleteResponse(response *MeJokesDeleteNoContent, w http.ResponseWriter, span trace.Span) error {
+func encodeMeJokesDelResponse(response *MeJokesDelNoContent, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(204)
 	span.SetStatus(codes.Ok, http.StatusText(204))
 
@@ -118,7 +118,7 @@ func encodeMeJokesPutResponse(response *MeJokesPutCreated, w http.ResponseWriter
 	return nil
 }
 
-func encodeMeLikesDeleteResponse(response *MeLikesDeleteNoContent, w http.ResponseWriter, span trace.Span) error {
+func encodeMeLikesDelResponse(response *MeLikesDelNoContent, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(204)
 	span.SetStatus(codes.Ok, http.StatusText(204))
 

@@ -1,7 +1,10 @@
 post:
   tags:
     - me
-  description: Creates a comment for the current user and the current joke
+  summary: Creates a comment for the current user and the current joke
+  operationId: MeCommentsPost
+  parameters:
+    - $ref: "../../components/parameters/select.yaml"
   security:
     - bearerAuth: []
   requestBody:
@@ -26,11 +29,12 @@ post:
     "200":
       description: Comment created
     default:
-      $ref: "../components/responses/code_error.yaml"
+      $ref: "../../components/responses/code_error.yaml"
 put:
   tags:
     - me
-  description: Updates a comment of the current user
+  summary: Updates a comment of the current user
+  operationId: MeCommentsPut
   security:
     - bearerAuth: []
   requestBody:
@@ -53,11 +57,12 @@ put:
     "200":
       description: Comment updated
     default:
-      $ref: "../components/responses/code_error.yaml"
+      $ref: "../../components/responses/code_error.yaml"
 delete:
   tags:
     - me
-  description: Deletes a comment of the current user
+  summary: Deletes a comment of the current user
+  operationId: MeCommentsDel
   security:
     - bearerAuth: []
   requestBody:
@@ -77,4 +82,4 @@ delete:
     "204":
       description: Comment deleted
     default:
-      $ref: "../components/responses/code_error.yaml"
+      $ref: "../../components/responses/code_error.yaml"

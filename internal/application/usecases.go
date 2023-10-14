@@ -10,6 +10,7 @@ type UseCases struct {
 	UserUseCase    UserUseCase
 	JokeUseCase    JokeUseCase
 	CommentUseCase CommentUseCase
+	LikeUseCase    LikeUseCase
 }
 
 func NewUseCases(
@@ -31,6 +32,9 @@ func NewUseCases(
 		),
 		CommentUseCase: NewCommentUseCase(
 			repos.CommentRepo,
+		),
+		LikeUseCase: NewLikeUseCase(
+			repos.LikeRepo,
 		),
 	}, nil
 }

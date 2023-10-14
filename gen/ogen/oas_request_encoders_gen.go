@@ -11,8 +11,8 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
-func encodeMeCommentsDeleteRequest(
-	req *MeCommentsDeleteReq,
+func encodeMeCommentsDelRequest(
+	req *MeCommentsDelReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -53,8 +53,8 @@ func encodeMeCommentsPutRequest(
 	return nil
 }
 
-func encodeMeDeleteRequest(
-	req *MeDeleteReq,
+func encodeMeDelRequest(
+	req *MeDelReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -67,8 +67,8 @@ func encodeMeDeleteRequest(
 	return nil
 }
 
-func encodeMeJokesDeleteRequest(
-	req *MeJokesDeleteReq,
+func encodeMeJokesDelRequest(
+	req *MeJokesDelReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -109,8 +109,8 @@ func encodeMeJokesPutRequest(
 	return nil
 }
 
-func encodeMeLikesDeleteRequest(
-	req *MeLikesDeleteReq,
+func encodeMeLikesDelRequest(
+	req *MeLikesDelReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

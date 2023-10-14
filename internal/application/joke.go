@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
 )
 
 var (
@@ -21,12 +23,34 @@ func NewJokeUseCase(jokeRepo repository.IJokeRepository) JokeUseCase {
 	}
 }
 
+type CreateJokeRequest struct {
+	UserID      string
+	Title       string
+	Text        string
+	Explanation string
+}
+
+func (uc JokeUseCase) CreateJoke(ctx context.Context, req CreateJokeRequest) error {
+	domainJoke, err := entity.NewJoke(req.UserID, req.Title, req.Text, req.Explanation)
+	if err != nil {
+		return err
+	}
+	return uc.jokeRepo.Create(ctx, domainJoke)
+}
+
+func (uc JokeUseCase) GetJokesByUser(ctx context.Context, userID string, params spec.SelectParams) (entity.Jokes, error) {
+	if err := entity.ValidateJokeSelectParams(params); err != nil {
+		return nil, err
+	}
+	return uc.jokeRepo.GetByUserID(ctx, userID, params)
+}
+
 type UpdateJokeRequest struct {
 	JokeID      string
 	Title       string
 	Text        string
 	Explanation string
-	UserID      string
+	UpdaterID   string
 }
 
 func (uc JokeUseCase) UpdateJoke(ctx context.Context, req UpdateJokeRequest) error {
@@ -35,7 +59,7 @@ func (uc JokeUseCase) UpdateJoke(ctx context.Context, req UpdateJokeRequest) err
 		return err
 	}
 
-	if req.UserID != domainJoke.UserID {
+	if req.UpdaterID != domainJoke.UserID {
 		return errJokeModifyPermissionDenied
 	}
 
@@ -53,8 +77,8 @@ func (uc JokeUseCase) UpdateJoke(ctx context.Context, req UpdateJokeRequest) err
 }
 
 type DeleteJokeRequest struct {
-	JokeID string
-	UserID string
+	JokeID    string
+	DeleterID string
 }
 
 func (uc JokeUseCase) DeleteJoke(ctx context.Context, req DeleteJokeRequest) error {
@@ -63,7 +87,7 @@ func (uc JokeUseCase) DeleteJoke(ctx context.Context, req DeleteJokeRequest) err
 		return err
 	}
 
-	if dbJoke.UserID != req.UserID {
+	if dbJoke.UserID != req.DeleterID {
 		return errJokeModifyPermissionDenied
 	}
 

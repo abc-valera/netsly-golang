@@ -15,8 +15,8 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func (s *Server) decodeMeCommentsDeleteRequest(r *http.Request) (
-	req *MeCommentsDeleteReq,
+func (s *Server) decodeMeCommentsDelRequest(r *http.Request) (
+	req *MeCommentsDelReq,
 	close func() error,
 	rerr error,
 ) {
@@ -55,7 +55,7 @@ func (s *Server) decodeMeCommentsDeleteRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request MeCommentsDeleteReq
+		var request MeCommentsDelReq
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -204,8 +204,8 @@ func (s *Server) decodeMeCommentsPutRequest(r *http.Request) (
 	}
 }
 
-func (s *Server) decodeMeDeleteRequest(r *http.Request) (
-	req *MeDeleteReq,
+func (s *Server) decodeMeDelRequest(r *http.Request) (
+	req *MeDelReq,
 	close func() error,
 	rerr error,
 ) {
@@ -244,7 +244,7 @@ func (s *Server) decodeMeDeleteRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request MeDeleteReq
+		var request MeDelReq
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -267,8 +267,8 @@ func (s *Server) decodeMeDeleteRequest(r *http.Request) (
 	}
 }
 
-func (s *Server) decodeMeJokesDeleteRequest(r *http.Request) (
-	req *MeJokesDeleteReq,
+func (s *Server) decodeMeJokesDelRequest(r *http.Request) (
+	req *MeJokesDelReq,
 	close func() error,
 	rerr error,
 ) {
@@ -307,7 +307,7 @@ func (s *Server) decodeMeJokesDeleteRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request MeJokesDeleteReq
+		var request MeJokesDelReq
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -456,8 +456,8 @@ func (s *Server) decodeMeJokesPutRequest(r *http.Request) (
 	}
 }
 
-func (s *Server) decodeMeLikesDeleteRequest(r *http.Request) (
-	req *MeLikesDeleteReq,
+func (s *Server) decodeMeLikesDelRequest(r *http.Request) (
+	req *MeLikesDelReq,
 	close func() error,
 	rerr error,
 ) {
@@ -496,7 +496,7 @@ func (s *Server) decodeMeLikesDeleteRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request MeLikesDeleteReq
+		var request MeLikesDelReq
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err

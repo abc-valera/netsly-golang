@@ -17,21 +17,23 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/ogen-go/ogen/ogenerrors"
+	"github.com/ogen-go/ogen/otelogen"
 )
 
-// handleCommentsJokeIDGetRequest handles GET /comments/{joke_id} operation.
+// handleCommentsByJokeIDGetRequest handles CommentsByJokeIDGet operation.
 //
 // Returns comments of the joke.
 //
 // GET /comments/{joke_id}
-func (s *Server) handleCommentsJokeIDGetRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleCommentsByJokeIDGetRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("CommentsByJokeIDGet"),
 		semconv.HTTPMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/comments/{joke_id}"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "CommentsJokeIDGet",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "CommentsByJokeIDGet",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -56,57 +58,11 @@ func (s *Server) handleCommentsJokeIDGetRequest(args [1]string, argsEscaped bool
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "CommentsJokeIDGet",
-			ID:   "",
+			Name: "CommentsByJokeIDGet",
+			ID:   "CommentsByJokeIDGet",
 		}
 	)
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			sctx, ok, err := s.securityBearerAuth(ctx, "CommentsJokeIDGet", r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "BearerAuth",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					recordError("Security:BearerAuth", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 0
-				ctx = sctx
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			err = &ogenerrors.SecurityError{
-				OperationContext: opErrContext,
-				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
-			}
-			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-				recordError("Security", err)
-			}
-			return
-		}
-	}
-	params, err := decodeCommentsJokeIDGetParams(args, argsEscaped, r)
+	params, err := decodeCommentsByJokeIDGetParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
 			OperationContext: opErrContext,
@@ -121,22 +77,26 @@ func (s *Server) handleCommentsJokeIDGetRequest(args [1]string, argsEscaped bool
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "CommentsJokeIDGet",
-			OperationSummary: "",
-			OperationID:      "",
+			OperationName:    "CommentsByJokeIDGet",
+			OperationSummary: "Returns comments of the joke",
+			OperationID:      "CommentsByJokeIDGet",
 			Body:             nil,
 			Params: middleware.Parameters{
 				{
 					Name: "joke_id",
 					In:   "path",
 				}: params.JokeID,
+				{
+					Name: "select_params",
+					In:   "query",
+				}: params.SelectParams,
 			},
 			Raw: r,
 		}
 
 		type (
 			Request  = struct{}
-			Params   = CommentsJokeIDGetParams
+			Params   = CommentsByJokeIDGetParams
 			Response = *Comments
 		)
 		response, err = middleware.HookMiddleware[
@@ -146,14 +106,14 @@ func (s *Server) handleCommentsJokeIDGetRequest(args [1]string, argsEscaped bool
 		](
 			m,
 			mreq,
-			unpackCommentsJokeIDGetParams,
+			unpackCommentsByJokeIDGetParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.CommentsJokeIDGet(ctx, params)
+				response, err = s.h.CommentsByJokeIDGet(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.CommentsJokeIDGet(ctx, params)
+		response, err = s.h.CommentsByJokeIDGet(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -172,7 +132,7 @@ func (s *Server) handleCommentsJokeIDGetRequest(args [1]string, argsEscaped bool
 		return
 	}
 
-	if err := encodeCommentsJokeIDGetResponse(response, w, span); err != nil {
+	if err := encodeCommentsByJokeIDGetResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -181,19 +141,20 @@ func (s *Server) handleCommentsJokeIDGetRequest(args [1]string, argsEscaped bool
 	}
 }
 
-// handleLikesJokeIDGetRequest handles GET /likes/{joke_id} operation.
+// handleLikesByJokeIDGetRequest handles LikesByJokeIDGet operation.
 //
 // Counts likes of the joke.
 //
 // GET /likes/{joke_id}
-func (s *Server) handleLikesJokeIDGetRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleLikesByJokeIDGetRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("LikesByJokeIDGet"),
 		semconv.HTTPMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/likes/{joke_id}"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "LikesJokeIDGet",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "LikesByJokeIDGet",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -218,57 +179,11 @@ func (s *Server) handleLikesJokeIDGetRequest(args [1]string, argsEscaped bool, w
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "LikesJokeIDGet",
-			ID:   "",
+			Name: "LikesByJokeIDGet",
+			ID:   "LikesByJokeIDGet",
 		}
 	)
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			sctx, ok, err := s.securityBearerAuth(ctx, "LikesJokeIDGet", r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "BearerAuth",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					recordError("Security:BearerAuth", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 0
-				ctx = sctx
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			err = &ogenerrors.SecurityError{
-				OperationContext: opErrContext,
-				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
-			}
-			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-				recordError("Security", err)
-			}
-			return
-		}
-	}
-	params, err := decodeLikesJokeIDGetParams(args, argsEscaped, r)
+	params, err := decodeLikesByJokeIDGetParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
 			OperationContext: opErrContext,
@@ -283,9 +198,9 @@ func (s *Server) handleLikesJokeIDGetRequest(args [1]string, argsEscaped bool, w
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "LikesJokeIDGet",
-			OperationSummary: "",
-			OperationID:      "",
+			OperationName:    "LikesByJokeIDGet",
+			OperationSummary: "Counts likes of the joke",
+			OperationID:      "LikesByJokeIDGet",
 			Body:             nil,
 			Params: middleware.Parameters{
 				{
@@ -298,7 +213,7 @@ func (s *Server) handleLikesJokeIDGetRequest(args [1]string, argsEscaped bool, w
 
 		type (
 			Request  = struct{}
-			Params   = LikesJokeIDGetParams
+			Params   = LikesByJokeIDGetParams
 			Response = int
 		)
 		response, err = middleware.HookMiddleware[
@@ -308,14 +223,14 @@ func (s *Server) handleLikesJokeIDGetRequest(args [1]string, argsEscaped bool, w
 		](
 			m,
 			mreq,
-			unpackLikesJokeIDGetParams,
+			unpackLikesByJokeIDGetParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.LikesJokeIDGet(ctx, params)
+				response, err = s.h.LikesByJokeIDGet(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.LikesJokeIDGet(ctx, params)
+		response, err = s.h.LikesByJokeIDGet(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -334,7 +249,7 @@ func (s *Server) handleLikesJokeIDGetRequest(args [1]string, argsEscaped bool, w
 		return
 	}
 
-	if err := encodeLikesJokeIDGetResponse(response, w, span); err != nil {
+	if err := encodeLikesByJokeIDGetResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -343,19 +258,20 @@ func (s *Server) handleLikesJokeIDGetRequest(args [1]string, argsEscaped bool, w
 	}
 }
 
-// handleMeCommentsDeleteRequest handles DELETE /me/comments operation.
+// handleMeCommentsDelRequest handles MeCommentsDel operation.
 //
 // Deletes a comment of the current user.
 //
 // DELETE /me/comments
-func (s *Server) handleMeCommentsDeleteRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleMeCommentsDelRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeCommentsDel"),
 		semconv.HTTPMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/me/comments"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "MeCommentsDelete",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "MeCommentsDel",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -380,15 +296,15 @@ func (s *Server) handleMeCommentsDeleteRequest(args [0]string, argsEscaped bool,
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "MeCommentsDelete",
-			ID:   "",
+			Name: "MeCommentsDel",
+			ID:   "MeCommentsDel",
 		}
 	)
 	{
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
-			sctx, ok, err := s.securityBearerAuth(ctx, "MeCommentsDelete", r)
+			sctx, ok, err := s.securityBearerAuth(ctx, "MeCommentsDel", r)
 			if err != nil {
 				err = &ogenerrors.SecurityError{
 					OperationContext: opErrContext,
@@ -430,7 +346,7 @@ func (s *Server) handleMeCommentsDeleteRequest(args [0]string, argsEscaped bool,
 			return
 		}
 	}
-	request, close, err := s.decodeMeCommentsDeleteRequest(r)
+	request, close, err := s.decodeMeCommentsDelRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -446,22 +362,22 @@ func (s *Server) handleMeCommentsDeleteRequest(args [0]string, argsEscaped bool,
 		}
 	}()
 
-	var response *MeCommentsDeleteNoContent
+	var response *MeCommentsDelNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "MeCommentsDelete",
-			OperationSummary: "",
-			OperationID:      "",
+			OperationName:    "MeCommentsDel",
+			OperationSummary: "Deletes a comment of the current user",
+			OperationID:      "MeCommentsDel",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
 
 		type (
-			Request  = *MeCommentsDeleteReq
+			Request  = *MeCommentsDelReq
 			Params   = struct{}
-			Response = *MeCommentsDeleteNoContent
+			Response = *MeCommentsDelNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -472,12 +388,12 @@ func (s *Server) handleMeCommentsDeleteRequest(args [0]string, argsEscaped bool,
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeCommentsDelete(ctx, request)
+				err = s.h.MeCommentsDel(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeCommentsDelete(ctx, request)
+		err = s.h.MeCommentsDel(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -496,7 +412,7 @@ func (s *Server) handleMeCommentsDeleteRequest(args [0]string, argsEscaped bool,
 		return
 	}
 
-	if err := encodeMeCommentsDeleteResponse(response, w, span); err != nil {
+	if err := encodeMeCommentsDelResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -505,13 +421,14 @@ func (s *Server) handleMeCommentsDeleteRequest(args [0]string, argsEscaped bool,
 	}
 }
 
-// handleMeCommentsPostRequest handles POST /me/comments operation.
+// handleMeCommentsPostRequest handles MeCommentsPost operation.
 //
 // Creates a comment for the current user and the current joke.
 //
 // POST /me/comments
 func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeCommentsPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/me/comments"),
 	}
@@ -543,7 +460,7 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "MeCommentsPost",
-			ID:   "",
+			ID:   "MeCommentsPost",
 		}
 	)
 	{
@@ -592,6 +509,16 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 			return
 		}
 	}
+	params, err := decodeMeCommentsPostParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
 	request, close, err := s.decodeMeCommentsPostRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
@@ -613,16 +540,21 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 		mreq := middleware.Request{
 			Context:          ctx,
 			OperationName:    "MeCommentsPost",
-			OperationSummary: "",
-			OperationID:      "",
+			OperationSummary: "Creates a comment for the current user and the current joke",
+			OperationID:      "MeCommentsPost",
 			Body:             request,
-			Params:           middleware.Parameters{},
-			Raw:              r,
+			Params: middleware.Parameters{
+				{
+					Name: "select_params",
+					In:   "query",
+				}: params.SelectParams,
+			},
+			Raw: r,
 		}
 
 		type (
 			Request  = *MeCommentsPostReq
-			Params   = struct{}
+			Params   = MeCommentsPostParams
 			Response = *MeCommentsPostOK
 		)
 		response, err = middleware.HookMiddleware[
@@ -632,14 +564,14 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 		](
 			m,
 			mreq,
-			nil,
+			unpackMeCommentsPostParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeCommentsPost(ctx, request)
+				err = s.h.MeCommentsPost(ctx, request, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeCommentsPost(ctx, request)
+		err = s.h.MeCommentsPost(ctx, request, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -667,13 +599,14 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 	}
 }
 
-// handleMeCommentsPutRequest handles PUT /me/comments operation.
+// handleMeCommentsPutRequest handles MeCommentsPut operation.
 //
 // Updates a comment of the current user.
 //
 // PUT /me/comments
 func (s *Server) handleMeCommentsPutRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeCommentsPut"),
 		semconv.HTTPMethodKey.String("PUT"),
 		semconv.HTTPRouteKey.String("/me/comments"),
 	}
@@ -705,7 +638,7 @@ func (s *Server) handleMeCommentsPutRequest(args [0]string, argsEscaped bool, w 
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "MeCommentsPut",
-			ID:   "",
+			ID:   "MeCommentsPut",
 		}
 	)
 	{
@@ -775,8 +708,8 @@ func (s *Server) handleMeCommentsPutRequest(args [0]string, argsEscaped bool, w 
 		mreq := middleware.Request{
 			Context:          ctx,
 			OperationName:    "MeCommentsPut",
-			OperationSummary: "",
-			OperationID:      "",
+			OperationSummary: "Updates a comment of the current user",
+			OperationID:      "MeCommentsPut",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
@@ -829,19 +762,20 @@ func (s *Server) handleMeCommentsPutRequest(args [0]string, argsEscaped bool, w 
 	}
 }
 
-// handleMeDeleteRequest handles DELETE /me operation.
+// handleMeDelRequest handles MeDel operation.
 //
 // Deletes current user profile.
 //
 // DELETE /me
-func (s *Server) handleMeDeleteRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleMeDelRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeDel"),
 		semconv.HTTPMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/me"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "MeDelete",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "MeDel",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -866,15 +800,15 @@ func (s *Server) handleMeDeleteRequest(args [0]string, argsEscaped bool, w http.
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "MeDelete",
-			ID:   "",
+			Name: "MeDel",
+			ID:   "MeDel",
 		}
 	)
 	{
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
-			sctx, ok, err := s.securityBearerAuth(ctx, "MeDelete", r)
+			sctx, ok, err := s.securityBearerAuth(ctx, "MeDel", r)
 			if err != nil {
 				err = &ogenerrors.SecurityError{
 					OperationContext: opErrContext,
@@ -916,7 +850,7 @@ func (s *Server) handleMeDeleteRequest(args [0]string, argsEscaped bool, w http.
 			return
 		}
 	}
-	request, close, err := s.decodeMeDeleteRequest(r)
+	request, close, err := s.decodeMeDelRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -932,22 +866,22 @@ func (s *Server) handleMeDeleteRequest(args [0]string, argsEscaped bool, w http.
 		}
 	}()
 
-	var response *MeDeleteNoContent
+	var response *MeDelNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "MeDelete",
+			OperationName:    "MeDel",
 			OperationSummary: "Deletes current user profile",
-			OperationID:      "",
+			OperationID:      "MeDel",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
 
 		type (
-			Request  = *MeDeleteReq
+			Request  = *MeDelReq
 			Params   = struct{}
-			Response = *MeDeleteNoContent
+			Response = *MeDelNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -958,12 +892,12 @@ func (s *Server) handleMeDeleteRequest(args [0]string, argsEscaped bool, w http.
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeDelete(ctx, request)
+				err = s.h.MeDel(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeDelete(ctx, request)
+		err = s.h.MeDel(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -982,7 +916,7 @@ func (s *Server) handleMeDeleteRequest(args [0]string, argsEscaped bool, w http.
 		return
 	}
 
-	if err := encodeMeDeleteResponse(response, w, span); err != nil {
+	if err := encodeMeDelResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -991,13 +925,14 @@ func (s *Server) handleMeDeleteRequest(args [0]string, argsEscaped bool, w http.
 	}
 }
 
-// handleMeGetRequest handles GET /me operation.
+// handleMeGetRequest handles MeGet operation.
 //
 // Returns current user profile.
 //
 // GET /me
 func (s *Server) handleMeGetRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeGet"),
 		semconv.HTTPMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/me"),
 	}
@@ -1029,7 +964,7 @@ func (s *Server) handleMeGetRequest(args [0]string, argsEscaped bool, w http.Res
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "MeGet",
-			ID:   "",
+			ID:   "MeGet",
 		}
 	)
 	{
@@ -1085,7 +1020,7 @@ func (s *Server) handleMeGetRequest(args [0]string, argsEscaped bool, w http.Res
 			Context:          ctx,
 			OperationName:    "MeGet",
 			OperationSummary: "Returns current user profile",
-			OperationID:      "",
+			OperationID:      "MeGet",
 			Body:             nil,
 			Params:           middleware.Parameters{},
 			Raw:              r,
@@ -1138,19 +1073,20 @@ func (s *Server) handleMeGetRequest(args [0]string, argsEscaped bool, w http.Res
 	}
 }
 
-// handleMeJokesDeleteRequest handles DELETE /me/jokes operation.
+// handleMeJokesDelRequest handles MeJokesDel operation.
 //
 // Deletes joke for current user.
 //
 // DELETE /me/jokes
-func (s *Server) handleMeJokesDeleteRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleMeJokesDelRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeJokesDel"),
 		semconv.HTTPMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/me/jokes"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "MeJokesDelete",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "MeJokesDel",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -1175,15 +1111,15 @@ func (s *Server) handleMeJokesDeleteRequest(args [0]string, argsEscaped bool, w 
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "MeJokesDelete",
-			ID:   "",
+			Name: "MeJokesDel",
+			ID:   "MeJokesDel",
 		}
 	)
 	{
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
-			sctx, ok, err := s.securityBearerAuth(ctx, "MeJokesDelete", r)
+			sctx, ok, err := s.securityBearerAuth(ctx, "MeJokesDel", r)
 			if err != nil {
 				err = &ogenerrors.SecurityError{
 					OperationContext: opErrContext,
@@ -1225,7 +1161,7 @@ func (s *Server) handleMeJokesDeleteRequest(args [0]string, argsEscaped bool, w 
 			return
 		}
 	}
-	request, close, err := s.decodeMeJokesDeleteRequest(r)
+	request, close, err := s.decodeMeJokesDelRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -1241,22 +1177,22 @@ func (s *Server) handleMeJokesDeleteRequest(args [0]string, argsEscaped bool, w 
 		}
 	}()
 
-	var response *MeJokesDeleteNoContent
+	var response *MeJokesDelNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "MeJokesDelete",
+			OperationName:    "MeJokesDel",
 			OperationSummary: "Deletes joke for current user",
-			OperationID:      "",
+			OperationID:      "MeJokesDel",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
 
 		type (
-			Request  = *MeJokesDeleteReq
+			Request  = *MeJokesDelReq
 			Params   = struct{}
-			Response = *MeJokesDeleteNoContent
+			Response = *MeJokesDelNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1267,12 +1203,12 @@ func (s *Server) handleMeJokesDeleteRequest(args [0]string, argsEscaped bool, w 
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeJokesDelete(ctx, request)
+				err = s.h.MeJokesDel(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeJokesDelete(ctx, request)
+		err = s.h.MeJokesDel(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -1291,7 +1227,7 @@ func (s *Server) handleMeJokesDeleteRequest(args [0]string, argsEscaped bool, w 
 		return
 	}
 
-	if err := encodeMeJokesDeleteResponse(response, w, span); err != nil {
+	if err := encodeMeJokesDelResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -1300,13 +1236,14 @@ func (s *Server) handleMeJokesDeleteRequest(args [0]string, argsEscaped bool, w 
 	}
 }
 
-// handleMeJokesGetRequest handles GET /me/jokes operation.
+// handleMeJokesGetRequest handles MeJokesGet operation.
 //
 // Returns jokes of the current user.
 //
 // GET /me/jokes
 func (s *Server) handleMeJokesGetRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeJokesGet"),
 		semconv.HTTPMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/me/jokes"),
 	}
@@ -1338,7 +1275,7 @@ func (s *Server) handleMeJokesGetRequest(args [0]string, argsEscaped bool, w htt
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "MeJokesGet",
-			ID:   "",
+			ID:   "MeJokesGet",
 		}
 	)
 	{
@@ -1387,6 +1324,16 @@ func (s *Server) handleMeJokesGetRequest(args [0]string, argsEscaped bool, w htt
 			return
 		}
 	}
+	params, err := decodeMeJokesGetParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
 
 	var response *Jokes
 	if m := s.cfg.Middleware; m != nil {
@@ -1394,15 +1341,20 @@ func (s *Server) handleMeJokesGetRequest(args [0]string, argsEscaped bool, w htt
 			Context:          ctx,
 			OperationName:    "MeJokesGet",
 			OperationSummary: "Returns jokes of the current user",
-			OperationID:      "",
+			OperationID:      "MeJokesGet",
 			Body:             nil,
-			Params:           middleware.Parameters{},
-			Raw:              r,
+			Params: middleware.Parameters{
+				{
+					Name: "select_params",
+					In:   "query",
+				}: params.SelectParams,
+			},
+			Raw: r,
 		}
 
 		type (
 			Request  = struct{}
-			Params   = struct{}
+			Params   = MeJokesGetParams
 			Response = *Jokes
 		)
 		response, err = middleware.HookMiddleware[
@@ -1412,14 +1364,14 @@ func (s *Server) handleMeJokesGetRequest(args [0]string, argsEscaped bool, w htt
 		](
 			m,
 			mreq,
-			nil,
+			unpackMeJokesGetParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.MeJokesGet(ctx)
+				response, err = s.h.MeJokesGet(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.MeJokesGet(ctx)
+		response, err = s.h.MeJokesGet(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -1447,13 +1399,14 @@ func (s *Server) handleMeJokesGetRequest(args [0]string, argsEscaped bool, w htt
 	}
 }
 
-// handleMeJokesPostRequest handles POST /me/jokes operation.
+// handleMeJokesPostRequest handles MeJokesPost operation.
 //
 // Creates a new joke for current user.
 //
 // POST /me/jokes
 func (s *Server) handleMeJokesPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeJokesPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/me/jokes"),
 	}
@@ -1485,7 +1438,7 @@ func (s *Server) handleMeJokesPostRequest(args [0]string, argsEscaped bool, w ht
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "MeJokesPost",
-			ID:   "",
+			ID:   "MeJokesPost",
 		}
 	)
 	{
@@ -1556,7 +1509,7 @@ func (s *Server) handleMeJokesPostRequest(args [0]string, argsEscaped bool, w ht
 			Context:          ctx,
 			OperationName:    "MeJokesPost",
 			OperationSummary: "Creates a new joke for current user",
-			OperationID:      "",
+			OperationID:      "MeJokesPost",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
@@ -1609,13 +1562,14 @@ func (s *Server) handleMeJokesPostRequest(args [0]string, argsEscaped bool, w ht
 	}
 }
 
-// handleMeJokesPutRequest handles PUT /me/jokes operation.
+// handleMeJokesPutRequest handles MeJokesPut operation.
 //
 // Updates joke for current user.
 //
 // PUT /me/jokes
 func (s *Server) handleMeJokesPutRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeJokesPut"),
 		semconv.HTTPMethodKey.String("PUT"),
 		semconv.HTTPRouteKey.String("/me/jokes"),
 	}
@@ -1647,7 +1601,7 @@ func (s *Server) handleMeJokesPutRequest(args [0]string, argsEscaped bool, w htt
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "MeJokesPut",
-			ID:   "",
+			ID:   "MeJokesPut",
 		}
 	)
 	{
@@ -1717,8 +1671,8 @@ func (s *Server) handleMeJokesPutRequest(args [0]string, argsEscaped bool, w htt
 		mreq := middleware.Request{
 			Context:          ctx,
 			OperationName:    "MeJokesPut",
-			OperationSummary: "",
-			OperationID:      "",
+			OperationSummary: "Updates joke for current user",
+			OperationID:      "MeJokesPut",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
@@ -1771,19 +1725,20 @@ func (s *Server) handleMeJokesPutRequest(args [0]string, argsEscaped bool, w htt
 	}
 }
 
-// handleMeLikesDeleteRequest handles DELETE /me/likes operation.
+// handleMeLikesDelRequest handles MeLikesDel operation.
 //
 // Deletes a like of the current user.
 //
 // DELETE /me/likes
-func (s *Server) handleMeLikesDeleteRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleMeLikesDelRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeLikesDel"),
 		semconv.HTTPMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/me/likes"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "MeLikesDelete",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "MeLikesDel",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -1808,15 +1763,15 @@ func (s *Server) handleMeLikesDeleteRequest(args [0]string, argsEscaped bool, w 
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "MeLikesDelete",
-			ID:   "",
+			Name: "MeLikesDel",
+			ID:   "MeLikesDel",
 		}
 	)
 	{
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
-			sctx, ok, err := s.securityBearerAuth(ctx, "MeLikesDelete", r)
+			sctx, ok, err := s.securityBearerAuth(ctx, "MeLikesDel", r)
 			if err != nil {
 				err = &ogenerrors.SecurityError{
 					OperationContext: opErrContext,
@@ -1858,7 +1813,7 @@ func (s *Server) handleMeLikesDeleteRequest(args [0]string, argsEscaped bool, w 
 			return
 		}
 	}
-	request, close, err := s.decodeMeLikesDeleteRequest(r)
+	request, close, err := s.decodeMeLikesDelRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -1874,22 +1829,22 @@ func (s *Server) handleMeLikesDeleteRequest(args [0]string, argsEscaped bool, w 
 		}
 	}()
 
-	var response *MeLikesDeleteNoContent
+	var response *MeLikesDelNoContent
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "MeLikesDelete",
+			OperationName:    "MeLikesDel",
 			OperationSummary: "Deletes a like of the current user",
-			OperationID:      "",
+			OperationID:      "MeLikesDel",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
 
 		type (
-			Request  = *MeLikesDeleteReq
+			Request  = *MeLikesDelReq
 			Params   = struct{}
-			Response = *MeLikesDeleteNoContent
+			Response = *MeLikesDelNoContent
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1900,12 +1855,12 @@ func (s *Server) handleMeLikesDeleteRequest(args [0]string, argsEscaped bool, w 
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeLikesDelete(ctx, request)
+				err = s.h.MeLikesDel(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeLikesDelete(ctx, request)
+		err = s.h.MeLikesDel(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -1924,7 +1879,7 @@ func (s *Server) handleMeLikesDeleteRequest(args [0]string, argsEscaped bool, w 
 		return
 	}
 
-	if err := encodeMeLikesDeleteResponse(response, w, span); err != nil {
+	if err := encodeMeLikesDelResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -1933,13 +1888,14 @@ func (s *Server) handleMeLikesDeleteRequest(args [0]string, argsEscaped bool, w 
 	}
 }
 
-// handleMeLikesPostRequest handles POST /me/likes operation.
+// handleMeLikesPostRequest handles MeLikesPost operation.
 //
 // Creates a like for a joke for the current user.
 //
 // POST /me/likes
 func (s *Server) handleMeLikesPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MeLikesPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/me/likes"),
 	}
@@ -1971,7 +1927,7 @@ func (s *Server) handleMeLikesPostRequest(args [0]string, argsEscaped bool, w ht
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "MeLikesPost",
-			ID:   "",
+			ID:   "MeLikesPost",
 		}
 	)
 	{
@@ -2042,7 +1998,7 @@ func (s *Server) handleMeLikesPostRequest(args [0]string, argsEscaped bool, w ht
 			Context:          ctx,
 			OperationName:    "MeLikesPost",
 			OperationSummary: "Creates a like for a joke for the current user",
-			OperationID:      "",
+			OperationID:      "MeLikesPost",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
@@ -2095,13 +2051,14 @@ func (s *Server) handleMeLikesPostRequest(args [0]string, argsEscaped bool, w ht
 	}
 }
 
-// handleMePutRequest handles PUT /me operation.
+// handleMePutRequest handles MePut operation.
 //
 // Updates current user profile.
 //
 // PUT /me
 func (s *Server) handleMePutRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("MePut"),
 		semconv.HTTPMethodKey.String("PUT"),
 		semconv.HTTPRouteKey.String("/me"),
 	}
@@ -2133,7 +2090,7 @@ func (s *Server) handleMePutRequest(args [0]string, argsEscaped bool, w http.Res
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "MePut",
-			ID:   "",
+			ID:   "MePut",
 		}
 	)
 	{
@@ -2204,7 +2161,7 @@ func (s *Server) handleMePutRequest(args [0]string, argsEscaped bool, w http.Res
 			Context:          ctx,
 			OperationName:    "MePut",
 			OperationSummary: "Updates current user profile",
-			OperationID:      "",
+			OperationID:      "MePut",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
@@ -2257,13 +2214,14 @@ func (s *Server) handleMePutRequest(args [0]string, argsEscaped bool, w http.Res
 	}
 }
 
-// handleSignInPostRequest handles POST /sign_in operation.
+// handleSignInPostRequest handles SignInPost operation.
 //
 // Performs user authentication.
 //
 // POST /sign_in
 func (s *Server) handleSignInPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("SignInPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign_in"),
 	}
@@ -2295,7 +2253,7 @@ func (s *Server) handleSignInPostRequest(args [0]string, argsEscaped bool, w htt
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "SignInPost",
-			ID:   "",
+			ID:   "SignInPost",
 		}
 	)
 	request, close, err := s.decodeSignInPostRequest(r)
@@ -2320,7 +2278,7 @@ func (s *Server) handleSignInPostRequest(args [0]string, argsEscaped bool, w htt
 			Context:          ctx,
 			OperationName:    "SignInPost",
 			OperationSummary: "Performs user authentication",
-			OperationID:      "",
+			OperationID:      "SignInPost",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
@@ -2373,13 +2331,14 @@ func (s *Server) handleSignInPostRequest(args [0]string, argsEscaped bool, w htt
 	}
 }
 
-// handleSignRefreshPostRequest handles POST /sign_refresh operation.
+// handleSignRefreshPostRequest handles SignRefreshPost operation.
 //
 // Exchanges a refresh token for an access token.
 //
 // POST /sign_refresh
 func (s *Server) handleSignRefreshPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("SignRefreshPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign_refresh"),
 	}
@@ -2411,7 +2370,7 @@ func (s *Server) handleSignRefreshPostRequest(args [0]string, argsEscaped bool, 
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "SignRefreshPost",
-			ID:   "",
+			ID:   "SignRefreshPost",
 		}
 	)
 	request, close, err := s.decodeSignRefreshPostRequest(r)
@@ -2436,7 +2395,7 @@ func (s *Server) handleSignRefreshPostRequest(args [0]string, argsEscaped bool, 
 			Context:          ctx,
 			OperationName:    "SignRefreshPost",
 			OperationSummary: "Exchanges a refresh token for an access token",
-			OperationID:      "",
+			OperationID:      "SignRefreshPost",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
@@ -2489,13 +2448,14 @@ func (s *Server) handleSignRefreshPostRequest(args [0]string, argsEscaped bool, 
 	}
 }
 
-// handleSignUpPostRequest handles POST /sign_up operation.
+// handleSignUpPostRequest handles SignUpPost operation.
 //
 // Performs user registration.
 //
 // POST /sign_up
 func (s *Server) handleSignUpPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("SignUpPost"),
 		semconv.HTTPMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign_up"),
 	}
@@ -2527,7 +2487,7 @@ func (s *Server) handleSignUpPostRequest(args [0]string, argsEscaped bool, w htt
 		err          error
 		opErrContext = ogenerrors.OperationContext{
 			Name: "SignUpPost",
-			ID:   "",
+			ID:   "SignUpPost",
 		}
 	)
 	request, close, err := s.decodeSignUpPostRequest(r)
@@ -2552,7 +2512,7 @@ func (s *Server) handleSignUpPostRequest(args [0]string, argsEscaped bool, w htt
 			Context:          ctx,
 			OperationName:    "SignUpPost",
 			OperationSummary: "Performs user registration",
-			OperationID:      "",
+			OperationID:      "SignUpPost",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,

@@ -12,8 +12,6 @@ servers:
 tags:
   - name: sign
     description: Everything about managing user sessions
-  - name: me
-    description: Everything about managing current user profile
   - name: users
     description: Everything about searching users
   - name: jokes
@@ -22,6 +20,8 @@ tags:
     description: Everything about searching comments
   - name: likes
     description: Everything about counting likes
+  - name: me
+    description: Everything about managing current user profile
 externalDocs:
   description: Learn more about the project.
   url: https://github.com/abc-valera/flugo-api-golang
@@ -31,6 +31,7 @@ paths:
       tags:
         - sign
       summary: Performs user registration
+      operationId: SignUpPost
       requestBody:
         description: Data to add new user to the social network
         required: true
@@ -62,6 +63,7 @@ paths:
       tags:
         - sign
       summary: Performs user authentication
+      operationId: SignInPost
       requestBody:
         description: Data to perform sign in to the social network
         required: true
@@ -106,6 +108,7 @@ paths:
       tags:
         - sign
       summary: Exchanges a refresh token for an access token
+      operationId: SignRefreshPost
       requestBody:
         description: Refresh token
         required: true
@@ -139,6 +142,7 @@ paths:
       tags:
         - me
       summary: Returns current user profile
+      operationId: MeGet
       security:
         - bearerAuth: []
       responses:
@@ -150,6 +154,7 @@ paths:
       tags:
         - me
       summary: Updates current user profile
+      operationId: MePut
       security:
         - bearerAuth: []
       requestBody:
@@ -183,6 +188,7 @@ paths:
       tags:
         - me
       summary: Deletes current user profile
+      operationId: MeDel
       security:
         - bearerAuth: []
       requestBody:
@@ -208,6 +214,9 @@ paths:
       tags:
         - me
       summary: Returns jokes of the current user
+      operationId: MeJokesGet
+      parameters:
+        - $ref: '#/components/parameters/select'
       security:
         - bearerAuth: []
       responses:
@@ -219,6 +228,7 @@ paths:
       tags:
         - me
       summary: Creates a new joke for current user
+      operationId: MeJokesPost
       security:
         - bearerAuth: []
       requestBody:
@@ -250,7 +260,8 @@ paths:
     put:
       tags:
         - me
-      description: Updates joke for current user
+      summary: Updates joke for current user
+      operationId: MeJokesPut
       security:
         - bearerAuth: []
       requestBody:
@@ -284,6 +295,7 @@ paths:
       tags:
         - me
       summary: Deletes joke for current user
+      operationId: MeJokesDel
       security:
         - bearerAuth: []
       requestBody:
@@ -308,7 +320,10 @@ paths:
     post:
       tags:
         - me
-      description: Creates a comment for the current user and the current joke
+      summary: Creates a comment for the current user and the current joke
+      operationId: MeCommentsPost
+      parameters:
+        - $ref: '#/components/parameters/select'
       security:
         - bearerAuth: []
       requestBody:
@@ -337,7 +352,8 @@ paths:
     put:
       tags:
         - me
-      description: Updates a comment of the current user
+      summary: Updates a comment of the current user
+      operationId: MeCommentsPut
       security:
         - bearerAuth: []
       requestBody:
@@ -364,7 +380,8 @@ paths:
     delete:
       tags:
         - me
-      description: Deletes a comment of the current user
+      summary: Deletes a comment of the current user
+      operationId: MeCommentsDel
       security:
         - bearerAuth: []
       requestBody:
@@ -390,6 +407,7 @@ paths:
       tags:
         - me
       summary: Creates a like for a joke for the current user
+      operationId: MeLikesPost
       security:
         - bearerAuth: []
       requestBody:
@@ -414,6 +432,7 @@ paths:
       tags:
         - me
       summary: Deletes a like of the current user
+      operationId: MeLikesDel
       security:
         - bearerAuth: []
       requestBody:
@@ -438,7 +457,8 @@ paths:
     get:
       tags:
         - comments
-      description: Returns comments of the joke
+      summary: Returns comments of the joke
+      operationId: CommentsByJokeIDGet
       parameters:
         - name: joke_id
           in: path
@@ -446,8 +466,7 @@ paths:
           required: true
           schema:
             type: string
-      security:
-        - bearerAuth: []
+        - $ref: '#/components/parameters/select'
       responses:
         '200':
           $ref: '#/components/responses/comments'
@@ -457,7 +476,8 @@ paths:
     get:
       tags:
         - likes
-      description: Counts likes of the joke
+      summary: Counts likes of the joke
+      operationId: LikesByJokeIDGet
       parameters:
         - name: joke_id
           in: path
@@ -465,8 +485,6 @@ paths:
           required: true
           schema:
             type: string
-      security:
-        - bearerAuth: []
       responses:
         '200':
           description: Count of likes
@@ -529,6 +547,12 @@ components:
         - username
         - email
         - created_at
+    order:
+      type: string
+      name: order
+      enum:
+        - asc
+        - desc
     joke:
       type: object
       properties:
@@ -616,3 +640,27 @@ components:
                   $ref: '#/components/schemas/comment'
             required:
               - comments
+  parameters:
+    select:
+      name: select_params
+      in: query
+      description: fields to specify select parameters
+      required: true
+      schema:
+        type: object
+        title: select_params
+        properties:
+          order_by:
+            type: string
+            default: created_at
+          order:
+            $ref: '#/components/schemas/order'
+          limit:
+            type: integer
+            minimum: 0
+          offset:
+            type: integer
+            minimum: 0
+        required:
+          - limit
+          - offset

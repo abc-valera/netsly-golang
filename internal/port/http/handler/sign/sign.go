@@ -1,4 +1,4 @@
-package handler
+package sign
 
 import (
 	"context"
@@ -33,7 +33,7 @@ func (h SignHandler) SignUpPost(ctx context.Context, req *ogen.SignUpPostReq) er
 }
 
 func (h SignHandler) SignInPost(ctx context.Context, req *ogen.SignInPostReq) (*ogen.SignInPostOK, error) {
-	user, access, refresh, err := h.signUsecase.SignIn(ctx, application.SignInRequest{
+	resp, err := h.signUsecase.SignIn(ctx, application.SignInRequest{
 		Email:    req.Email,
 		Password: req.Password,
 	})
@@ -41,9 +41,9 @@ func (h SignHandler) SignInPost(ctx context.Context, req *ogen.SignInPostReq) (*
 		return nil, err
 	}
 	return &ogen.SignInPostOK{
-		UserResponse: *dto.NewUserResponse(user),
-		AccessToken:  access,
-		RefreshToken: refresh,
+		UserResponse: *dto.NewUserResponse(resp.User),
+		AccessToken:  resp.AccessToken,
+		RefreshToken: resp.RefreshToken,
 	}, nil
 }
 

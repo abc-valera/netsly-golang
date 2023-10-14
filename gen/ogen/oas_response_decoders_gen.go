@@ -14,7 +14,7 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func decodeCommentsJokeIDGetResponse(resp *http.Response) (res *Comments, _ error) {
+func decodeCommentsByJokeIDGetResponse(resp *http.Response) (res *Comments, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -97,7 +97,7 @@ func decodeCommentsJokeIDGetResponse(resp *http.Response) (res *Comments, _ erro
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeLikesJokeIDGetResponse(resp *http.Response) (res int, _ error) {
+func decodeLikesByJokeIDGetResponse(resp *http.Response) (res int, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -182,11 +182,11 @@ func decodeLikesJokeIDGetResponse(resp *http.Response) (res int, _ error) {
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeMeCommentsDeleteResponse(resp *http.Response) (res *MeCommentsDeleteNoContent, _ error) {
+func decodeMeCommentsDelResponse(resp *http.Response) (res *MeCommentsDelNoContent, _ error) {
 	switch resp.StatusCode {
 	case 204:
 		// Code 204.
-		return &MeCommentsDeleteNoContent{}, nil
+		return &MeCommentsDelNoContent{}, nil
 	}
 	// Convenient error response.
 	defRes, err := func() (res *CodeErrorStatusCode, err error) {
@@ -335,11 +335,11 @@ func decodeMeCommentsPutResponse(resp *http.Response) (res *MeCommentsPutOK, _ e
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeMeDeleteResponse(resp *http.Response) (res *MeDeleteNoContent, _ error) {
+func decodeMeDelResponse(resp *http.Response) (res *MeDelNoContent, _ error) {
 	switch resp.StatusCode {
 	case 204:
 		// Code 204.
-		return &MeDeleteNoContent{}, nil
+		return &MeDelNoContent{}, nil
 	}
 	// Convenient error response.
 	defRes, err := func() (res *CodeErrorStatusCode, err error) {
@@ -469,11 +469,11 @@ func decodeMeGetResponse(resp *http.Response) (res *User, _ error) {
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeMeJokesDeleteResponse(resp *http.Response) (res *MeJokesDeleteNoContent, _ error) {
+func decodeMeJokesDelResponse(resp *http.Response) (res *MeJokesDelNoContent, _ error) {
 	switch resp.StatusCode {
 	case 204:
 		// Code 204.
-		return &MeJokesDeleteNoContent{}, nil
+		return &MeJokesDelNoContent{}, nil
 	}
 	// Convenient error response.
 	defRes, err := func() (res *CodeErrorStatusCode, err error) {
@@ -705,11 +705,11 @@ func decodeMeJokesPutResponse(resp *http.Response) (res *MeJokesPutCreated, _ er
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeMeLikesDeleteResponse(resp *http.Response) (res *MeLikesDeleteNoContent, _ error) {
+func decodeMeLikesDelResponse(resp *http.Response) (res *MeLikesDelNoContent, _ error) {
 	switch resp.StatusCode {
 	case 204:
 		// Code 204.
-		return &MeLikesDeleteNoContent{}, nil
+		return &MeLikesDelNoContent{}, nil
 	}
 	// Convenient error response.
 	defRes, err := func() (res *CodeErrorStatusCode, err error) {

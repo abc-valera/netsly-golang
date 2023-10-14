@@ -15,8 +15,6 @@ externalDocs:
 tags:
   - name: sign
     description: Everything about managing user sessions
-  - name: me
-    description: Everything about managing current user profile
   - name: users
     description: Everything about searching users
   - name: jokes
@@ -25,27 +23,29 @@ tags:
     description: Everything about searching comments
   - name: likes
     description: Everything about counting likes
+  - name: me
+    description: Everything about managing current user profile
 servers:
   - url: "http://localhost:3000"
 paths:
   /sign_up:
-    $ref: paths/sign-up.yaml
+    $ref: paths/sign/sign-up.yaml
   /sign_in:
-    $ref: paths/sign-in.yaml
+    $ref: paths/sign/sign-in.yaml
   /sign_refresh:
-    $ref: paths/sign-refresh.yaml
+    $ref: paths/sign/sign-refresh.yaml
   /me:
-    $ref: paths/me.yaml
+    $ref: paths/me/me.yaml
   /me/jokes:
-    $ref: paths/me_jokes.yaml
+    $ref: paths/me/me_jokes.yaml
   /me/comments:
-    $ref: paths/me_comments.yaml
+    $ref: paths/me/me_comments.yaml
   /me/likes:
-    $ref: paths/me_likes.yaml
+    $ref: paths/me/me_likes.yaml
   /comments/{joke_id}:
-    $ref: paths/comments_{joke_id}.yaml
+    $ref: paths/comments/comments_{joke_id}.yaml
   /likes/{joke_id}:
-    $ref: paths/likes_{joke_id}.yaml
+    $ref: paths/likes/likes_{joke_id}.yaml
 components:
   securitySchemes:
     bearerAuth:

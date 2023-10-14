@@ -221,6 +221,53 @@ func (s *Comments) SetComments(val []Comment) {
 	s.Comments = val
 }
 
+type CommentsByJokeIDGetSelectParams struct {
+	OrderBy OptString `json:"order_by"`
+	Order   OptOrder  `json:"order"`
+	Limit   int       `json:"limit"`
+	Offset  int       `json:"offset"`
+}
+
+// GetOrderBy returns the value of OrderBy.
+func (s *CommentsByJokeIDGetSelectParams) GetOrderBy() OptString {
+	return s.OrderBy
+}
+
+// GetOrder returns the value of Order.
+func (s *CommentsByJokeIDGetSelectParams) GetOrder() OptOrder {
+	return s.Order
+}
+
+// GetLimit returns the value of Limit.
+func (s *CommentsByJokeIDGetSelectParams) GetLimit() int {
+	return s.Limit
+}
+
+// GetOffset returns the value of Offset.
+func (s *CommentsByJokeIDGetSelectParams) GetOffset() int {
+	return s.Offset
+}
+
+// SetOrderBy sets the value of OrderBy.
+func (s *CommentsByJokeIDGetSelectParams) SetOrderBy(val OptString) {
+	s.OrderBy = val
+}
+
+// SetOrder sets the value of Order.
+func (s *CommentsByJokeIDGetSelectParams) SetOrder(val OptOrder) {
+	s.Order = val
+}
+
+// SetLimit sets the value of Limit.
+func (s *CommentsByJokeIDGetSelectParams) SetLimit(val int) {
+	s.Limit = val
+}
+
+// SetOffset sets the value of Offset.
+func (s *CommentsByJokeIDGetSelectParams) SetOffset(val int) {
+	s.Offset = val
+}
+
 // Ref: #/components/schemas/joke
 type Joke struct {
 	ID          string    `json:"id"`
@@ -305,20 +352,20 @@ func (s *Jokes) SetJokes(val []Joke) {
 	s.Jokes = val
 }
 
-// MeCommentsDeleteNoContent is response for MeCommentsDelete operation.
-type MeCommentsDeleteNoContent struct{}
+// MeCommentsDelNoContent is response for MeCommentsDel operation.
+type MeCommentsDelNoContent struct{}
 
-type MeCommentsDeleteReq struct {
+type MeCommentsDelReq struct {
 	CommentID string `json:"comment_id"`
 }
 
 // GetCommentID returns the value of CommentID.
-func (s *MeCommentsDeleteReq) GetCommentID() string {
+func (s *MeCommentsDelReq) GetCommentID() string {
 	return s.CommentID
 }
 
 // SetCommentID sets the value of CommentID.
-func (s *MeCommentsDeleteReq) SetCommentID(val string) {
+func (s *MeCommentsDelReq) SetCommentID(val string) {
 	s.CommentID = val
 }
 
@@ -350,6 +397,53 @@ func (s *MeCommentsPostReq) SetText(val string) {
 	s.Text = val
 }
 
+type MeCommentsPostSelectParams struct {
+	OrderBy OptString `json:"order_by"`
+	Order   OptOrder  `json:"order"`
+	Limit   int       `json:"limit"`
+	Offset  int       `json:"offset"`
+}
+
+// GetOrderBy returns the value of OrderBy.
+func (s *MeCommentsPostSelectParams) GetOrderBy() OptString {
+	return s.OrderBy
+}
+
+// GetOrder returns the value of Order.
+func (s *MeCommentsPostSelectParams) GetOrder() OptOrder {
+	return s.Order
+}
+
+// GetLimit returns the value of Limit.
+func (s *MeCommentsPostSelectParams) GetLimit() int {
+	return s.Limit
+}
+
+// GetOffset returns the value of Offset.
+func (s *MeCommentsPostSelectParams) GetOffset() int {
+	return s.Offset
+}
+
+// SetOrderBy sets the value of OrderBy.
+func (s *MeCommentsPostSelectParams) SetOrderBy(val OptString) {
+	s.OrderBy = val
+}
+
+// SetOrder sets the value of Order.
+func (s *MeCommentsPostSelectParams) SetOrder(val OptOrder) {
+	s.Order = val
+}
+
+// SetLimit sets the value of Limit.
+func (s *MeCommentsPostSelectParams) SetLimit(val int) {
+	s.Limit = val
+}
+
+// SetOffset sets the value of Offset.
+func (s *MeCommentsPostSelectParams) SetOffset(val int) {
+	s.Offset = val
+}
+
 // MeCommentsPutOK is response for MeCommentsPut operation.
 type MeCommentsPutOK struct{}
 
@@ -378,38 +472,85 @@ func (s *MeCommentsPutReq) SetText(val OptString) {
 	s.Text = val
 }
 
-// MeDeleteNoContent is response for MeDelete operation.
-type MeDeleteNoContent struct{}
+// MeDelNoContent is response for MeDel operation.
+type MeDelNoContent struct{}
 
-type MeDeleteReq struct {
+type MeDelReq struct {
 	UserID string `json:"user_id"`
 }
 
 // GetUserID returns the value of UserID.
-func (s *MeDeleteReq) GetUserID() string {
+func (s *MeDelReq) GetUserID() string {
 	return s.UserID
 }
 
 // SetUserID sets the value of UserID.
-func (s *MeDeleteReq) SetUserID(val string) {
+func (s *MeDelReq) SetUserID(val string) {
 	s.UserID = val
 }
 
-// MeJokesDeleteNoContent is response for MeJokesDelete operation.
-type MeJokesDeleteNoContent struct{}
+// MeJokesDelNoContent is response for MeJokesDel operation.
+type MeJokesDelNoContent struct{}
 
-type MeJokesDeleteReq struct {
+type MeJokesDelReq struct {
 	JokeID string `json:"joke_id"`
 }
 
 // GetJokeID returns the value of JokeID.
-func (s *MeJokesDeleteReq) GetJokeID() string {
+func (s *MeJokesDelReq) GetJokeID() string {
 	return s.JokeID
 }
 
 // SetJokeID sets the value of JokeID.
-func (s *MeJokesDeleteReq) SetJokeID(val string) {
+func (s *MeJokesDelReq) SetJokeID(val string) {
 	s.JokeID = val
+}
+
+type MeJokesGetSelectParams struct {
+	OrderBy OptString `json:"order_by"`
+	Order   OptOrder  `json:"order"`
+	Limit   int       `json:"limit"`
+	Offset  int       `json:"offset"`
+}
+
+// GetOrderBy returns the value of OrderBy.
+func (s *MeJokesGetSelectParams) GetOrderBy() OptString {
+	return s.OrderBy
+}
+
+// GetOrder returns the value of Order.
+func (s *MeJokesGetSelectParams) GetOrder() OptOrder {
+	return s.Order
+}
+
+// GetLimit returns the value of Limit.
+func (s *MeJokesGetSelectParams) GetLimit() int {
+	return s.Limit
+}
+
+// GetOffset returns the value of Offset.
+func (s *MeJokesGetSelectParams) GetOffset() int {
+	return s.Offset
+}
+
+// SetOrderBy sets the value of OrderBy.
+func (s *MeJokesGetSelectParams) SetOrderBy(val OptString) {
+	s.OrderBy = val
+}
+
+// SetOrder sets the value of Order.
+func (s *MeJokesGetSelectParams) SetOrder(val OptOrder) {
+	s.Order = val
+}
+
+// SetLimit sets the value of Limit.
+func (s *MeJokesGetSelectParams) SetLimit(val int) {
+	s.Limit = val
+}
+
+// SetOffset sets the value of Offset.
+func (s *MeJokesGetSelectParams) SetOffset(val int) {
+	s.Offset = val
 }
 
 // MeJokesPostCreated is response for MeJokesPost operation.
@@ -501,20 +642,20 @@ func (s *MeJokesPutReq) SetExplanation(val OptString) {
 	s.Explanation = val
 }
 
-// MeLikesDeleteNoContent is response for MeLikesDelete operation.
-type MeLikesDeleteNoContent struct{}
+// MeLikesDelNoContent is response for MeLikesDel operation.
+type MeLikesDelNoContent struct{}
 
-type MeLikesDeleteReq struct {
+type MeLikesDelReq struct {
 	JokeID string `json:"joke_id"`
 }
 
 // GetJokeID returns the value of JokeID.
-func (s *MeLikesDeleteReq) GetJokeID() string {
+func (s *MeLikesDelReq) GetJokeID() string {
 	return s.JokeID
 }
 
 // SetJokeID sets the value of JokeID.
-func (s *MeLikesDeleteReq) SetJokeID(val string) {
+func (s *MeLikesDelReq) SetJokeID(val string) {
 	s.JokeID = val
 }
 
@@ -585,6 +726,52 @@ func (s *MePutReq) SetStatus(val OptString) {
 	s.Status = val
 }
 
+// NewOptOrder returns new OptOrder with value set to v.
+func NewOptOrder(v Order) OptOrder {
+	return OptOrder{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptOrder is optional Order.
+type OptOrder struct {
+	Value Order
+	Set   bool
+}
+
+// IsSet returns true if OptOrder was set.
+func (o OptOrder) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptOrder) Reset() {
+	var v Order
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptOrder) SetTo(v Order) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptOrder) Get() (v Order, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptOrder) Or(d Order) Order {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -629,6 +816,48 @@ func (o OptString) Or(d string) string {
 		return v
 	}
 	return d
+}
+
+// Ref: #/components/schemas/order
+type Order string
+
+const (
+	OrderAsc  Order = "asc"
+	OrderDesc Order = "desc"
+)
+
+// AllValues returns all Order values.
+func (Order) AllValues() []Order {
+	return []Order{
+		OrderAsc,
+		OrderDesc,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s Order) MarshalText() ([]byte, error) {
+	switch s {
+	case OrderAsc:
+		return []byte(s), nil
+	case OrderDesc:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *Order) UnmarshalText(data []byte) error {
+	switch Order(data) {
+	case OrderAsc:
+		*s = OrderAsc
+		return nil
+	case OrderDesc:
+		*s = OrderDesc
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 type SignInPostOK struct {

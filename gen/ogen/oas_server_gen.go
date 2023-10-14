@@ -8,103 +8,103 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
-	// CommentsJokeIDGet implements GET /comments/{joke_id} operation.
+	// CommentsByJokeIDGet implements CommentsByJokeIDGet operation.
 	//
 	// Returns comments of the joke.
 	//
 	// GET /comments/{joke_id}
-	CommentsJokeIDGet(ctx context.Context, params CommentsJokeIDGetParams) (*Comments, error)
-	// LikesJokeIDGet implements GET /likes/{joke_id} operation.
+	CommentsByJokeIDGet(ctx context.Context, params CommentsByJokeIDGetParams) (*Comments, error)
+	// LikesByJokeIDGet implements LikesByJokeIDGet operation.
 	//
 	// Counts likes of the joke.
 	//
 	// GET /likes/{joke_id}
-	LikesJokeIDGet(ctx context.Context, params LikesJokeIDGetParams) (int, error)
-	// MeCommentsDelete implements DELETE /me/comments operation.
+	LikesByJokeIDGet(ctx context.Context, params LikesByJokeIDGetParams) (int, error)
+	// MeCommentsDel implements MeCommentsDel operation.
 	//
 	// Deletes a comment of the current user.
 	//
 	// DELETE /me/comments
-	MeCommentsDelete(ctx context.Context, req *MeCommentsDeleteReq) error
-	// MeCommentsPost implements POST /me/comments operation.
+	MeCommentsDel(ctx context.Context, req *MeCommentsDelReq) error
+	// MeCommentsPost implements MeCommentsPost operation.
 	//
 	// Creates a comment for the current user and the current joke.
 	//
 	// POST /me/comments
-	MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) error
-	// MeCommentsPut implements PUT /me/comments operation.
+	MeCommentsPost(ctx context.Context, req *MeCommentsPostReq, params MeCommentsPostParams) error
+	// MeCommentsPut implements MeCommentsPut operation.
 	//
 	// Updates a comment of the current user.
 	//
 	// PUT /me/comments
 	MeCommentsPut(ctx context.Context, req *MeCommentsPutReq) error
-	// MeDelete implements DELETE /me operation.
+	// MeDel implements MeDel operation.
 	//
 	// Deletes current user profile.
 	//
 	// DELETE /me
-	MeDelete(ctx context.Context, req *MeDeleteReq) error
-	// MeGet implements GET /me operation.
+	MeDel(ctx context.Context, req *MeDelReq) error
+	// MeGet implements MeGet operation.
 	//
 	// Returns current user profile.
 	//
 	// GET /me
 	MeGet(ctx context.Context) (*User, error)
-	// MeJokesDelete implements DELETE /me/jokes operation.
+	// MeJokesDel implements MeJokesDel operation.
 	//
 	// Deletes joke for current user.
 	//
 	// DELETE /me/jokes
-	MeJokesDelete(ctx context.Context, req *MeJokesDeleteReq) error
-	// MeJokesGet implements GET /me/jokes operation.
+	MeJokesDel(ctx context.Context, req *MeJokesDelReq) error
+	// MeJokesGet implements MeJokesGet operation.
 	//
 	// Returns jokes of the current user.
 	//
 	// GET /me/jokes
-	MeJokesGet(ctx context.Context) (*Jokes, error)
-	// MeJokesPost implements POST /me/jokes operation.
+	MeJokesGet(ctx context.Context, params MeJokesGetParams) (*Jokes, error)
+	// MeJokesPost implements MeJokesPost operation.
 	//
 	// Creates a new joke for current user.
 	//
 	// POST /me/jokes
 	MeJokesPost(ctx context.Context, req *MeJokesPostReq) error
-	// MeJokesPut implements PUT /me/jokes operation.
+	// MeJokesPut implements MeJokesPut operation.
 	//
 	// Updates joke for current user.
 	//
 	// PUT /me/jokes
 	MeJokesPut(ctx context.Context, req *MeJokesPutReq) error
-	// MeLikesDelete implements DELETE /me/likes operation.
+	// MeLikesDel implements MeLikesDel operation.
 	//
 	// Deletes a like of the current user.
 	//
 	// DELETE /me/likes
-	MeLikesDelete(ctx context.Context, req *MeLikesDeleteReq) error
-	// MeLikesPost implements POST /me/likes operation.
+	MeLikesDel(ctx context.Context, req *MeLikesDelReq) error
+	// MeLikesPost implements MeLikesPost operation.
 	//
 	// Creates a like for a joke for the current user.
 	//
 	// POST /me/likes
 	MeLikesPost(ctx context.Context, req *MeLikesPostReq) error
-	// MePut implements PUT /me operation.
+	// MePut implements MePut operation.
 	//
 	// Updates current user profile.
 	//
 	// PUT /me
 	MePut(ctx context.Context, req *MePutReq) error
-	// SignInPost implements POST /sign_in operation.
+	// SignInPost implements SignInPost operation.
 	//
 	// Performs user authentication.
 	//
 	// POST /sign_in
 	SignInPost(ctx context.Context, req *SignInPostReq) (*SignInPostOK, error)
-	// SignRefreshPost implements POST /sign_refresh operation.
+	// SignRefreshPost implements SignRefreshPost operation.
 	//
 	// Exchanges a refresh token for an access token.
 	//
 	// POST /sign_refresh
 	SignRefreshPost(ctx context.Context, req *SignRefreshPostReq) (*SignRefreshPostOK, error)
-	// SignUpPost implements POST /sign_up operation.
+	// SignUpPost implements SignUpPost operation.
 	//
 	// Performs user registration.
 	//

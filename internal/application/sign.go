@@ -80,29 +80,39 @@ type SignInRequest struct {
 	Password string
 }
 
+type SignInResponse struct {
+	User         *entity.User
+	AccessToken  string
+	RefreshToken string
+}
+
 // SignIn performs user sign-in: it checks if user with provided email exists,
 // then creates hash of the provided password and compares it to the hash stored in database.
 // The SignIn returns user, accessToken and refreshToken.
-func (s SignUseCase) SignIn(ctx context.Context, req SignInRequest) (*entity.User, string, string, error) {
+func (s SignUseCase) SignIn(ctx context.Context, req SignInRequest) (SignInResponse, error) {
 	user, err := s.userRepo.GetByEmail(ctx, req.Email)
 	if err != nil {
-		return nil, "", "", err
+		return SignInResponse{}, err
 	}
 
 	if err := s.passwordMaker.CheckPassword(req.Password, user.HashedPassword); err != nil {
-		return nil, "", "", err
+		return SignInResponse{}, err
 	}
 
 	access, _, err := s.tokenMaker.CreateAccessToken(user.ID)
 	if err != nil {
-		return nil, "", "", err
+		return SignInResponse{}, err
 	}
 	refresh, _, err := s.tokenMaker.CreateRefreshToken(user.ID)
 	if err != nil {
-		return nil, "", "", err
+		return SignInResponse{}, err
 	}
 
-	return user, access, refresh, nil
+	return SignInResponse{
+		User:         user,
+		AccessToken:  access,
+		RefreshToken: refresh,
+	}, nil
 }
 
 // SignRefresh exchages given refresh token for the access token for the same user.

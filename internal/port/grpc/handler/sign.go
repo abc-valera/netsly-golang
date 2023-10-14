@@ -35,7 +35,7 @@ func (h SignHandler) SignUp(ctx context.Context, req *pb.SignUpRequest) (*pb.Sig
 }
 
 func (h SignHandler) SignIn(ctx context.Context, req *pb.SignInRequest) (*pb.SignInResponse, error) {
-	user, access, refresh, err := h.signUsecase.SignIn(ctx, application.SignInRequest{
+	resp, err := h.signUsecase.SignIn(ctx, application.SignInRequest{
 		Email:    req.Email,
 		Password: req.Password,
 	})
@@ -43,8 +43,8 @@ func (h SignHandler) SignIn(ctx context.Context, req *pb.SignInRequest) (*pb.Sig
 		return nil, handleErr(err)
 	}
 	return &pb.SignInResponse{
-		UserResponse: dto.NewUserResponse(user),
-		AccessToken:  access,
-		RefreshToken: refresh,
+		UserResponse: dto.NewUserResponse(resp.User),
+		AccessToken:  resp.AccessToken,
+		RefreshToken: resp.RefreshToken,
 	}, nil
 }

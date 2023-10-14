@@ -1,4 +1,4 @@
-package handler
+package comments
 
 import (
 	"context"
@@ -18,7 +18,11 @@ func NewCommentsHandler(commentRepo repository.ICommentRepository) CommentsHandl
 	}
 }
 
-func (h CommentsHandler) CommentsJokeIDGet(ctx context.Context, params ogen.CommentsJokeIDGetParams) (*ogen.Comments, error) {
-	domainComments, err := h.commentRepo.GetByJokeID(ctx, params.JokeID)
+func (h CommentsHandler) CommentsByJokeIDGet(ctx context.Context, params ogen.CommentsByJokeIDGetParams) (*ogen.Comments, error) {
+	baseParams, err := dto.NewDomainSelectParams(&params.SelectParams)
+	if err != nil {
+		return nil, err
+	}
+	domainComments, err := h.commentRepo.GetByJokeID(ctx, params.JokeID, baseParams)
 	return dto.NewCommentsResponse(domainComments), err
 }
