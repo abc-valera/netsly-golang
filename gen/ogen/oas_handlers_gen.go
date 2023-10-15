@@ -509,16 +509,6 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 			return
 		}
 	}
-	params, err := decodeMeCommentsPostParams(args, argsEscaped, r)
-	if err != nil {
-		err = &ogenerrors.DecodeParamsError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		recordError("DecodeParams", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
 	request, close, err := s.decodeMeCommentsPostRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
@@ -543,18 +533,13 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 			OperationSummary: "Creates a comment for the current user and the current joke",
 			OperationID:      "MeCommentsPost",
 			Body:             request,
-			Params: middleware.Parameters{
-				{
-					Name: "select_params",
-					In:   "query",
-				}: params.SelectParams,
-			},
-			Raw: r,
+			Params:           middleware.Parameters{},
+			Raw:              r,
 		}
 
 		type (
 			Request  = *MeCommentsPostReq
-			Params   = MeCommentsPostParams
+			Params   = struct{}
 			Response = *MeCommentsPostOK
 		)
 		response, err = middleware.HookMiddleware[
@@ -564,14 +549,14 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 		](
 			m,
 			mreq,
-			unpackMeCommentsPostParams,
+			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeCommentsPost(ctx, request, params)
+				err = s.h.MeCommentsPost(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeCommentsPost(ctx, request, params)
+		err = s.h.MeCommentsPost(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -850,21 +835,6 @@ func (s *Server) handleMeDelRequest(args [0]string, argsEscaped bool, w http.Res
 			return
 		}
 	}
-	request, close, err := s.decodeMeDelRequest(r)
-	if err != nil {
-		err = &ogenerrors.DecodeRequestError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		recordError("DecodeRequest", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-	defer func() {
-		if err := close(); err != nil {
-			recordError("CloseRequest", err)
-		}
-	}()
 
 	var response *MeDelNoContent
 	if m := s.cfg.Middleware; m != nil {
@@ -873,13 +843,13 @@ func (s *Server) handleMeDelRequest(args [0]string, argsEscaped bool, w http.Res
 			OperationName:    "MeDel",
 			OperationSummary: "Deletes current user profile",
 			OperationID:      "MeDel",
-			Body:             request,
+			Body:             nil,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
 
 		type (
-			Request  = *MeDelReq
+			Request  = struct{}
 			Params   = struct{}
 			Response = *MeDelNoContent
 		)
@@ -892,12 +862,12 @@ func (s *Server) handleMeDelRequest(args [0]string, argsEscaped bool, w http.Res
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeDel(ctx, request)
+				err = s.h.MeDel(ctx)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeDel(ctx, request)
+		err = s.h.MeDel(ctx)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -2155,7 +2125,7 @@ func (s *Server) handleMePutRequest(args [0]string, argsEscaped bool, w http.Res
 		}
 	}()
 
-	var response *MePutNoContent
+	var response *MePutCreated
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2170,7 +2140,7 @@ func (s *Server) handleMePutRequest(args [0]string, argsEscaped bool, w http.Res
 		type (
 			Request  = *MePutReq
 			Params   = struct{}
-			Response = *MePutNoContent
+			Response = *MePutCreated
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

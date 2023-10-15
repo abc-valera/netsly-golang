@@ -36,21 +36,16 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 }
 
 func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) error {
-	userID := ctx.Value(other.PayloadKey).(service.Payload).UserID
 	return h.userUsecase.UpdateUser(ctx, application.UpdateUserRequest{
-		UpdaterID: userID,
-		UserID:    req.UserID,
-		Username:  req.Username.Value,
-		Fullanme:  req.Fullname.Value,
-		Status:    req.Status.Value,
+		UserID:   ctx.Value(other.PayloadKey).(service.Payload).UserID,
+		Username: req.Username.Value,
+		Fullanme: req.Fullname.Value,
+		Status:   req.Status.Value,
 	})
 
 }
 
-func (h MeHandler) MeDel(ctx context.Context, req *ogen.MeDelReq) error {
+func (h MeHandler) MeDel(ctx context.Context) error {
 	userID := ctx.Value(other.PayloadKey).(service.Payload).UserID
-	return h.userUsecase.DeleteUser(ctx, application.DeleteUserRequest{
-		DeleterID: userID,
-		UserID:    req.UserID,
-	})
+	return h.userRepo.Delete(ctx, userID)
 }

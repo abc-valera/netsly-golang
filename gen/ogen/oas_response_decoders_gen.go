@@ -807,11 +807,11 @@ func decodeMeLikesPostResponse(resp *http.Response) (res *MeLikesPostCreated, _ 
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeMePutResponse(resp *http.Response) (res *MePutNoContent, _ error) {
+func decodeMePutResponse(resp *http.Response) (res *MePutCreated, _ error) {
 	switch resp.StatusCode {
-	case 204:
-		// Code 204.
-		return &MePutNoContent{}, nil
+	case 201:
+		// Code 201.
+		return &MePutCreated{}, nil
 	}
 	// Convenient error response.
 	defRes, err := func() (res *CodeErrorStatusCode, err error) {

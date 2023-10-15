@@ -28,17 +28,17 @@ post:
           schema:
             type: object
             properties:
-              userResponse:
+              user_response:
                 $ref: "../../components/schemas/user.yaml"
-              accessToken:
+              access_token:
                 type: string
                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-              refreshToken:
+              refresh_token:
                 type: string
                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
             required:
-              - userResponse
-              - accessToken
-              - refreshToken
+              - user_response
+              - access_token
+              - refresh_token
     default:
       $ref: "../../components/responses/code_error.yaml"

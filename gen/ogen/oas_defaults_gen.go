@@ -11,14 +11,6 @@ func (s *CommentsByJokeIDGetSelectParams) setDefaults() {
 }
 
 // setDefaults set default value of fields.
-func (s *MeCommentsPostSelectParams) setDefaults() {
-	{
-		val := string("created_at")
-		s.OrderBy.SetTo(val)
-	}
-}
-
-// setDefaults set default value of fields.
 func (s *MeJokesGetSelectParams) setDefaults() {
 	{
 		val := string("created_at")

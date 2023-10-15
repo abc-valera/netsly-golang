@@ -38,8 +38,10 @@ func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesG
 
 func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostReq) error {
 	return h.jokeUseCase.CreateJoke(ctx, application.CreateJokeRequest{
-		UserID: ctx.Value(other.PayloadKey).(service.Payload).UserID,
-		Text:   req.Text,
+		UserID:      ctx.Value(other.PayloadKey).(service.Payload).UserID,
+		Title:       req.Title,
+		Text:        req.Text,
+		Explanation: req.Explanation.Value,
 	})
 }
 

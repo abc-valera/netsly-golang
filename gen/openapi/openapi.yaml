@@ -89,18 +89,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  userResponse:
+                  user_response:
                     $ref: '#/components/schemas/user'
-                  accessToken:
+                  access_token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-                  refreshToken:
+                  refresh_token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
                 required:
-                  - userResponse
-                  - accessToken
-                  - refreshToken
+                  - user_response
+                  - access_token
+                  - refresh_token
         default:
           $ref: '#/components/responses/code_error'
   /sign_refresh:
@@ -117,11 +117,11 @@ paths:
             schema:
               type: object
               properties:
-                refreshToken:
+                refresh_token:
                   type: string
                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
               required:
-                - refreshToken
+                - refresh_token
       responses:
         '200':
           description: Successful operation
@@ -130,11 +130,11 @@ paths:
               schema:
                 type: object
                 properties:
-                  accessToken:
+                  access_token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
                 required:
-                  - accessToken
+                  - access_token
         default:
           $ref: '#/components/responses/code_error'
   /me:
@@ -165,9 +165,6 @@ paths:
             schema:
               type: object
               properties:
-                user_id:
-                  type: string
-                  example: 48690945-c3f9-45b4-9045-c6bcfb898f20
                 username:
                   type: string
                   example: johndoe
@@ -180,8 +177,8 @@ paths:
               required:
                 - user_id
       responses:
-        '204':
-          description: Successful operation
+        '201':
+          description: Updated successfully
         default:
           $ref: '#/components/responses/code_error'
     delete:
@@ -191,19 +188,6 @@ paths:
       operationId: MeDel
       security:
         - bearerAuth: []
-      requestBody:
-        description: Data to delete the current user profile
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_id:
-                  type: string
-                  example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-              required:
-                - user_id
       responses:
         '204':
           description: Successful operation
@@ -322,8 +306,6 @@ paths:
         - me
       summary: Creates a comment for the current user and the current joke
       operationId: MeCommentsPost
-      parameters:
-        - $ref: '#/components/parameters/select'
       security:
         - bearerAuth: []
       requestBody:

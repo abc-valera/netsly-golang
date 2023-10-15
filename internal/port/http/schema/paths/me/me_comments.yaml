@@ -3,8 +3,6 @@ post:
     - me
   summary: Creates a comment for the current user and the current joke
   operationId: MeCommentsPost
-  parameters:
-    - $ref: "../../components/parameters/select.yaml"
   security:
     - bearerAuth: []
   requestBody:

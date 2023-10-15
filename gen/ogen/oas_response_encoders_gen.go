@@ -132,9 +132,9 @@ func encodeMeLikesPostResponse(response *MeLikesPostCreated, w http.ResponseWrit
 	return nil
 }
 
-func encodeMePutResponse(response *MePutNoContent, w http.ResponseWriter, span trace.Span) error {
-	w.WriteHeader(204)
-	span.SetStatus(codes.Ok, http.StatusText(204))
+func encodeMePutResponse(response *MePutCreated, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(201)
+	span.SetStatus(codes.Ok, http.StatusText(201))
 
 	return nil
 }

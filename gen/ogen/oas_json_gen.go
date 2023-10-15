@@ -1052,102 +1052,6 @@ func (s *MeCommentsPutReq) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *MeDelReq) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *MeDelReq) encodeFields(e *jx.Encoder) {
-	{
-		e.FieldStart("user_id")
-		e.Str(s.UserID)
-	}
-}
-
-var jsonFieldsNameOfMeDelReq = [1]string{
-	0: "user_id",
-}
-
-// Decode decodes MeDelReq from json.
-func (s *MeDelReq) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode MeDelReq to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "user_id":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				v, err := d.Str()
-				s.UserID = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"user_id\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode MeDelReq")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00000001,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfMeDelReq) {
-					name = jsonFieldsNameOfMeDelReq[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *MeDelReq) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *MeDelReq) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
 func (s *MeJokesDelReq) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -1722,10 +1626,6 @@ func (s *MePutReq) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *MePutReq) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("user_id")
-		e.Str(s.UserID)
-	}
-	{
 		if s.Username.Set {
 			e.FieldStart("username")
 			s.Username.Encode(e)
@@ -1745,11 +1645,10 @@ func (s *MePutReq) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfMePutReq = [4]string{
-	0: "user_id",
-	1: "username",
-	2: "fullname",
-	3: "status",
+var jsonFieldsNameOfMePutReq = [3]string{
+	0: "username",
+	1: "fullname",
+	2: "status",
 }
 
 // Decode decodes MePutReq from json.
@@ -1757,22 +1656,9 @@ func (s *MePutReq) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode MePutReq to nil")
 	}
-	var requiredBitSet [1]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "user_id":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				v, err := d.Str()
-				s.UserID = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"user_id\"")
-			}
 		case "username":
 			if err := func() error {
 				s.Username.Reset()
@@ -1809,38 +1695,6 @@ func (s *MePutReq) Decode(d *jx.Decoder) error {
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode MePutReq")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00000001,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfMePutReq) {
-					name = jsonFieldsNameOfMePutReq[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
 	}
 
 	return nil
@@ -1904,23 +1758,23 @@ func (s *SignInPostOK) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *SignInPostOK) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("userResponse")
+		e.FieldStart("user_response")
 		s.UserResponse.Encode(e)
 	}
 	{
-		e.FieldStart("accessToken")
+		e.FieldStart("access_token")
 		e.Str(s.AccessToken)
 	}
 	{
-		e.FieldStart("refreshToken")
+		e.FieldStart("refresh_token")
 		e.Str(s.RefreshToken)
 	}
 }
 
 var jsonFieldsNameOfSignInPostOK = [3]string{
-	0: "userResponse",
-	1: "accessToken",
-	2: "refreshToken",
+	0: "user_response",
+	1: "access_token",
+	2: "refresh_token",
 }
 
 // Decode decodes SignInPostOK from json.
@@ -1932,7 +1786,7 @@ func (s *SignInPostOK) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "userResponse":
+		case "user_response":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				if err := s.UserResponse.Decode(d); err != nil {
@@ -1940,9 +1794,9 @@ func (s *SignInPostOK) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"userResponse\"")
+				return errors.Wrap(err, "decode field \"user_response\"")
 			}
-		case "accessToken":
+		case "access_token":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
@@ -1952,9 +1806,9 @@ func (s *SignInPostOK) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"accessToken\"")
+				return errors.Wrap(err, "decode field \"access_token\"")
 			}
-		case "refreshToken":
+		case "refresh_token":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				v, err := d.Str()
@@ -1964,7 +1818,7 @@ func (s *SignInPostOK) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"refreshToken\"")
+				return errors.Wrap(err, "decode field \"refresh_token\"")
 			}
 		default:
 			return d.Skip()
@@ -2145,13 +1999,13 @@ func (s *SignRefreshPostOK) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *SignRefreshPostOK) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("accessToken")
+		e.FieldStart("access_token")
 		e.Str(s.AccessToken)
 	}
 }
 
 var jsonFieldsNameOfSignRefreshPostOK = [1]string{
-	0: "accessToken",
+	0: "access_token",
 }
 
 // Decode decodes SignRefreshPostOK from json.
@@ -2163,7 +2017,7 @@ func (s *SignRefreshPostOK) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "accessToken":
+		case "access_token":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				v, err := d.Str()
@@ -2173,7 +2027,7 @@ func (s *SignRefreshPostOK) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"accessToken\"")
+				return errors.Wrap(err, "decode field \"access_token\"")
 			}
 		default:
 			return d.Skip()
@@ -2241,13 +2095,13 @@ func (s *SignRefreshPostReq) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *SignRefreshPostReq) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("refreshToken")
+		e.FieldStart("refresh_token")
 		e.Str(s.RefreshToken)
 	}
 }
 
 var jsonFieldsNameOfSignRefreshPostReq = [1]string{
-	0: "refreshToken",
+	0: "refresh_token",
 }
 
 // Decode decodes SignRefreshPostReq from json.
@@ -2259,7 +2113,7 @@ func (s *SignRefreshPostReq) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "refreshToken":
+		case "refresh_token":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
 				v, err := d.Str()
@@ -2269,7 +2123,7 @@ func (s *SignRefreshPostReq) Decode(d *jx.Decoder) error {
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"refreshToken\"")
+				return errors.Wrap(err, "decode field \"refresh_token\"")
 			}
 		default:
 			return d.Skip()

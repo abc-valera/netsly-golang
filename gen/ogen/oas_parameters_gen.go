@@ -191,62 +191,6 @@ func decodeLikesByJokeIDGetParams(args [1]string, argsEscaped bool, r *http.Requ
 	return params, nil
 }
 
-// MeCommentsPostParams is parameters of MeCommentsPost operation.
-type MeCommentsPostParams struct {
-	// Fields to specify select parameters.
-	SelectParams MeCommentsPostSelectParams
-}
-
-func unpackMeCommentsPostParams(packed middleware.Parameters) (params MeCommentsPostParams) {
-	{
-		key := middleware.ParameterKey{
-			Name: "select_params",
-			In:   "query",
-		}
-		params.SelectParams = packed[key].(MeCommentsPostSelectParams)
-	}
-	return params
-}
-
-func decodeMeCommentsPostParams(args [0]string, argsEscaped bool, r *http.Request) (params MeCommentsPostParams, _ error) {
-	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode query: select_params.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "select_params",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-			Fields:  []uri.QueryParameterObjectField{{"order_by", false}, {"order", false}, {"limit", true}, {"offset", true}},
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				return params.SelectParams.DecodeURI(d)
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if err := params.SelectParams.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		} else {
-			return validate.ErrFieldRequired
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "select_params",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	return params, nil
-}
-
 // MeJokesGetParams is parameters of MeJokesGet operation.
 type MeJokesGetParams struct {
 	// Fields to specify select parameters.

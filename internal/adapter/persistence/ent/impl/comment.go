@@ -25,6 +25,8 @@ func NewCommentRepository(client *ent.Client) repository.ICommentRepository {
 func (r commentRepository) Create(ctx context.Context, comment *entity.Comment) error {
 	_, err := r.Client.Comment.
 		Create().
+		SetOwnerID(comment.UserID).
+		SetCommentedJokeID(comment.JokeID).
 		SetID(comment.ID).
 		SetUserID(comment.UserID).
 		SetJokeID(comment.JokeID).

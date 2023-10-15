@@ -30,6 +30,8 @@ func (r likeRepository) CountByJokeID(ctx context.Context, jokeID string) (int, 
 func (r likeRepository) Create(ctx context.Context, like *entity.Like) error {
 	_, err := r.Client.Like.
 		Create().
+		SetOwnerID(like.UserID).
+		SetLikedJokeID(like.JokeID).
 		SetUserID(like.UserID).
 		SetJokeID(like.JokeID).
 		SetCreatedAt(like.CreatedAt).

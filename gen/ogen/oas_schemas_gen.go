@@ -397,53 +397,6 @@ func (s *MeCommentsPostReq) SetText(val string) {
 	s.Text = val
 }
 
-type MeCommentsPostSelectParams struct {
-	OrderBy OptString `json:"order_by"`
-	Order   OptOrder  `json:"order"`
-	Limit   int       `json:"limit"`
-	Offset  int       `json:"offset"`
-}
-
-// GetOrderBy returns the value of OrderBy.
-func (s *MeCommentsPostSelectParams) GetOrderBy() OptString {
-	return s.OrderBy
-}
-
-// GetOrder returns the value of Order.
-func (s *MeCommentsPostSelectParams) GetOrder() OptOrder {
-	return s.Order
-}
-
-// GetLimit returns the value of Limit.
-func (s *MeCommentsPostSelectParams) GetLimit() int {
-	return s.Limit
-}
-
-// GetOffset returns the value of Offset.
-func (s *MeCommentsPostSelectParams) GetOffset() int {
-	return s.Offset
-}
-
-// SetOrderBy sets the value of OrderBy.
-func (s *MeCommentsPostSelectParams) SetOrderBy(val OptString) {
-	s.OrderBy = val
-}
-
-// SetOrder sets the value of Order.
-func (s *MeCommentsPostSelectParams) SetOrder(val OptOrder) {
-	s.Order = val
-}
-
-// SetLimit sets the value of Limit.
-func (s *MeCommentsPostSelectParams) SetLimit(val int) {
-	s.Limit = val
-}
-
-// SetOffset sets the value of Offset.
-func (s *MeCommentsPostSelectParams) SetOffset(val int) {
-	s.Offset = val
-}
-
 // MeCommentsPutOK is response for MeCommentsPut operation.
 type MeCommentsPutOK struct{}
 
@@ -474,20 +427,6 @@ func (s *MeCommentsPutReq) SetText(val OptString) {
 
 // MeDelNoContent is response for MeDel operation.
 type MeDelNoContent struct{}
-
-type MeDelReq struct {
-	UserID string `json:"user_id"`
-}
-
-// GetUserID returns the value of UserID.
-func (s *MeDelReq) GetUserID() string {
-	return s.UserID
-}
-
-// SetUserID sets the value of UserID.
-func (s *MeDelReq) SetUserID(val string) {
-	s.UserID = val
-}
 
 // MeJokesDelNoContent is response for MeJokesDel operation.
 type MeJokesDelNoContent struct{}
@@ -676,19 +615,13 @@ func (s *MeLikesPostReq) SetJokeID(val string) {
 	s.JokeID = val
 }
 
-// MePutNoContent is response for MePut operation.
-type MePutNoContent struct{}
+// MePutCreated is response for MePut operation.
+type MePutCreated struct{}
 
 type MePutReq struct {
-	UserID   string    `json:"user_id"`
 	Username OptString `json:"username"`
 	Fullname OptString `json:"fullname"`
 	Status   OptString `json:"status"`
-}
-
-// GetUserID returns the value of UserID.
-func (s *MePutReq) GetUserID() string {
-	return s.UserID
 }
 
 // GetUsername returns the value of Username.
@@ -704,11 +637,6 @@ func (s *MePutReq) GetFullname() OptString {
 // GetStatus returns the value of Status.
 func (s *MePutReq) GetStatus() OptString {
 	return s.Status
-}
-
-// SetUserID sets the value of UserID.
-func (s *MePutReq) SetUserID(val string) {
-	s.UserID = val
 }
 
 // SetUsername sets the value of Username.
@@ -861,9 +789,9 @@ func (s *Order) UnmarshalText(data []byte) error {
 }
 
 type SignInPostOK struct {
-	UserResponse User   `json:"userResponse"`
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
+	UserResponse User   `json:"user_response"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 // GetUserResponse returns the value of UserResponse.
@@ -922,7 +850,7 @@ func (s *SignInPostReq) SetPassword(val string) {
 }
 
 type SignRefreshPostOK struct {
-	AccessToken string `json:"accessToken"`
+	AccessToken string `json:"access_token"`
 }
 
 // GetAccessToken returns the value of AccessToken.
@@ -936,7 +864,7 @@ func (s *SignRefreshPostOK) SetAccessToken(val string) {
 }
 
 type SignRefreshPostReq struct {
-	RefreshToken string `json:"refreshToken"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 // GetRefreshToken returns the value of RefreshToken.

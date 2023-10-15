@@ -25,6 +25,7 @@ func NewJokeRepository(client *ent.Client) repository.IJokeRepository {
 func (r jokeRepository) Create(ctx context.Context, joke *entity.Joke) error {
 	_, err := r.Client.Joke.
 		Create().
+		SetOwnerID(joke.UserID).
 		SetID(joke.ID).
 		SetUserID(joke.UserID).
 		SetTitle(joke.Title).

@@ -2,6 +2,7 @@ package codeerr
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 )
 
@@ -37,10 +38,13 @@ func (e *MsgErr) Error() string {
 // ErrorMessage returns the message of the error, if available. Otherwise returns a error message.
 // If error is nil returns an empty string.
 func ErrorMessage(err error) string {
+	var msgErrTarget *MsgErr
 	if err == nil {
 		return ""
 	} else if e, ok := err.(*MsgErr); ok && e.Msg != "" {
 		return e.Msg
+	} else if errors.As(err, &msgErrTarget) {
+		return msgErrTarget.Msg
 	} else if ok && e.Err != nil {
 		return ErrorMessage(e.Err)
 	}

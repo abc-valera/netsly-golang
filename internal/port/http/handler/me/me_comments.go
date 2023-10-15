@@ -25,9 +25,10 @@ func NewMeCommentsHandler(
 	}
 }
 
-func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeCommentsPostReq, params ogen.MeCommentsPostParams) error {
+func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeCommentsPostReq) error {
 	return h.commentUseCase.CreateComment(ctx, application.CreateCommentRequest{
 		UserID: ctx.Value(other.PayloadKey).(service.Payload).UserID,
+		JokeID: req.JokeID,
 		Text:   req.Text,
 	})
 }

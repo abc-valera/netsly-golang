@@ -47,7 +47,7 @@ type Invoker interface {
 	// Creates a comment for the current user and the current joke.
 	//
 	// POST /me/comments
-	MeCommentsPost(ctx context.Context, request *MeCommentsPostReq, params MeCommentsPostParams) error
+	MeCommentsPost(ctx context.Context, request *MeCommentsPostReq) error
 	// MeCommentsPut invokes MeCommentsPut operation.
 	//
 	// Updates a comment of the current user.
@@ -59,7 +59,7 @@ type Invoker interface {
 	// Deletes current user profile.
 	//
 	// DELETE /me
-	MeDel(ctx context.Context, request *MeDelReq) error
+	MeDel(ctx context.Context) error
 	// MeGet invokes MeGet operation.
 	//
 	// Returns current user profile.
@@ -493,12 +493,12 @@ func (c *Client) sendMeCommentsDel(ctx context.Context, request *MeCommentsDelRe
 // Creates a comment for the current user and the current joke.
 //
 // POST /me/comments
-func (c *Client) MeCommentsPost(ctx context.Context, request *MeCommentsPostReq, params MeCommentsPostParams) error {
-	_, err := c.sendMeCommentsPost(ctx, request, params)
+func (c *Client) MeCommentsPost(ctx context.Context, request *MeCommentsPostReq) error {
+	_, err := c.sendMeCommentsPost(ctx, request)
 	return err
 }
 
-func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPostReq, params MeCommentsPostParams) (res *MeCommentsPostOK, err error) {
+func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPostReq) (res *MeCommentsPostOK, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MeCommentsPost"),
 		semconv.HTTPMethodKey.String("POST"),
@@ -537,24 +537,6 @@ func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPost
 	var pathParts [1]string
 	pathParts[0] = "/me/comments"
 	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeQueryParams"
-	q := uri.NewQueryEncoder()
-	{
-		// Encode "select_params" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "select_params",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return params.SelectParams.EncodeURI(e)
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "POST", u)
@@ -727,12 +709,12 @@ func (c *Client) sendMeCommentsPut(ctx context.Context, request *MeCommentsPutRe
 // Deletes current user profile.
 //
 // DELETE /me
-func (c *Client) MeDel(ctx context.Context, request *MeDelReq) error {
-	_, err := c.sendMeDel(ctx, request)
+func (c *Client) MeDel(ctx context.Context) error {
+	_, err := c.sendMeDel(ctx)
 	return err
 }
 
-func (c *Client) sendMeDel(ctx context.Context, request *MeDelReq) (res *MeDelNoContent, err error) {
+func (c *Client) sendMeDel(ctx context.Context) (res *MeDelNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MeDel"),
 		semconv.HTTPMethodKey.String("DELETE"),
@@ -776,9 +758,6 @@ func (c *Client) sendMeDel(ctx context.Context, request *MeDelReq) (res *MeDelNo
 	r, err := ht.NewRequest(ctx, "DELETE", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeDelRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
 	}
 
 	{
@@ -1608,7 +1587,7 @@ func (c *Client) MePut(ctx context.Context, request *MePutReq) error {
 	return err
 }
 
-func (c *Client) sendMePut(ctx context.Context, request *MePutReq) (res *MePutNoContent, err error) {
+func (c *Client) sendMePut(ctx context.Context, request *MePutReq) (res *MePutCreated, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MePut"),
 		semconv.HTTPMethodKey.String("PUT"),

@@ -11,11 +11,11 @@ post:
         schema:
           type: object
           properties:
-            refreshToken:
+            refresh_token:
               type: string
               example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
           required:
-            - refreshToken
+            - refresh_token
   responses:
     "200":
       description: Successful operation
@@ -24,10 +24,10 @@ post:
           schema:
             type: object
             properties:
-              accessToken:
+              access_token:
                 type: string
                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
             required:
-              - accessToken
+              - access_token
     default:
       $ref: "../../components/responses/code_error.yaml"

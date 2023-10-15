@@ -31,7 +31,7 @@ type Handler interface {
 	// Creates a comment for the current user and the current joke.
 	//
 	// POST /me/comments
-	MeCommentsPost(ctx context.Context, req *MeCommentsPostReq, params MeCommentsPostParams) error
+	MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) error
 	// MeCommentsPut implements MeCommentsPut operation.
 	//
 	// Updates a comment of the current user.
@@ -43,7 +43,7 @@ type Handler interface {
 	// Deletes current user profile.
 	//
 	// DELETE /me
-	MeDel(ctx context.Context, req *MeDelReq) error
+	MeDel(ctx context.Context) error
 	// MeGet implements MeGet operation.
 	//
 	// Returns current user profile.

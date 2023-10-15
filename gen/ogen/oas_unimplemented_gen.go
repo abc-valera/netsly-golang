@@ -45,7 +45,7 @@ func (UnimplementedHandler) MeCommentsDel(ctx context.Context, req *MeCommentsDe
 // Creates a comment for the current user and the current joke.
 //
 // POST /me/comments
-func (UnimplementedHandler) MeCommentsPost(ctx context.Context, req *MeCommentsPostReq, params MeCommentsPostParams) error {
+func (UnimplementedHandler) MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) error {
 	return ht.ErrNotImplemented
 }
 
@@ -63,7 +63,7 @@ func (UnimplementedHandler) MeCommentsPut(ctx context.Context, req *MeCommentsPu
 // Deletes current user profile.
 //
 // DELETE /me
-func (UnimplementedHandler) MeDel(ctx context.Context, req *MeDelReq) error {
+func (UnimplementedHandler) MeDel(ctx context.Context) error {
 	return ht.ErrNotImplemented
 }
 

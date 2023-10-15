@@ -7,8 +7,6 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 )
 
-// Rewrite the UseCase from internal/application/joke.go for user:
-
 var (
 	errUserModifyPermissionDenied = codeerr.NewMsgErr(codeerr.CodePermissionDenied, "You can modify only your own user")
 )
@@ -24,18 +22,13 @@ func NewUserUseCase(userRepo repository.IUserRepository) UserUseCase {
 }
 
 type UpdateUserRequest struct {
-	UpdaterID string
-	UserID    string
-	Username  string
-	Fullanme  string
-	Status    string
+	UserID   string
+	Username string
+	Fullanme string
+	Status   string
 }
 
 func (uc UserUseCase) UpdateUser(ctx context.Context, req UpdateUserRequest) error {
-	if req.UpdaterID != req.UserID {
-		return errUserModifyPermissionDenied
-	}
-
 	domainUser, err := uc.userRepo.GetByID(ctx, req.UserID)
 	if err != nil {
 		return err
@@ -52,17 +45,4 @@ func (uc UserUseCase) UpdateUser(ctx context.Context, req UpdateUserRequest) err
 	}
 
 	return uc.userRepo.Update(ctx, domainUser)
-}
-
-type DeleteUserRequest struct {
-	DeleterID string
-	UserID    string
-}
-
-func (uc UserUseCase) DeleteUser(ctx context.Context, req DeleteUserRequest) error {
-	if req.UserID != req.DeleterID {
-		return errUserModifyPermissionDenied
-	}
-
-	return uc.userRepo.Delete(ctx, req.UserID)
 }
