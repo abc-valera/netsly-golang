@@ -1,11 +1,9 @@
 package entity
 
 import (
-	"time"
-
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/entity/common"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
-	"github.com/google/uuid"
 )
 
 var (
@@ -13,13 +11,12 @@ var (
 )
 
 type User struct {
-	ID             string
+	common.BaseEntity
 	Username       string
 	Email          string
 	HashedPassword string
 	Fullname       string
 	Status         string
-	CreatedAt      time.Time
 }
 
 func NewUser(username, email, hashedPassword, fullname, status string) (*User, error) {
@@ -34,13 +31,12 @@ func NewUser(username, email, hashedPassword, fullname, status string) (*User, e
 	}
 
 	return &User{
-		ID:             uuid.NewString(),
+		BaseEntity:     common.NewBaseEntity(),
 		Username:       username,
 		Email:          email,
 		HashedPassword: hashedPassword,
 		Fullname:       fullname,
 		Status:         status,
-		CreatedAt:      time.Now(),
 	}, nil
 }
 

@@ -1,11 +1,9 @@
 package entity
 
 import (
-	"time"
-
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/entity/common"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
-	"github.com/google/uuid"
 )
 
 var (
@@ -13,12 +11,11 @@ var (
 )
 
 type Joke struct {
-	ID          string
+	common.BaseEntity
 	UserID      string
 	Title       string
 	Text        string
 	Explanation string
-	CreatedAt   time.Time
 }
 
 func NewJoke(userID, title, text, explanation string) (*Joke, error) {
@@ -33,12 +30,11 @@ func NewJoke(userID, title, text, explanation string) (*Joke, error) {
 	}
 
 	return &Joke{
-		ID:          uuid.NewString(),
+		BaseEntity:  common.NewBaseEntity(),
 		UserID:      userID,
 		Title:       title,
 		Text:        text,
 		Explanation: explanation,
-		CreatedAt:   time.Now(),
 	}, nil
 }
 

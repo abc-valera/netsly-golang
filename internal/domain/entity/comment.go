@@ -1,11 +1,9 @@
 package entity
 
 import (
-	"time"
-
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/domain/entity/common"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
-	"github.com/google/uuid"
 )
 
 var (
@@ -13,11 +11,10 @@ var (
 )
 
 type Comment struct {
-	ID        string
-	UserID    string
-	JokeID    string
-	Text      string
-	CreatedAt time.Time
+	common.BaseEntity
+	UserID string
+	JokeID string
+	Text   string
 }
 
 func NewComment(userID, jokeID, text string) (*Comment, error) {
@@ -32,11 +29,10 @@ func NewComment(userID, jokeID, text string) (*Comment, error) {
 	}
 
 	return &Comment{
-		ID:        uuid.NewString(),
-		UserID:    userID,
-		JokeID:    jokeID,
-		Text:      text,
-		CreatedAt: time.Now(),
+		BaseEntity: common.NewBaseEntity(),
+		UserID:     userID,
+		JokeID:     jokeID,
+		Text:       text,
 	}, nil
 }
 

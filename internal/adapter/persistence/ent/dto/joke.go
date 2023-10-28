@@ -2,6 +2,7 @@ package dto
 
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/dto/common"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
 )
 
@@ -10,12 +11,11 @@ func FromEntJokeToJoke(entJoke *ent.Joke) *entity.Joke {
 		return nil
 	}
 	return &entity.Joke{
-		ID:          entJoke.ID,
+		BaseEntity:  common.FromEntToBaseEntity(entJoke.ID, entJoke.CreatedAt),
 		UserID:      entJoke.UserID,
 		Title:       entJoke.Title,
 		Text:        entJoke.Text,
 		Explanation: entJoke.Explanation,
-		CreatedAt:   entJoke.CreatedAt,
 	}
 }
 

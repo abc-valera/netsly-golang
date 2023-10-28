@@ -6,6 +6,8 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 )
 
+// Like represents a like entity.
+// Technically, it's a many-to-many relationship between users and jokes.
 type Like struct {
 	UserID    string
 	JokeID    string
