@@ -3,14 +3,9 @@ package application
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
-)
-
-var (
-	errJokeModifyPermissionDenied = codeerr.NewMsgErr(codeerr.CodePermissionDenied, "You can modify only your own jokes")
 )
 
 type JokeUseCase struct {
@@ -50,17 +45,12 @@ type UpdateJokeRequest struct {
 	Title       string
 	Text        string
 	Explanation string
-	UpdaterID   string
 }
 
 func (uc JokeUseCase) UpdateJoke(ctx context.Context, req UpdateJokeRequest) error {
 	domainJoke, err := uc.jokeRepo.GetByID(ctx, req.JokeID)
 	if err != nil {
 		return err
-	}
-
-	if req.UpdaterID != domainJoke.UserID {
-		return errJokeModifyPermissionDenied
 	}
 
 	if req.Title != "" {
@@ -77,19 +67,9 @@ func (uc JokeUseCase) UpdateJoke(ctx context.Context, req UpdateJokeRequest) err
 }
 
 type DeleteJokeRequest struct {
-	JokeID    string
-	DeleterID string
+	JokeID string
 }
 
 func (uc JokeUseCase) DeleteJoke(ctx context.Context, req DeleteJokeRequest) error {
-	dbJoke, err := uc.jokeRepo.GetByID(ctx, req.JokeID)
-	if err != nil {
-		return err
-	}
-
-	if dbJoke.UserID != req.DeleterID {
-		return errJokeModifyPermissionDenied
-	}
-
 	return uc.jokeRepo.Delete(ctx, req.JokeID)
 }

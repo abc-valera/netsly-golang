@@ -37,13 +37,11 @@ func (h MeCommentsHandler) MeCommentsPut(ctx context.Context, req *ogen.MeCommen
 	return h.commentUseCase.UpdateComment(ctx, application.UpdateCommentRequest{
 		CommentID:   req.CommentID,
 		CommentText: req.Text.Value,
-		UpdaterID:   ctx.Value(other.PayloadKey).(service.Payload).UserID,
 	})
 }
 
 func (h MeCommentsHandler) MeCommentsDel(ctx context.Context, req *ogen.MeCommentsDelReq) error {
 	return h.commentUseCase.DeleteComment(ctx, application.DeleteCommentRequest{
 		CommentID: req.CommentID,
-		DeleterID: ctx.Value(other.PayloadKey).(service.Payload).UserID,
 	})
 }

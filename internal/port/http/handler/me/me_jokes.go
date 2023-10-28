@@ -51,13 +51,11 @@ func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq)
 		Title:       req.Title.Value,
 		Text:        req.Text.Value,
 		Explanation: req.Explanation.Value,
-		UpdaterID:   ctx.Value(other.PayloadKey).(service.Payload).UserID,
 	})
 }
 
 func (h MeJokesHandler) MeJokesDel(ctx context.Context, req *ogen.MeJokesDelReq) error {
 	return h.jokeUseCase.DeleteJoke(ctx, application.DeleteJokeRequest{
-		JokeID:    req.JokeID,
-		DeleterID: ctx.Value(other.PayloadKey).(service.Payload).UserID,
+		JokeID: req.JokeID,
 	})
 }

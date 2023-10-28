@@ -3,12 +3,7 @@ package application
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
-)
-
-var (
-	errUserModifyPermissionDenied = codeerr.NewMsgErr(codeerr.CodePermissionDenied, "You can modify only your own user")
 )
 
 type UserUseCase struct {
