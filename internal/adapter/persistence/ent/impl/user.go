@@ -7,8 +7,8 @@ import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/dto"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/impl/common"
-	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
-	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
 )
 
 type userRepository struct {

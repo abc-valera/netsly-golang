@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity"
 )
 
 type IChatMsgRepository interface {

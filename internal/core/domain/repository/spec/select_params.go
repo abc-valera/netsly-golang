@@ -1,6 +1,6 @@
 package spec
 
-import "github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
+import "github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
 
 var (
 	ErrInvalidOrder = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Order must be 'asc' or 'desc'")

@@ -3,7 +3,7 @@ package application
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
 )
 
 type UserUseCase struct {

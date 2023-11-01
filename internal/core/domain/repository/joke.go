@@ -3,10 +3,10 @@ package repository
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
-	"github.com/abc-valera/flugo-api-golang/internal/domain/entity"
-	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/common"
-	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/common"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/spec"
 )
 
 var (

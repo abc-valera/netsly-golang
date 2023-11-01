@@ -3,7 +3,7 @@ package entity
 import (
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
 )
 
 // ChatMember is a struct that represents a chat member entity.

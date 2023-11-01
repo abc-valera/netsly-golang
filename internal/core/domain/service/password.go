@@ -1,6 +1,6 @@
 package service
 
-import "github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
+import "github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
 
 var (
 	ErrInvalidPassword = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided password is invalid")

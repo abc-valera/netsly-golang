@@ -7,7 +7,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/config"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service"
-	"github.com/abc-valera/flugo-api-golang/internal/application"
+	"github.com/abc-valera/flugo-api-golang/internal/core/application"
 	"github.com/abc-valera/flugo-api-golang/internal/port/http"
 )
 

@@ -3,7 +3,7 @@ package service
 import (
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
 )
 
 var (

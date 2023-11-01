@@ -4,9 +4,9 @@ import (
 	"net"
 
 	"github.com/abc-valera/flugo-api-golang/gen/pb"
-	"github.com/abc-valera/flugo-api-golang/internal/application"
-	"github.com/abc-valera/flugo-api-golang/internal/domain/repository"
-	"github.com/abc-valera/flugo-api-golang/internal/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/application"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 	"github.com/abc-valera/flugo-api-golang/internal/port/grpc/handler"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"

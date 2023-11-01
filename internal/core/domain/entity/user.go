@@ -1,9 +1,9 @@
 package entity
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/domain/codeerr"
-	"github.com/abc-valera/flugo-api-golang/internal/domain/entity/common"
-	"github.com/abc-valera/flugo-api-golang/internal/domain/repository/spec"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity/common"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/spec"
 )
 
 var (
