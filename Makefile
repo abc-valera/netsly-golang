@@ -51,8 +51,11 @@ run_infrastructure_local:
 	make run_flugo-redis_container
 	sleep 3
 run_flugo_http_local:
-	go build -o build/flugo-api cmd/http/main.go
-	./build/flugo-api
+	go build -o build/flugo-http cmd/http/main.go
+	./build/flugo-http
+run_flugo_ws_local:
+	go build -o build/flugo-ws cmd/ws/main.go
+	./build/flugo-ws
 run_flugo_grpc_local:
 	go build -o build/flugo-grpc cmd/grpc/main.go
 	./build/flugo-grpc
