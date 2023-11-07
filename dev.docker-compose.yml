@@ -8,11 +8,7 @@ services:
       - "3000:3000"
     environment:
       - REDIS_PORT=flugo-redis:6379
-      - POSTGRES_HOST=flugo-db
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=flugo
-      - POSTGRES_PASSWORD=flugo
-      - POSTGRES_NAME=flugo
+      - DATABASE_URL=postgres://flugo:flugo@flugo-db:5432/flugo?sslmode=disable
     depends_on:
       - flugo-db
       - flugo-redis
@@ -37,7 +33,7 @@ services:
       - POSTGRES_PASSWORD=flugo
       - POSTGRES_DB=flugo
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U abc_valera -d flugo"]
+      test: ["CMD-SHELL", "pg_isready -U flugo -d flugo"]
       interval: 5s
       timeout: 5s
       retries: 5

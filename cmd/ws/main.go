@@ -21,13 +21,7 @@ func main() {
 		log.Fatal("Initialize config error: ", err)
 	}
 
-	repos, err := persistence.NewRepositories(
-		config.PostgreHost,
-		config.PostgrePort,
-		config.PostgreUser,
-		config.PostgrePassword,
-		config.PostgreName,
-	)
+	repos, err := persistence.NewRepositories(config.DatabaseURL)
 	if err != nil {
 		log.Fatal("Initialize postgre error: ", err)
 	}

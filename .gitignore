@@ -25,3 +25,6 @@ build/
 
 # .env files
 *.env
+
+# fly config
+fly.toml

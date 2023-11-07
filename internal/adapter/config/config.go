@@ -12,11 +12,9 @@ type Config struct {
 	WSPort   string `mapstructure:"WS_PORT"`
 	GRPCPort string `mapstructure:"GRPC_PORT"`
 
-	PostgreHost     string `mapstructure:"POSTGRES_HOST"`
-	PostgrePort     string `mapstructure:"POSTGRES_PORT"`
-	PostgreUser     string `mapstructure:"POSTGRES_USER"`
-	PostgrePassword string `mapstructure:"POSTGRES_PASS"`
-	PostgreName     string `mapstructure:"POSTGRES_NAME"`
+	HTTPDocsPath string `mapstructure:"HTTP_DOCS_PATH"`
+
+	DatabaseURL string `mapstructure:"DATABASE_URL"`
 
 	RedisPort string `mapstructure:"REDIS_PORT"`
 	RedisUser string `mapstructure:"REDIS_USER"`

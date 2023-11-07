@@ -40,6 +40,8 @@ run_flugo-redis_container:
 	--name flugo-redis \
 	-p 6379:6379 \
 	-d redis/redis-stack:latest
+build_flugo-api_compose:
+	docker compose -f dev.docker-compose.yml build flugo-api
 run_docker-compose:
 	docker compose -f dev.docker-compose.yml up
 

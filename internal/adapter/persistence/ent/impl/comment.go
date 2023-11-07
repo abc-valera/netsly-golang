@@ -51,12 +51,16 @@ func (r commentRepository) GetByJokeID(ctx context.Context, jokeID string, spec 
 	return dto.FromEntCommentsToComments(entComments), common.HandleErr(err)
 }
 
-func (r commentRepository) Update(ctx context.Context, domainComment *entity.Comment) error {
-	_, err := r.Client.Comment.
-		Update().
-		Where(comment.ID(domainComment.ID)).
-		SetText(domainComment.Text).
+func (r commentRepository) Update(ctx context.Context, commentID string, req repository.CommentUpdateRequest) error {
+	query := r.Client.Comment.Update()
+	if req.Text != "" {
+		query = query.SetText(req.Text)
+	}
+
+	_, err := query.
+		Where(comment.ID(commentID)).
 		Save(ctx)
+
 	return common.HandleErr(err)
 }
 

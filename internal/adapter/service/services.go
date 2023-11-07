@@ -5,7 +5,7 @@ import (
 
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/email"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/logger"
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/messaging"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/messaging/dummy"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/password"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/token"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
@@ -19,7 +19,7 @@ func NewServices(
 	emailSender := email.NewDummyEmailSender(logger)
 	passwordMaker := password.NewPasswordMaker()
 	tokenMaker := token.NewTokenMaker(accessTokenDuration, refreshTokenDuration)
-	messageBroker := messaging.NewMessagingBroker(redisUrl, redisUser, redisPass, emailSender, logger)
+	messageBroker := dummy.NewMessagingBroker(emailSender, logger)
 
 	return service.NewServices(
 		emailSender,

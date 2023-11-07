@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/application"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 	"github.com/abc-valera/flugo-api-golang/internal/port/http/dto"
@@ -12,17 +11,14 @@ import (
 )
 
 type MeHandler struct {
-	userRepo    repository.IUserRepository
-	userUsecase application.UserUseCase
+	userRepo repository.IUserRepository
 }
 
 func NewMeHandler(
 	userRepo repository.IUserRepository,
-	userUsecase application.UserUseCase,
 ) MeHandler {
 	return MeHandler{
-		userRepo:    userRepo,
-		userUsecase: userUsecase,
+		userRepo: userRepo,
 	}
 }
 
@@ -36,13 +32,21 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 }
 
 func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) error {
-	return h.userUsecase.UpdateUser(ctx, application.UpdateUserRequest{
-		UserID:   ctx.Value(other.PayloadKey).(service.Payload).UserID,
-		Username: req.Username.Value,
-		Fullanme: req.Fullname.Value,
-		Status:   req.Status.Value,
-	})
-
+	updateReq, err := repository.NewUserUpdateRequest(
+		req.Username.Value,
+		"",
+		"",
+		req.Fullname.Value,
+		req.Status.Value,
+	)
+	if err != nil {
+		return err
+	}
+	return h.userRepo.Update(
+		ctx,
+		ctx.Value(other.PayloadKey).(service.Payload).UserID,
+		updateReq,
+	)
 }
 
 func (h MeHandler) MeDel(ctx context.Context) error {

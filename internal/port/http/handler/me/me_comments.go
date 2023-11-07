@@ -4,44 +4,45 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/application"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/other"
 )
 
 type MeCommentsHandler struct {
-	commentRepo    repository.ICommentRepository
-	commentUseCase application.CommentUseCase
+	commentRepo repository.ICommentRepository
 }
 
 func NewMeCommentsHandler(
 	commentRepo repository.ICommentRepository,
-	commentUseCase application.CommentUseCase,
 ) MeCommentsHandler {
 	return MeCommentsHandler{
-		commentRepo:    commentRepo,
-		commentUseCase: commentUseCase,
+		commentRepo: commentRepo,
 	}
 }
 
 func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeCommentsPostReq) error {
-	return h.commentUseCase.CreateComment(ctx, application.CreateCommentRequest{
-		UserID: ctx.Value(other.PayloadKey).(service.Payload).UserID,
-		JokeID: req.JokeID,
-		Text:   req.Text,
-	})
+	userID := ctx.Value(other.PayloadKey).(service.Payload).UserID
+	comment, err := entity.NewComment(
+		userID,
+		req.JokeID,
+		req.Text,
+	)
+	if err != nil {
+		return err
+	}
+	return h.commentRepo.Create(ctx, comment)
 }
 
 func (h MeCommentsHandler) MeCommentsPut(ctx context.Context, req *ogen.MeCommentsPutReq) error {
-	return h.commentUseCase.UpdateComment(ctx, application.UpdateCommentRequest{
-		CommentID:   req.CommentID,
-		CommentText: req.Text.Value,
-	})
+	updateReq, err := repository.NewCommentUpdateRequest(req.Text.Value)
+	if err != nil {
+		return err
+	}
+	return h.commentRepo.Update(ctx, req.CommentID, updateReq)
 }
 
 func (h MeCommentsHandler) MeCommentsDel(ctx context.Context, req *ogen.MeCommentsDelReq) error {
-	return h.commentUseCase.DeleteComment(ctx, application.DeleteCommentRequest{
-		CommentID: req.CommentID,
-	})
+	return h.commentRepo.Delete(ctx, req.CommentID)
 }

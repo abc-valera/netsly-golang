@@ -19,6 +19,7 @@ import (
 
 func RunServer(
 	port string,
+	docsPath string,
 	repos repository.Repositories,
 	services service.Services,
 	usecases application.UseCases,
@@ -36,10 +37,10 @@ func RunServer(
 	}{
 		ErrorHandler:      other.NewErrorHandler(services.Logger),
 		SignHandler:       sign.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
-		MeHandler:         me.NewMeHandler(repos.UserRepo, usecases.UserUseCase),
-		MeJokesHandler:    me.NewMeJokesHandler(repos.JokeRepo, usecases.JokeUseCase),
-		MeCommentsHandler: me.NewMeCommentsHandler(repos.CommentRepo, usecases.CommentUseCase),
-		MeLikesHandler:    me.NewMeLikesHandler(repos.LikeRepo, usecases.LikeUseCase),
+		MeHandler:         me.NewMeHandler(repos.UserRepo),
+		MeJokesHandler:    me.NewMeJokesHandler(repos.JokeRepo),
+		MeCommentsHandler: me.NewMeCommentsHandler(repos.CommentRepo),
+		MeLikesHandler:    me.NewMeLikesHandler(repos.LikeRepo),
 		CommentsHandler:   comments.NewCommentsHandler(repos.CommentRepo),
 		LikesHandler:      likes.NewLikesHandler(repos.LikeRepo),
 	}
@@ -56,8 +57,8 @@ func RunServer(
 
 	// Init chi router
 	r := chi.NewRouter()
-	// Host documentation
-	r.Mount("/docs", http.StripPrefix("/docs/", http.FileServer(http.Dir("./docs/http"))))
+	// Host documentation (docs are located in docs/http/index.html)
+	r.Mount("/docs/http/", http.StripPrefix("/docs/http/", http.FileServer(http.Dir(docsPath))))
 	// Register middlewares
 	httpHandler := loggingMiddleware(server)
 	// Register routes

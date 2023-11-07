@@ -3,11 +3,14 @@ package entity
 import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity/common"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/spec"
 )
 
 var (
-	ErrUsersOrderByNotSupported = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "OrderBy is supported only for 'username', 'fullname' and 'created_at' fields")
+	ErrUserUsernameInvalid = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid username")
+	ErrUserEmailInvalid    = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid email")
+	ErrUserPasswordInvalid = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid hashed password")
+	ErrUserFullnameInvalid = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid fullname")
+	ErrUserStatusInvalid   = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid status")
 )
 
 type User struct {
@@ -41,10 +44,3 @@ func NewUser(username, email, hashedPassword, fullname, status string) (*User, e
 }
 
 type Users []*User
-
-func ValidateUserSelectParams(params spec.SelectParams) error {
-	if params.OrderBy != "" && params.OrderBy != "username" && params.OrderBy != "fullname" && params.OrderBy != "created_at" {
-		return ErrUsersOrderByNotSupported
-	}
-	return nil
-}

@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
@@ -11,7 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName string) (
+func NewEntRepos(databaseURL string) (
 	struct {
 		repository.IUserRepository
 		repository.IJokeRepository
@@ -28,7 +27,8 @@ func NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName string) (
 	// Connect to the database
 	client, err := ent.Open(
 		"postgres",
-		fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, dbUser, dbName, dbPassword))
+		databaseURL,
+	)
 	if err != nil {
 		return repos, codeerr.NewInternal("NewEntImplementation", err)
 	}

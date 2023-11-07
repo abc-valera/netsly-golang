@@ -59,16 +59,28 @@ func (r userRepository) GetByEmail(ctx context.Context, email string) (*entity.U
 	return dto.FromEntUserToUser(entUser), common.HandleErr(err)
 }
 
-func (r userRepository) Update(ctx context.Context, domainUser *entity.User) error {
-	_, err := r.Client.User.
-		Update().
-		Where(user.ID(domainUser.ID)).
-		SetUsername(domainUser.Username).
-		SetEmail(domainUser.Email).
-		SetHashedPassword(domainUser.HashedPassword).
-		SetFullname(domainUser.Fullname).
-		SetStatus(domainUser.Status).
+func (r userRepository) Update(ctx context.Context, userID string, req repository.UserUpdateRequest) error {
+	query := r.Client.User.Update()
+	if req.Username != "" {
+		query.SetUsername(req.Username)
+	}
+	if req.Email != "" {
+		query.SetEmail(req.Email)
+	}
+	if req.Password != "" {
+		query.SetHashedPassword(req.Password)
+	}
+	if req.Fullname != "" {
+		query.SetFullname(req.Fullname)
+	}
+	if req.Status != "" {
+		query.SetStatus(req.Status)
+	}
+
+	_, err := query.
+		Where(user.ID(userID)).
 		Save(ctx)
+
 	return common.HandleErr(err)
 }
 

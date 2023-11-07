@@ -3,11 +3,12 @@ package entity
 import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity/common"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/spec"
 )
 
 var (
-	ErrJokesOrderByNotSupported = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "OrderBy is supported only for 'title' and 'created_at' field")
+	ErrJokeUserIDInvalid = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid user ID")
+	ErrJokeTitleInvalid  = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid title")
+	ErrJokeTextInvalid   = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid text")
 )
 
 type Joke struct {
@@ -20,13 +21,13 @@ type Joke struct {
 
 func NewJoke(userID, title, text, explanation string) (*Joke, error) {
 	if userID == "" {
-		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid user ID")
+		return nil, ErrJokeUserIDInvalid
 	}
 	if title == "" {
-		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid title")
+		return nil, ErrJokeTitleInvalid
 	}
 	if text == "" {
-		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid text")
+		return nil, ErrJokeTextInvalid
 	}
 
 	return &Joke{
@@ -39,10 +40,3 @@ func NewJoke(userID, title, text, explanation string) (*Joke, error) {
 }
 
 type Jokes []*Joke
-
-func ValidateJokeSelectParams(params spec.SelectParams) error {
-	if params.OrderBy != "" && params.OrderBy != "title" && params.OrderBy != "created_at" {
-		return ErrJokesOrderByNotSupported
-	}
-	return nil
-}

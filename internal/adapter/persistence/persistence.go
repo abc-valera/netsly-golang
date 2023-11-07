@@ -5,8 +5,8 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
 )
 
-func NewRepositories(dbHost, dbPort, dbUser, dbPassword, dbName string) (repository.Repositories, error) {
-	entRepos, err := impl.NewEntRepos(dbHost, dbPort, dbUser, dbPassword, dbName)
+func NewRepositories(databaseURL string) (repository.Repositories, error) {
+	entRepos, err := impl.NewEntRepos(databaseURL)
 	if err != nil {
 		return repository.Repositories{}, err
 	}

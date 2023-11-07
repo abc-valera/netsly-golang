@@ -51,14 +51,22 @@ func (r *jokeRepository) GetByUserID(ctx context.Context, userID string, spec sp
 	return dto.FromEntJokesToJokes(entJokes), common.HandleErr(err)
 }
 
-func (r *jokeRepository) Update(ctx context.Context, domainJoke *entity.Joke) error {
-	_, err := r.Client.Joke.
-		Update().
-		Where(joke.ID(domainJoke.ID)).
-		SetTitle(domainJoke.Title).
-		SetText(domainJoke.Text).
-		SetExplanation(domainJoke.Explanation).
+func (r *jokeRepository) Update(ctx context.Context, jokeID string, req repository.JokeUpdateRequest) error {
+	query := r.Client.Joke.Update()
+	if req.Title != "" {
+		query = query.SetTitle(req.Title)
+	}
+	if req.Text != "" {
+		query = query.SetText(req.Text)
+	}
+	if req.Explanation != "" {
+		query = query.SetExplanation(req.Explanation)
+	}
+
+	_, err := query.
+		Where(joke.ID(jokeID)).
 		Save(ctx)
+
 	return common.HandleErr(err)
 }
 

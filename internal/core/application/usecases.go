@@ -6,11 +6,7 @@ import (
 )
 
 type UseCases struct {
-	SignUseCase    SignUseCase
-	UserUseCase    UserUseCase
-	JokeUseCase    JokeUseCase
-	CommentUseCase CommentUseCase
-	LikeUseCase    LikeUseCase
+	SignUseCase SignUseCase
 }
 
 func NewUseCases(
@@ -23,18 +19,6 @@ func NewUseCases(
 			services.PasswordMaker,
 			services.TokenMaker,
 			services.MessageBroker,
-		),
-		UserUseCase: NewUserUseCase(
-			repos.UserRepo,
-		),
-		JokeUseCase: NewJokeUseCase(
-			repos.JokeRepo,
-		),
-		CommentUseCase: NewCommentUseCase(
-			repos.CommentRepo,
-		),
-		LikeUseCase: NewLikeUseCase(
-			repos.LikeRepo,
 		),
 	}, nil
 }

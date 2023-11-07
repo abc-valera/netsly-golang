@@ -9,9 +9,9 @@ RUN go build -o flugo cmd/http/main.go
 FROM alpine
 WORKDIR /src
 COPY --from=builder /src/flugo /src/cmd/http/
-COPY .dev.env .
-ENV CONFIG_PATH /src/.dev.env
+COPY .deploy.env .
 COPY docs docs
+ENV CONFIG_PATH /src/.deploy.env
 ENV HTTP_DOCS_PATH /src/docs/http
 
 EXPOSE 3000

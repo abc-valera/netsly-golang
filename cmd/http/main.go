@@ -14,20 +14,14 @@ import (
 func main() {
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
-		configPath = ".env"
+		configPath = ".dev.env"
 	}
 	config, err := config.InitConfig(configPath)
 	if err != nil {
 		log.Fatal("Initialize config error: ", err)
 	}
 
-	repos, err := persistence.NewRepositories(
-		config.PostgreHost,
-		config.PostgrePort,
-		config.PostgreUser,
-		config.PostgrePassword,
-		config.PostgreName,
-	)
+	repos, err := persistence.NewRepositories(config.DatabaseURL)
 	if err != nil {
 		log.Fatal("Initialize postgre error: ", err)
 	}
@@ -45,7 +39,7 @@ func main() {
 		log.Fatal("Initialize usecases error: ", err)
 	}
 
-	if err := http.RunServer(config.HTTPPort, repos, services, usecases); err != nil {
+	if err := http.RunServer(config.HTTPPort, config.HTTPDocsPath, repos, services, usecases); err != nil {
 		log.Fatal("HTTP server error: ", err)
 	}
 }

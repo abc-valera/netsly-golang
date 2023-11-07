@@ -3,11 +3,12 @@ package entity
 import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity/common"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/spec"
 )
 
 var (
-	ErrCommentsOrderByNotSupported = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "OrderBy is supported only for 'created_at' field")
+	ErrCommentUserIDInvalid = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid user ID")
+	ErrCommentJokeIDInvalid = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid joke ID")
+	ErrCommentTextInvalid   = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid text")
 )
 
 type Comment struct {
@@ -19,13 +20,13 @@ type Comment struct {
 
 func NewComment(userID, jokeID, text string) (*Comment, error) {
 	if userID == "" {
-		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid user ID")
+		return nil, ErrCommentUserIDInvalid
 	}
 	if jokeID == "" {
-		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid joke ID")
+		return nil, ErrCommentJokeIDInvalid
 	}
 	if text == "" {
-		return nil, codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Provided invalid text")
+		return nil, ErrCommentTextInvalid
 	}
 
 	return &Comment{
@@ -37,10 +38,3 @@ func NewComment(userID, jokeID, text string) (*Comment, error) {
 }
 
 type Comments []*Comment
-
-func ValidateCommentSelectParams(params spec.SelectParams) error {
-	if params.OrderBy != "" && params.OrderBy != "created_at" {
-		return ErrCommentsOrderByNotSupported
-	}
-	return nil
-}
