@@ -15,6 +15,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/sign"
 	"github.com/abc-valera/flugo-api-golang/internal/port/http/middleware"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 func RunServer(
@@ -57,6 +58,10 @@ func RunServer(
 
 	// Init chi router
 	r := chi.NewRouter()
+	// Basic CORS
+	r.Use(cors.Handler(cors.Options{
+		AllowOriginFunc: func(r *http.Request, origin string) bool { return true },
+	}))
 	// Host documentation (docs are located in docs/http/index.html)
 	r.Mount("/docs/http/", http.StripPrefix("/docs/http/", http.FileServer(http.Dir(docsPath))))
 	// Register middlewares
