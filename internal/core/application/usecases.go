@@ -1,7 +1,9 @@
 package application
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/transactioneer"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 )
 
@@ -10,12 +12,16 @@ type UseCases struct {
 }
 
 func NewUseCases(
-	repos repository.Repositories,
+	tx transactioneer.ITransactioneer,
+	queries query.Queries,
+	domains domain.Domains,
 	services service.Services,
 ) (UseCases, error) {
 	return UseCases{
 		SignUseCase: NewSignUseCase(
-			repos.UserRepo,
+			tx,
+			queries.User,
+			domains.User,
 			services.PasswordMaker,
 			services.TokenMaker,
 			services.MessageBroker,
