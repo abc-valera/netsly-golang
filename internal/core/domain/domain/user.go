@@ -133,9 +133,7 @@ func (u UserDomain) Delete(ctx context.Context, userID string, req UserDeleteReq
 	}
 
 	// Domain logic
-	user, err := u.query.GetOne(ctx, query.NewUserOneSelectParams(
-		query.UserSearchByFields{ID: userID},
-	))
+	user, err := u.query.GetOne(ctx, query.UserGetFields{ID: userID})
 	if err != nil {
 		return err
 	}
