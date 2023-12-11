@@ -2,16 +2,19 @@ package dto
 
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/dto/common"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model/common"
 )
 
-func FromEntJokeToJoke(entJoke *ent.Joke) *entity.Joke {
+func FromEntJokeToJoke(entJoke *ent.Joke) *model.Joke {
 	if entJoke == nil {
 		return nil
 	}
-	return &entity.Joke{
-		BaseEntity:  common.FromEntToBaseEntity(entJoke.ID, entJoke.CreatedAt),
+	return &model.Joke{
+		BaseModel: common.BaseModel{
+			ID:        entJoke.ID,
+			CreatedAt: entJoke.CreatedAt,
+		},
 		UserID:      entJoke.UserID,
 		Title:       entJoke.Title,
 		Text:        entJoke.Text,
@@ -19,8 +22,8 @@ func FromEntJokeToJoke(entJoke *ent.Joke) *entity.Joke {
 	}
 }
 
-func FromEntJokesToJokes(entJokes []*ent.Joke) entity.Jokes {
-	jokes := make(entity.Jokes, len(entJokes))
+func FromEntJokesToJokes(entJokes []*ent.Joke) model.Jokes {
+	jokes := make(model.Jokes, len(entJokes))
 	for i, entJoke := range entJokes {
 		jokes[i] = FromEntJokeToJoke(entJoke)
 	}
