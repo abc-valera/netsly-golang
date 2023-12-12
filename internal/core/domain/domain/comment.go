@@ -71,7 +71,7 @@ func (c CommentDomain) Update(ctx context.Context, commentID string, req Comment
 	}
 
 	// Domain logic
-	return c.command.Update(ctx, commentID, model.CommentUpdate{
+	return c.command.Update(ctx, commentID, command.CommentUpdate{
 		Text: req.Text,
 	})
 }

@@ -8,6 +8,10 @@ import (
 
 type ICommentCommand interface {
 	Create(ctx context.Context, req model.Comment) error
-	Update(ctx context.Context, commentID string, req model.CommentUpdate) error
+	Update(ctx context.Context, commentID string, req CommentUpdate) error
 	Delete(ctx context.Context, id string) error
+}
+
+type CommentUpdate struct {
+	Text *string
 }

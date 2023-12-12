@@ -16,8 +16,4 @@ type ChatMessage struct {
 	Text       string
 }
 
-type ChatMessageUpdate struct {
-	Text *string
-}
-
 type ChatMessages []*ChatMessage

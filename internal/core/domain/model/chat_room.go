@@ -17,8 +17,4 @@ type ChatRoom struct {
 	Description string
 }
 
-type ChatRoomUpdate struct {
-	Description *string
-}
-
 type ChatRooms []*ChatRoom

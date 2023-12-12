@@ -8,6 +8,10 @@ import (
 
 type IChatMessageCommand interface {
 	Create(ctx context.Context, req model.ChatMessage) error
-	Update(ctx context.Context, id string, req model.ChatMessageUpdate) error
+	Update(ctx context.Context, id string, req ChatMessageUpdate) error
 	Delete(ctx context.Context, id string) error
+}
+
+type ChatMessageUpdate struct {
+	Text *string
 }

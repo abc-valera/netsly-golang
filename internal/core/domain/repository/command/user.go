@@ -8,6 +8,12 @@ import (
 
 type IUserCommand interface {
 	Create(ctx context.Context, req model.User) error
-	Update(ctx context.Context, id string, req model.UserUpdate) error
+	Update(ctx context.Context, id string, req UserUpdate) error
 	Delete(ctx context.Context, id string) error
+}
+
+type UserUpdate struct {
+	HashedPassword *string
+	Fullname       *string
+	Status         *string
 }

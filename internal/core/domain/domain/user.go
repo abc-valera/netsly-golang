@@ -115,7 +115,7 @@ func (u UserDomain) Update(ctx context.Context, userID string, req UserUpdateReq
 	}
 
 	// Edit in data source
-	return u.command.Update(ctx, userID, model.UserUpdate{
+	return u.command.Update(ctx, userID, command.UserUpdate{
 		HashedPassword: &hashedPassword,
 		Fullname:       req.Fullname,
 		Status:         req.Status,
@@ -133,7 +133,7 @@ func (u UserDomain) Delete(ctx context.Context, userID string, req UserDeleteReq
 	}
 
 	// Domain logic
-	user, err := u.query.GetOne(ctx, query.UserGetFields{ID: userID})
+	user, err := u.query.GetByID(ctx, userID)
 	if err != nil {
 		return err
 	}

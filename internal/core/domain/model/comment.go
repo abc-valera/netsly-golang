@@ -16,8 +16,4 @@ type Comment struct {
 	Text   string
 }
 
-type CommentUpdate struct {
-	Text *string
-}
-
 type Comments []*Comment

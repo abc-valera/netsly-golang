@@ -69,7 +69,7 @@ func (c ChatMessageDomain) Update(ctx context.Context, id string, req ChatMessag
 		return ErrChatMessageMessageInvalid
 	}
 
-	return c.command.Update(ctx, id, model.ChatMessageUpdate{
+	return c.command.Update(ctx, id, command.ChatMessageUpdate{
 		Text: req.Text,
 	})
 }

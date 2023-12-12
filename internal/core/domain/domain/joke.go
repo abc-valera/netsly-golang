@@ -85,7 +85,7 @@ func (j JokeDomain) Update(ctx context.Context, jokeID string, req JokeUpdateReq
 	}
 
 	// Edit in data source
-	return j.command.Update(ctx, jokeID, model.JokeUpdate{
+	return j.command.Update(ctx, jokeID, command.JokeUpdate{
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation,

@@ -19,10 +19,4 @@ type Joke struct {
 	Explanation string
 }
 
-type JokeUpdate struct {
-	Title       *string
-	Text        *string
-	Explanation *string
-}
-
 type Jokes []*Joke

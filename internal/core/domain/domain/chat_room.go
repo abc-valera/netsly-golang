@@ -67,7 +67,7 @@ func (c ChatRoomDomain) Update(ctx context.Context, chatRoomID string, req ChatR
 		return ErrChatRoomDescriptionInvalid
 	}
 
-	return c.command.Update(ctx, chatRoomID, model.ChatRoomUpdate{
+	return c.command.Update(ctx, chatRoomID, command.ChatRoomUpdate{
 		Description: req.Description,
 	})
 }

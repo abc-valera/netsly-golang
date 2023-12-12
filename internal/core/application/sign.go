@@ -95,7 +95,7 @@ type SignInResponse struct {
 // then creates hash of the provided password and compares it to the hash stored in database.
 // The SignIn returns user, accessToken and refreshToken.
 func (s SignUseCase) SignIn(ctx context.Context, req SignInRequest) (SignInResponse, error) {
-	user, err := s.userQuery.GetOne(ctx, query.UserGetFields{Email: req.Email})
+	user, err := s.userQuery.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return SignInResponse{}, err
 	}

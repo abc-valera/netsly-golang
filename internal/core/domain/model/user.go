@@ -21,10 +21,4 @@ type User struct {
 	Status         string
 }
 
-type UserUpdate struct {
-	HashedPassword *string
-	Fullname       *string
-	Status         *string
-}
-
 type Users []*User

@@ -8,55 +8,8 @@ import (
 )
 
 type IUserQuery interface {
-	GetAll(ctx context.Context, params UserManySelectParams) (model.Users, error)
-	GetOne(ctx context.Context, field UserGetFields) (*model.User, error)
-}
-
-type UserSearchByFields struct {
-	Username string
-	Email    string
-	Fullname string
-}
-
-type UserOrderByFields struct {
-	Username  bool
-	CreatedAt bool
-}
-
-type UserManySelectParams struct {
-	SearchBy UserSearchByFields
-	OrderBy  UserOrderByFields
-	spec.SelectParams
-}
-
-func NewUserOneSelectParams(
-	searchBy UserSearchByFields,
-) UserManySelectParams {
-	return UserManySelectParams{
-		SearchBy: searchBy,
-	}
-}
-
-func NewUserSelectParams(
-	searchBy UserSearchByFields,
-	orderBy UserOrderByFields,
-	order string,
-	limit int,
-	offset int,
-) (UserManySelectParams, error) {
-	commonSelectParams, err := spec.NewSelectParams(order, limit, offset)
-	if err != nil {
-		return UserManySelectParams{}, err
-	}
-	return UserManySelectParams{
-		SearchBy:     searchBy,
-		OrderBy:      orderBy,
-		SelectParams: commonSelectParams,
-	}, nil
-}
-
-type UserGetFields struct {
-	ID       string
-	Username string
-	Email    string
+	GetByID(ctx context.Context, id string) (*model.User, error)
+	GetByUsername(ctx context.Context, username string) (*model.User, error)
+	GetByEmail(ctx context.Context, email string) (*model.User, error)
+	SearchAllByUsername(ctx context.Context, keyword string, params spec.SelectParams) (model.Users, error)
 }
