@@ -7,9 +7,9 @@ import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/dto"
-	errhandler "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/err-handler"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query/spec"
 )
 
 type userQuery struct {
@@ -22,60 +22,40 @@ func NewUserQuery(client *ent.Client) query.IUserQuery {
 	}
 }
 
-func (uq *userQuery) GetOne(ctx context.Context, fields query.UserGetFields) (*model.User, error) {
-	query := uq.User.Query()
-
-	// Where
-	if fields.ID != "" {
-		query.Where(user.ID(fields.ID))
-	}
-	if fields.Username != "" {
-		query.Where(user.Username(fields.Username))
-	}
-	if fields.Email != "" {
-		query.Where(user.Email(fields.Email))
-	}
-
-	entUser, err := query.Only(ctx)
-	return dto.FromEntUserToUser(entUser), errhandler.HandleErr(err)
+func (uq *userQuery) GetByID(ctx context.Context, id string) (*model.User, error) {
+	return dto.FromEntUserToUserWithErrHandle(uq.User.Get(ctx, id))
 }
 
-func (uq *userQuery) GetAll(ctx context.Context, params query.UserManySelectParams) (model.Users, error) {
-	query := uq.User.Query()
+func (uq *userQuery) GetByUsername(ctx context.Context, username string) (*model.User, error) {
+	return dto.FromEntUserToUserWithErrHandle(
+		uq.User.Query().
+			Where(user.Username(username)).
+			Only(ctx),
+	)
+}
 
-	// Where
-	if params.SearchBy.Email != "" {
-		query.Where(func(s *sql.Selector) {
-			s.Where(sql.Like("email", "%"+params.SearchBy.Email+"%"))
-		})
-	}
-	if params.SearchBy.Username != "" {
-		query.Where(func(s *sql.Selector) {
-			s.Where(sql.Like("username", "%"+params.SearchBy.Username+"%"))
-		})
-	}
-	if params.SearchBy.Fullname != "" {
-		query.Where(func(s *sql.Selector) {
-			s.Where(sql.Like("fullname", "%"+params.SearchBy.Fullname+"%"))
-		})
-	}
+func (uq *userQuery) GetByEmail(ctx context.Context, email string) (*model.User, error) {
+	return dto.FromEntUserToUserWithErrHandle(
+		uq.User.
+			Query().
+			Where(user.Email(email)).
+			Only(ctx),
+	)
+}
 
-	// Order
-	orderByField := "created_at"
-	if params.OrderBy.Username == true {
-		orderByField = "username"
-	}
+func (uq *userQuery) SearchAllByUsername(ctx context.Context, keyword string, params spec.SelectParams) (model.Users, error) {
+	query := uq.User.
+		Query().
+		Where(func(s *sql.Selector) { s.Where(sql.Like("username", "%"+keyword+"%")) })
 
 	if params.Order == "asc" {
-		query.Order(ent.Asc(orderByField))
+		query = query.Order(ent.Asc("created_at"))
 	} else {
-		query.Order(ent.Desc(orderByField))
+		query = query.Order(ent.Desc("created_at"))
 	}
 
-	// Limit and Offset
 	query.Limit(params.Limit)
 	query.Offset(params.Offset)
 
-	entUsers, err := query.All(ctx)
-	return dto.FromEntUsersToUsers(entUsers), errhandler.HandleErr(err)
+	return dto.FromEntUsersToUsersWithErrHandle(query.All(ctx))
 }

@@ -6,9 +6,9 @@ import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/dto"
-	errhandler "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/err-handler"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query/spec"
 )
 
 type commentQuery struct {
@@ -21,34 +21,23 @@ func NewCommentQuery(client *ent.Client) query.ICommentQuery {
 	}
 }
 
-func (cq *commentQuery) GetAll(ctx context.Context, params query.CommentSelectParams) (model.Comments, error) {
-	query := cq.Comment.Query()
+func (cq *commentQuery) GetByID(ctx context.Context, id string) (*model.Comment, error) {
+	return dto.FromEntCommentToCommentWithErrHandle(cq.Comment.Get(ctx, id))
+}
 
-	// Order
-	orderByField := "created_at"
+func (cq *commentQuery) GetAllByJokeID(ctx context.Context, jokeID string, params spec.SelectParams) (model.Comments, error) {
+	query := cq.Comment.
+		Query().
+		Where(comment.JokeID(jokeID))
 
 	if params.Order == "asc" {
-		query.Order(ent.Asc(orderByField))
+		query = query.Order(ent.Asc("created_at"))
 	} else {
-		query.Order(ent.Desc(orderByField))
+		query = query.Order(ent.Desc("created_at"))
 	}
 
-	// Limit and Offset
 	query.Limit(params.Limit)
 	query.Offset(params.Offset)
 
-	entUsers, err := query.All(ctx)
-	return dto.FromEntCommentsToComments(entUsers), errhandler.HandleErr(err)
-}
-
-func (cq *commentQuery) GetOne(ctx context.Context, fiedls query.CommentGetFields) (*model.Comment, error) {
-	query := cq.Comment.Query()
-
-	// Where
-	if fiedls.ID != "" {
-		query.Where(comment.ID(fiedls.ID))
-	}
-
-	entUser, err := query.Only(ctx)
-	return dto.FromEntCommentToComment(entUser), errhandler.HandleErr(err)
+	return dto.FromEntCommentsToCommentsWithErrHandle(query.All(ctx))
 }

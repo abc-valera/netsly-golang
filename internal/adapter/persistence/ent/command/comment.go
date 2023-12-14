@@ -31,7 +31,7 @@ func (cc commentCommand) Create(ctx context.Context, req model.Comment) error {
 	return errhandler.HandleErr(err)
 }
 
-func (cc commentCommand) Update(ctx context.Context, commentID string, req model.CommentUpdate) error {
+func (cc commentCommand) Update(ctx context.Context, commentID string, req command.CommentUpdate) error {
 	query := cc.Comment.Update()
 	if req.Text != nil {
 		query.SetText(*req.Text)

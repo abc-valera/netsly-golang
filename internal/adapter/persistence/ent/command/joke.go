@@ -30,7 +30,7 @@ func (jc jokeCommand) Create(ctx context.Context, req model.Joke) error {
 	return errhandler.HandleErr(err)
 }
 
-func (jc jokeCommand) Update(ctx context.Context, id string, req model.JokeUpdate) error {
+func (jc jokeCommand) Update(ctx context.Context, id string, req command.JokeUpdate) error {
 	query := jc.Joke.Update()
 	if req.Title != nil {
 		query.SetTitle(*req.Title)

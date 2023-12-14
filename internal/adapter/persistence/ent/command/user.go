@@ -33,7 +33,7 @@ func (uc userCommand) Create(ctx context.Context, req model.User) error {
 	return errhandler.HandleErr(err)
 }
 
-func (uc userCommand) Update(ctx context.Context, id string, req model.UserUpdate) error {
+func (uc userCommand) Update(ctx context.Context, id string, req command.UserUpdate) error {
 	query := uc.User.Update()
 	if req.HashedPassword != nil {
 		query.SetHashedPassword(*req.HashedPassword)
