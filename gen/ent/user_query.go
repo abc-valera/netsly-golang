@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmember"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmessage"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
@@ -21,13 +23,15 @@ import (
 // UserQuery is the builder for querying User entities.
 type UserQuery struct {
 	config
-	ctx          *QueryContext
-	order        []user.OrderOption
-	inters       []Interceptor
-	predicates   []predicate.User
-	withJokes    *JokeQuery
-	withComments *CommentQuery
-	withLikes    *LikeQuery
+	ctx              *QueryContext
+	order            []user.OrderOption
+	inters           []Interceptor
+	predicates       []predicate.User
+	withJokes        *JokeQuery
+	withComments     *CommentQuery
+	withLikes        *LikeQuery
+	withChatRooms    *ChatMemberQuery
+	withChatMessages *ChatMessageQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -123,6 +127,50 @@ func (uq *UserQuery) QueryLikes() *LikeQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(like.Table, like.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.LikesTable, user.LikesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryChatRooms chains the current query on the "chat_rooms" edge.
+func (uq *UserQuery) QueryChatRooms() *ChatMemberQuery {
+	query := (&ChatMemberClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(chatmember.Table, chatmember.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.ChatRoomsTable, user.ChatRoomsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryChatMessages chains the current query on the "chat_messages" edge.
+func (uq *UserQuery) QueryChatMessages() *ChatMessageQuery {
+	query := (&ChatMessageClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(chatmessage.Table, chatmessage.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.ChatMessagesTable, user.ChatMessagesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -317,14 +365,16 @@ func (uq *UserQuery) Clone() *UserQuery {
 		return nil
 	}
 	return &UserQuery{
-		config:       uq.config,
-		ctx:          uq.ctx.Clone(),
-		order:        append([]user.OrderOption{}, uq.order...),
-		inters:       append([]Interceptor{}, uq.inters...),
-		predicates:   append([]predicate.User{}, uq.predicates...),
-		withJokes:    uq.withJokes.Clone(),
-		withComments: uq.withComments.Clone(),
-		withLikes:    uq.withLikes.Clone(),
+		config:           uq.config,
+		ctx:              uq.ctx.Clone(),
+		order:            append([]user.OrderOption{}, uq.order...),
+		inters:           append([]Interceptor{}, uq.inters...),
+		predicates:       append([]predicate.User{}, uq.predicates...),
+		withJokes:        uq.withJokes.Clone(),
+		withComments:     uq.withComments.Clone(),
+		withLikes:        uq.withLikes.Clone(),
+		withChatRooms:    uq.withChatRooms.Clone(),
+		withChatMessages: uq.withChatMessages.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
@@ -361,6 +411,28 @@ func (uq *UserQuery) WithLikes(opts ...func(*LikeQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withLikes = query
+	return uq
+}
+
+// WithChatRooms tells the query-builder to eager-load the nodes that are connected to
+// the "chat_rooms" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithChatRooms(opts ...func(*ChatMemberQuery)) *UserQuery {
+	query := (&ChatMemberClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withChatRooms = query
+	return uq
+}
+
+// WithChatMessages tells the query-builder to eager-load the nodes that are connected to
+// the "chat_messages" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithChatMessages(opts ...func(*ChatMessageQuery)) *UserQuery {
+	query := (&ChatMessageClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withChatMessages = query
 	return uq
 }
 
@@ -442,10 +514,12 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	var (
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [5]bool{
 			uq.withJokes != nil,
 			uq.withComments != nil,
 			uq.withLikes != nil,
+			uq.withChatRooms != nil,
+			uq.withChatMessages != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -484,6 +558,20 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadLikes(ctx, query, nodes,
 			func(n *User) { n.Edges.Likes = []*Like{} },
 			func(n *User, e *Like) { n.Edges.Likes = append(n.Edges.Likes, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withChatRooms; query != nil {
+		if err := uq.loadChatRooms(ctx, query, nodes,
+			func(n *User) { n.Edges.ChatRooms = []*ChatMember{} },
+			func(n *User, e *ChatMember) { n.Edges.ChatRooms = append(n.Edges.ChatRooms, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withChatMessages; query != nil {
+		if err := uq.loadChatMessages(ctx, query, nodes,
+			func(n *User) { n.Edges.ChatMessages = []*ChatMessage{} },
+			func(n *User, e *ChatMessage) { n.Edges.ChatMessages = append(n.Edges.ChatMessages, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -578,6 +666,68 @@ func (uq *UserQuery) loadLikes(ctx context.Context, query *LikeQuery, nodes []*U
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "user_likes" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadChatRooms(ctx context.Context, query *ChatMemberQuery, nodes []*User, init func(*User), assign func(*User, *ChatMember)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.ChatMember(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.ChatRoomsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_chat_rooms
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_chat_rooms" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_chat_rooms" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadChatMessages(ctx context.Context, query *ChatMessageQuery, nodes []*User, init func(*User), assign func(*User, *ChatMessage)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.ChatMessage(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.ChatMessagesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_chat_messages
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_chat_messages" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_chat_messages" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

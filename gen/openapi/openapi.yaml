@@ -165,17 +165,15 @@ paths:
             schema:
               type: object
               properties:
-                username:
+                password:
                   type: string
-                  example: johndoe
+                  example: '123456'
                 fullname:
                   type: string
                   example: John Doe
                 status:
                   type: string
                   example: active
-              required:
-                - user_id
       responses:
         '201':
           description: Updated successfully
@@ -188,6 +186,19 @@ paths:
       operationId: MeDel
       security:
         - bearerAuth: []
+      requestBody:
+        description: Data to delete the current user profile
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: '123456'
+              required:
+                - password
       responses:
         '204':
           description: Successful operation
@@ -200,7 +211,7 @@ paths:
       summary: Returns jokes of the current user
       operationId: MeJokesGet
       parameters:
-        - $ref: '#/components/parameters/select'
+        - $ref: '#/components/parameters/query_select_params'
       security:
         - bearerAuth: []
       responses:
@@ -442,13 +453,8 @@ paths:
       summary: Returns comments of the joke
       operationId: CommentsByJokeIDGet
       parameters:
-        - name: joke_id
-          in: path
-          description: ID of the joke to get comments
-          required: true
-          schema:
-            type: string
-        - $ref: '#/components/parameters/select'
+        - $ref: '#/components/parameters/path_joke_id'
+        - $ref: '#/components/parameters/query_select_params'
       responses:
         '200':
           $ref: '#/components/responses/comments'
@@ -461,12 +467,7 @@ paths:
       summary: Counts likes of the joke
       operationId: LikesByJokeIDGet
       parameters:
-        - name: joke_id
-          in: path
-          description: ID of the joke to count likes
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/path_joke_id'
       responses:
         '200':
           description: Count of likes
@@ -623,18 +624,14 @@ components:
             required:
               - comments
   parameters:
-    select:
-      name: select_params
+    query_select_params:
+      name: selectParams
       in: query
       description: fields to specify select parameters
       required: true
       schema:
         type: object
-        title: select_params
         properties:
-          order_by:
-            type: string
-            default: created_at
           order:
             $ref: '#/components/schemas/order'
           limit:
@@ -643,6 +640,10 @@ components:
           offset:
             type: integer
             minimum: 0
-        required:
-          - limit
-          - offset
+    path_joke_id:
+      name: joke_id
+      in: path
+      description: ID of the joke
+      required: true
+      schema:
+        type: string

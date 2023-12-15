@@ -63,7 +63,7 @@ func (UnimplementedHandler) MeCommentsPut(ctx context.Context, req *MeCommentsPu
 // Deletes current user profile.
 //
 // DELETE /me
-func (UnimplementedHandler) MeDel(ctx context.Context) error {
+func (UnimplementedHandler) MeDel(ctx context.Context, req *MeDelReq) error {
 	return ht.ErrNotImplemented
 }
 

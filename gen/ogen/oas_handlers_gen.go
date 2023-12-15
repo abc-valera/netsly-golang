@@ -87,7 +87,7 @@ func (s *Server) handleCommentsByJokeIDGetRequest(args [1]string, argsEscaped bo
 					In:   "path",
 				}: params.JokeID,
 				{
-					Name: "select_params",
+					Name: "selectParams",
 					In:   "query",
 				}: params.SelectParams,
 			},
@@ -835,6 +835,21 @@ func (s *Server) handleMeDelRequest(args [0]string, argsEscaped bool, w http.Res
 			return
 		}
 	}
+	request, close, err := s.decodeMeDelRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
 
 	var response *MeDelNoContent
 	if m := s.cfg.Middleware; m != nil {
@@ -843,13 +858,13 @@ func (s *Server) handleMeDelRequest(args [0]string, argsEscaped bool, w http.Res
 			OperationName:    "MeDel",
 			OperationSummary: "Deletes current user profile",
 			OperationID:      "MeDel",
-			Body:             nil,
+			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
 
 		type (
-			Request  = struct{}
+			Request  = *MeDelReq
 			Params   = struct{}
 			Response = *MeDelNoContent
 		)
@@ -862,12 +877,12 @@ func (s *Server) handleMeDelRequest(args [0]string, argsEscaped bool, w http.Res
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeDel(ctx)
+				err = s.h.MeDel(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeDel(ctx)
+		err = s.h.MeDel(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -1315,7 +1330,7 @@ func (s *Server) handleMeJokesGetRequest(args [0]string, argsEscaped bool, w htt
 			Body:             nil,
 			Params: middleware.Parameters{
 				{
-					Name: "select_params",
+					Name: "selectParams",
 					In:   "query",
 				}: params.SelectParams,
 			},

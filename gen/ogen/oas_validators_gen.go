@@ -9,6 +9,10 @@ import (
 )
 
 func (s *CodeError) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if err := s.Code.Validate(); err != nil {
@@ -47,6 +51,10 @@ func (s CodeErrorCode) Validate() error {
 }
 
 func (s *CodeErrorStatusCode) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if err := s.Response.Validate(); err != nil {
@@ -66,6 +74,10 @@ func (s *CodeErrorStatusCode) Validate() error {
 }
 
 func (s *Comments) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if s.Comments == nil {
@@ -85,6 +97,10 @@ func (s *Comments) Validate() error {
 }
 
 func (s *CommentsByJokeIDGetSelectParams) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if value, ok := s.Order.Get(); ok {
@@ -105,17 +121,24 @@ func (s *CommentsByJokeIDGetSelectParams) Validate() error {
 		})
 	}
 	if err := func() error {
-		if err := (validate.Int{
-			MinSet:        true,
-			Min:           0,
-			MaxSet:        false,
-			Max:           0,
-			MinExclusive:  false,
-			MaxExclusive:  false,
-			MultipleOfSet: false,
-			MultipleOf:    0,
-		}).Validate(int64(s.Limit)); err != nil {
-			return errors.Wrap(err, "int")
+		if value, ok := s.Limit.Get(); ok {
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           0,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+				}).Validate(int64(value)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
 		}
 		return nil
 	}(); err != nil {
@@ -125,17 +148,24 @@ func (s *CommentsByJokeIDGetSelectParams) Validate() error {
 		})
 	}
 	if err := func() error {
-		if err := (validate.Int{
-			MinSet:        true,
-			Min:           0,
-			MaxSet:        false,
-			Max:           0,
-			MinExclusive:  false,
-			MaxExclusive:  false,
-			MultipleOfSet: false,
-			MultipleOf:    0,
-		}).Validate(int64(s.Offset)); err != nil {
-			return errors.Wrap(err, "int")
+		if value, ok := s.Offset.Get(); ok {
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           0,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+				}).Validate(int64(value)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
 		}
 		return nil
 	}(); err != nil {
@@ -151,6 +181,10 @@ func (s *CommentsByJokeIDGetSelectParams) Validate() error {
 }
 
 func (s *Jokes) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if s.Jokes == nil {
@@ -170,6 +204,10 @@ func (s *Jokes) Validate() error {
 }
 
 func (s *MeJokesGetSelectParams) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if value, ok := s.Order.Get(); ok {
@@ -190,17 +228,24 @@ func (s *MeJokesGetSelectParams) Validate() error {
 		})
 	}
 	if err := func() error {
-		if err := (validate.Int{
-			MinSet:        true,
-			Min:           0,
-			MaxSet:        false,
-			Max:           0,
-			MinExclusive:  false,
-			MaxExclusive:  false,
-			MultipleOfSet: false,
-			MultipleOf:    0,
-		}).Validate(int64(s.Limit)); err != nil {
-			return errors.Wrap(err, "int")
+		if value, ok := s.Limit.Get(); ok {
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           0,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+				}).Validate(int64(value)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
 		}
 		return nil
 	}(); err != nil {
@@ -210,17 +255,24 @@ func (s *MeJokesGetSelectParams) Validate() error {
 		})
 	}
 	if err := func() error {
-		if err := (validate.Int{
-			MinSet:        true,
-			Min:           0,
-			MaxSet:        false,
-			Max:           0,
-			MinExclusive:  false,
-			MaxExclusive:  false,
-			MultipleOfSet: false,
-			MultipleOf:    0,
-		}).Validate(int64(s.Offset)); err != nil {
-			return errors.Wrap(err, "int")
+		if value, ok := s.Offset.Get(); ok {
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           0,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+				}).Validate(int64(value)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
 		}
 		return nil
 	}(); err != nil {

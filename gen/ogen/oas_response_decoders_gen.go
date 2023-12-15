@@ -47,6 +47,15 @@ func decodeCommentsByJokeIDGetResponse(resp *http.Response) (res *Comments, _ er
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &response, nil
 		default:
 			return res, validate.InvalidContentType(ct)
@@ -82,6 +91,15 @@ func decodeCommentsByJokeIDGetResponse(resp *http.Response) (res *Comments, _ er
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
@@ -132,6 +150,24 @@ func decodeLikesByJokeIDGetResponse(resp *http.Response) (res int, _ error) {
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := (validate.Int{
+					MinSet:        true,
+					Min:           0,
+					MaxSet:        false,
+					Max:           0,
+					MinExclusive:  false,
+					MaxExclusive:  false,
+					MultipleOfSet: false,
+					MultipleOf:    0,
+				}).Validate(int64(response)); err != nil {
+					return errors.Wrap(err, "int")
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return response, nil
 		default:
 			return res, validate.InvalidContentType(ct)
@@ -167,6 +203,15 @@ func decodeLikesByJokeIDGetResponse(resp *http.Response) (res int, _ error) {
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
@@ -219,6 +264,15 @@ func decodeMeCommentsDelResponse(resp *http.Response) (res *MeCommentsDelNoConte
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
@@ -269,6 +323,15 @@ func decodeMeCommentsPostResponse(resp *http.Response) (res *MeCommentsPostOK, _
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
@@ -321,6 +384,15 @@ func decodeMeCommentsPutResponse(resp *http.Response) (res *MeCommentsPutOK, _ e
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
@@ -371,6 +443,15 @@ func decodeMeDelResponse(resp *http.Response) (res *MeDelNoContent, _ error) {
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
@@ -455,6 +536,15 @@ func decodeMeGetResponse(resp *http.Response) (res *User, _ error) {
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
@@ -506,6 +596,15 @@ func decodeMeJokesDelResponse(resp *http.Response) (res *MeJokesDelNoContent, _ 
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
@@ -553,6 +652,15 @@ func decodeMeJokesGetResponse(resp *http.Response) (res *Jokes, _ error) {
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &response, nil
 		default:
 			return res, validate.InvalidContentType(ct)
@@ -588,6 +696,15 @@ func decodeMeJokesGetResponse(resp *http.Response) (res *Jokes, _ error) {
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
@@ -640,6 +757,15 @@ func decodeMeJokesPostResponse(resp *http.Response) (res *MeJokesPostCreated, _ 
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
@@ -690,6 +816,15 @@ func decodeMeJokesPutResponse(resp *http.Response) (res *MeJokesPutCreated, _ er
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
@@ -742,6 +877,15 @@ func decodeMeLikesDelResponse(resp *http.Response) (res *MeLikesDelNoContent, _ 
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
@@ -793,6 +937,15 @@ func decodeMeLikesPostResponse(resp *http.Response) (res *MeLikesPostCreated, _ 
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
@@ -843,6 +996,15 @@ func decodeMePutResponse(resp *http.Response) (res *MePutCreated, _ error) {
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
@@ -927,6 +1089,15 @@ func decodeSignInPostResponse(resp *http.Response) (res *SignInPostOK, _ error) 
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
@@ -1010,6 +1181,15 @@ func decodeSignRefreshPostResponse(resp *http.Response) (res *SignRefreshPostOK,
 				}
 				return res, err
 			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,
 				Response:   response,
@@ -1060,6 +1240,15 @@ func decodeSignUpPostResponse(resp *http.Response) (res *SignUpPostCreated, _ er
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &CodeErrorStatusCode{
 				StatusCode: resp.StatusCode,

@@ -43,7 +43,7 @@ type Handler interface {
 	// Deletes current user profile.
 	//
 	// DELETE /me
-	MeDel(ctx context.Context) error
+	MeDel(ctx context.Context, req *MeDelReq) error
 	// MeGet implements MeGet operation.
 	//
 	// Returns current user profile.

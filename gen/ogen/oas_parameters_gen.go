@@ -17,7 +17,7 @@ import (
 
 // CommentsByJokeIDGetParams is parameters of CommentsByJokeIDGet operation.
 type CommentsByJokeIDGetParams struct {
-	// ID of the joke to get comments.
+	// ID of the joke.
 	JokeID string
 	// Fields to specify select parameters.
 	SelectParams CommentsByJokeIDGetSelectParams
@@ -33,7 +33,7 @@ func unpackCommentsByJokeIDGetParams(packed middleware.Parameters) (params Comme
 	}
 	{
 		key := middleware.ParameterKey{
-			Name: "select_params",
+			Name: "selectParams",
 			In:   "query",
 		}
 		params.SelectParams = packed[key].(CommentsByJokeIDGetSelectParams)
@@ -88,13 +88,13 @@ func decodeCommentsByJokeIDGetParams(args [1]string, argsEscaped bool, r *http.R
 			Err:  err,
 		}
 	}
-	// Decode query: select_params.
+	// Decode query: selectParams.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "select_params",
+			Name:    "selectParams",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
-			Fields:  []uri.QueryParameterObjectField{{"order_by", false}, {"order", false}, {"limit", true}, {"offset", true}},
+			Fields:  []uri.QueryParameterObjectField{{"order", false}, {"limit", false}, {"offset", false}},
 		}
 
 		if err := q.HasParam(cfg); err == nil {
@@ -117,7 +117,7 @@ func decodeCommentsByJokeIDGetParams(args [1]string, argsEscaped bool, r *http.R
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "select_params",
+			Name: "selectParams",
 			In:   "query",
 			Err:  err,
 		}
@@ -127,7 +127,7 @@ func decodeCommentsByJokeIDGetParams(args [1]string, argsEscaped bool, r *http.R
 
 // LikesByJokeIDGetParams is parameters of LikesByJokeIDGet operation.
 type LikesByJokeIDGetParams struct {
-	// ID of the joke to count likes.
+	// ID of the joke.
 	JokeID string
 }
 
@@ -200,7 +200,7 @@ type MeJokesGetParams struct {
 func unpackMeJokesGetParams(packed middleware.Parameters) (params MeJokesGetParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "select_params",
+			Name: "selectParams",
 			In:   "query",
 		}
 		params.SelectParams = packed[key].(MeJokesGetSelectParams)
@@ -210,13 +210,13 @@ func unpackMeJokesGetParams(packed middleware.Parameters) (params MeJokesGetPara
 
 func decodeMeJokesGetParams(args [0]string, argsEscaped bool, r *http.Request) (params MeJokesGetParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode query: select_params.
+	// Decode query: selectParams.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "select_params",
+			Name:    "selectParams",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
-			Fields:  []uri.QueryParameterObjectField{{"order_by", false}, {"order", false}, {"limit", true}, {"offset", true}},
+			Fields:  []uri.QueryParameterObjectField{{"order", false}, {"limit", false}, {"offset", false}},
 		}
 
 		if err := q.HasParam(cfg); err == nil {
@@ -239,7 +239,7 @@ func decodeMeJokesGetParams(args [0]string, argsEscaped bool, r *http.Request) (
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "select_params",
+			Name: "selectParams",
 			In:   "query",
 			Err:  err,
 		}

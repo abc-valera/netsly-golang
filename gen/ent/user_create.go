@@ -10,6 +10,8 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmember"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmessage"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
@@ -108,6 +110,36 @@ func (uc *UserCreate) AddLikes(l ...*Like) *UserCreate {
 		ids[i] = l[i].ID
 	}
 	return uc.AddLikeIDs(ids...)
+}
+
+// AddChatRoomIDs adds the "chat_rooms" edge to the ChatMember entity by IDs.
+func (uc *UserCreate) AddChatRoomIDs(ids ...int) *UserCreate {
+	uc.mutation.AddChatRoomIDs(ids...)
+	return uc
+}
+
+// AddChatRooms adds the "chat_rooms" edges to the ChatMember entity.
+func (uc *UserCreate) AddChatRooms(c ...*ChatMember) *UserCreate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uc.AddChatRoomIDs(ids...)
+}
+
+// AddChatMessageIDs adds the "chat_messages" edge to the ChatMessage entity by IDs.
+func (uc *UserCreate) AddChatMessageIDs(ids ...string) *UserCreate {
+	uc.mutation.AddChatMessageIDs(ids...)
+	return uc
+}
+
+// AddChatMessages adds the "chat_messages" edges to the ChatMessage entity.
+func (uc *UserCreate) AddChatMessages(c ...*ChatMessage) *UserCreate {
+	ids := make([]string, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uc.AddChatMessageIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -282,6 +314,38 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.ChatRoomsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ChatRoomsTable,
+			Columns: []string{user.ChatRoomsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chatmember.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.ChatMessagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ChatMessagesTable,
+			Columns: []string{user.ChatMessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(chatmessage.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

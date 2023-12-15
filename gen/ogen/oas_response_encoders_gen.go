@@ -14,7 +14,7 @@ import (
 )
 
 func encodeCommentsByJokeIDGetResponse(response *Comments, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
 
@@ -28,7 +28,7 @@ func encodeCommentsByJokeIDGetResponse(response *Comments, w http.ResponseWriter
 }
 
 func encodeLikesByJokeIDGetResponse(response int, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
 
@@ -70,7 +70,7 @@ func encodeMeDelResponse(response *MeDelNoContent, w http.ResponseWriter, span t
 }
 
 func encodeMeGetResponse(response *User, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
 
@@ -91,7 +91,7 @@ func encodeMeJokesDelResponse(response *MeJokesDelNoContent, w http.ResponseWrit
 }
 
 func encodeMeJokesGetResponse(response *Jokes, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
 
@@ -140,7 +140,7 @@ func encodeMePutResponse(response *MePutCreated, w http.ResponseWriter, span tra
 }
 
 func encodeSignInPostResponse(response *SignInPostOK, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
 
@@ -154,7 +154,7 @@ func encodeSignInPostResponse(response *SignInPostOK, w http.ResponseWriter, spa
 }
 
 func encodeSignRefreshPostResponse(response *SignRefreshPostOK, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
 
@@ -175,15 +175,14 @@ func encodeSignUpPostResponse(response *SignUpPostCreated, w http.ResponseWriter
 }
 
 func encodeErrorResponse(response *CodeErrorStatusCode, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	code := response.StatusCode
 	if code == 0 {
 		// Set default status code.
 		code = http.StatusOK
 	}
 	w.WriteHeader(code)
-	st := http.StatusText(code)
-	if code >= http.StatusBadRequest {
+	if st := http.StatusText(code); code >= http.StatusBadRequest {
 		span.SetStatus(codes.Error, st)
 	} else {
 		span.SetStatus(codes.Ok, st)
