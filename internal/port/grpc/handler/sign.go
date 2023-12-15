@@ -5,28 +5,24 @@ import (
 
 	"github.com/abc-valera/flugo-api-golang/gen/pb"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/port/grpc/dto"
 )
 
 type SignHandler struct {
-	userRepo    repository.IUserRepository
-	signUsecase application.SignUseCase
+	signUseCase application.SignUseCase
 	pb.UnimplementedSignServiceServer
 }
 
 func NewSignHandler(
-	userRepo repository.IUserRepository,
-	signUsecase application.SignUseCase,
+	signUseCase application.SignUseCase,
 ) pb.SignServiceServer {
 	return SignHandler{
-		userRepo:    userRepo,
-		signUsecase: signUsecase,
+		signUseCase: signUseCase,
 	}
 }
 
 func (h SignHandler) SignUp(ctx context.Context, req *pb.SignUpRequest) (*pb.SignUpResponse, error) {
-	err := h.signUsecase.SignUp(ctx, application.SignUpRequest{
+	err := h.signUseCase.SignUp(ctx, application.SignUpRequest{
 		Username: req.Username,
 		Email:    req.Email,
 		Password: req.Password,
@@ -35,7 +31,7 @@ func (h SignHandler) SignUp(ctx context.Context, req *pb.SignUpRequest) (*pb.Sig
 }
 
 func (h SignHandler) SignIn(ctx context.Context, req *pb.SignInRequest) (*pb.SignInResponse, error) {
-	resp, err := h.signUsecase.SignIn(ctx, application.SignInRequest{
+	resp, err := h.signUseCase.SignIn(ctx, application.SignInRequest{
 		Email:    req.Email,
 		Password: req.Password,
 	})

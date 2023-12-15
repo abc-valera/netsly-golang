@@ -4,13 +4,8 @@ get:
   summary: Returns comments of the joke
   operationId: CommentsByJokeIDGet
   parameters:
-    - name: joke_id
-      in: path
-      description: ID of the joke to get comments
-      required: true
-      schema:
-        type: string
-    - $ref: "../../components/parameters/select.yaml"
+    - $ref: "../../components/parameters/path_joke_id.yaml"
+    - $ref: "../../components/parameters/query_select_params.yaml"
   responses:
     "200":
       $ref: "../../components/responses/comments.yaml"

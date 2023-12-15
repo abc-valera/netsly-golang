@@ -1,4 +1,4 @@
-package other
+package handler
 
 import (
 	"context"
@@ -12,6 +12,10 @@ type Key string
 const (
 	PayloadKey Key = "auth_payload"
 )
+
+func payloadUserID(ctx context.Context) string {
+	return ctx.Value(PayloadKey).(service.Payload).UserID
+}
 
 type SecurityHandler struct {
 	tokenMaker service.ITokenMaker

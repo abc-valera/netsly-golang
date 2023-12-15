@@ -1,25 +1,21 @@
-package sign
+package handler
 
 import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
 	"github.com/abc-valera/flugo-api-golang/internal/port/http/dto"
 )
 
 type SignHandler struct {
-	userRepo    repository.IUserRepository
 	signUsecase application.SignUseCase
 }
 
 func NewSignHandler(
-	userRepo repository.IUserRepository,
 	signUsecase application.SignUseCase,
 ) SignHandler {
 	return SignHandler{
-		userRepo:    userRepo,
 		signUsecase: signUsecase,
 	}
 }

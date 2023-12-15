@@ -2,10 +2,13 @@ package dto
 
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 )
 
-func NewCommentResponse(comment *entity.Comment) *ogen.Comment {
+func NewCommentResponse(comment *model.Comment) *ogen.Comment {
+	if comment == nil {
+		return &ogen.Comment{}
+	}
 	return &ogen.Comment{
 		ID:        comment.ID,
 		JokeID:    comment.JokeID,
@@ -15,7 +18,7 @@ func NewCommentResponse(comment *entity.Comment) *ogen.Comment {
 	}
 }
 
-func NewCommentsResponse(comments []*entity.Comment) *ogen.Comments {
+func NewCommentsResponse(comments []*model.Comment) *ogen.Comments {
 	res := make([]ogen.Comment, 0, len(comments))
 	for _, comment := range comments {
 		res = append(res, *NewCommentResponse(comment))

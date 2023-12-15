@@ -1,14 +1,10 @@
-name: select_params
+name: selectParams
 in: query
 description: fields to specify select parameters
 required: true
 schema:
   type: object
-  title: select_params
   properties:
-    order_by:
-      type: string
-      default: created_at
     order:
       $ref: "../enums/order.yaml"
     limit:
@@ -17,6 +13,3 @@ schema:
     offset:
       type: integer
       minimum: 0
-  required:
-    - limit
-    - offset
