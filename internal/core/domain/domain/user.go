@@ -31,8 +31,8 @@ type UserDomain struct {
 }
 
 func NewUserDomain(
-	query query.IUserQuery,
 	command command.IUserCommand,
+	query query.IUserQuery,
 	passMaker service.IPasswordMaker,
 ) UserDomain {
 	return UserDomain{

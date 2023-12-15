@@ -27,16 +27,16 @@ type SignUseCase struct {
 }
 
 func NewSignUseCase(
-	tx transactioneer.ITransactioneer,
 	userQuery query.IUserQuery,
+	tx transactioneer.ITransactioneer,
 	userDomain domain.UserDomain,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
 	messageBroker service.IMessageBroker,
 ) SignUseCase {
 	return SignUseCase{
-		tx:            tx,
 		userQuery:     userQuery,
+		tx:            tx,
 		userDomain:    userDomain,
 		passwordMaker: passwordMaker,
 		tokenMaker:    tokenMaker,

@@ -12,15 +12,15 @@ type UseCases struct {
 }
 
 func NewUseCases(
-	tx transactioneer.ITransactioneer,
 	queries query.Queries,
+	tx transactioneer.ITransactioneer,
 	domains domain.Domains,
 	services service.Services,
 ) (UseCases, error) {
 	return UseCases{
 		SignUseCase: NewSignUseCase(
-			tx,
 			queries.User,
+			tx,
 			domains.User,
 			services.PasswordMaker,
 			services.TokenMaker,
