@@ -1,4 +1,4 @@
-# Code generation
+### Code generation ###
 generate_single_openapi_file:
 	docker run --rm -v ${PWD}:/spec redocly/cli bundle \
 	-o /spec/gen/openapi/openapi.yaml \
@@ -26,7 +26,8 @@ generate_grpc_code:
 generate_db_code:
 	go generate gen/ent/generate.go
 
-# Docker commands
+
+### Docker commands ###
 run_flugo-db_container:
 	docker run \
 	--name flugo-db \
@@ -45,7 +46,8 @@ build_flugo-api_compose:
 run_docker-compose:
 	docker compose -f dev.docker-compose.yml up
 
-# Local run commands
+
+### Local run commands ###
 run_infrastructure_local:
 	docker rm -f flugo-db
 	docker rm -f flugo-redis
@@ -62,6 +64,7 @@ run_flugo_grpc_local:
 	go build -o build/flugo-grpc cmd/grpc/main.go
 	./build/flugo-grpc
 
-# Other commands
+
+### Other ###
 evans_client:
 	evans -p 3030 -r repl
