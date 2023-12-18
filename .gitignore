@@ -28,3 +28,11 @@ build/
 
 # fly config
 fly.toml
+
+# node files
+node_modules/
+package-lock.json
+package.json
+
+# prettier config
+.prettierrc.json
