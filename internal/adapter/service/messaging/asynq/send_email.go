@@ -28,16 +28,13 @@ func NewSendEmailTask(email string) (*asynq.Task, error) {
 
 type sendEmailProcessor struct {
 	emailSender service.IEmailSender
-	log         service.ILogger
 }
 
 func newSendEmailProcessor(
 	emailSender service.IEmailSender,
-	log service.ILogger,
 ) *sendEmailProcessor {
 	return &sendEmailProcessor{
 		emailSender: emailSender,
-		log:         log,
 	}
 }
 
@@ -46,7 +43,7 @@ func (p sendEmailProcessor) ProcessTask(ctx context.Context, task *asynq.Task) e
 	if err := json.Unmarshal(task.Payload(), &payload); err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
-	p.log.Info("TASK",
+	service.Log.Info("TASK",
 		"type", task.Type())
 	return p.emailSender.SendEmail(service.Email{})
 }

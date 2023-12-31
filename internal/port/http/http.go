@@ -36,14 +36,14 @@ func RunServer(
 		comments.CommentsHandler
 		likes.LikesHandler
 	}{
-		ErrorHandler:      other.NewErrorHandler(services.Logger),
-		SignHandler:       sign.NewSignHandler(repos.UserRepo, usecases.SignUseCase),
-		MeHandler:         me.NewMeHandler(repos.UserRepo),
-		MeJokesHandler:    me.NewMeJokesHandler(repos.JokeRepo),
-		MeCommentsHandler: me.NewMeCommentsHandler(repos.CommentRepo),
-		MeLikesHandler:    me.NewMeLikesHandler(repos.LikeRepo),
-		CommentsHandler:   comments.NewCommentsHandler(repos.CommentRepo),
-		LikesHandler:      likes.NewLikesHandler(repos.LikeRepo),
+		ErrorHandler:      handler.NewErrorHandler(),
+		SignHandler:       handler.NewSignHandler(usecases.SignUseCase),
+		MeHandler:         handler.NewMeHandler(queries.User, domains.User),
+		MeJokesHandler:    handler.NewMeJokesHandler(queries.Joke, domains.Joke),
+		MeCommentsHandler: handler.NewMeCommentsHandler(queries.Comment, domains.Comment),
+		MeLikesHandler:    handler.NewMeLikesHandler(queries.Like, domains.Like),
+		CommentsHandler:   handler.NewCommentsHandler(queries.Comment, domains.Comment),
+		LikesHandler:      handler.NewLikesHandler(queries.Like),
 	}
 	// Init security handler
 	securityHandler := other.NewSecurityHandler(services.TokenMaker)
@@ -54,7 +54,7 @@ func RunServer(
 		return codeerr.NewInternal("newHTTPServer", err)
 	}
 	// Init middlewares
-	loggingMiddleware := middleware.NewLoggingMiddleware(services.Logger)
+	loggingMiddleware := middleware.NewLoggingMiddleware()
 
 	// Init chi router
 	r := chi.NewRouter()
@@ -70,7 +70,7 @@ func RunServer(
 	r.Mount("/", httpHandler)
 
 	// Start HTTP server
-	services.Logger.Info("Starting HTTP server on " + port)
+	service.Log.Info("Starting HTTP server on " + port)
 	if err := http.ListenAndServe(port, r); err != nil {
 		return codeerr.NewInternal("RunServer", err)
 	}

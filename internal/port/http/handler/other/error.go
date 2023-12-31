@@ -9,13 +9,10 @@ import (
 )
 
 type ErrorHandler struct {
-	log service.ILogger
 }
 
-func NewErrorHandler(log service.ILogger) ErrorHandler {
-	return ErrorHandler{
-		log: log,
-	}
+func NewErrorHandler() ErrorHandler {
+	return ErrorHandler{}
 }
 
 func (h ErrorHandler) NewError(ctx context.Context, err error) *ogen.CodeErrorStatusCode {
@@ -42,7 +39,7 @@ func (h ErrorHandler) NewError(ctx context.Context, err error) *ogen.CodeErrorSt
 		}
 	}
 
-	h.log.Error("REQUEST_ERROR", "err", err.Error())
+	service.Log.Error("REQUEST_ERROR", "err", err.Error())
 	return &ogen.CodeErrorStatusCode{
 		StatusCode: 500,
 		Response:   codeError,

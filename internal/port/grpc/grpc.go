@@ -33,6 +33,6 @@ func RunServer(
 		return err
 	}
 
-	services.Logger.Info("Starting gRPC server on " + port)
+	service.Log.Info("Starting gRPC server on " + port)
 	return server.Serve(lis)
 }

@@ -29,10 +29,11 @@ build/
 # fly config
 fly.toml
 
-# node files
+# Prettier dependencies
 node_modules/
 package-lock.json
 package.json
-
-# prettier config
 .prettierrc.json
+
+# Tailwind dependencies
+tailwind.config.js

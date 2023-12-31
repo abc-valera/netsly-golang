@@ -12,7 +12,6 @@ import (
 func newAsynqServer(
 	redisOpts asynq.RedisClientOpt,
 	emailSender service.IEmailSender,
-	log service.ILogger,
 ) *asynq.Server {
 	// Custom error handler
 	errHandler := asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {
@@ -21,7 +20,7 @@ func newAsynqServer(
 		if code == "" {
 			code = codeerr.CodeInternal
 		}
-		log.Error("PROCESS TASK",
+		service.Log.Error("PROCESS TASK",
 			"code", code,
 			"msg", msg,
 			"error", err,
@@ -39,14 +38,14 @@ func newAsynqServer(
 				string(service.Low):      1,
 			},
 			ErrorHandler:    errHandler,
-			Logger:          &customAsynqLogger{log},
+			Logger:          &customAsynqLogger{service.Log},
 			ShutdownTimeout: time.Millisecond * 100,
 		},
 	)
 
 	// Allocating tasks
 	mux := asynq.NewServeMux()
-	mux.Handle(typeSendEmail, newSendEmailProcessor(emailSender, log))
+	mux.Handle(typeSendEmail, newSendEmailProcessor(emailSender))
 
 	// Running server
 	server.Start(mux)

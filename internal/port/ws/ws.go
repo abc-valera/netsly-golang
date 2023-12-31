@@ -22,7 +22,7 @@ func RunServer(
 	r := chi.NewRouter()
 	r.HandleFunc("/ws", manager.ServeWS)
 
-	services.Logger.Info("Starting WebSocket server on " + port)
+	service.Log.Info("Starting WebSocket server on " + port)
 	if err := http.ListenAndServe(port, r); err != nil {
 		return codeerr.NewInternal("RunServer", err)
 	}

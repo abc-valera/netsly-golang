@@ -1,9 +1,9 @@
 package manager
 
 import (
-	"log"
 	"net/http"
 
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 	"github.com/abc-valera/flugo-api-golang/internal/port/ws/client"
 	"github.com/abc-valera/flugo-api-golang/internal/port/ws/handler"
 	"github.com/gorilla/websocket"
@@ -47,11 +47,11 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
 		select {
 		case msg := <-client.Read():
 			if err := m.routeEvent(msg, client); err != nil {
-				log.Println("Error: ", err)
+				service.Log.Error("Error: ", err)
 				return
 			}
 		case err := <-client.Err():
-			log.Println("Error: ", err)
+			service.Log.Error("Error: ", err)
 			return
 		}
 	}
