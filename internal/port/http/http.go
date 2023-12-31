@@ -34,7 +34,7 @@ func RunServer(
 		handler.CommentsHandler
 		handler.LikesHandler
 	}{
-		ErrorHandler:      handler.NewErrorHandler(services.Logger),
+		ErrorHandler:      handler.NewErrorHandler(),
 		SignHandler:       handler.NewSignHandler(usecases.SignUseCase),
 		MeHandler:         handler.NewMeHandler(queries.User, domains.User),
 		MeJokesHandler:    handler.NewMeJokesHandler(queries.Joke, domains.Joke),
@@ -52,7 +52,7 @@ func RunServer(
 		return codeerr.NewInternal("newHTTPServer", err)
 	}
 	// Init middlewares
-	loggingMiddleware := middleware.NewLoggingMiddleware(services.Logger)
+	loggingMiddleware := middleware.NewLoggingMiddleware()
 
 	// Init chi router
 	r := chi.NewRouter()
@@ -64,7 +64,7 @@ func RunServer(
 	r.Mount("/", httpHandler)
 
 	// Start HTTP server
-	services.Logger.Info("Starting HTTP server on " + port)
+	service.Log.Info("Starting HTTP server on " + port)
 	if err := http.ListenAndServe(port, r); err != nil {
 		return codeerr.NewInternal("RunServer", err)
 	}

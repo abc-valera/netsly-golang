@@ -15,17 +15,16 @@ func NewServices(
 	accessTokenDuration, refreshTokenDuration time.Duration,
 	redisUrl, redisUser, redisPass string,
 ) (service.Services, error) {
-	logger := logger.NewSlogLogger()
-	emailSender := email.NewDummyEmailSender(logger)
+	service.Log = logger.NewSlogLogger()
+	emailSender := email.NewDummyEmailSender()
 	passwordMaker := password.NewPasswordMaker()
 	tokenMaker := token.NewTokenMaker(accessTokenDuration, refreshTokenDuration)
-	messageBroker := dummy.NewMessagingBroker(emailSender, logger)
+	messageBroker := dummy.NewMessagingBroker(emailSender)
 
 	return service.NewServices(
 		emailSender,
 		passwordMaker,
 		tokenMaker,
-		logger,
 		messageBroker,
 	)
 }

@@ -33,7 +33,7 @@ func (rw *responseWriter) Write(data []byte) (int, error) {
 }
 
 // NewLoggingMiddleware logs the incoming HTTP request & its duration.
-func NewLoggingMiddleware(log service.ILogger) func(http.Handler) http.Handler {
+func NewLoggingMiddleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
@@ -47,9 +47,9 @@ func NewLoggingMiddleware(log service.ILogger) func(http.Handler) http.Handler {
 				"duration(ms)", time.Since(start).Milliseconds(),
 			}
 			if wrapped.status != 500 {
-				log.Info("REQUEST", logs...)
+				service.Log.Info("REQUEST", logs...)
 			} else {
-				log.Error("REQUEST", logs...)
+				service.Log.Error("REQUEST", logs...)
 			}
 		}
 

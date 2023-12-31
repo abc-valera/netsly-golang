@@ -1,5 +1,7 @@
 package service
 
+var Log ILogger
+
 type ILogger interface {
 	Debug(message string, vals ...interface{})
 	Info(message string, vals ...interface{})

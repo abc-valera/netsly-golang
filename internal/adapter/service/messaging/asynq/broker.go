@@ -11,13 +11,11 @@ import (
 type broker struct {
 	client *asynq.Client
 	server *asynq.Server
-	log    service.ILogger
 }
 
 func NewMessagingBroker(
 	redisUrl, redisUser, redisPass string,
 	emailSender service.IEmailSender,
-	log service.ILogger,
 ) service.IMessageBroker {
 	// Redis connection options
 	redisOpts := asynq.RedisClientOpt{
@@ -28,8 +26,7 @@ func NewMessagingBroker(
 
 	return &broker{
 		client: asynq.NewClient(redisOpts),
-		server: newAsynqServer(redisOpts, emailSender, log),
-		log:    log,
+		server: newAsynqServer(redisOpts, emailSender),
 	}
 }
 
@@ -48,7 +45,7 @@ func (b broker) SendEmailTask(ctx context.Context, priority service.Priority, em
 	if err != nil {
 		return err
 	}
-	b.log.Info("ENQUEUED TASK",
+	service.Log.Info("ENQUEUED TASK",
 		"type", task.Type(),
 		"queue", info.Queue,
 		"max_retry", info.MaxRetry,

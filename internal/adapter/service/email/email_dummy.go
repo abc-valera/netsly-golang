@@ -5,16 +5,13 @@ import (
 )
 
 type dummyEmailSender struct {
-	log service.ILogger
 }
 
-func NewDummyEmailSender(log service.ILogger) service.IEmailSender {
-	return &dummyEmailSender{
-		log: log,
-	}
+func NewDummyEmailSender() service.IEmailSender {
+	return &dummyEmailSender{}
 }
 
 func (d dummyEmailSender) SendEmail(e service.Email) error {
-	d.log.Info("EMAIL_SENT", "to", e.To, "subject", e.Subject, "body", e.Content)
+	service.Log.Info("EMAIL_SENT", "to", e.To, "subject", e.Subject, "body", e.Content)
 	return nil
 }

@@ -10,7 +10,6 @@ type Services struct {
 	EmailSender   IEmailSender
 	PasswordMaker IPasswordMaker
 	TokenMaker    ITokenMaker
-	Logger        ILogger
 	MessageBroker IMessageBroker
 }
 
@@ -18,7 +17,6 @@ func NewServices(
 	emailSender IEmailSender,
 	passwordMaker IPasswordMaker,
 	tokenMaker ITokenMaker,
-	logger ILogger,
 	messageBroker IMessageBroker,
 ) (Services, error) {
 	if emailSender == nil {
@@ -30,9 +28,6 @@ func NewServices(
 	if tokenMaker == nil {
 		return Services{}, codeerr.NewInternal("NewServices", errors.New("tokenMaker is nil"))
 	}
-	if logger == nil {
-		return Services{}, codeerr.NewInternal("NewServices", errors.New("logger is nil"))
-	}
 	if messageBroker == nil {
 		return Services{}, codeerr.NewInternal("NewServices", errors.New("messageBroker is nil"))
 	}
@@ -40,7 +35,6 @@ func NewServices(
 		EmailSender:   emailSender,
 		PasswordMaker: passwordMaker,
 		TokenMaker:    tokenMaker,
-		Logger:        logger,
 		MessageBroker: messageBroker,
 	}, nil
 }
