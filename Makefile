@@ -13,6 +13,8 @@ generate_http:
 	make generate_single_openapi_file
 	make generate_http_code
 	make generate_http_docs
+generate_tailwindcss:
+	npx tailwindcss -i internal/port/htmx/static/style/input.css -o internal/port/htmx/static/style/style.css
 
 generate_grpc_code:
 	rm -f gen/pb/*.pb.go
@@ -54,6 +56,9 @@ run_infrastructure_local:
 	make run_flugo-db_container
 	make run_flugo-redis_container
 	sleep 3
+run_flugo_htmx_local:
+	go build -o build/flugo-htmx cmd/htmx/main.go
+	./build/flugo-htmx
 run_flugo_http_local:
 	go build -o build/flugo-http cmd/http/main.go
 	./build/flugo-http

@@ -9,7 +9,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
-	server "github.com/abc-valera/flugo-api-golang/internal/port/ws"
+	server "github.com/abc-valera/flugo-api-golang/internal/port/htmx"
 )
 
 func main() {
@@ -43,10 +43,13 @@ func main() {
 	}
 
 	if err := server.RunServer(
-		config.WSPort,
+		config.HTMXPort,
+		config.TemplatePath,
+		queries,
+		domains,
 		services,
 		usecases,
 	); err != nil {
-		log.Fatal("HTTP server error: ", err)
+		log.Fatal("Run server error: ", err)
 	}
 }

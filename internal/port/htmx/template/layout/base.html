@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind Styles -->
+    <link href="/static/style/style.css" rel="stylesheet" type="text/css" />
+    <!-- HTMX CDN -->
+    <script
+      src="https://unpkg.com/htmx.org@1.9.9"
+      integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Hyperscript CDN -->
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+    <title>
+      {{ template "PageTitle" }}
+    </title>
+  </head>
+  <body>
+    <div>
+      {{ template "BaseContent" . }}
+    </div>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+<!-- Template for a modal dialog -->
+<div
+  id="modal"
+  class="fixed inset-0 z-50 flex animate-fade-in flex-col items-center justify-center bg-black bg-opacity-50"
+  _="on closeModal remove .animate-fade-in then add .animate-fade-out then wait for animationend then remove me"
+>
+  <!-- Modal Underlay Start -->
+  <div
+    class="absolute bottom-0 left-0 right-0 top-0 -z-10"
+    _="on click trigger closeModal"
+  ></div>
+  <!-- Modal Underlay End -->
+
+  <!-- Modal Content Start -->
+  <div
+    id="modal-content"
+    class="animate-zoom-in rounded-lg border-solid bg-white p-10"
+    _="on closeModal remove .animate-zoom-in"
+  >
+    {{ template "ModalContent" . }}
+  </div>
+  <!-- Modal Content End -->
+</div>

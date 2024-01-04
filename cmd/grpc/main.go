@@ -9,7 +9,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/port/grpc"
+	server "github.com/abc-valera/flugo-api-golang/internal/port/grpc"
 )
 
 func main() {
@@ -42,7 +42,7 @@ func main() {
 		log.Fatal("Initialize usecases error: ", err)
 	}
 
-	if err := grpc.RunServer(config.GRPCPort, services, usecases); err != nil {
+	if err := server.RunServer(config.GRPCPort, services, usecases); err != nil {
 		log.Fatal("gRPC server error: ", err)
 	}
 }
