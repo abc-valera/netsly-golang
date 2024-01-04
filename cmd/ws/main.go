@@ -8,7 +8,8 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
-	"github.com/abc-valera/flugo-api-golang/internal/port/ws"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
+	server "github.com/abc-valera/flugo-api-golang/internal/port/ws"
 )
 
 func main() {
@@ -39,7 +40,11 @@ func main() {
 		log.Fatal("Initialize usecases error: ", err)
 	}
 
-	if err := ws.RunServer(config.WSPort, repos, services, usecases); err != nil {
+	if err := server.RunServer(
+		config.WSPort,
+		services,
+		usecases,
+	); err != nil {
 		log.Fatal("HTTP server error: ", err)
 	}
 }

@@ -10,8 +10,17 @@
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/http",
-      "env": { "CONFIG_PATH": "${workspaceFolder}/.dev.env" },
-      "envFile": "${workspaceFolder}/.dev.env"
+      "env": { "CONFIG_PATH": "${workspaceFolder}/.debug.env" },
+      "envFile": "${workspaceFolder}/.debug.env"
+    },
+    {
+      "name": "HTMX Debug Package",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/htmx",
+      "env": { "CONFIG_PATH": "${workspaceFolder}/.debug.env" },
+      "envFile": "${workspaceFolder}/.debug.env"
     }
   ]
 }

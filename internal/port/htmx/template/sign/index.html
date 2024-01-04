@@ -1,0 +1,38 @@
+{{ define "PageTitle" }}
+  Account - Flug'
+{{ end }}
+
+{{ define "BaseContent" }}
+  <div class="flex min-h-screen flex-col items-center justify-center">
+    <div class="flex w-full max-w-md flex-col items-center justify-center">
+      <div class="mb-32 flex w-full flex-col items-center justify-center">
+        <h1 class="text-center text-4xl font-bold text-slate-400">
+          Flug' logo
+        </h1>
+      </div>
+      <div class="mb-8 flex w-full flex-col items-center justify-center">
+        <h1 class="text-center text-4xl font-bold">Welcome to Flug'</h1>
+      </div>
+      <div class="flex w-full flex-col items-center justify-center">
+        <button
+          class="mt-2 w-full rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+          hx-get="/sign/up"
+          hx-target="body"
+          hx-swap="beforeend"
+        >
+          Sign Up
+        </button>
+      </div>
+      <div class="flex w-full flex-col items-center justify-center">
+        <button
+          class="mt-2 w-full rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+          hx-get="/sign/in"
+          hx-target="body"
+          hx-swap="beforeend"
+        >
+          Sign In
+        </button>
+      </div>
+    </div>
+  </div>
+{{ end }}

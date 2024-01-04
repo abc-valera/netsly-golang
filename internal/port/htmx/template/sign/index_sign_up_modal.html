@@ -1,0 +1,56 @@
+{{ define "ModalContent" }}
+  <h1 class="mb-8 text-4xl font-extrabold">Register</h1>
+  <form action="/sign/up" method="POST">
+    <div>
+      <label class="block font-semibold" for="name">Username</label>
+      <input
+        class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+        id="name"
+        type="text"
+        name="username"
+        required="required"
+        autofocus="autofocus"
+      />
+    </div>
+
+    <div class="mt-4">
+      <label class="block font-semibold" for="email">Email</label>
+      <input
+        class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+        id="email"
+        type="email"
+        name="email"
+        required="required"
+      />
+    </div>
+
+    <div class="mt-4">
+      <label class="block font-semibold" for="password">Password</label>
+      <input
+        class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+        id="password"
+        type="password"
+        name="password"
+        required="required"
+        autocomplete="new-password"
+      />
+    </div>
+
+    <div class="mt-8 flex items-center justify-between">
+      <button
+        type="submit"
+        class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:px-10 md:py-4 md:text-lg"
+      >
+        Register
+      </button>
+      <a
+        class="font-semibold"
+        hx-get="/sign/in"
+        hx-target="#modal"
+        hx-swap="outerHTML transition:true"
+      >
+        Already registered?
+      </a>
+    </div>
+  </form>
+{{ end }}

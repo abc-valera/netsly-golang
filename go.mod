@@ -18,9 +18,9 @@ require (
 	go.opentelemetry.io/otel/metric v1.19.0
 	go.opentelemetry.io/otel/trace v1.19.0
 	go.uber.org/multierr v1.11.0
-	golang.org/x/crypto v0.13.0
-	golang.org/x/exp v0.0.0-20230725093048-515e97ebf090
-	google.golang.org/grpc v1.55.0
+	golang.org/x/crypto v0.17.0
+	golang.org/x/exp v0.0.0-20231214170342-aacd6d4b4611
+	google.golang.org/grpc v1.60.0
 )
 
 require (
@@ -37,7 +37,8 @@ require (
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
-	github.com/google/go-cmp v0.5.9 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/gorilla/schema v1.2.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.19.1 // indirect
 	github.com/klauspost/compress v1.17.0 // indirect

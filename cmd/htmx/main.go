@@ -5,11 +5,11 @@ import (
 	"os"
 
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/config"
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
-	server "github.com/abc-valera/flugo-api-golang/internal/port/grpc"
+	server "github.com/abc-valera/flugo-api-golang/internal/port/htmx"
 )
 
 func main() {
@@ -22,9 +22,9 @@ func main() {
 		log.Fatal("Initialize config error: ", err)
 	}
 
-	repos, err := persistence.NewRepositories(config.DatabaseURL)
+	commands, queries, tx, err := ent.NewEntCommandsQueries(config.DatabaseURL)
 	if err != nil {
-		log.Fatal("Initialize postgre error: ", err)
+		log.Fatal("Initialize ent error: ", err)
 	}
 
 	services, err := service.NewServices(
@@ -35,12 +35,21 @@ func main() {
 		log.Fatal("Initialize services error: ", err)
 	}
 
-	usecases, err := application.NewUseCases(repos, services)
+	domains := domain.NewDomains(commands, queries, services)
+
+	usecases, err := application.NewUseCases(queries, tx, domains, services)
 	if err != nil {
 		log.Fatal("Initialize usecases error: ", err)
 	}
 
-	if err := server.RunServer(config.GRPCPort, services, usecases); err != nil {
-		log.Fatal("gRPC server error: ", err)
+	if err := server.RunServer(
+		config.HTMXPort,
+		config.TemplatePath,
+		queries,
+		domains,
+		services,
+		usecases,
+	); err != nil {
+		log.Fatal("Run server error: ", err)
 	}
 }

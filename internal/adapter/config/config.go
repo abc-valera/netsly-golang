@@ -8,6 +8,9 @@ import (
 
 // Contains all configuration variables
 type Config struct {
+	HTMXPort     string `mapstructure:"HTMX_PORT"`
+	TemplatePath string `mapstructure:"TEMPLATE_PATH"`
+
 	HTTPPort string `mapstructure:"HTTP_PORT"`
 	WSPort   string `mapstructure:"WS_PORT"`
 	GRPCPort string `mapstructure:"GRPC_PORT"`
