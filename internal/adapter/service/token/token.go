@@ -40,7 +40,7 @@ func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Durat
 
 	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
-		return "", service.Payload{}, codeerr.NewInternal("jwtToken.createToken", err)
+		return "", service.Payload{}, codeerr.NewInternal(err)
 	}
 
 	return tokenString, payload, nil
@@ -65,11 +65,11 @@ func (s *jwtToken) VerifyToken(token string) (service.Payload, error) {
 
 	issuedAt, err := time.Parse(time.RFC3339, claims["issued_at"].(string))
 	if err != nil {
-		return service.Payload{}, codeerr.NewInternal("jwtToken.VerifyToken", err)
+		return service.Payload{}, codeerr.NewInternal(err)
 	}
 	expiredAt, err := time.Parse(time.RFC3339, claims["expired_at"].(string))
 	if err != nil {
-		return service.Payload{}, codeerr.NewInternal("jwtToken.VerifyToken", err)
+		return service.Payload{}, codeerr.NewInternal(err)
 	}
 
 	var payload service.Payload

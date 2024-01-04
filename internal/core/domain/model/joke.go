@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	ErrJokeNotFound = codeerr.NewMessageErr(codeerr.CodeNotFound, "Joke not found")
+	ErrJokeNotFound = codeerr.NewMessage(codeerr.CodeNotFound, "Joke not found")
 
-	ErrJokeOwnerTitleAlreadyExists = codeerr.NewMessageErr(codeerr.CodeAlreadyExists, "Joke with such title already exists by such user")
+	ErrJokeOwnerTitleAlreadyExists = codeerr.NewMessage(codeerr.CodeAlreadyExists, "Joke with such title already exists by such user")
 )
 
 type Joke struct {

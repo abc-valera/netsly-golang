@@ -10,9 +10,9 @@ import (
 )
 
 var (
-	ErrChatMessageChatIDInvalid  = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid chat ID")
-	ErrChatMessageUserIDInvalid  = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid user ID")
-	ErrChatMessageMessageInvalid = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid message")
+	ErrChatMessageChatIDInvalid  = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid chat ID")
+	ErrChatMessageUserIDInvalid  = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID")
+	ErrChatMessageMessageInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid message")
 )
 
 type ChatMessageDomain struct {

@@ -10,10 +10,10 @@ import (
 )
 
 var (
-	ErrCommentIDInvalid     = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid comment ID")
-	ErrCommentUserIDInvalid = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid user ID for comment")
-	ErrCommentJokeIDInvalid = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid joke ID for comment")
-	ErrCommentTextInvalid   = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid text")
+	ErrCommentIDInvalid     = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid comment ID")
+	ErrCommentUserIDInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID for comment")
+	ErrCommentJokeIDInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid joke ID for comment")
+	ErrCommentTextInvalid   = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid text")
 )
 
 type CommentDomain struct {

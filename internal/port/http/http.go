@@ -49,7 +49,7 @@ func RunServer(
 	// Init ogen server
 	server, err := ogen.NewServer(ogenHandler, securityHandler)
 	if err != nil {
-		return codeerr.NewInternal("newHTTPServer", err)
+		return codeerr.NewInternal(err)
 	}
 	// Init middlewares
 	loggingMiddleware := middleware.NewLoggingMiddleware()
@@ -66,7 +66,7 @@ func RunServer(
 	// Start HTTP server
 	service.Log.Info("Starting HTTP server on " + port)
 	if err := http.ListenAndServe(port, r); err != nil {
-		return codeerr.NewInternal("RunServer", err)
+		return codeerr.NewInternal(err)
 	}
 
 	return nil

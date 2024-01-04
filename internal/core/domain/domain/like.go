@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	ErrLikeUserIDInvalid = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid user ID for like")
-	ErrLikeJokeIDInvalid = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid joke ID for like")
+	ErrLikeUserIDInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID for like")
+	ErrLikeJokeIDInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid joke ID for like")
 )
 
 type LikeDomain struct {

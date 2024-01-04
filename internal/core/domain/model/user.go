@@ -6,10 +6,10 @@ import (
 )
 
 var (
-	ErrUserNotFound = codeerr.NewMessageErr(codeerr.CodeNotFound, "User not found")
+	ErrUserNotFound = codeerr.NewMessage(codeerr.CodeNotFound, "User not found")
 
-	ErrUserWithUsernameAlreadyExists = codeerr.NewMessageErr(codeerr.CodeAlreadyExists, "User with such username already exists")
-	ErrUserWithEmailAlreadyExists    = codeerr.NewMessageErr(codeerr.CodeAlreadyExists, "User with such email already exists")
+	ErrUserWithUsernameAlreadyExists = codeerr.NewMessage(codeerr.CodeAlreadyExists, "User with such username already exists")
+	ErrUserWithEmailAlreadyExists    = codeerr.NewMessage(codeerr.CodeAlreadyExists, "User with such email already exists")
 )
 
 type User struct {

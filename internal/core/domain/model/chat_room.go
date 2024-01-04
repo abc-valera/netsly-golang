@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	ErrChatRoomNotFound = codeerr.NewMessageErr(codeerr.CodeNotFound, "ChatRoom not found")
+	ErrChatRoomNotFound = codeerr.NewMessage(codeerr.CodeNotFound, "ChatRoom not found")
 
-	ErrChatRoomNameAlreadyExists = codeerr.NewMessageErr(codeerr.CodeAlreadyExists, "ChatRoom already exists")
+	ErrChatRoomNameAlreadyExists = codeerr.NewMessage(codeerr.CodeAlreadyExists, "ChatRoom already exists")
 )
 
 type ChatRoom struct {

@@ -26,7 +26,7 @@ type prodTemplate struct {
 func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	// Check if filenames is empty
 	if len(filenames) == 0 {
-		return prodTemplate{}, codeerr.NewInternal("NewTemplate", fmt.Errorf("no filenames provided"))
+		return prodTemplate{}, codeerr.NewInternal(fmt.Errorf("no filenames provided"))
 	}
 	// Add .html extension if not present (this allows to pass filenames without extension)
 	for i, filename := range filenames {
@@ -38,7 +38,7 @@ func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	// Parse template
 	t, err := template.ParseFS(fs, filenames...)
 	if err != nil {
-		return prodTemplate{}, codeerr.NewInternal("NewTemplate", err)
+		return prodTemplate{}, codeerr.NewInternal(err)
 	}
 
 	// Get executeName
@@ -56,7 +56,7 @@ func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 // Render executes the template with the given data.
 func (t prodTemplate) Render(wr io.Writer, data interface{}) error {
 	if t.tmpl == nil {
-		return codeerr.NewInternal("Template.Render", fmt.Errorf("template is nil"))
+		return codeerr.NewInternal(fmt.Errorf("template is nil"))
 	}
 	return t.tmpl.ExecuteTemplate(wr, t.executeName, data)
 }
@@ -74,7 +74,7 @@ type devTemplate struct {
 func newDevTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	// Check if filenames is empty
 	if len(filenames) == 0 {
-		return prodTemplate{}, codeerr.NewInternal("NewTemplate", fmt.Errorf("no filenames provided"))
+		return prodTemplate{}, codeerr.NewInternal(fmt.Errorf("no filenames provided"))
 	}
 	// Add .html extension if not present (this allows to pass filenames without extension)
 	for i, filename := range filenames {
@@ -91,7 +91,7 @@ func newDevTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 func (t devTemplate) Render(wr io.Writer, data interface{}) error {
 	tmpl, err := template.ParseFS(t.fs, t.filenames...)
 	if err != nil {
-		return codeerr.NewInternal("Template.Render", err)
+		return codeerr.NewInternal(err)
 	}
 	// Get executeName
 	executeName := t.filenames[0]
@@ -109,7 +109,7 @@ func NewTemplates(isProd bool, fs fs.FS, filenamesSlices ...[]string) (Templates
 	templates := make(map[string]ITemplate)
 	for _, filenames := range filenamesSlices {
 		if templates[filenames[0]] != nil {
-			return nil, codeerr.NewInternal("NewTemplates", fmt.Errorf("template %s already exists", filenames[0]))
+			return nil, codeerr.NewInternal(fmt.Errorf("template %s already exists", filenames[0]))
 		}
 		var (
 			t   ITemplate
@@ -134,7 +134,7 @@ func (t Templates) Render(wr io.Writer, name string, data interface{}) error {
 		name = name + ".html"
 	}
 	if t[name] == nil {
-		return codeerr.NewInternal("Templates.Render", fmt.Errorf("template %s not found", name))
+		return codeerr.NewInternal(fmt.Errorf("template %s not found", name))
 	}
 	return t[name].Render(wr, data)
 }

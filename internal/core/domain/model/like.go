@@ -7,9 +7,9 @@ import (
 )
 
 var (
-	ErrLikeNotFound = codeerr.NewMessageErr(codeerr.CodeNotFound, "Like not found")
+	ErrLikeNotFound = codeerr.NewMessage(codeerr.CodeNotFound, "Like not found")
 
-	ErrLikeAlreadyExists = codeerr.NewMessageErr(codeerr.CodeAlreadyExists, "Like already exists")
+	ErrLikeAlreadyExists = codeerr.NewMessage(codeerr.CodeAlreadyExists, "Like already exists")
 )
 
 // Like represents a like entity.

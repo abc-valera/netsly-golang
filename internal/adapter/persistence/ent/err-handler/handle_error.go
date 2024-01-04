@@ -51,7 +51,7 @@ func HandleErr(err error) error {
 			return model.ErrChatMessageNotFound
 		}
 
-		return codeerr.NewMessageErr(codeerr.CodeNotFound, "")
+		return codeerr.NewMessage(codeerr.CodeNotFound, "")
 	}
 
 	// Unique constraint errors
@@ -88,8 +88,8 @@ func HandleErr(err error) error {
 			return model.ErrChatMemberAlreadyExists
 		}
 
-		return codeerr.NewMessageErr(codeerr.CodeAlreadyExists, "")
+		return codeerr.NewMessage(codeerr.CodeAlreadyExists, "")
 	}
 
-	return codeerr.NewInternal("ent.handleErr", err)
+	return codeerr.NewInternal(err)
 }

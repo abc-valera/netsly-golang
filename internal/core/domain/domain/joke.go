@@ -10,11 +10,11 @@ import (
 )
 
 var (
-	ErrJokeIDInvalid          = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid joke ID")
-	ErrJokeUserIDInvalid      = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid user ID for joke")
-	ErrJokeTitleInvalid       = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid title")
-	ErrJokeTextInvalid        = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid text")
-	ErrJokeExplanationInvalid = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid explanation")
+	ErrJokeIDInvalid          = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid joke ID")
+	ErrJokeUserIDInvalid      = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID for joke")
+	ErrJokeTitleInvalid       = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid title")
+	ErrJokeTextInvalid        = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid text")
+	ErrJokeExplanationInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid explanation")
 )
 
 type JokeDomain struct {

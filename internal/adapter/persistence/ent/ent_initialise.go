@@ -31,12 +31,12 @@ func NewEntCommandsQueries(databaseURL string) (
 		databaseURL,
 	)
 	if err != nil {
-		return commands, queries, tx, codeerr.NewInternal("NewEntImplementation", err)
+		return commands, queries, tx, codeerr.NewInternal(err)
 	}
 
 	// Run the auto migration tool
 	if err := client.Schema.Create(context.Background()); err != nil {
-		return commands, queries, tx, codeerr.NewInternal("NewEntImplementation", err)
+		return commands, queries, tx, codeerr.NewInternal(err)
 	}
 
 	commands.User = entCommand.NewUserCommand(client)

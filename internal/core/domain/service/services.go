@@ -20,16 +20,16 @@ func NewServices(
 	messageBroker IMessageBroker,
 ) (Services, error) {
 	if emailSender == nil {
-		return Services{}, codeerr.NewInternal("NewServices", errors.New("emailSender is nil"))
+		return Services{}, codeerr.NewInternal(errors.New("emailSender is nil"))
 	}
 	if passwordMaker == nil {
-		return Services{}, codeerr.NewInternal("NewServices", errors.New("passwordMaker is nil"))
+		return Services{}, codeerr.NewInternal(errors.New("passwordMaker is nil"))
 	}
 	if tokenMaker == nil {
-		return Services{}, codeerr.NewInternal("NewServices", errors.New("tokenMaker is nil"))
+		return Services{}, codeerr.NewInternal(errors.New("tokenMaker is nil"))
 	}
 	if messageBroker == nil {
-		return Services{}, codeerr.NewInternal("NewServices", errors.New("messageBroker is nil"))
+		return Services{}, codeerr.NewInternal(errors.New("messageBroker is nil"))
 	}
 	return Services{
 		EmailSender:   emailSender,

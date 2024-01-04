@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	ErrChatMessageNotFound = codeerr.NewMessageErr(codeerr.CodeNotFound, "ChatMessage not found")
+	ErrChatMessageNotFound = codeerr.NewMessage(codeerr.CodeNotFound, "ChatMessage not found")
 )
 
 type ChatMessage struct {

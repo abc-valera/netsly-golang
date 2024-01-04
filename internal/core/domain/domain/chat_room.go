@@ -10,9 +10,9 @@ import (
 )
 
 var (
-	ErrChatRoomIDInvalid          = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid chat room ID")
-	ErrChatRoomNameInvalid        = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid chat room name")
-	ErrChatRoomDescriptionInvalid = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid chat room description")
+	ErrChatRoomIDInvalid          = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid chat room ID")
+	ErrChatRoomNameInvalid        = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid chat room name")
+	ErrChatRoomDescriptionInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid chat room description")
 )
 
 type ChatRoomDomain struct {

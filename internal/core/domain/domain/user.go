@@ -12,12 +12,12 @@ import (
 )
 
 var (
-	ErrUserIDInvalid       = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid user ID")
-	ErrUserUsernameInvalid = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid username")
-	ErrUserEmailInvalid    = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid email")
-	ErrUserPasswordInvalid = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid hashed password")
-	ErrUserFullnameInvalid = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid fullname")
-	ErrUserStatusInvalid   = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Provided invalid status")
+	ErrUserIDInvalid       = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID")
+	ErrUserUsernameInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid username")
+	ErrUserEmailInvalid    = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid email")
+	ErrUserPasswordInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid hashed password")
+	ErrUserFullnameInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid fullname")
+	ErrUserStatusInvalid   = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid status")
 )
 
 // UserDomain is responsible for validation and handling user domain logic

@@ -22,7 +22,7 @@ func RunServer(
 
 	service.Log.Info("Starting WebSocket server on " + port)
 	if err := http.ListenAndServe(port, r); err != nil {
-		return codeerr.NewInternal("RunServer", err)
+		return codeerr.NewInternal(err)
 	}
 
 	return nil

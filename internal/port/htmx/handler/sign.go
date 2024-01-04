@@ -41,7 +41,7 @@ func (h SignHandler) SignUpGet(w http.ResponseWriter, r *http.Request) error {
 func (h SignHandler) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {
-		return codeerr.NewInternal("SignUpPost", err)
+		return codeerr.NewInternal(err)
 	}
 
 	if err := h.SignUseCase.SignUp(r.Context(), application.SignUpRequest{
@@ -62,7 +62,7 @@ func (h SignHandler) SignInGet(w http.ResponseWriter, r *http.Request) error {
 func (h SignHandler) SignInPost(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {
-		return codeerr.NewInternal("SignUpPost", err)
+		return codeerr.NewInternal(err)
 	}
 
 	resp, err := h.SignUseCase.SignIn(r.Context(), application.SignInRequest{
@@ -78,13 +78,13 @@ func (h SignHandler) SignInPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h SignHandler) SignAlreadyGet(w http.ResponseWriter, r *http.Request) error {
-	return codeerr.NewInternal("SignAlreadyGet", fmt.Errorf("not implemented"))
+	return codeerr.NewInternal(fmt.Errorf("not implemented"))
 }
 
 func (h SignHandler) SignOutGet(w http.ResponseWriter, r *http.Request) error {
-	return codeerr.NewInternal("SignOutGet", fmt.Errorf("not implemented"))
+	return codeerr.NewInternal(fmt.Errorf("not implemented"))
 }
 
 func (h SignHandler) SignOutPost(w http.ResponseWriter, r *http.Request) error {
-	return codeerr.NewInternal("SignOutPost", fmt.Errorf("not implemented"))
+	return codeerr.NewInternal(fmt.Errorf("not implemented"))
 }
