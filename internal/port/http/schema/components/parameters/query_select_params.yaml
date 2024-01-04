@@ -1,0 +1,15 @@
+name: selectParams
+in: query
+description: fields to specify select parameters
+required: true
+schema:
+  type: object
+  properties:
+    order:
+      $ref: "../enums/order.yaml"
+    limit:
+      type: integer
+      minimum: 0
+    offset:
+      type: integer
+      minimum: 0

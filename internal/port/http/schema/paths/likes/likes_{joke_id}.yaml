@@ -4,12 +4,7 @@ get:
   summary: Counts likes of the joke
   operationId: LikesByJokeIDGet
   parameters:
-    - name: joke_id
-      in: path
-      description: ID of the joke to count likes
-      required: true
-      schema:
-        type: string
+    - $ref: "../../components/parameters/path_joke_id.yaml"
   responses:
     "200":
       description: Count of likes

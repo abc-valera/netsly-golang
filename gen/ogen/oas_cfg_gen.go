@@ -65,14 +65,13 @@ type ServerOption interface {
 	applyServer(*serverConfig)
 }
 
-var _ = []ServerOption{
-	(optionFunc[serverConfig])(nil),
-	(otelOptionFunc)(nil),
-}
+var _ ServerOption = (optionFunc[serverConfig])(nil)
 
 func (o optionFunc[C]) applyServer(c *C) {
 	o(c)
 }
+
+var _ ServerOption = (otelOptionFunc)(nil)
 
 func (o otelOptionFunc) applyServer(c *serverConfig) {
 	o(&c.otelConfig)
@@ -82,8 +81,15 @@ func newServerConfig(opts ...ServerOption) serverConfig {
 	cfg := serverConfig{
 		NotFound: http.NotFound,
 		MethodNotAllowed: func(w http.ResponseWriter, r *http.Request, allowed string) {
-			w.Header().Set("Allow", allowed)
-			w.WriteHeader(http.StatusMethodNotAllowed)
+			status := http.StatusMethodNotAllowed
+			if r.Method == "OPTIONS" {
+				w.Header().Set("Access-Control-Allow-Methods", allowed)
+				w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+				status = http.StatusNoContent
+			} else {
+				w.Header().Set("Allow", allowed)
+			}
+			w.WriteHeader(status)
 		},
 		ErrorHandler:       ogenerrors.DefaultErrorHandler,
 		Middleware:         nil,
@@ -135,14 +141,13 @@ type ClientOption interface {
 	applyClient(*clientConfig)
 }
 
-var _ = []ClientOption{
-	(optionFunc[clientConfig])(nil),
-	(otelOptionFunc)(nil),
-}
+var _ ClientOption = (optionFunc[clientConfig])(nil)
 
 func (o optionFunc[C]) applyClient(c *C) {
 	o(c)
 }
+
+var _ ClientOption = (otelOptionFunc)(nil)
 
 func (o otelOptionFunc) applyClient(c *clientConfig) {
 	o(&c.otelConfig)

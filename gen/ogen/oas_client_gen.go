@@ -59,7 +59,7 @@ type Invoker interface {
 	// Deletes current user profile.
 	//
 	// DELETE /me
-	MeDel(ctx context.Context) error
+	MeDel(ctx context.Context, request *MeDelReq) error
 	// MeGet invokes MeGet operation.
 	//
 	// Returns current user profile.
@@ -253,9 +253,9 @@ func (c *Client) sendCommentsByJokeIDGet(ctx context.Context, params CommentsByJ
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "select_params" parameter.
+		// Encode "selectParams" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "select_params",
+			Name:    "selectParams",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
@@ -709,12 +709,12 @@ func (c *Client) sendMeCommentsPut(ctx context.Context, request *MeCommentsPutRe
 // Deletes current user profile.
 //
 // DELETE /me
-func (c *Client) MeDel(ctx context.Context) error {
-	_, err := c.sendMeDel(ctx)
+func (c *Client) MeDel(ctx context.Context, request *MeDelReq) error {
+	_, err := c.sendMeDel(ctx, request)
 	return err
 }
 
-func (c *Client) sendMeDel(ctx context.Context) (res *MeDelNoContent, err error) {
+func (c *Client) sendMeDel(ctx context.Context, request *MeDelReq) (res *MeDelNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MeDel"),
 		semconv.HTTPMethodKey.String("DELETE"),
@@ -758,6 +758,9 @@ func (c *Client) sendMeDel(ctx context.Context) (res *MeDelNoContent, err error)
 	r, err := ht.NewRequest(ctx, "DELETE", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeMeDelRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
 	}
 
 	{
@@ -1075,9 +1078,9 @@ func (c *Client) sendMeJokesGet(ctx context.Context, params MeJokesGetParams) (r
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "select_params" parameter.
+		// Encode "selectParams" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "select_params",
+			Name:    "selectParams",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}

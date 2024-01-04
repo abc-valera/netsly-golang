@@ -3,8 +3,8 @@ package service
 var Log ILogger
 
 type ILogger interface {
-	Debug(msg string, vals ...interface{})
-	Info(msg string, vals ...interface{})
-	Warn(msg string, vals ...interface{})
-	Error(msg string, vals ...interface{})
+	Debug(message string, vals ...interface{})
+	Info(message string, vals ...interface{})
+	Warn(message string, vals ...interface{})
+	Error(message string, vals ...interface{})
 }

@@ -222,15 +222,9 @@ func (s *Comments) SetComments(val []Comment) {
 }
 
 type CommentsByJokeIDGetSelectParams struct {
-	OrderBy OptString `json:"order_by"`
-	Order   OptOrder  `json:"order"`
-	Limit   int       `json:"limit"`
-	Offset  int       `json:"offset"`
-}
-
-// GetOrderBy returns the value of OrderBy.
-func (s *CommentsByJokeIDGetSelectParams) GetOrderBy() OptString {
-	return s.OrderBy
+	Order  OptOrder `json:"order"`
+	Limit  OptInt   `json:"limit"`
+	Offset OptInt   `json:"offset"`
 }
 
 // GetOrder returns the value of Order.
@@ -239,18 +233,13 @@ func (s *CommentsByJokeIDGetSelectParams) GetOrder() OptOrder {
 }
 
 // GetLimit returns the value of Limit.
-func (s *CommentsByJokeIDGetSelectParams) GetLimit() int {
+func (s *CommentsByJokeIDGetSelectParams) GetLimit() OptInt {
 	return s.Limit
 }
 
 // GetOffset returns the value of Offset.
-func (s *CommentsByJokeIDGetSelectParams) GetOffset() int {
+func (s *CommentsByJokeIDGetSelectParams) GetOffset() OptInt {
 	return s.Offset
-}
-
-// SetOrderBy sets the value of OrderBy.
-func (s *CommentsByJokeIDGetSelectParams) SetOrderBy(val OptString) {
-	s.OrderBy = val
 }
 
 // SetOrder sets the value of Order.
@@ -259,12 +248,12 @@ func (s *CommentsByJokeIDGetSelectParams) SetOrder(val OptOrder) {
 }
 
 // SetLimit sets the value of Limit.
-func (s *CommentsByJokeIDGetSelectParams) SetLimit(val int) {
+func (s *CommentsByJokeIDGetSelectParams) SetLimit(val OptInt) {
 	s.Limit = val
 }
 
 // SetOffset sets the value of Offset.
-func (s *CommentsByJokeIDGetSelectParams) SetOffset(val int) {
+func (s *CommentsByJokeIDGetSelectParams) SetOffset(val OptInt) {
 	s.Offset = val
 }
 
@@ -428,6 +417,20 @@ func (s *MeCommentsPutReq) SetText(val OptString) {
 // MeDelNoContent is response for MeDel operation.
 type MeDelNoContent struct{}
 
+type MeDelReq struct {
+	Password string `json:"password"`
+}
+
+// GetPassword returns the value of Password.
+func (s *MeDelReq) GetPassword() string {
+	return s.Password
+}
+
+// SetPassword sets the value of Password.
+func (s *MeDelReq) SetPassword(val string) {
+	s.Password = val
+}
+
 // MeJokesDelNoContent is response for MeJokesDel operation.
 type MeJokesDelNoContent struct{}
 
@@ -446,15 +449,9 @@ func (s *MeJokesDelReq) SetJokeID(val string) {
 }
 
 type MeJokesGetSelectParams struct {
-	OrderBy OptString `json:"order_by"`
-	Order   OptOrder  `json:"order"`
-	Limit   int       `json:"limit"`
-	Offset  int       `json:"offset"`
-}
-
-// GetOrderBy returns the value of OrderBy.
-func (s *MeJokesGetSelectParams) GetOrderBy() OptString {
-	return s.OrderBy
+	Order  OptOrder `json:"order"`
+	Limit  OptInt   `json:"limit"`
+	Offset OptInt   `json:"offset"`
 }
 
 // GetOrder returns the value of Order.
@@ -463,18 +460,13 @@ func (s *MeJokesGetSelectParams) GetOrder() OptOrder {
 }
 
 // GetLimit returns the value of Limit.
-func (s *MeJokesGetSelectParams) GetLimit() int {
+func (s *MeJokesGetSelectParams) GetLimit() OptInt {
 	return s.Limit
 }
 
 // GetOffset returns the value of Offset.
-func (s *MeJokesGetSelectParams) GetOffset() int {
+func (s *MeJokesGetSelectParams) GetOffset() OptInt {
 	return s.Offset
-}
-
-// SetOrderBy sets the value of OrderBy.
-func (s *MeJokesGetSelectParams) SetOrderBy(val OptString) {
-	s.OrderBy = val
 }
 
 // SetOrder sets the value of Order.
@@ -483,12 +475,12 @@ func (s *MeJokesGetSelectParams) SetOrder(val OptOrder) {
 }
 
 // SetLimit sets the value of Limit.
-func (s *MeJokesGetSelectParams) SetLimit(val int) {
+func (s *MeJokesGetSelectParams) SetLimit(val OptInt) {
 	s.Limit = val
 }
 
 // SetOffset sets the value of Offset.
-func (s *MeJokesGetSelectParams) SetOffset(val int) {
+func (s *MeJokesGetSelectParams) SetOffset(val OptInt) {
 	s.Offset = val
 }
 
@@ -619,14 +611,14 @@ func (s *MeLikesPostReq) SetJokeID(val string) {
 type MePutCreated struct{}
 
 type MePutReq struct {
-	Username OptString `json:"username"`
+	Password OptString `json:"password"`
 	Fullname OptString `json:"fullname"`
 	Status   OptString `json:"status"`
 }
 
-// GetUsername returns the value of Username.
-func (s *MePutReq) GetUsername() OptString {
-	return s.Username
+// GetPassword returns the value of Password.
+func (s *MePutReq) GetPassword() OptString {
+	return s.Password
 }
 
 // GetFullname returns the value of Fullname.
@@ -639,9 +631,9 @@ func (s *MePutReq) GetStatus() OptString {
 	return s.Status
 }
 
-// SetUsername sets the value of Username.
-func (s *MePutReq) SetUsername(val OptString) {
-	s.Username = val
+// SetPassword sets the value of Password.
+func (s *MePutReq) SetPassword(val OptString) {
+	s.Password = val
 }
 
 // SetFullname sets the value of Fullname.
@@ -652,6 +644,52 @@ func (s *MePutReq) SetFullname(val OptString) {
 // SetStatus sets the value of Status.
 func (s *MePutReq) SetStatus(val OptString) {
 	s.Status = val
+}
+
+// NewOptInt returns new OptInt with value set to v.
+func NewOptInt(v int) OptInt {
+	return OptInt{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInt is optional int.
+type OptInt struct {
+	Value int
+	Set   bool
+}
+
+// IsSet returns true if OptInt was set.
+func (o OptInt) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInt) Reset() {
+	var v int
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInt) SetTo(v int) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInt) Get() (v int, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInt) Or(d int) int {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
 }
 
 // NewOptOrder returns new OptOrder with value set to v.

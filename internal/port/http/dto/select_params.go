@@ -2,21 +2,31 @@ package dto
 
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/spec"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query/spec"
 )
 
-type ISelectParams interface {
-	GetOrderBy() ogen.OptString
+type ISelectParamsHelper interface {
 	GetOrder() ogen.OptOrder
-	GetLimit() int
-	GetOffset() int
+	GetLimit() ogen.OptInt
+	GetOffset() ogen.OptInt
 }
 
-func NewDomainSelectParams(selectParams ISelectParams) (spec.SelectParams, error) {
+func NewDomainSelectParams(params ISelectParamsHelper) (spec.SelectParams, error) {
+	order := string(params.GetOrder().Value)
+	if !params.GetOrder().IsSet() {
+		order = "desc"
+	}
+	limit := params.GetLimit().Value
+	if !params.GetLimit().IsSet() {
+		limit = 10
+	}
+	offset := params.GetOffset().Value
+	if !params.GetOffset().IsSet() {
+		offset = 0
+	}
 	return spec.NewSelectParams(
-		selectParams.GetOrderBy().Value,
-		string(selectParams.GetOrder().Value),
-		uint(selectParams.GetLimit()),
-		uint(selectParams.GetOffset()),
+		order,
+		limit,
+		offset,
 	)
 }

@@ -6,21 +6,21 @@ import (
 	"fmt"
 )
 
-type MsgErr struct {
-	Code Code   // Code provides general information about the error
-	Msg  string // Msg provides additional context in human-readable form
-	Err  error  // Err is a nested error
+type MessageErr struct {
+	Code    Code   // Code provides general information about the error
+	Message string // Message provides additional context in human-readable form
+	Err     error  // Err is a nested error
 }
 
-func NewMsgErr(code Code, msg string) error {
-	return &MsgErr{
-		Code: code,
-		Msg:  msg,
+func NewMessageErr(code Code, message string) error {
+	return &MessageErr{
+		Code:    code,
+		Message: message,
 	}
 }
 
 // Error returns the string representation of the Error
-func (e *MsgErr) Error() string {
+func (e *MessageErr) Error() string {
 	var buf bytes.Buffer
 
 	if e.Err != nil {
@@ -29,7 +29,7 @@ func (e *MsgErr) Error() string {
 		if e.Code != "" {
 			fmt.Fprintf(&buf, "<%s> ", e.Code)
 		}
-		buf.WriteString(e.Msg)
+		buf.WriteString(e.Message)
 	}
 
 	return buf.String()
@@ -38,13 +38,13 @@ func (e *MsgErr) Error() string {
 // ErrorMessage returns the message of the error, if available. Otherwise returns a error message.
 // If error is nil returns an empty string.
 func ErrorMessage(err error) string {
-	var msgErrTarget *MsgErr
+	var messageErrTarget *MessageErr
 	if err == nil {
 		return ""
-	} else if e, ok := err.(*MsgErr); ok && e.Msg != "" {
-		return e.Msg
-	} else if errors.As(err, &msgErrTarget) {
-		return msgErrTarget.Msg
+	} else if e, ok := err.(*MessageErr); ok && e.Message != "" {
+		return e.Message
+	} else if errors.As(err, &messageErrTarget) {
+		return messageErrTarget.Message
 	} else if ok && e.Err != nil {
 		return ErrorMessage(e.Err)
 	}

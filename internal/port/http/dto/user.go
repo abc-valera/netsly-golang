@@ -2,11 +2,10 @@ package dto
 
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity"
-	"github.com/abc-valera/flugo-api-golang/internal/port/http/dto/common"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 )
 
-func NewUserResponse(user *entity.User) *ogen.User {
+func NewUserResponse(user *model.User) *ogen.User {
 	if user == nil {
 		return &ogen.User{}
 	}
@@ -14,8 +13,8 @@ func NewUserResponse(user *entity.User) *ogen.User {
 		ID:        user.ID,
 		Username:  user.Username,
 		Email:     user.Email,
-		Fullname:  common.NewOptString(user.Fullname),
-		Status:    common.NewOptString(user.Status),
+		Fullname:  NewOptString(user.Fullname),
+		Status:    NewOptString(user.Status),
 		CreatedAt: user.CreatedAt,
 	}
 }

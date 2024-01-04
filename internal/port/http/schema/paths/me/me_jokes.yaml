@@ -4,7 +4,7 @@ get:
   summary: Returns jokes of the current user
   operationId: MeJokesGet
   parameters:
-    - $ref: "../../components/parameters/select.yaml"
+    - $ref: "../../components/parameters/query_select_params.yaml"
   security:
     - bearerAuth: []
   responses:

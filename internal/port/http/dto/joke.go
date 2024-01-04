@@ -2,11 +2,10 @@ package dto
 
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity"
-	"github.com/abc-valera/flugo-api-golang/internal/port/http/dto/common"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 )
 
-func NewJokeResponse(joke *entity.Joke) *ogen.Joke {
+func NewJokeResponse(joke *model.Joke) *ogen.Joke {
 	if joke == nil {
 		return &ogen.Joke{}
 	}
@@ -15,12 +14,12 @@ func NewJokeResponse(joke *entity.Joke) *ogen.Joke {
 		UserID:      joke.UserID,
 		Title:       joke.Title,
 		Text:        joke.Text,
-		Explanation: common.NewOptString(joke.Explanation),
+		Explanation: NewOptString(joke.Explanation),
 		CreatedAt:   joke.CreatedAt,
 	}
 }
 
-func NewJokesResponse(jokes entity.Jokes) *ogen.Jokes {
+func NewJokesResponse(jokes model.Jokes) *ogen.Jokes {
 	var res []ogen.Joke
 	for _, joke := range jokes {
 		res = append(res, *NewJokeResponse(joke))

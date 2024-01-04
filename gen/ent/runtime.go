@@ -3,6 +3,9 @@
 package ent
 
 import (
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmember"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmessage"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatroom"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
@@ -14,6 +17,44 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	chatmemberFields := schema.ChatMember{}.Fields()
+	_ = chatmemberFields
+	// chatmemberDescChatRoomID is the schema descriptor for chat_room_id field.
+	chatmemberDescChatRoomID := chatmemberFields[0].Descriptor()
+	// chatmember.ChatRoomIDValidator is a validator for the "chat_room_id" field. It is called by the builders before save.
+	chatmember.ChatRoomIDValidator = chatmemberDescChatRoomID.Validators[0].(func(string) error)
+	// chatmemberDescUserID is the schema descriptor for user_id field.
+	chatmemberDescUserID := chatmemberFields[1].Descriptor()
+	// chatmember.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	chatmember.UserIDValidator = chatmemberDescUserID.Validators[0].(func(string) error)
+	chatmessageFields := schema.ChatMessage{}.Fields()
+	_ = chatmessageFields
+	// chatmessageDescChatRoomID is the schema descriptor for chat_room_id field.
+	chatmessageDescChatRoomID := chatmessageFields[1].Descriptor()
+	// chatmessage.ChatRoomIDValidator is a validator for the "chat_room_id" field. It is called by the builders before save.
+	chatmessage.ChatRoomIDValidator = chatmessageDescChatRoomID.Validators[0].(func(string) error)
+	// chatmessageDescUserID is the schema descriptor for user_id field.
+	chatmessageDescUserID := chatmessageFields[2].Descriptor()
+	// chatmessage.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	chatmessage.UserIDValidator = chatmessageDescUserID.Validators[0].(func(string) error)
+	// chatmessageDescText is the schema descriptor for text field.
+	chatmessageDescText := chatmessageFields[3].Descriptor()
+	// chatmessage.TextValidator is a validator for the "text" field. It is called by the builders before save.
+	chatmessage.TextValidator = chatmessageDescText.Validators[0].(func(string) error)
+	// chatmessageDescID is the schema descriptor for id field.
+	chatmessageDescID := chatmessageFields[0].Descriptor()
+	// chatmessage.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	chatmessage.IDValidator = chatmessageDescID.Validators[0].(func(string) error)
+	chatroomFields := schema.ChatRoom{}.Fields()
+	_ = chatroomFields
+	// chatroomDescName is the schema descriptor for name field.
+	chatroomDescName := chatroomFields[1].Descriptor()
+	// chatroom.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	chatroom.NameValidator = chatroomDescName.Validators[0].(func(string) error)
+	// chatroomDescID is the schema descriptor for id field.
+	chatroomDescID := chatroomFields[0].Descriptor()
+	// chatroom.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	chatroom.IDValidator = chatroomDescID.Validators[0].(func(string) error)
 	commentFields := schema.Comment{}.Fields()
 	_ = commentFields
 	// commentDescUserID is the schema descriptor for user_id field.

@@ -6,35 +6,33 @@ import (
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
-	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/comments"
-	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/likes"
-	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/me"
-	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/other"
-	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler/sign"
+	"github.com/abc-valera/flugo-api-golang/internal/port/http/handler"
 	"github.com/abc-valera/flugo-api-golang/internal/port/http/middleware"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/cors"
 )
 
+// RunServer runs HTTP server
 func RunServer(
 	port string,
 	docsPath string,
-	repos repository.Repositories,
+	queries query.Queries,
+	domains domain.Domains,
 	services service.Services,
 	usecases application.UseCases,
 ) error {
 	// Init handlers (ogenHandler implements ogen.Server interface)
 	ogenHandler := &struct {
-		other.ErrorHandler
-		sign.SignHandler
-		me.MeHandler
-		me.MeJokesHandler
-		me.MeCommentsHandler
-		me.MeLikesHandler
-		comments.CommentsHandler
-		likes.LikesHandler
+		handler.ErrorHandler
+		handler.SignHandler
+		handler.MeHandler
+		handler.MeJokesHandler
+		handler.MeCommentsHandler
+		handler.MeLikesHandler
+		handler.CommentsHandler
+		handler.LikesHandler
 	}{
 		ErrorHandler:      handler.NewErrorHandler(),
 		SignHandler:       handler.NewSignHandler(usecases.SignUseCase),
@@ -46,7 +44,7 @@ func RunServer(
 		LikesHandler:      handler.NewLikesHandler(queries.Like),
 	}
 	// Init security handler
-	securityHandler := other.NewSecurityHandler(services.TokenMaker)
+	securityHandler := handler.NewSecurityHandler(services.TokenMaker)
 
 	// Init ogen server
 	server, err := ogen.NewServer(ogenHandler, securityHandler)
@@ -58,10 +56,6 @@ func RunServer(
 
 	// Init chi router
 	r := chi.NewRouter()
-	// Basic CORS
-	r.Use(cors.Handler(cors.Options{
-		AllowOriginFunc: func(r *http.Request, origin string) bool { return true },
-	}))
 	// Host documentation (docs are located in docs/http/index.html)
 	r.Mount("/docs/http/", http.StripPrefix("/docs/http/", http.FileServer(http.Dir(docsPath))))
 	// Register middlewares

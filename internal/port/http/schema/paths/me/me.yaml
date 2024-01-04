@@ -25,17 +25,15 @@ put:
         schema:
           type: object
           properties:
-            username:
+            password:
               type: string
-              example: "johndoe"
+              example: "123456"
             fullname:
               type: string
               example: "John Doe"
             status:
               type: string
               example: "active"
-          required:
-            - user_id
   responses:
     "201":
       description: Updated successfully
@@ -48,6 +46,19 @@ delete:
   operationId: MeDel
   security:
     - bearerAuth: []
+  requestBody:
+    description: Data to delete the current user profile
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            password:
+              type: string
+              example: "123456"
+          required:
+            - password
   responses:
     "204":
       description: Successful operation

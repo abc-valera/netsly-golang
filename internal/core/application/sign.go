@@ -4,34 +4,43 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/entity"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/transactioneer"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 )
 
 var (
-	ErrProvidedAccessToken = codeerr.NewMsgErr(codeerr.CodeInvalidArgument, "Access token provided")
+	ErrProvidedAccessToken = codeerr.NewMessageErr(codeerr.CodeInvalidArgument, "Access token provided")
 )
 
 type SignUseCase struct {
-	userRepo      repository.IUserRepository
+	tx            transactioneer.ITransactioneer
+	userQuery     query.IUserQuery
+	userDomain    domain.UserDomain
 	passwordMaker service.IPasswordMaker
 	tokenMaker    service.ITokenMaker
-	msgBroker     service.IMessageBroker
+	messageBroker service.IMessageBroker
 }
 
 func NewSignUseCase(
-	userRepo repository.IUserRepository,
+	userQuery query.IUserQuery,
+	tx transactioneer.ITransactioneer,
+	userDomain domain.UserDomain,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
-	msgBroker service.IMessageBroker,
+	messageBroker service.IMessageBroker,
 ) SignUseCase {
 	return SignUseCase{
-		userRepo:      userRepo,
+		userQuery:     userQuery,
+		tx:            tx,
+		userDomain:    userDomain,
 		passwordMaker: passwordMaker,
 		tokenMaker:    tokenMaker,
-		msgBroker:     msgBroker,
+		messageBroker: messageBroker,
 	}
 }
 
@@ -47,32 +56,28 @@ type SignUpRequest struct {
 // it creates new user entity with unique username and email,
 // creates hash of the password provided by user,
 // then it sends welcome email to the users's email address,
-func (s SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
-	hashedPassword, err := s.passwordMaker.HashPassword(req.Password)
-	if err != nil {
-		return err
-	}
-
-	user, err := entity.NewUser(req.Username, req.Email, hashedPassword, req.Fullname, req.Status)
-	if err != nil {
-		return err
-	}
-
+func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 	txFunc := func(ctx context.Context) error {
-		if err := s.userRepo.Create(ctx, user); err != nil {
+		if err := uc.userDomain.Create(ctx, domain.UserCreateRequest{
+			Username: req.Username,
+			Email:    req.Email,
+			Password: req.Password,
+			Fullname: req.Fullname,
+			Status:   req.Status,
+		}); err != nil {
 			return err
 		}
 
 		welcomeEmail := service.Email{
 			Subject: "Verification Email for Flugo!",
 			Content: fmt.Sprintf(`%s, congrats with joining the Flugo community!<br/>`, user.Username),
-			To:      []string{user.Email},
+			To:      []string{req.Email},
 		}
 
-		return s.msgBroker.SendEmailTask(ctx, service.Critical, welcomeEmail)
+		return uc.messageBroker.SendEmailTask(ctx, service.Critical, welcomeEmail)
 	}
 
-	return s.userRepo.PerformTX(ctx, txFunc)
+	return uc.tx.PerformTX(ctx, txFunc)
 }
 
 type SignInRequest struct {
@@ -81,7 +86,7 @@ type SignInRequest struct {
 }
 
 type SignInResponse struct {
-	User         *entity.User
+	User         *model.User
 	AccessToken  string
 	RefreshToken string
 }
@@ -90,7 +95,7 @@ type SignInResponse struct {
 // then creates hash of the provided password and compares it to the hash stored in database.
 // The SignIn returns user, accessToken and refreshToken.
 func (s SignUseCase) SignIn(ctx context.Context, req SignInRequest) (SignInResponse, error) {
-	user, err := s.userRepo.GetByEmail(ctx, req.Email)
+	user, err := s.userQuery.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return SignInResponse{}, err
 	}

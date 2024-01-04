@@ -3,26 +3,14 @@
 package ogen
 
 import (
-	"math/bits"
-	"strconv"
-
 	"github.com/go-faster/errors"
 
 	"github.com/ogen-go/ogen/conv"
 	"github.com/ogen-go/ogen/uri"
-	"github.com/ogen-go/ogen/validate"
 )
 
 // EncodeURI encodes CommentsByJokeIDGetSelectParams as URI form.
 func (s *CommentsByJokeIDGetSelectParams) EncodeURI(e uri.Encoder) error {
-	if err := e.EncodeField("order_by", func(e uri.Encoder) error {
-		if val, ok := s.OrderBy.Get(); ok {
-			return e.EncodeValue(conv.StringToString(val))
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "encode field \"order_by\"")
-	}
 	if err := e.EncodeField("order", func(e uri.Encoder) error {
 		if val, ok := s.Order.Get(); ok {
 			return e.EncodeValue(conv.StringToString(string(val)))
@@ -32,23 +20,28 @@ func (s *CommentsByJokeIDGetSelectParams) EncodeURI(e uri.Encoder) error {
 		return errors.Wrap(err, "encode field \"order\"")
 	}
 	if err := e.EncodeField("limit", func(e uri.Encoder) error {
-		return e.EncodeValue(conv.IntToString(s.Limit))
+		if val, ok := s.Limit.Get(); ok {
+			return e.EncodeValue(conv.IntToString(val))
+		}
+		return nil
 	}); err != nil {
 		return errors.Wrap(err, "encode field \"limit\"")
 	}
 	if err := e.EncodeField("offset", func(e uri.Encoder) error {
-		return e.EncodeValue(conv.IntToString(s.Offset))
+		if val, ok := s.Offset.Get(); ok {
+			return e.EncodeValue(conv.IntToString(val))
+		}
+		return nil
 	}); err != nil {
 		return errors.Wrap(err, "encode field \"offset\"")
 	}
 	return nil
 }
 
-var uriFieldsNameOfCommentsByJokeIDGetSelectParams = [4]string{
-	0: "order_by",
-	1: "order",
-	2: "limit",
-	3: "offset",
+var uriFieldsNameOfCommentsByJokeIDGetSelectParams = [3]string{
+	0: "order",
+	1: "limit",
+	2: "offset",
 }
 
 // DecodeURI decodes CommentsByJokeIDGetSelectParams from URI form.
@@ -56,35 +49,9 @@ func (s *CommentsByJokeIDGetSelectParams) DecodeURI(d uri.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode CommentsByJokeIDGetSelectParams to nil")
 	}
-	var requiredBitSet [1]uint8
-	s.setDefaults()
 
 	if err := d.DecodeFields(func(k string, d uri.Decoder) error {
 		switch k {
-		case "order_by":
-			if err := func() error {
-				var sDotOrderByVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					sDotOrderByVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				s.OrderBy.SetTo(sDotOrderByVal)
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"order_by\"")
-			}
 		case "order":
 			if err := func() error {
 				var sDotOrderVal Order
@@ -110,37 +77,49 @@ func (s *CommentsByJokeIDGetSelectParams) DecodeURI(d uri.Decoder) error {
 				return errors.Wrap(err, "decode field \"order\"")
 			}
 		case "limit":
-			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				val, err := d.DecodeValue()
-				if err != nil {
+				var sDotLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					sDotLimitVal = c
+					return nil
+				}(); err != nil {
 					return err
 				}
-
-				c, err := conv.ToInt(val)
-				if err != nil {
-					return err
-				}
-
-				s.Limit = c
+				s.Limit.SetTo(sDotLimitVal)
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"limit\"")
 			}
 		case "offset":
-			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				val, err := d.DecodeValue()
-				if err != nil {
+				var sDotOffsetVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					sDotOffsetVal = c
+					return nil
+				}(); err != nil {
 					return err
 				}
-
-				c, err := conv.ToInt(val)
-				if err != nil {
-					return err
-				}
-
-				s.Offset = c
+				s.Offset.SetTo(sDotOffsetVal)
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"offset\"")
@@ -152,52 +131,12 @@ func (s *CommentsByJokeIDGetSelectParams) DecodeURI(d uri.Decoder) error {
 	}); err != nil {
 		return errors.Wrap(err, "decode CommentsByJokeIDGetSelectParams")
 	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00001100,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(uriFieldsNameOfCommentsByJokeIDGetSelectParams) {
-					name = uriFieldsNameOfCommentsByJokeIDGetSelectParams[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
 
 	return nil
 }
 
 // EncodeURI encodes MeJokesGetSelectParams as URI form.
 func (s *MeJokesGetSelectParams) EncodeURI(e uri.Encoder) error {
-	if err := e.EncodeField("order_by", func(e uri.Encoder) error {
-		if val, ok := s.OrderBy.Get(); ok {
-			return e.EncodeValue(conv.StringToString(val))
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "encode field \"order_by\"")
-	}
 	if err := e.EncodeField("order", func(e uri.Encoder) error {
 		if val, ok := s.Order.Get(); ok {
 			return e.EncodeValue(conv.StringToString(string(val)))
@@ -207,23 +146,28 @@ func (s *MeJokesGetSelectParams) EncodeURI(e uri.Encoder) error {
 		return errors.Wrap(err, "encode field \"order\"")
 	}
 	if err := e.EncodeField("limit", func(e uri.Encoder) error {
-		return e.EncodeValue(conv.IntToString(s.Limit))
+		if val, ok := s.Limit.Get(); ok {
+			return e.EncodeValue(conv.IntToString(val))
+		}
+		return nil
 	}); err != nil {
 		return errors.Wrap(err, "encode field \"limit\"")
 	}
 	if err := e.EncodeField("offset", func(e uri.Encoder) error {
-		return e.EncodeValue(conv.IntToString(s.Offset))
+		if val, ok := s.Offset.Get(); ok {
+			return e.EncodeValue(conv.IntToString(val))
+		}
+		return nil
 	}); err != nil {
 		return errors.Wrap(err, "encode field \"offset\"")
 	}
 	return nil
 }
 
-var uriFieldsNameOfMeJokesGetSelectParams = [4]string{
-	0: "order_by",
-	1: "order",
-	2: "limit",
-	3: "offset",
+var uriFieldsNameOfMeJokesGetSelectParams = [3]string{
+	0: "order",
+	1: "limit",
+	2: "offset",
 }
 
 // DecodeURI decodes MeJokesGetSelectParams from URI form.
@@ -231,35 +175,9 @@ func (s *MeJokesGetSelectParams) DecodeURI(d uri.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode MeJokesGetSelectParams to nil")
 	}
-	var requiredBitSet [1]uint8
-	s.setDefaults()
 
 	if err := d.DecodeFields(func(k string, d uri.Decoder) error {
 		switch k {
-		case "order_by":
-			if err := func() error {
-				var sDotOrderByVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					sDotOrderByVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				s.OrderBy.SetTo(sDotOrderByVal)
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"order_by\"")
-			}
 		case "order":
 			if err := func() error {
 				var sDotOrderVal Order
@@ -285,37 +203,49 @@ func (s *MeJokesGetSelectParams) DecodeURI(d uri.Decoder) error {
 				return errors.Wrap(err, "decode field \"order\"")
 			}
 		case "limit":
-			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				val, err := d.DecodeValue()
-				if err != nil {
+				var sDotLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					sDotLimitVal = c
+					return nil
+				}(); err != nil {
 					return err
 				}
-
-				c, err := conv.ToInt(val)
-				if err != nil {
-					return err
-				}
-
-				s.Limit = c
+				s.Limit.SetTo(sDotLimitVal)
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"limit\"")
 			}
 		case "offset":
-			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				val, err := d.DecodeValue()
-				if err != nil {
+				var sDotOffsetVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					sDotOffsetVal = c
+					return nil
+				}(); err != nil {
 					return err
 				}
-
-				c, err := conv.ToInt(val)
-				if err != nil {
-					return err
-				}
-
-				s.Offset = c
+				s.Offset.SetTo(sDotOffsetVal)
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"offset\"")
@@ -326,38 +256,6 @@ func (s *MeJokesGetSelectParams) DecodeURI(d uri.Decoder) error {
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode MeJokesGetSelectParams")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00001100,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(uriFieldsNameOfMeJokesGetSelectParams) {
-					name = uriFieldsNameOfMeJokesGetSelectParams[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
 	}
 
 	return nil

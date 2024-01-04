@@ -12,6 +12,9 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmember"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmessage"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatroom"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
@@ -76,10 +79,13 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			comment.Table: comment.ValidColumn,
-			joke.Table:    joke.ValidColumn,
-			like.Table:    like.ValidColumn,
-			user.Table:    user.ValidColumn,
+			chatmember.Table:  chatmember.ValidColumn,
+			chatmessage.Table: chatmessage.ValidColumn,
+			chatroom.Table:    chatroom.ValidColumn,
+			comment.Table:     comment.ValidColumn,
+			joke.Table:        joke.ValidColumn,
+			like.Table:        like.ValidColumn,
+			user.Table:        user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)
