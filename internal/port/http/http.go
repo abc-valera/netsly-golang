@@ -57,7 +57,7 @@ func RunServer(
 	// Init chi router
 	r := chi.NewRouter()
 	// Host documentation (docs are located in docs/http/index.html)
-	r.Mount("/docs/http/", http.StripPrefix("/docs/http/", http.FileServer(http.Dir(docsPath))))
+	r.Mount("/docs/", http.StripPrefix("/docs/", http.FileServer(http.Dir(docsPath))))
 	// Register middlewares
 	httpHandler := loggingMiddleware(server)
 	// Register routes

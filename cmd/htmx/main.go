@@ -15,7 +15,7 @@ import (
 func main() {
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
-		configPath = ".dev.env"
+		configPath = "env/.dev.env"
 	}
 	config, err := config.InitConfig(configPath)
 	if err != nil {
