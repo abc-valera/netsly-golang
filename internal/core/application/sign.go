@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
@@ -70,7 +69,7 @@ func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 
 		welcomeEmail := service.Email{
 			Subject: "Verification Email for Flugo!",
-			Content: fmt.Sprintf(`%s, congrats with joining the Flugo community!<br/>`, user.Username),
+			Content: fmt.Sprintf("%s, congrats with joining the Flugo community!", req.Username),
 			To:      []string{req.Email},
 		}
 
