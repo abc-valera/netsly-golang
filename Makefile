@@ -1,12 +1,14 @@
 ### Code generation ###
 generate_single_openapi_file:
-	docker run --rm -v ${PWD}:/spec redocly/cli bundle \
+	podman run --rm -v ${PWD}:/spec:Z \
+	redocly/cli bundle \
 	-o /spec/gen/openapi/openapi.yaml \
 	/spec/internal/port/http/schema/openapi.yaml 
 generate_http_code:
 	go generate gen/ogen/generate.go
 generate_http_docs:
-	docker run --rm -v ${PWD}:/spec redocly/cli build-docs \
+	podman run --rm -v ${PWD}:/spec:Z \
+	redocly/cli build-docs \
 	-o /spec/docs/http/index.html \
 	/spec/internal/port/http/schema/openapi.yaml
 generate_http:
@@ -28,9 +30,23 @@ generate_grpc_code:
 generate_db_code:
 	go generate gen/ent/generate.go
 
+### Podman commands ###
+run_flugo-db:
+	podman run \
+	--name flugo-db \
+	-p 5432:5432 \
+	-e POSTGRES_USER=flugo \
+	-e POSTGRES_PASSWORD=flugo \
+	-e POSTGRES_DB=flugo \
+	-d postgres:15-alpine
+run_flugo-redis:
+	podman run \
+	--name flugo-redis \
+	-p 6379:6379 \
+	-d redis/redis-stack:latest
 
 ### Docker commands ###
-run_flugo-db_container:
+docker_run_flugo-db:
 	docker run \
 	--name flugo-db \
 	-p 5432:5432 \
@@ -38,23 +54,23 @@ run_flugo-db_container:
 	-e POSTGRES_PASSWORD=flugo \
 	-e POSTGRES_DB=flugo \
 	-d postgres:15-alpine
-run_flugo-redis_container:
+docker_run_flugo-redis:
 	docker run \
 	--name flugo-redis \
 	-p 6379:6379 \
 	-d redis/redis-stack:latest
-build_flugo-api_compose:
+compose_build_flugo-api:
 	docker compose -f dev.docker-compose.yml build flugo-api
-run_docker-compose:
+compose_run_docker:
 	docker compose -f dev.docker-compose.yml up
 
 
 ### Local run commands ###
 run_infrastructure_local:
-	docker rm -f flugo-db
-	docker rm -f flugo-redis
-	make run_flugo-db_container
-	make run_flugo-redis_container
+	podman rm -f flugo-db
+	podman rm -f flugo-redis
+	make run_flugo-db
+	make run_flugo-redis
 	sleep 3
 run_flugo_htmx_local:
 	go build -o build/flugo-htmx cmd/htmx/main.go
