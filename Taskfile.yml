@@ -1,0 +1,92 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+  generate:http:main:
+    desc: Generate docs and code for the HTTP port from the OpenAPI spec directory
+    cmds:
+      - task: generate:openapi:single_config_file
+      - task: generate:openapi:http_docs
+      - task: generate:openapi:http_port
+
+  generate:http:single_openapi_config_file:
+    cmds:
+      - podman run --rm -v ${PWD}:/spec:Z
+        docker.io/redocly/cli bundle
+        -o /spec/gen/openapi/openapi.yaml
+        /spec/internal/port/http/schema/openapi.yaml
+
+  generate:http:docs:
+    cmds:
+      - podman run --rm -v ${PWD}:/spec:Z
+        docker.io/redocly/cli build-docs
+        -o /spec/docs/http/index.html
+        /spec/internal/port/http/schema/openapi.yaml
+
+  generate:http:code:
+    cmds:
+      - go generate gen/ogen/generate.go
+
+  generate:htmx:tailwindcss:
+    cmds:
+      - npx tailwindcss
+        -i internal/port/htmx/static/style/input.css
+        -o internal/port/htmx/static/style/style.css
+
+  generate:grpc:code:
+    cmds:
+      - rm -f gen/pb/*.pb.go
+        protoc internal/port/grpc/proto/*.proto
+        --go_out=gen/pb
+        --go_opt=paths=source_relative
+        --go-grpc_out=gen/pb
+        --go-grpc_opt=paths=source_relative
+        --proto_path=internal/port/grpc/proto
+
+  generate:db:code:
+    cmds:
+      - go generate gen/ent/generate.go
+
+  infrastructure:up:
+    cmds:
+      - podman rm -f flugo-db
+      - podman rm -f flugo-redis
+      - task: infrastructure:run_postgres
+      - task: infrastructure:run_redis
+
+  infrastructure:run_postgres:
+    cmds:
+      - podman run
+        --name flugo-db
+        -p 5432:5432
+        -e POSTGRES_USER=flugo
+        -e POSTGRES_PASSWORD=flugo
+        -e POSTGRES_DB=flugo
+        -d docker.io/library/postgres:15-alpine
+
+  infrastructure:run_redis:
+    cmds:
+      - podman run
+        --name flugo-redis
+        -p 6379:6379
+        -d docker.io/redis/redis-stack:latest
+
+  entrypoint:http:
+    cmds:
+      - go build -o build/flugo-http cmd/http/main.go
+      - ./build/flugo-http
+
+  entrypoint:htmx:
+    cmds:
+      - go build -o build/flugo-http cmd/htmx/main.go
+      - ./build/flugo-htmx
+
+  entrypoint:grpc:
+    cmds:
+      - go build -o build/flugo-grpc cmd/grpc/main.go
+      - ./build/flugo-grpc
+
+  other:run_evans:
+    cmds:
+      - evans -p 3030 -r repl

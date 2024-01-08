@@ -36,15 +36,39 @@ func (ju *JokeUpdate) SetTitle(s string) *JokeUpdate {
 	return ju
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (ju *JokeUpdate) SetNillableTitle(s *string) *JokeUpdate {
+	if s != nil {
+		ju.SetTitle(*s)
+	}
+	return ju
+}
+
 // SetText sets the "text" field.
 func (ju *JokeUpdate) SetText(s string) *JokeUpdate {
 	ju.mutation.SetText(s)
 	return ju
 }
 
+// SetNillableText sets the "text" field if the given value is not nil.
+func (ju *JokeUpdate) SetNillableText(s *string) *JokeUpdate {
+	if s != nil {
+		ju.SetText(*s)
+	}
+	return ju
+}
+
 // SetExplanation sets the "explanation" field.
 func (ju *JokeUpdate) SetExplanation(s string) *JokeUpdate {
 	ju.mutation.SetExplanation(s)
+	return ju
+}
+
+// SetNillableExplanation sets the "explanation" field if the given value is not nil.
+func (ju *JokeUpdate) SetNillableExplanation(s *string) *JokeUpdate {
+	if s != nil {
+		ju.SetExplanation(*s)
+	}
 	return ju
 }
 
@@ -353,15 +377,39 @@ func (juo *JokeUpdateOne) SetTitle(s string) *JokeUpdateOne {
 	return juo
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (juo *JokeUpdateOne) SetNillableTitle(s *string) *JokeUpdateOne {
+	if s != nil {
+		juo.SetTitle(*s)
+	}
+	return juo
+}
+
 // SetText sets the "text" field.
 func (juo *JokeUpdateOne) SetText(s string) *JokeUpdateOne {
 	juo.mutation.SetText(s)
 	return juo
 }
 
+// SetNillableText sets the "text" field if the given value is not nil.
+func (juo *JokeUpdateOne) SetNillableText(s *string) *JokeUpdateOne {
+	if s != nil {
+		juo.SetText(*s)
+	}
+	return juo
+}
+
 // SetExplanation sets the "explanation" field.
 func (juo *JokeUpdateOne) SetExplanation(s string) *JokeUpdateOne {
 	juo.mutation.SetExplanation(s)
+	return juo
+}
+
+// SetNillableExplanation sets the "explanation" field if the given value is not nil.
+func (juo *JokeUpdateOne) SetNillableExplanation(s *string) *JokeUpdateOne {
+	if s != nil {
+		juo.SetExplanation(*s)
+	}
 	return juo
 }
 

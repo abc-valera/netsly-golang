@@ -35,6 +35,14 @@ func (cmu *ChatMessageUpdate) SetText(s string) *ChatMessageUpdate {
 	return cmu
 }
 
+// SetNillableText sets the "text" field if the given value is not nil.
+func (cmu *ChatMessageUpdate) SetNillableText(s *string) *ChatMessageUpdate {
+	if s != nil {
+		cmu.SetText(*s)
+	}
+	return cmu
+}
+
 // SetRoomID sets the "room" edge to the ChatRoom entity by ID.
 func (cmu *ChatMessageUpdate) SetRoomID(id string) *ChatMessageUpdate {
 	cmu.mutation.SetRoomID(id)
@@ -213,6 +221,14 @@ type ChatMessageUpdateOne struct {
 // SetText sets the "text" field.
 func (cmuo *ChatMessageUpdateOne) SetText(s string) *ChatMessageUpdateOne {
 	cmuo.mutation.SetText(s)
+	return cmuo
+}
+
+// SetNillableText sets the "text" field if the given value is not nil.
+func (cmuo *ChatMessageUpdateOne) SetNillableText(s *string) *ChatMessageUpdateOne {
+	if s != nil {
+		cmuo.SetText(*s)
+	}
 	return cmuo
 }
 

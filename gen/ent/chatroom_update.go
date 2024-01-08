@@ -35,9 +35,25 @@ func (cru *ChatRoomUpdate) SetName(s string) *ChatRoomUpdate {
 	return cru
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (cru *ChatRoomUpdate) SetNillableName(s *string) *ChatRoomUpdate {
+	if s != nil {
+		cru.SetName(*s)
+	}
+	return cru
+}
+
 // SetDescription sets the "description" field.
 func (cru *ChatRoomUpdate) SetDescription(s string) *ChatRoomUpdate {
 	cru.mutation.SetDescription(s)
+	return cru
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (cru *ChatRoomUpdate) SetNillableDescription(s *string) *ChatRoomUpdate {
+	if s != nil {
+		cru.SetDescription(*s)
+	}
 	return cru
 }
 
@@ -289,9 +305,25 @@ func (cruo *ChatRoomUpdateOne) SetName(s string) *ChatRoomUpdateOne {
 	return cruo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (cruo *ChatRoomUpdateOne) SetNillableName(s *string) *ChatRoomUpdateOne {
+	if s != nil {
+		cruo.SetName(*s)
+	}
+	return cruo
+}
+
 // SetDescription sets the "description" field.
 func (cruo *ChatRoomUpdateOne) SetDescription(s string) *ChatRoomUpdateOne {
 	cruo.mutation.SetDescription(s)
+	return cruo
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (cruo *ChatRoomUpdateOne) SetNillableDescription(s *string) *ChatRoomUpdateOne {
+	if s != nil {
+		cruo.SetDescription(*s)
+	}
 	return cruo
 }
 

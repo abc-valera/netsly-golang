@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.4.0 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.1 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -677,7 +677,7 @@ video {
 }
 
 .animate-fade-in {
-  animation: fade-in 200ms ease;
+  animation: fade-in 2s ease-in-out;
 }
 
 @keyframes fade-out {
@@ -691,21 +691,7 @@ video {
 }
 
 .animate-fade-out {
-  animation: fade-out 200ms ease;
-}
-
-@keyframes zoom-in {
-  0% {
-    transform: scale(0.8);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-.animate-zoom-in {
-  animation: zoom-in 200ms ease;
+  animation: fade-out 2s ease-in-out;
 }
 
 .flex-col {

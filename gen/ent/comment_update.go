@@ -35,6 +35,14 @@ func (cu *CommentUpdate) SetText(s string) *CommentUpdate {
 	return cu
 }
 
+// SetNillableText sets the "text" field if the given value is not nil.
+func (cu *CommentUpdate) SetNillableText(s *string) *CommentUpdate {
+	if s != nil {
+		cu.SetText(*s)
+	}
+	return cu
+}
+
 // SetOwnerID sets the "owner" edge to the User entity by ID.
 func (cu *CommentUpdate) SetOwnerID(id string) *CommentUpdate {
 	cu.mutation.SetOwnerID(id)
@@ -213,6 +221,14 @@ type CommentUpdateOne struct {
 // SetText sets the "text" field.
 func (cuo *CommentUpdateOne) SetText(s string) *CommentUpdateOne {
 	cuo.mutation.SetText(s)
+	return cuo
+}
+
+// SetNillableText sets the "text" field if the given value is not nil.
+func (cuo *CommentUpdateOne) SetNillableText(s *string) *CommentUpdateOne {
+	if s != nil {
+		cuo.SetText(*s)
+	}
 	return cuo
 }
 
