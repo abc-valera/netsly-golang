@@ -10,13 +10,13 @@ import (
 )
 
 type MeJokesHandler struct {
-	jokeQuery  query.IJokeQuery
-	jokeDomain domain.JokeDomain
+	jokeQuery  query.IJoke
+	jokeDomain domain.Joke
 }
 
 func NewMeJokesHandler(
-	jokeQuery query.IJokeQuery,
-	jokeDomain domain.JokeDomain,
+	jokeQuery query.IJoke,
+	jokeDomain domain.Joke,
 ) MeJokesHandler {
 	return MeJokesHandler{
 		jokeQuery:  jokeQuery,

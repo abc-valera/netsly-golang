@@ -5,10 +5,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 )
 
-func NewUserResponse(user *model.User) *ogen.User {
-	if user == nil {
-		return &ogen.User{}
-	}
+func NewUserResponse(user model.User) *ogen.User {
 	return &ogen.User{
 		ID:        user.ID,
 		Username:  user.Username,

@@ -16,14 +16,14 @@ var (
 	ErrCommentTextInvalid   = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid text")
 )
 
-type CommentDomain struct {
-	command command.ICommentCommand
+type Comment struct {
+	command command.IComment
 }
 
-func NewCommentDomain(
-	command command.ICommentCommand,
-) CommentDomain {
-	return CommentDomain{
+func NewComment(
+	command command.IComment,
+) Comment {
+	return Comment{
 		command: command,
 	}
 }
@@ -34,7 +34,7 @@ type CommentCreateRequest struct {
 	Text   string
 }
 
-func (c CommentDomain) Create(ctx context.Context, req CommentCreateRequest) error {
+func (c Comment) Create(ctx context.Context, req CommentCreateRequest) error {
 	// Validation
 	if req.UserID == "" {
 		return ErrCommentUserIDInvalid
@@ -61,7 +61,7 @@ type CommentUpdateRequest struct {
 	Text *string
 }
 
-func (c CommentDomain) Update(ctx context.Context, commentID string, req CommentUpdateRequest) error {
+func (c Comment) Update(ctx context.Context, commentID string, req CommentUpdateRequest) error {
 	// Validation
 	if commentID == "" {
 		return ErrCommentIDInvalid
@@ -76,7 +76,7 @@ func (c CommentDomain) Update(ctx context.Context, commentID string, req Comment
 	})
 }
 
-func (c CommentDomain) Delete(ctx context.Context, commentID string) error {
+func (c Comment) Delete(ctx context.Context, commentID string) error {
 	// Validation
 	if commentID == "" {
 		return ErrCommentIDInvalid

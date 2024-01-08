@@ -5,10 +5,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 )
 
-func NewJokeResponse(joke *model.Joke) *ogen.Joke {
-	if joke == nil {
-		return &ogen.Joke{}
-	}
+func NewJokeResponse(joke model.Joke) *ogen.Joke {
 	return &ogen.Joke{
 		ID:          joke.ID,
 		UserID:      joke.UserID,

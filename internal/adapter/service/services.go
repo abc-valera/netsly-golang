@@ -16,9 +16,13 @@ func NewServices(
 	redisUrl, redisUser, redisPass string,
 ) (service.Services, error) {
 	service.Log = logger.NewSlogLogger()
+
 	emailSender := email.NewDummyEmailSender()
+
 	passwordMaker := password.NewPasswordMaker()
+
 	tokenMaker := token.NewTokenMaker(accessTokenDuration, refreshTokenDuration)
+
 	messageBroker := dummy.NewMessagingBroker(emailSender)
 
 	return service.NewServices(

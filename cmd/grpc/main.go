@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/config"
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
@@ -17,12 +17,12 @@ func main() {
 	if configPath == "" {
 		configPath = ".dev.env"
 	}
-	config, err := config.InitConfig(configPath)
+	config, err := config.NewConfig(configPath)
 	if err != nil {
 		log.Fatal("Initialize config error: ", err)
 	}
 
-	commands, queries, tx, err := ent.NewEntCommandsQueries(config.DatabaseURL)
+	commands, queries, tx, err := persistence.NewCommandsQueriesTx(config.DatabaseURL)
 	if err != nil {
 		log.Fatal("Initialize ent error: ", err)
 	}

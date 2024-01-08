@@ -17,4 +17,4 @@ type ChatRoom struct {
 	Description string
 }
 
-type ChatRooms []*ChatRoom
+type ChatRooms []ChatRoom

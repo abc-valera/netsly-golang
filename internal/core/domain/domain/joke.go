@@ -17,14 +17,14 @@ var (
 	ErrJokeExplanationInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid explanation")
 )
 
-type JokeDomain struct {
-	command command.IJokeCommand
+type Joke struct {
+	command command.IJoke
 }
 
-func NewJokeDomain(
-	command command.IJokeCommand,
-) JokeDomain {
-	return JokeDomain{
+func NewJoke(
+	command command.IJoke,
+) Joke {
+	return Joke{
 		command: command,
 	}
 }
@@ -36,7 +36,7 @@ type JokeCreateRequest struct {
 	Explanation string
 }
 
-func (j JokeDomain) Create(ctx context.Context, req JokeCreateRequest) error {
+func (j Joke) Create(ctx context.Context, req JokeCreateRequest) error {
 	// Validation
 	if req.UserID == "" {
 		return ErrCommentUserIDInvalid
@@ -69,7 +69,7 @@ type JokeUpdateRequest struct {
 	Explanation *string
 }
 
-func (j JokeDomain) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) error {
+func (j Joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) error {
 	// Validation
 	if jokeID == "" {
 		return ErrJokeIDInvalid
@@ -92,7 +92,7 @@ func (j JokeDomain) Update(ctx context.Context, jokeID string, req JokeUpdateReq
 	})
 }
 
-func (j JokeDomain) Delete(ctx context.Context, jokeID string) error {
+func (j Joke) Delete(ctx context.Context, jokeID string) error {
 	// Validation
 	if jokeID == "" {
 		return ErrJokeIDInvalid

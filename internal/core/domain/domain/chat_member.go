@@ -14,14 +14,14 @@ var (
 	ErrChatMemberUserIDInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID")
 )
 
-type ChatMemberDomain struct {
-	command command.IChatMemberCommand
+type ChatMember struct {
+	command command.IChatMember
 }
 
-func NewChatMemberDomain(
-	command command.IChatMemberCommand,
-) ChatMemberDomain {
-	return ChatMemberDomain{
+func NewChatMember(
+	command command.IChatMember,
+) ChatMember {
+	return ChatMember{
 		command: command,
 	}
 }
@@ -31,7 +31,7 @@ type ChatMemberCreateRequest struct {
 	UserID     string
 }
 
-func (c ChatMemberDomain) Create(ctx context.Context, req ChatMemberCreateRequest) error {
+func (c ChatMember) Create(ctx context.Context, req ChatMemberCreateRequest) error {
 	// Validation
 	if req.ChatRoomID == "" {
 		return ErrChatMemberChatIDInvalid
@@ -49,7 +49,7 @@ func (c ChatMemberDomain) Create(ctx context.Context, req ChatMemberCreateReques
 	})
 }
 
-func (c ChatMemberDomain) Delete(ctx context.Context, chatRoomID, userID string) error {
+func (c ChatMember) Delete(ctx context.Context, chatRoomID, userID string) error {
 	// Validation
 	if chatRoomID == "" {
 		return ErrChatMemberChatIDInvalid

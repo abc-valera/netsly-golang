@@ -16,4 +16,4 @@ type ChatMessage struct {
 	Text       string
 }
 
-type ChatMessages []*ChatMessage
+type ChatMessages []ChatMessage

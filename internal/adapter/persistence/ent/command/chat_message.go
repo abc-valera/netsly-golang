@@ -4,47 +4,48 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
+	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmessage"
 	errhandler "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/err-handler"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
 )
 
-type commentCommand struct {
+type chatMessageCommand struct {
 	*ent.Client
 }
 
-func NewCommentCommand(client *ent.Client) command.IComment {
-	return &commentCommand{
+func NewChatMessageCommand(client *ent.Client) command.IChatMessage {
+	return &chatMessageCommand{
 		Client: client,
 	}
 }
 
-func (cc commentCommand) Create(ctx context.Context, req model.Comment) error {
-	_, err := cc.Comment.Create().
+func (cm chatMessageCommand) Create(ctx context.Context, req model.ChatMessage) error {
+	_, err := cm.ChatMessage.Create().
 		SetID(req.ID).
+		SetChatRoomID(req.ChatRoomID).
 		SetUserID(req.UserID).
-		SetJokeID(req.JokeID).
 		SetText(req.Text).
 		SetCreatedAt(req.CreatedAt).
 		Save(ctx)
 	return errhandler.HandleErr(err)
 }
 
-func (cc commentCommand) Update(ctx context.Context, commentID string, req command.CommentUpdate) error {
-	query := cc.Comment.Update()
+func (cm chatMessageCommand) Update(ctx context.Context, id string, req command.ChatMessageUpdate) error {
+	query := cm.ChatMessage.Update()
 	if req.Text != nil {
 		query.SetText(*req.Text)
 	}
 
 	_, err := query.
-		Where(comment.ID(commentID)).
+		Where(chatmessage.ID(id)).
 		Save(ctx)
+
 	return errhandler.HandleErr(err)
 }
 
-func (cc commentCommand) Delete(ctx context.Context, id string) error {
-	err := cc.Comment.
+func (cm chatMessageCommand) Delete(ctx context.Context, id string) error {
+	err := cm.ChatMessage.
 		DeleteOneID(id).
 		Exec(ctx)
 	return errhandler.HandleErr(err)

@@ -30,7 +30,7 @@ type Config struct {
 	EmailSenderPassword string `mapstructure:"EMAIL_SENDER_PASSWORD"`
 }
 
-func InitConfig(configPath string) (*Config, error) {
+func NewConfig(configPath string) (*Config, error) {
 	viper.SetConfigFile(configPath)
 	// Override variables from file with the environmet variables
 	viper.AutomaticEnv()

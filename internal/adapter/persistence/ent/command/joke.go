@@ -14,7 +14,7 @@ type jokeCommand struct {
 	*ent.Client
 }
 
-func NewJokeCommand(client *ent.Client) command.IJokeCommand {
+func NewJokeCommand(client *ent.Client) command.IJoke {
 	return &jokeCommand{
 		Client: client,
 	}

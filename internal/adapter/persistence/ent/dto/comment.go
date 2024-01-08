@@ -7,11 +7,11 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model/common"
 )
 
-func FromEntCommentToComment(entComment *ent.Comment) *model.Comment {
+func FromEntCommentToComment(entComment *ent.Comment) model.Comment {
 	if entComment == nil {
-		return nil
+		return model.Comment{}
 	}
-	return &model.Comment{
+	return model.Comment{
 		BaseModel: common.BaseModel{
 			ID:        entComment.ID,
 			CreatedAt: entComment.CreatedAt,
@@ -22,7 +22,7 @@ func FromEntCommentToComment(entComment *ent.Comment) *model.Comment {
 	}
 }
 
-func FromEntCommentToCommentWithErrHandle(entComment *ent.Comment, err error) (*model.Comment, error) {
+func FromEntCommentToCommentWithErrHandle(entComment *ent.Comment, err error) (model.Comment, error) {
 	return FromEntCommentToComment(entComment), errhandler.HandleErr(err)
 }
 

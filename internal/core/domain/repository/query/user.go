@@ -7,9 +7,9 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query/spec"
 )
 
-type IUserQuery interface {
-	GetByID(ctx context.Context, id string) (*model.User, error)
-	GetByUsername(ctx context.Context, username string) (*model.User, error)
-	GetByEmail(ctx context.Context, email string) (*model.User, error)
+type IUser interface {
+	GetByID(ctx context.Context, id string) (model.User, error)
+	GetByUsername(ctx context.Context, username string) (model.User, error)
+	GetByEmail(ctx context.Context, email string) (model.User, error)
 	SearchAllByUsername(ctx context.Context, keyword string, params spec.SelectParams) (model.Users, error)
 }

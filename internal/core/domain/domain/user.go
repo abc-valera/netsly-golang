@@ -20,22 +20,22 @@ var (
 	ErrUserStatusInvalid   = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid status")
 )
 
-// UserDomain is responsible for validation and handling user domain logic
-type UserDomain struct {
+// User is responsible for validation and handling user domain logic
+type User struct {
 	// Data layer access
-	query   query.IUserQuery
-	command command.IUserCommand
+	query   query.IUser
+	command command.IUser
 
 	// Service layer access
 	passMaker service.IPasswordMaker
 }
 
-func NewUserDomain(
-	command command.IUserCommand,
-	query query.IUserQuery,
+func NewUser(
+	command command.IUser,
+	query query.IUser,
 	passMaker service.IPasswordMaker,
-) UserDomain {
-	return UserDomain{
+) User {
+	return User{
 		query:     query,
 		command:   command,
 		passMaker: passMaker,
@@ -50,7 +50,7 @@ type UserCreateRequest struct {
 	Status   string
 }
 
-func (u UserDomain) Create(ctx context.Context, req UserCreateRequest) error {
+func (u User) Create(ctx context.Context, req UserCreateRequest) error {
 	// Validation
 	if req.Username == "" || len(req.Username) < 4 || len(req.Username) > 32 {
 		return ErrUserUsernameInvalid
@@ -93,7 +93,7 @@ type UserUpdateRequest struct {
 	Status   *string
 }
 
-func (u UserDomain) Update(ctx context.Context, userID string, req UserUpdateRequest) error {
+func (u User) Update(ctx context.Context, userID string, req UserUpdateRequest) error {
 	// Validation
 	if userID == "" {
 		return ErrUserIDInvalid
@@ -126,7 +126,7 @@ type UserDeleteRequest struct {
 	Password string
 }
 
-func (u UserDomain) Delete(ctx context.Context, userID string, req UserDeleteRequest) error {
+func (u User) Delete(ctx context.Context, userID string, req UserDeleteRequest) error {
 	// Validation
 	if userID == "" {
 		return ErrUserIDInvalid

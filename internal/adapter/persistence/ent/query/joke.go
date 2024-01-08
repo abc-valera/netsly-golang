@@ -16,13 +16,13 @@ type jokeQuery struct {
 	*ent.Client
 }
 
-func NewJokeQuery(client *ent.Client) query.IJokeQuery {
+func NewJokeQuery(client *ent.Client) query.IJoke {
 	return &jokeQuery{
 		Client: client,
 	}
 }
 
-func (jq *jokeQuery) GetByID(ctx context.Context, id string) (*model.Joke, error) {
+func (jq *jokeQuery) GetByID(ctx context.Context, id string) (model.Joke, error) {
 	return dto.FromEntJokeToJokeWithErrHandle(jq.Joke.Get(ctx, id))
 }
 

@@ -5,10 +5,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 )
 
-func NewCommentResponse(comment *model.Comment) *ogen.Comment {
-	if comment == nil {
-		return &ogen.Comment{}
-	}
+func NewCommentResponse(comment model.Comment) *ogen.Comment {
 	return &ogen.Comment{
 		ID:        comment.ID,
 		JokeID:    comment.JokeID,
@@ -18,7 +15,7 @@ func NewCommentResponse(comment *model.Comment) *ogen.Comment {
 	}
 }
 
-func NewCommentsResponse(comments []*model.Comment) *ogen.Comments {
+func NewCommentsResponse(comments []model.Comment) *ogen.Comments {
 	res := make([]ogen.Comment, 0, len(comments))
 	for _, comment := range comments {
 		res = append(res, *NewCommentResponse(comment))

@@ -7,13 +7,13 @@ import (
 )
 
 type Domains struct {
-	User        UserDomain
-	Joke        JokeDomain
-	Like        LikeDomain
-	Comment     CommentDomain
-	ChatRoom    ChatRoomDomain
-	ChatMember  ChatMemberDomain
-	ChatMessage ChatMessageDomain
+	User        User
+	Joke        Joke
+	Like        Like
+	Comment     Comment
+	ChatRoom    ChatRoom
+	ChatMember  ChatMember
+	ChatMessage ChatMessage
 }
 
 func NewDomains(
@@ -22,12 +22,12 @@ func NewDomains(
 	services service.Services,
 ) Domains {
 	return Domains{
-		User:        NewUserDomain(commands.User, queries.User, services.PasswordMaker),
-		Joke:        NewJokeDomain(commands.Joke),
-		Like:        NewLikeDomain(commands.Like),
-		Comment:     NewCommentDomain(commands.Comment),
-		ChatRoom:    NewChatRoomDomain(commands.ChatRoom),
-		ChatMember:  NewChatMemberDomain(commands.ChatMember),
-		ChatMessage: NewChatMessageDomain(commands.ChatMessage),
+		User:        NewUser(commands.User, queries.User, services.PasswordMaker),
+		Joke:        NewJoke(commands.Joke),
+		Like:        NewLike(commands.Like),
+		Comment:     NewComment(commands.Comment),
+		ChatRoom:    NewChatRoom(commands.ChatRoom),
+		ChatMember:  NewChatMember(commands.ChatMember),
+		ChatMessage: NewChatMessage(commands.ChatMessage),
 	}
 }

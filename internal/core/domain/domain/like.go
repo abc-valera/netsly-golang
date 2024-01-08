@@ -14,14 +14,14 @@ var (
 	ErrLikeJokeIDInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid joke ID for like")
 )
 
-type LikeDomain struct {
-	command command.ILikeCommand
+type Like struct {
+	command command.ILike
 }
 
-func NewLikeDomain(
-	command command.ILikeCommand,
-) LikeDomain {
-	return LikeDomain{
+func NewLike(
+	command command.ILike,
+) Like {
+	return Like{
 		command: command,
 	}
 }
@@ -31,7 +31,7 @@ type LikeCreateRequest struct {
 	JokeID string
 }
 
-func (l LikeDomain) Create(ctx context.Context, req LikeCreateRequest) error {
+func (l Like) Create(ctx context.Context, req LikeCreateRequest) error {
 	// Validation
 	if req.UserID == "" {
 		return ErrLikeUserIDInvalid
@@ -56,7 +56,7 @@ type DeleteLikeRequest struct {
 	JokeID string
 }
 
-func (l LikeDomain) Delete(ctx context.Context, req DeleteLikeRequest) error {
+func (l Like) Delete(ctx context.Context, req DeleteLikeRequest) error {
 	// Validation
 	if req.UserID == "" {
 		return ErrLikeUserIDInvalid

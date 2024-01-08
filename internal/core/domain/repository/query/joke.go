@@ -7,8 +7,8 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query/spec"
 )
 
-type IJokeQuery interface {
-	GetByID(ctx context.Context, id string) (*model.Joke, error)
+type IJoke interface {
+	GetByID(ctx context.Context, id string) (model.Joke, error)
 	GetAllByUserID(ctx context.Context, userID string, params spec.SelectParams) (model.Jokes, error)
 	SearchByTitle(ctx context.Context, keyword string, params spec.SelectParams) (model.Jokes, error)
 }

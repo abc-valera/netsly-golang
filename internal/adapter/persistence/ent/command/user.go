@@ -14,7 +14,7 @@ type userCommand struct {
 	*ent.Client
 }
 
-func NewUserCommand(client *ent.Client) command.IUserCommand {
+func NewUserCommand(client *ent.Client) command.IUser {
 	return &userCommand{
 		Client: client,
 	}

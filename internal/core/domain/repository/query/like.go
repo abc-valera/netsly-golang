@@ -2,6 +2,6 @@ package query
 
 import "context"
 
-type ILikeQuery interface {
+type ILike interface {
 	CountByJokeID(ctx context.Context, jokeID string) (int, error)
 }

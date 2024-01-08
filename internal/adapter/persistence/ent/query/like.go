@@ -13,7 +13,7 @@ type likeQuery struct {
 	*ent.Client
 }
 
-func NewLikeQuery(client *ent.Client) query.ILikeQuery {
+func NewLikeQuery(client *ent.Client) query.ILike {
 	return &likeQuery{
 		Client: client,
 	}

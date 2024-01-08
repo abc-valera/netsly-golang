@@ -19,4 +19,4 @@ type Joke struct {
 	Explanation string
 }
 
-type Jokes []*Joke
+type Jokes []Joke

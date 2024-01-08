@@ -10,13 +10,13 @@ import (
 )
 
 type MeCommentsHandler struct {
-	commentQuery  query.ICommentQuery
-	commentDomain domain.CommentDomain
+	commentQuery  query.IComment
+	commentDomain domain.Comment
 }
 
 func NewMeCommentsHandler(
-	commentQuery query.ICommentQuery,
-	commentDomain domain.CommentDomain,
+	commentQuery query.IComment,
+	commentDomain domain.Comment,
 ) MeCommentsHandler {
 	return MeCommentsHandler{
 		commentQuery:  commentQuery,

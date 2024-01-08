@@ -15,14 +15,14 @@ var (
 	ErrChatMessageMessageInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid message")
 )
 
-type ChatMessageDomain struct {
-	command command.IChatMessageCommand
+type ChatMessage struct {
+	command command.IChatMessage
 }
 
-func NewChatMessageDomain(
-	command command.IChatMessageCommand,
-) ChatMessageDomain {
-	return ChatMessageDomain{
+func NewChatMessage(
+	command command.IChatMessage,
+) ChatMessage {
+	return ChatMessage{
 		command: command,
 	}
 }
@@ -33,7 +33,7 @@ type ChatMessageCreateRequest struct {
 	Text   string
 }
 
-func (c ChatMessageDomain) Create(ctx context.Context, req ChatMessageCreateRequest) error {
+func (c ChatMessage) Create(ctx context.Context, req ChatMessageCreateRequest) error {
 	// Validation
 	if req.ChatID == "" {
 		return ErrChatMessageChatIDInvalid
@@ -60,7 +60,7 @@ type ChatMessageUpdateRequest struct {
 	Text *string
 }
 
-func (c ChatMessageDomain) Update(ctx context.Context, id string, req ChatMessageUpdateRequest) error {
+func (c ChatMessage) Update(ctx context.Context, id string, req ChatMessageUpdateRequest) error {
 	// Validation
 	if id == "" {
 		return ErrChatMessageChatIDInvalid
@@ -74,7 +74,7 @@ func (c ChatMessageDomain) Update(ctx context.Context, id string, req ChatMessag
 	})
 }
 
-func (c ChatMessageDomain) Delete(ctx context.Context, id string) error {
+func (c ChatMessage) Delete(ctx context.Context, id string) error {
 	// Validation
 	if id == "" {
 		return ErrChatMessageChatIDInvalid

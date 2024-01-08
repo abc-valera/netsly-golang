@@ -9,13 +9,13 @@ import (
 )
 
 type MeLikesHandler struct {
-	likeQuery  query.ILikeQuery
-	likeDomain domain.LikeDomain
+	likeQuery  query.ILike
+	likeDomain domain.Like
 }
 
 func NewMeLikesHandler(
-	likeQuery query.ILikeQuery,
-	likeDomain domain.LikeDomain,
+	likeQuery query.ILike,
+	likeDomain domain.Like,
 ) MeLikesHandler {
 	return MeLikesHandler{
 		likeQuery:  likeQuery,

@@ -15,13 +15,13 @@ type commentQuery struct {
 	*ent.Client
 }
 
-func NewCommentQuery(client *ent.Client) query.ICommentQuery {
+func NewCommentQuery(client *ent.Client) query.IComment {
 	return &commentQuery{
 		Client: client,
 	}
 }
 
-func (cq *commentQuery) GetByID(ctx context.Context, id string) (*model.Comment, error) {
+func (cq *commentQuery) GetByID(ctx context.Context, id string) (model.Comment, error) {
 	return dto.FromEntCommentToCommentWithErrHandle(cq.Comment.Get(ctx, id))
 }
 

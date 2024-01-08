@@ -8,11 +8,11 @@ import (
 )
 
 type LikesHandler struct {
-	likeQuery query.ILikeQuery
+	likeQuery query.ILike
 }
 
 func NewLikesHandler(
-	likeRepo query.ILikeQuery,
+	likeRepo query.ILike,
 ) LikesHandler {
 	return LikesHandler{
 		likeQuery: likeRepo,

@@ -15,14 +15,14 @@ var (
 	ErrChatRoomDescriptionInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid chat room description")
 )
 
-type ChatRoomDomain struct {
-	command command.IChatRoomCommand
+type ChatRoom struct {
+	command command.IChatRoom
 }
 
-func NewChatRoomDomain(
-	command command.IChatRoomCommand,
-) ChatRoomDomain {
-	return ChatRoomDomain{
+func NewChatRoom(
+	command command.IChatRoom,
+) ChatRoom {
+	return ChatRoom{
 		command: command,
 	}
 }
@@ -32,7 +32,7 @@ type ChatRoomCreateRequest struct {
 	Description string
 }
 
-func (c ChatRoomDomain) Create(ctx context.Context, req ChatRoomCreateRequest) error {
+func (c ChatRoom) Create(ctx context.Context, req ChatRoomCreateRequest) error {
 	// Validation
 	if req.Name == "" || len(req.Name) < 4 || len(req.Name) > 64 {
 		return ErrChatRoomNameInvalid
@@ -55,7 +55,7 @@ type ChatRoomUpdateRequest struct {
 	Description *string
 }
 
-func (c ChatRoomDomain) Update(ctx context.Context, chatRoomID string, req ChatRoomUpdateRequest) error {
+func (c ChatRoom) Update(ctx context.Context, chatRoomID string, req ChatRoomUpdateRequest) error {
 	// Validation
 	if chatRoomID == "" {
 		return ErrChatRoomIDInvalid
@@ -72,7 +72,7 @@ func (c ChatRoomDomain) Update(ctx context.Context, chatRoomID string, req ChatR
 	})
 }
 
-func (c ChatRoomDomain) Delete(ctx context.Context, chatRoomID string) error {
+func (c ChatRoom) Delete(ctx context.Context, chatRoomID string) error {
 	// Validation
 	if chatRoomID == "" {
 		return ErrChatRoomIDInvalid

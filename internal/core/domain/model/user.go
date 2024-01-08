@@ -21,4 +21,4 @@ type User struct {
 	Status         string
 }
 
-type Users []*User
+type Users []User

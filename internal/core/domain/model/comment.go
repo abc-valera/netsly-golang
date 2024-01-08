@@ -16,4 +16,4 @@ type Comment struct {
 	Text   string
 }
 
-type Comments []*Comment
+type Comments []Comment

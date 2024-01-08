@@ -18,17 +18,17 @@ var (
 
 type SignUseCase struct {
 	tx            transactioneer.ITransactioneer
-	userQuery     query.IUserQuery
-	userDomain    domain.UserDomain
+	userQuery     query.IUser
+	userDomain    domain.User
 	passwordMaker service.IPasswordMaker
 	tokenMaker    service.ITokenMaker
 	messageBroker service.IMessageBroker
 }
 
 func NewSignUseCase(
-	userQuery query.IUserQuery,
+	userQuery query.IUser,
 	tx transactioneer.ITransactioneer,
-	userDomain domain.UserDomain,
+	userDomain domain.User,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
 	messageBroker service.IMessageBroker,
@@ -85,7 +85,7 @@ type SignInRequest struct {
 }
 
 type SignInResponse struct {
-	User         *model.User
+	User         model.User
 	AccessToken  string
 	RefreshToken string
 }

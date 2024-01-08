@@ -14,7 +14,7 @@ type likeCommand struct {
 	*ent.Client
 }
 
-func NewLikeCommand(client *ent.Client) command.ILikeCommand {
+func NewLikeCommand(client *ent.Client) command.ILike {
 	return &likeCommand{
 		Client: client,
 	}

@@ -10,13 +10,13 @@ import (
 )
 
 type MeHandler struct {
-	userQuery  query.IUserQuery
-	userDomain domain.UserDomain
+	userQuery  query.IUser
+	userDomain domain.User
 }
 
 func NewMeHandler(
-	userQuery query.IUserQuery,
-	userDomain domain.UserDomain,
+	userQuery query.IUser,
+	userDomain domain.User,
 ) MeHandler {
 	return MeHandler{
 		userQuery:  userQuery,

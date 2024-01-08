@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
@@ -36,5 +37,9 @@ func RunServer(
 
 	// Start server
 	service.Log.Info("Starting HTMX server on " + port)
-	return http.ListenAndServe(port, r)
+	if err := http.ListenAndServe(port, r); err != nil {
+		return codeerr.NewInternal(err)
+	}
+
+	return nil
 }

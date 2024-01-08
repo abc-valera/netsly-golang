@@ -7,11 +7,11 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model/common"
 )
 
-func FromEntUserToUser(entUser *ent.User) *model.User {
+func FromEntUser(entUser *ent.User) model.User {
 	if entUser == nil {
-		return nil
+		return model.User{}
 	}
-	return &model.User{
+	return model.User{
 		BaseModel: common.BaseModel{
 			ID:        entUser.ID,
 			CreatedAt: entUser.CreatedAt,
@@ -24,18 +24,18 @@ func FromEntUserToUser(entUser *ent.User) *model.User {
 	}
 }
 
-func FromEntUserToUserWithErrHandle(entUser *ent.User, err error) (*model.User, error) {
-	return FromEntUserToUser(entUser), errhandler.HandleErr(err)
+func FromEntUserWithErrHandle(entUser *ent.User, err error) (model.User, error) {
+	return FromEntUser(entUser), errhandler.HandleErr(err)
 }
 
-func FromEntUsersToUsers(entUsers []*ent.User) model.Users {
+func FromEntUsers(entUsers []*ent.User) model.Users {
 	users := make(model.Users, len(entUsers))
 	for i, entUser := range entUsers {
-		users[i] = FromEntUserToUser(entUser)
+		users[i] = FromEntUser(entUser)
 	}
 	return users
 }
 
-func FromEntUsersToUsersWithErrHandle(entUsers []*ent.User, err error) (model.Users, error) {
-	return FromEntUsersToUsers(entUsers), errhandler.HandleErr(err)
+func FromEntUsersWithErrHandle(entUsers []*ent.User, err error) (model.Users, error) {
+	return FromEntUsers(entUsers), errhandler.HandleErr(err)
 }

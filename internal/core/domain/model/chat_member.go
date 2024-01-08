@@ -20,4 +20,4 @@ type ChatMember struct {
 	CreatedAt  time.Time
 }
 
-type ChatMembers []*ChatMember
+type ChatMembers []ChatMember

@@ -20,4 +20,4 @@ type Like struct {
 	CreatedAt time.Time
 }
 
-type Likes []*Like
+type Likes []Like
