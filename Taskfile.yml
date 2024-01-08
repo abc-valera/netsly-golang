@@ -79,7 +79,7 @@ tasks:
 
   entrypoint:htmx:
     cmds:
-      - go build -o build/flugo-http cmd/htmx/main.go
+      - go build -o build/flugo-htmx cmd/htmx/main.go
       - ./build/flugo-htmx
 
   entrypoint:grpc:
