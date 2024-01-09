@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"io/fs"
 	"net/http"
 
@@ -18,8 +17,6 @@ type SignHandler struct {
 func NewSignHandler(templateFS fs.FS, signUseCase application.SignUseCase) (SignHandler, error) {
 	t, err := common.NewTemplates(false, templateFS,
 		[]string{"sign/index", "layout/base"},
-		[]string{"sign/index_sign_up_modal", "layout/modal"},
-		[]string{"sign/index_sign_in_modal", "layout/modal"},
 	)
 	if err != nil {
 		return SignHandler{}, err
@@ -32,10 +29,6 @@ func NewSignHandler(templateFS fs.FS, signUseCase application.SignUseCase) (Sign
 
 func (h SignHandler) SignGet(w http.ResponseWriter, r *http.Request) error {
 	return h.t.Render(w, "sign/index", nil)
-}
-
-func (h SignHandler) SignUpGet(w http.ResponseWriter, r *http.Request) error {
-	return h.t.Render(w, "sign/index_sign_up_modal", nil)
 }
 
 func (h SignHandler) SignUpPost(w http.ResponseWriter, r *http.Request) error {
@@ -55,10 +48,6 @@ func (h SignHandler) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (h SignHandler) SignInGet(w http.ResponseWriter, r *http.Request) error {
-	return h.t.Render(w, "sign/index_sign_in_modal", nil)
-}
-
 func (h SignHandler) SignInPost(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {
@@ -75,16 +64,4 @@ func (h SignHandler) SignInPost(w http.ResponseWriter, r *http.Request) error {
 	_ = resp
 
 	return nil
-}
-
-func (h SignHandler) SignAlreadyGet(w http.ResponseWriter, r *http.Request) error {
-	return codeerr.NewInternal(fmt.Errorf("not implemented"))
-}
-
-func (h SignHandler) SignOutGet(w http.ResponseWriter, r *http.Request) error {
-	return codeerr.NewInternal(fmt.Errorf("not implemented"))
-}
-
-func (h SignHandler) SignOutPost(w http.ResponseWriter, r *http.Request) error {
-	return codeerr.NewInternal(fmt.Errorf("not implemented"))
 }

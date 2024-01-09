@@ -30,9 +30,7 @@ func initRoutesMiddlewares(r *chi.Mux, handlers handler.Handlers) {
 	r.Get("/", newHandlerFunc(handlers.SignHandler.SignGet))
 
 	r.Get("/sign", newHandlerFunc(handlers.SignHandler.SignGet))
-	r.Get("/sign/up", newHandlerFunc(handlers.SignHandler.SignUpGet))
 	r.Post("/sign/up", newHandlerFunc(handlers.SignHandler.SignUpPost))
-	r.Get("/sign/in", newHandlerFunc(handlers.SignHandler.SignInGet))
 	r.Post("/sign/in", newHandlerFunc(handlers.SignHandler.SignInPost))
 }
 

@@ -694,6 +694,10 @@ video {
   animation: fade-out 2s ease-in-out;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .flex-col {
   flex-direction: column;
 }
@@ -771,6 +775,10 @@ video {
 
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
+}
+
+.p-0 {
+  padding: 0px;
 }
 
 .p-10 {
@@ -891,6 +899,43 @@ video {
   --tw-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
   --tw-shadow-colored: inset 0 2px 4px 0 var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.backdrop\:bg-gray-400::backdrop {
+  --tw-bg-opacity: 1;
+  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
+}
+
+.backdrop\:opacity-40::backdrop {
+  opacity: 0.4;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.open\:animate-fade-in[open] {
+  animation: fade-in 2s ease-in-out;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.open\:backdrop\:animate-fade-in[open]::backdrop {
+  animation: fade-in 2s ease-in-out;
 }
 
 .hover\:bg-green-600:hover {
