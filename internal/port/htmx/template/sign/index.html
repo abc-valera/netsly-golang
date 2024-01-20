@@ -1,5 +1,5 @@
 {{ define "PageTitle" }}
-  Account - Flug'
+  Sign - Flug'
 {{ end }}
 
 {{ define "BaseContent" }}
@@ -37,7 +37,7 @@
   <!-- Sign Up Modal Start -->
   <dialog
     id="sign-up-modal"
-    class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40 open:animate-fade-in open:backdrop:animate-fade-in"
+    class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40"
     _="on click if event.target is me then call me.querySelector('form').reset() then call me.close()"
   >
     <div class="p-10">
@@ -100,8 +100,8 @@
   <!-- Sign In Modal Start -->
   <dialog
     id="sign-in-modal"
-    class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40 open:animate-fade-in open:backdrop:animate-fade-in"
-    _="on click if event.target is me then call me.querySelector('form').reset()   then call me.close()"
+    class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40"
+    _="on click if event.target is me then call me.querySelector('form').reset() then call me.close()"
   >
     <div class="p-10">
       <h1 class="mb-8 text-4xl font-extrabold">Sign In</h1>

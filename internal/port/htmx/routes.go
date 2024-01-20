@@ -22,16 +22,16 @@ func initRoutesMiddlewares(r *chi.Mux, handlers handler.Handlers) {
 	// static files
 	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("internal/port/htmx/static"))))
 
-	r.Get("/error/401", newHandlerFunc(handlers.ErrorHandler.Error401Get))
-	r.Get("/error/403", newHandlerFunc(handlers.ErrorHandler.Error403Get))
-	r.Get("/error/404", newHandlerFunc(handlers.ErrorHandler.Error404Get))
-	r.Get("/error/500", newHandlerFunc(handlers.ErrorHandler.Error500Get))
+	r.Get("/error/401", newHandlerFunc(handlers.Error.Error401Get))
+	r.Get("/error/403", newHandlerFunc(handlers.Error.Error403Get))
+	r.Get("/error/404", newHandlerFunc(handlers.Error.Error404Get))
+	r.Get("/error/500", newHandlerFunc(handlers.Error.Error500Get))
 
-	r.Get("/", newHandlerFunc(handlers.SignHandler.SignGet))
+	r.Get("/sign", newHandlerFunc(handlers.Sign.SignGet))
+	r.Post("/sign/up", newHandlerFunc(handlers.Sign.SignUpPost))
+	r.Post("/sign/in", newHandlerFunc(handlers.Sign.SignInPost))
 
-	r.Get("/sign", newHandlerFunc(handlers.SignHandler.SignGet))
-	r.Post("/sign/up", newHandlerFunc(handlers.SignHandler.SignUpPost))
-	r.Post("/sign/in", newHandlerFunc(handlers.SignHandler.SignInPost))
+	r.Get("/home", newHandlerFunc(handlers.Home.HomeGet))
 }
 
 func newHandlerFunc(h handlerWithError) http.HandlerFunc {

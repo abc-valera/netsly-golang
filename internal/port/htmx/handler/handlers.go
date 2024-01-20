@@ -7,8 +7,9 @@ import (
 )
 
 type Handlers struct {
-	ErrorHandler ErrorHandler
-	SignHandler  SignHandler
+	Error Error
+	Sign  Sign
+	Home  Home
 }
 
 func NewHandlers(
@@ -19,13 +20,18 @@ func NewHandlers(
 	if err != nil {
 		return Handlers{}, err
 	}
-	signHandler, err := NewSignHandler(templateFS, usecases.SignUseCase)
+	signHandler, err := NewSign(templateFS, usecases.SignUseCase)
+	if err != nil {
+		return Handlers{}, err
+	}
+	homeHandler, err := NewHome(templateFS)
 	if err != nil {
 		return Handlers{}, err
 	}
 
 	return Handlers{
-		ErrorHandler: errorHandler,
-		SignHandler:  signHandler,
+		Error: errorHandler,
+		Sign:  signHandler,
+		Home:  homeHandler,
 	}, nil
 }

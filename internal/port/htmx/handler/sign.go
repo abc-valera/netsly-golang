@@ -7,31 +7,32 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
 	"github.com/abc-valera/flugo-api-golang/internal/port/htmx/handler/common"
+	"github.com/abc-valera/flugo-api-golang/internal/port/htmx/handler/cookie"
 )
 
-type SignHandler struct {
+type Sign struct {
 	t common.Templates
 	application.SignUseCase
 }
 
-func NewSignHandler(templateFS fs.FS, signUseCase application.SignUseCase) (SignHandler, error) {
+func NewSign(templateFS fs.FS, signUseCase application.SignUseCase) (Sign, error) {
 	t, err := common.NewTemplates(false, templateFS,
 		[]string{"sign/index", "layout/base"},
 	)
 	if err != nil {
-		return SignHandler{}, err
+		return Sign{}, err
 	}
-	return SignHandler{
+	return Sign{
 		t:           t,
 		SignUseCase: signUseCase,
 	}, nil
 }
 
-func (h SignHandler) SignGet(w http.ResponseWriter, r *http.Request) error {
+func (h Sign) SignGet(w http.ResponseWriter, r *http.Request) error {
 	return h.t.Render(w, "sign/index", nil)
 }
 
-func (h SignHandler) SignUpPost(w http.ResponseWriter, r *http.Request) error {
+func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {
 		return codeerr.NewInternal(err)
@@ -45,10 +46,23 @@ func (h SignHandler) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
+	resp, err := h.SignUseCase.SignIn(r.Context(), application.SignInRequest{
+		Email:    r.FormValue("email"),
+		Password: r.FormValue("password"),
+	})
+	if err != nil {
+		return err
+	}
+	_ = resp
+
+	cookie.Set(w, cookie.AccessTokenKey, resp.AccessToken)
+	cookie.Set(w, cookie.RefreshTokenKey, resp.RefreshToken)
+
+	http.Redirect(w, r, "/home", http.StatusMovedPermanently)
 	return nil
 }
 
-func (h SignHandler) SignInPost(w http.ResponseWriter, r *http.Request) error {
+func (h Sign) SignInPost(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {
 		return codeerr.NewInternal(err)
@@ -61,7 +75,10 @@ func (h SignHandler) SignInPost(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	_ = resp
 
+	cookie.Set(w, cookie.AccessTokenKey, resp.AccessToken)
+	cookie.Set(w, cookie.RefreshTokenKey, resp.RefreshToken)
+
+	http.Redirect(w, r, "/home", http.StatusMovedPermanently)
 	return nil
 }
