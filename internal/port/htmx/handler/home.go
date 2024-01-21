@@ -4,26 +4,20 @@ import (
 	"io/fs"
 	"net/http"
 
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/port/htmx/handler/common"
 	"github.com/abc-valera/flugo-api-golang/internal/port/htmx/handler/cookie"
 )
 
 type Home struct {
-	t common.Templates
+	homeIndex common.ITemplate
 }
 
 func NewHome(
 	templateFS fs.FS,
 ) (Home, error) {
-	t, err := common.NewTemplates(false, templateFS,
-		[]string{"home/index", "layout/base"},
-	)
-	if err != nil {
-		return Home{}, err
-	}
-
 	return Home{
-		t: t,
+		homeIndex: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "home/index", "layout/base")),
 	}, nil
 }
 
@@ -33,7 +27,7 @@ func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return h.t.Render(w, "home/index", map[string]any{
+	return h.homeIndex.Render(w, map[string]any{
 		"AccessToken": access,
 	})
 }

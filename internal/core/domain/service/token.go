@@ -3,12 +3,12 @@ package service
 import (
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 )
 
 var (
-	ErrInvalidToken = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid token")
-	ErrExpiredToken = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided expired token")
+	ErrInvalidToken = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid token")
+	ErrExpiredToken = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided expired token")
 )
 
 type ITokenMaker interface {
@@ -32,10 +32,10 @@ type Payload struct {
 
 func NewPayload(userID string, isRefresh bool, duration time.Duration) (Payload, error) {
 	if userID == "" {
-		return Payload{}, codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID for the token")
+		return Payload{}, coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID for the token")
 	}
 	if duration == 0 {
-		return Payload{}, codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid token duration")
+		return Payload{}, coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid token duration")
 	}
 
 	return Payload{

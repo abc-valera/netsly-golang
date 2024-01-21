@@ -1,12 +1,12 @@
 package model
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model/common"
 )
 
 var (
-	ErrCommentNotFound = codeerr.NewMessage(codeerr.CodeNotFound, "Comment not found")
+	ErrCommentNotFound = coderr.NewMessage(coderr.CodeNotFound, "Comment not found")
 )
 
 type Comment struct {

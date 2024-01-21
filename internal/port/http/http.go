@@ -5,7 +5,7 @@ import (
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
@@ -49,7 +49,7 @@ func RunServer(
 	// Init ogen server
 	server, err := ogen.NewServer(ogenHandler, securityHandler)
 	if err != nil {
-		return codeerr.NewInternal(err)
+		return coderr.NewInternal(err)
 	}
 	// Init middlewares
 	loggingMiddleware := middleware.NewLoggingMiddleware()
@@ -66,7 +66,7 @@ func RunServer(
 	// Start HTTP server
 	service.Log.Info("Starting HTTP server on " + port)
 	if err := http.ListenAndServe(port, r); err != nil {
-		return codeerr.NewInternal(err)
+		return coderr.NewInternal(err)
 	}
 
 	return nil

@@ -3,18 +3,18 @@ package domain
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain/common"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
 )
 
 var (
-	ErrJokeIDInvalid          = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid joke ID")
-	ErrJokeUserIDInvalid      = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID for joke")
-	ErrJokeTitleInvalid       = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid title")
-	ErrJokeTextInvalid        = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid text")
-	ErrJokeExplanationInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid explanation")
+	ErrJokeIDInvalid          = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid joke ID")
+	ErrJokeUserIDInvalid      = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID for joke")
+	ErrJokeTitleInvalid       = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid title")
+	ErrJokeTextInvalid        = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid text")
+	ErrJokeExplanationInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid explanation")
 )
 
 type Joke struct {

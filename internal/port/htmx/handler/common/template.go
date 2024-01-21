@@ -7,7 +7,8 @@ import (
 	"io/fs"
 	"strings"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/config"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 )
 
 type ITemplate interface {
@@ -26,7 +27,7 @@ type prodTemplate struct {
 func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	// Check if filenames is empty
 	if len(filenames) == 0 {
-		return prodTemplate{}, codeerr.NewInternal(fmt.Errorf("no filenames provided"))
+		return prodTemplate{}, coderr.NewInternal(fmt.Errorf("no filenames provided"))
 	}
 	// Add .html extension if not present (this allows to pass filenames without extension)
 	for i, filename := range filenames {
@@ -38,7 +39,7 @@ func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	// Parse template
 	t, err := template.ParseFS(fs, filenames...)
 	if err != nil {
-		return prodTemplate{}, codeerr.NewInternal(err)
+		return prodTemplate{}, coderr.NewInternal(err)
 	}
 
 	// Get executeName
@@ -56,7 +57,7 @@ func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 // Render executes the template with the given data.
 func (t prodTemplate) Render(wr io.Writer, data interface{}) error {
 	if t.tmpl == nil {
-		return codeerr.NewInternal(fmt.Errorf("template is nil"))
+		return coderr.NewInternal(fmt.Errorf("template is nil"))
 	}
 	return t.tmpl.ExecuteTemplate(wr, t.executeName, data)
 }
@@ -74,7 +75,7 @@ type devTemplate struct {
 func newDevTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	// Check if filenames is empty
 	if len(filenames) == 0 {
-		return prodTemplate{}, codeerr.NewInternal(fmt.Errorf("no filenames provided"))
+		return prodTemplate{}, coderr.NewInternal(fmt.Errorf("no filenames provided"))
 	}
 	// Add .html extension if not present (this allows to pass filenames without extension)
 	for i, filename := range filenames {
@@ -91,7 +92,7 @@ func newDevTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 func (t devTemplate) Render(wr io.Writer, data interface{}) error {
 	tmpl, err := template.ParseFS(t.fs, t.filenames...)
 	if err != nil {
-		return codeerr.NewInternal(err)
+		return coderr.NewInternal(err)
 	}
 	// Get executeName
 	executeName := t.filenames[0]
@@ -101,40 +102,9 @@ func (t devTemplate) Render(wr io.Writer, data interface{}) error {
 	return tmpl.ExecuteTemplate(wr, executeName, data)
 }
 
-type Templates map[string]ITemplate
-
-// NewTemplates creates a new map of Template instances.
-// It accepts a slice of filenames.
-func NewTemplates(isProd bool, fs fs.FS, filenamesSlices ...[]string) (Templates, error) {
-	templates := make(map[string]ITemplate)
-	for _, filenames := range filenamesSlices {
-		if templates[filenames[0]] != nil {
-			return nil, codeerr.NewInternal(fmt.Errorf("template %s already exists", filenames[0]))
-		}
-		var (
-			t   ITemplate
-			err error
-		)
-		if isProd {
-			t, err = newProdTemplate(fs, filenames...)
-		} else {
-			t, err = newDevTemplate(fs, filenames...)
-		}
-		if err != nil {
-			return nil, err
-		}
-		templates[filenames[0]] = t
+func NewTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
+	if config.Mode == config.DevMode {
+		return newDevTemplate(fs, filenames...)
 	}
-	return templates, nil
-}
-
-// Render executes the template by its name with the given data.
-func (t Templates) Render(wr io.Writer, name string, data interface{}) error {
-	if !strings.HasSuffix(name, ".html") {
-		name = name + ".html"
-	}
-	if t[name] == nil {
-		return codeerr.NewInternal(fmt.Errorf("template %s not found", name))
-	}
-	return t[name].Render(wr, data)
+	return newProdTemplate(fs, filenames...)
 }

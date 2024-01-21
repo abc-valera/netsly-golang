@@ -1,9 +1,9 @@
 package service
 
-import "github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+import "github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 
 var (
-	ErrInvalidPassword = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided password is invalid")
+	ErrInvalidPassword = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided password is invalid")
 )
 
 type IPasswordMaker interface {

@@ -1,14 +1,14 @@
 package model
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model/common"
 )
 
 var (
-	ErrJokeNotFound = codeerr.NewMessage(codeerr.CodeNotFound, "Joke not found")
+	ErrJokeNotFound = coderr.NewMessage(coderr.CodeNotFound, "Joke not found")
 
-	ErrJokeOwnerTitleAlreadyExists = codeerr.NewMessage(codeerr.CodeAlreadyExists, "Joke with such title already exists by such user")
+	ErrJokeOwnerTitleAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "Joke with such title already exists by such user")
 )
 
 type Joke struct {

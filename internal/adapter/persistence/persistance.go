@@ -1,11 +1,13 @@
 package persistence
 
 import (
+	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	entCommand "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/command"
 	entQuery "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/query"
 	entTx "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/transactioneer"
 
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent"
+	entImpl "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/transactioneer"
@@ -17,12 +19,11 @@ func NewCommandsQueriesTx(databaseURL string) (
 	transactioneer.ITransactioneer,
 	error,
 ) {
-	client, err := ent.InitEntClient(databaseURL)
-	if err != nil {
-		return command.Commands{}, query.Queries{}, nil, err
-	}
+	// Init dependencies
+	client := coderr.Must[*ent.Client](entImpl.InitEntClient(databaseURL))
 
-	commands, err := command.NewCommands(
+	// Init commands
+	commands := coderr.Must[command.Commands](command.NewCommands(
 		entCommand.NewUserCommand(client),
 		entCommand.NewJokeCommand(client),
 		entCommand.NewLikeCommand(client),
@@ -30,12 +31,10 @@ func NewCommandsQueriesTx(databaseURL string) (
 		entCommand.NewChatRoomCommand(client),
 		entCommand.NewChatMemberCommand(client),
 		entCommand.NewChatMessageCommand(client),
-	)
-	if err != nil {
-		return command.Commands{}, query.Queries{}, nil, err
-	}
+	))
 
-	queries, err := query.NewQueries(
+	// Init queries
+	queries := coderr.Must[query.Queries](query.NewQueries(
 		entQuery.NewUserQuery(client),
 		entQuery.NewJokeQuery(client),
 		entQuery.NewLikeQuery(client),
@@ -43,11 +42,9 @@ func NewCommandsQueriesTx(databaseURL string) (
 		entQuery.NewChatRoomQuery(client),
 		entQuery.NewChatMemberQuery(client),
 		entQuery.NewChatMessageQuery(client),
-	)
-	if err != nil {
-		return command.Commands{}, query.Queries{}, nil, err
-	}
+	))
 
+	// Init transactioneer
 	tx := entTx.NewTransactioneer(client)
 
 	return commands, queries, tx, nil

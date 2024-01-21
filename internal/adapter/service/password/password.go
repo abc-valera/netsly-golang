@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 	"golang.org/x/crypto/argon2"
 )
@@ -53,7 +53,7 @@ func (pm passwordMaker) CheckPassword(password, encodedHash string) error {
 	// Extract the parameters, salt and derived key from the encoded password hash.
 	salt, hash, err := decodeHash(encodedHash)
 	if err != nil {
-		return codeerr.NewInternal(err)
+		return coderr.NewInternal(err)
 	}
 
 	// Derive the key from the other password using the same parameters.

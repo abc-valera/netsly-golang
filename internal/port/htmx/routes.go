@@ -3,7 +3,7 @@ package htmx
 import (
 	"net/http"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 	"github.com/abc-valera/flugo-api-golang/internal/port/htmx/handler"
 	"github.com/go-chi/chi/v5"
@@ -45,7 +45,7 @@ type handlerWithError func(w http.ResponseWriter, r *http.Request) error
 func (h handlerWithError) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err := h(w, r)
 	if err != nil {
-		code := codeerr.ErrorCode(err)
+		code := coderr.ErrorCode(err)
 
 		// These errors should be handled in handlers
 		// if code == codeerr.CodeInvalidArgument ||
@@ -54,12 +54,12 @@ func (h handlerWithError) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// 	return
 		// }
 
-		if code == codeerr.CodeUnauthenticated {
+		if code == coderr.CodeUnauthenticated {
 			http.Redirect(w, r, "/error/401", http.StatusUnauthorized)
 			return
 		}
 
-		if code == codeerr.CodePermissionDenied {
+		if code == coderr.CodePermissionDenied {
 			http.Redirect(w, r, "/error/403", http.StatusForbidden)
 			return
 		}

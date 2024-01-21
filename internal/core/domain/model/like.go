@@ -3,13 +3,13 @@ package model
 import (
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 )
 
 var (
-	ErrLikeNotFound = codeerr.NewMessage(codeerr.CodeNotFound, "Like not found")
+	ErrLikeNotFound = coderr.NewMessage(coderr.CodeNotFound, "Like not found")
 
-	ErrLikeAlreadyExists = codeerr.NewMessage(codeerr.CodeAlreadyExists, "Like already exists")
+	ErrLikeAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "Like already exists")
 )
 
 // Like represents a like entity.

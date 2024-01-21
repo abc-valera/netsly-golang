@@ -3,16 +3,16 @@ package domain
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain/common"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
 )
 
 var (
-	ErrChatMessageChatIDInvalid  = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid chat ID")
-	ErrChatMessageUserIDInvalid  = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID")
-	ErrChatMessageMessageInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid message")
+	ErrChatMessageChatIDInvalid  = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid chat ID")
+	ErrChatMessageUserIDInvalid  = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID")
+	ErrChatMessageMessageInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid message")
 )
 
 type ChatMessage struct {

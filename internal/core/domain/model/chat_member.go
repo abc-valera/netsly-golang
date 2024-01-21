@@ -3,13 +3,13 @@ package model
 import (
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 )
 
 var (
-	ErrChatMemberNotFound = codeerr.NewMessage(codeerr.CodeNotFound, "ChatMember not found")
+	ErrChatMemberNotFound = coderr.NewMessage(coderr.CodeNotFound, "ChatMember not found")
 
-	ErrChatMemberAlreadyExists = codeerr.NewMessage(codeerr.CodeAlreadyExists, "ChatMember already exists")
+	ErrChatMemberAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "ChatMember already exists")
 )
 
 // ChatMember is a struct that represents a chat member entity.

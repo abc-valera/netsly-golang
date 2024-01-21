@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 	"github.com/hibiken/asynq"
 )
@@ -15,10 +15,10 @@ func newAsynqServer(
 ) *asynq.Server {
 	// Custom error handler
 	errHandler := asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {
-		code := codeerr.ErrorCode(err)
-		msg := codeerr.ErrorMessage(err)
+		code := coderr.ErrorCode(err)
+		msg := coderr.ErrorMessage(err)
 		if code == "" {
-			code = codeerr.CodeInternal
+			code = coderr.CodeInternal
 		}
 		service.Log.Error("PROCESS TASK",
 			"code", code,

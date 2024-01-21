@@ -3,17 +3,17 @@ package domain
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain/common"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
 )
 
 var (
-	ErrCommentIDInvalid     = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid comment ID")
-	ErrCommentUserIDInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID for comment")
-	ErrCommentJokeIDInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid joke ID for comment")
-	ErrCommentTextInvalid   = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid text")
+	ErrCommentIDInvalid     = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid comment ID")
+	ErrCommentUserIDInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID for comment")
+	ErrCommentJokeIDInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid joke ID for comment")
+	ErrCommentTextInvalid   = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid text")
 )
 
 type Comment struct {

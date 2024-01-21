@@ -5,37 +5,33 @@ import (
 	"net/http"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/port/htmx/handler/common"
 	"github.com/abc-valera/flugo-api-golang/internal/port/htmx/handler/cookie"
 )
 
 type Sign struct {
-	t common.Templates
+	signIndex common.ITemplate
+
 	application.SignUseCase
 }
 
 func NewSign(templateFS fs.FS, signUseCase application.SignUseCase) (Sign, error) {
-	t, err := common.NewTemplates(false, templateFS,
-		[]string{"sign/index", "layout/base"},
-	)
-	if err != nil {
-		return Sign{}, err
-	}
 	return Sign{
-		t:           t,
+		signIndex: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "sign/index", "layout/base")),
+
 		SignUseCase: signUseCase,
 	}, nil
 }
 
 func (h Sign) SignGet(w http.ResponseWriter, r *http.Request) error {
-	return h.t.Render(w, "sign/index", nil)
+	return h.signIndex.Render(w, nil)
 }
 
 func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {
-		return codeerr.NewInternal(err)
+		return coderr.NewInternal(err)
 	}
 
 	if err := h.SignUseCase.SignUp(r.Context(), application.SignUpRequest{
@@ -65,7 +61,7 @@ func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 func (h Sign) SignInPost(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {
-		return codeerr.NewInternal(err)
+		return coderr.NewInternal(err)
 	}
 
 	resp, err := h.SignUseCase.SignIn(r.Context(), application.SignInRequest{

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	ErrProvidedAccessToken = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Access token provided")
+	ErrProvidedAccessToken = coderr.NewMessage(coderr.CodeInvalidArgument, "Access token provided")
 )
 
 type SignUseCase struct {

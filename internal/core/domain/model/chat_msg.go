@@ -1,12 +1,12 @@
 package model
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model/common"
 )
 
 var (
-	ErrChatMessageNotFound = codeerr.NewMessage(codeerr.CodeNotFound, "ChatMessage not found")
+	ErrChatMessageNotFound = coderr.NewMessage(coderr.CodeNotFound, "ChatMessage not found")
 )
 
 type ChatMessage struct {

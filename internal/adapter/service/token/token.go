@@ -3,7 +3,7 @@ package token
 import (
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -40,7 +40,7 @@ func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Durat
 
 	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
-		return "", service.Payload{}, codeerr.NewInternal(err)
+		return "", service.Payload{}, coderr.NewInternal(err)
 	}
 
 	return tokenString, payload, nil
@@ -65,11 +65,11 @@ func (s *jwtToken) VerifyToken(token string) (service.Payload, error) {
 
 	issuedAt, err := time.Parse(time.RFC3339, claims["issued_at"].(string))
 	if err != nil {
-		return service.Payload{}, codeerr.NewInternal(err)
+		return service.Payload{}, coderr.NewInternal(err)
 	}
 	expiredAt, err := time.Parse(time.RFC3339, claims["expired_at"].(string))
 	if err != nil {
-		return service.Payload{}, codeerr.NewInternal(err)
+		return service.Payload{}, coderr.NewInternal(err)
 	}
 
 	var payload service.Payload

@@ -76,16 +76,22 @@ tasks:
     cmds:
       - go build -o build/flugo-http cmd/http/main.go
       - ./build/flugo-http
+    env:
+      CONFIG_PATH: env/.dev.env
 
   entrypoint:htmx:
     cmds:
       - go build -o build/flugo-htmx cmd/htmx/main.go
       - ./build/flugo-htmx
+    env:
+      CONFIG_PATH: env/.dev.env
 
   entrypoint:grpc:
     cmds:
       - go build -o build/flugo-grpc cmd/grpc/main.go
       - ./build/flugo-grpc
+    env:
+      CONFIG_PATH: env/.dev.env
 
   other:run_evans:
     cmds:

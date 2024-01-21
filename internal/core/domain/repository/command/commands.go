@@ -3,7 +3,7 @@ package command
 import (
 	"errors"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 )
 
 type Commands struct {
@@ -26,25 +26,25 @@ func NewCommands(
 	chatMessage IChatMessage,
 ) (Commands, error) {
 	if user == nil {
-		return Commands{}, codeerr.NewInternal(errors.New("user command is nil"))
+		return Commands{}, coderr.NewInternal(errors.New("user command is nil"))
 	}
 	if joke == nil {
-		return Commands{}, codeerr.NewInternal(errors.New("joke command is nil"))
+		return Commands{}, coderr.NewInternal(errors.New("joke command is nil"))
 	}
 	if like == nil {
-		return Commands{}, codeerr.NewInternal(errors.New("like command is nil"))
+		return Commands{}, coderr.NewInternal(errors.New("like command is nil"))
 	}
 	if comment == nil {
-		return Commands{}, codeerr.NewInternal(errors.New("comment command is nil"))
+		return Commands{}, coderr.NewInternal(errors.New("comment command is nil"))
 	}
 	if chatRoom == nil {
-		return Commands{}, codeerr.NewInternal(errors.New("chatRoom ommand is nil"))
+		return Commands{}, coderr.NewInternal(errors.New("chatRoom ommand is nil"))
 	}
 	if chatMember == nil {
-		return Commands{}, codeerr.NewInternal(errors.New("chatMember command is nil"))
+		return Commands{}, coderr.NewInternal(errors.New("chatMember command is nil"))
 	}
 	if chatMessage == nil {
-		return Commands{}, codeerr.NewInternal(errors.New("chatMessage command is nil"))
+		return Commands{}, coderr.NewInternal(errors.New("chatMessage command is nil"))
 	}
 	return Commands{
 		User:        user,

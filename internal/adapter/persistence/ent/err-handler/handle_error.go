@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 )
 
@@ -51,7 +51,7 @@ func HandleErr(err error) error {
 			return model.ErrChatMessageNotFound
 		}
 
-		return codeerr.NewMessage(codeerr.CodeNotFound, "")
+		return coderr.NewMessage(coderr.CodeNotFound, "")
 	}
 
 	// Unique constraint errors
@@ -88,8 +88,8 @@ func HandleErr(err error) error {
 			return model.ErrChatMemberAlreadyExists
 		}
 
-		return codeerr.NewMessage(codeerr.CodeAlreadyExists, "")
+		return coderr.NewMessage(coderr.CodeAlreadyExists, "")
 	}
 
-	return codeerr.NewInternal(err)
+	return coderr.NewInternal(err)
 }

@@ -1,4 +1,4 @@
-package codeerr
+package coderr
 
 import "errors"
 

@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 )
 
 type Services struct {
@@ -20,16 +20,16 @@ func NewServices(
 	messageBroker IMessageBroker,
 ) (Services, error) {
 	if emailSender == nil {
-		return Services{}, codeerr.NewInternal(errors.New("emailSender is nil"))
+		return Services{}, coderr.NewInternal(errors.New("emailSender is nil"))
 	}
 	if passwordMaker == nil {
-		return Services{}, codeerr.NewInternal(errors.New("passwordMaker is nil"))
+		return Services{}, coderr.NewInternal(errors.New("passwordMaker is nil"))
 	}
 	if tokenMaker == nil {
-		return Services{}, codeerr.NewInternal(errors.New("tokenMaker is nil"))
+		return Services{}, coderr.NewInternal(errors.New("tokenMaker is nil"))
 	}
 	if messageBroker == nil {
-		return Services{}, codeerr.NewInternal(errors.New("messageBroker is nil"))
+		return Services{}, coderr.NewInternal(errors.New("messageBroker is nil"))
 	}
 	return Services{
 		EmailSender:   emailSender,

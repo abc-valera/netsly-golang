@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 )
 
@@ -16,23 +16,23 @@ func NewErrorHandler() ErrorHandler {
 }
 
 func (h ErrorHandler) NewError(ctx context.Context, err error) *ogen.CodeErrorStatusCode {
-	code := codeerr.ErrorCode(err)
+	code := coderr.ErrorCode(err)
 	codeError := ogen.CodeError{
 		Code:    ogen.CodeErrorCode(code),
-		Message: codeerr.ErrorMessage(err),
+		Message: coderr.ErrorMessage(err),
 	}
 
-	if code == codeerr.CodeInvalidArgument ||
-		code == codeerr.CodeNotFound ||
-		code == codeerr.CodeAlreadyExists {
+	if code == coderr.CodeInvalidArgument ||
+		code == coderr.CodeNotFound ||
+		code == coderr.CodeAlreadyExists {
 		return &ogen.CodeErrorStatusCode{
 			StatusCode: 400,
 			Response:   codeError,
 		}
 	}
 
-	if code == codeerr.CodePermissionDenied ||
-		code == codeerr.CodeUnauthenticated {
+	if code == coderr.CodePermissionDenied ||
+		code == coderr.CodeUnauthenticated {
 		return &ogen.CodeErrorStatusCode{
 			StatusCode: 401,
 			Response:   codeError,

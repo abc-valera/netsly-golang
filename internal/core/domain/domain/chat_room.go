@@ -3,16 +3,16 @@ package domain
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain/common"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
 )
 
 var (
-	ErrChatRoomIDInvalid          = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid chat room ID")
-	ErrChatRoomNameInvalid        = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid chat room name")
-	ErrChatRoomDescriptionInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid chat room description")
+	ErrChatRoomIDInvalid          = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid chat room ID")
+	ErrChatRoomNameInvalid        = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid chat room name")
+	ErrChatRoomDescriptionInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid chat room description")
 )
 
 type ChatRoom struct {

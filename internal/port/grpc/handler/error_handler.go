@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -11,26 +11,26 @@ func handleErr(err error) error {
 		return nil
 	}
 
-	code := codeerr.ErrorCode(err)
-	msg := codeerr.ErrorMessage(err)
+	code := coderr.ErrorCode(err)
+	msg := coderr.ErrorMessage(err)
 
-	if code == codeerr.CodeInvalidArgument {
+	if code == coderr.CodeInvalidArgument {
 		return status.Error(codes.InvalidArgument, msg)
 	}
 
-	if code == codeerr.CodeNotFound {
+	if code == coderr.CodeNotFound {
 		return status.Error(codes.NotFound, msg)
 	}
 
-	if code == codeerr.CodeAlreadyExists {
+	if code == coderr.CodeAlreadyExists {
 		return status.Error(codes.AlreadyExists, msg)
 	}
 
-	if code == codeerr.CodePermissionDenied {
+	if code == coderr.CodePermissionDenied {
 		return status.Error(codes.PermissionDenied, msg)
 	}
 
-	if code == codeerr.CodeUnauthenticated {
+	if code == coderr.CodeUnauthenticated {
 		return status.Error(codes.Unauthenticated, msg)
 	}
 

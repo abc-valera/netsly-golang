@@ -1,11 +1,11 @@
 package spec
 
-import "github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+import "github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 
 var (
-	ErrInvalidOrder  = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Order must be 'asc' or 'desc'")
-	ErrInvalidLimit  = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Limit must be greater than 0")
-	ErrInvalidOffset = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Offset must be greater than 0")
+	ErrInvalidOrder  = coderr.NewMessage(coderr.CodeInvalidArgument, "Order must be 'asc' or 'desc'")
+	ErrInvalidLimit  = coderr.NewMessage(coderr.CodeInvalidArgument, "Limit must be greater than 0")
+	ErrInvalidOffset = coderr.NewMessage(coderr.CodeInvalidArgument, "Offset must be greater than 0")
 )
 
 // SelectParams represents query data for specifying select details.

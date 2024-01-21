@@ -15,7 +15,7 @@ import (
 func main() {
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
-		configPath = "env/.dev.env"
+		log.Fatal("Path to the .env config is not provided")
 	}
 	config, err := config.NewConfig(configPath)
 	if err != nil {

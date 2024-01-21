@@ -4,14 +4,14 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
 )
 
 var (
-	ErrLikeUserIDInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID for like")
-	ErrLikeJokeIDInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid joke ID for like")
+	ErrLikeUserIDInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID for like")
+	ErrLikeJokeIDInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid joke ID for like")
 )
 
 type Like struct {

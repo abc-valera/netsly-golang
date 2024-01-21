@@ -6,8 +6,19 @@ import (
 	"github.com/spf13/viper"
 )
 
+var Mode RunMode
+
+type RunMode string
+
+const (
+	DevMode  RunMode = "development"
+	ProdMode RunMode = "production"
+)
+
 // Contains all configuration variables
 type Config struct {
+	Mode RunMode `mapstructure:"MODE"`
+
 	HTMXPort     string `mapstructure:"HTMX_PORT"`
 	TemplatePath string `mapstructure:"TEMPLATE_PATH"`
 
@@ -43,5 +54,9 @@ func NewConfig(configPath string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Set the global mode variable
+	Mode = c.Mode
+
 	return &c, nil
 }

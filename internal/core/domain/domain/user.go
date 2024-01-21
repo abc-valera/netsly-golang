@@ -3,7 +3,7 @@ package domain
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/codeerr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain/common"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
@@ -12,12 +12,12 @@ import (
 )
 
 var (
-	ErrUserIDInvalid       = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid user ID")
-	ErrUserUsernameInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid username")
-	ErrUserEmailInvalid    = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid email")
-	ErrUserPasswordInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid hashed password")
-	ErrUserFullnameInvalid = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid fullname")
-	ErrUserStatusInvalid   = codeerr.NewMessage(codeerr.CodeInvalidArgument, "Provided invalid status")
+	ErrUserIDInvalid       = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID")
+	ErrUserUsernameInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid username")
+	ErrUserEmailInvalid    = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid email")
+	ErrUserPasswordInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid hashed password")
+	ErrUserFullnameInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid fullname")
+	ErrUserStatusInvalid   = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid status")
 )
 
 // User is responsible for validation and handling user domain logic
