@@ -31,6 +31,7 @@ tasks:
   generate:htmx:tailwindcss:
     cmds:
       - npx tailwindcss
+        -c internal/port/htmx/tailwind.config.js
         -i internal/port/htmx/static/style/input.css
         -o internal/port/htmx/static/style/style.css
 

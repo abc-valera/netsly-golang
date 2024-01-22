@@ -832,34 +832,6 @@ video {
   opacity: 0.4;
 }
 
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-.open\:animate-fade-in[open] {
-  animation: fade-in 0.5s ease-in-out;
-}
-
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-.open\:backdrop\:animate-fade-in[open]::backdrop {
-  animation: fade-in 0.5s ease-in-out;
-}
-
 .hover\:bg-green-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(22 163 74 / var(--tw-bg-opacity));
