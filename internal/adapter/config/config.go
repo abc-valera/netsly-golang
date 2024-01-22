@@ -1,62 +1,112 @@
 package config
 
 import (
+	"errors"
+	"os"
 	"time"
 
-	"github.com/spf13/viper"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 )
 
-var Mode RunMode
-
-type RunMode string
+var Mode string
 
 const (
-	DevMode  RunMode = "development"
-	ProdMode RunMode = "production"
+	DevelopmentMode string = "dev"
+	ProductionMode  string = "prod"
+)
+
+const (
+	ModeKey = "MODE"
+
+	HTMXPortKey     = "HTMX_PORT"
+	TemplatePathKey = "TEMPLATE_PATH"
+
+	HTTPPortKey     = "HTTP_PORT"
+	HTTPDocsPathKey = "HTTP_DOCS_PATH"
+	WSPortKey       = "WS_PORT"
+
+	GRPCPortKey = "GRPC_PORT"
+
+	PostgresURLKey = "POSTGRES_URL"
+
+	RedisPortKey = "REDIS_PORT"
+	RedisUserKey = "REDIS_USER"
+	RedisPassKey = "REDIS_PASS"
+
+	AccessTokenDurationKey  = "ACCESS_TOKEN_DURATION"
+	RefreshTokenDurationKey = "REFRESH_TOKEN_DURATION"
+
+	EmailSenderAddressKey  = "EMAIL_SENDER_ADDRESS"
+	EmailSenderPasswordKey = "EMAIL_SENDER_PASSWORD"
 )
 
 // Contains all configuration variables
 type Config struct {
-	Mode RunMode `mapstructure:"MODE"`
+	HTMXPort     string
+	TemplatePath string
 
-	HTMXPort     string `mapstructure:"HTMX_PORT"`
-	TemplatePath string `mapstructure:"TEMPLATE_PATH"`
+	HTTPPort     string
+	HTTPDocsPath string
+	WSPort       string
 
-	HTTPPort string `mapstructure:"HTTP_PORT"`
-	WSPort   string `mapstructure:"WS_PORT"`
-	GRPCPort string `mapstructure:"GRPC_PORT"`
+	GRPCPort string
 
-	HTTPDocsPath string `mapstructure:"HTTP_DOCS_PATH"`
+	DatabaseURL string
 
-	DatabaseURL string `mapstructure:"DATABASE_URL"`
+	RedisPort string
+	RedisUser string
+	RedisPass string
 
-	RedisPort string `mapstructure:"REDIS_PORT"`
-	RedisUser string `mapstructure:"REDIS_USER"`
-	RedisPass string `mapstructure:"REDIS_PASS"`
+	AccessTokenDuration  time.Duration
+	RefreshTokenDuration time.Duration
 
-	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
-	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
-
-	EmailSenderAddress  string `mapstructure:"EMAIL_SENDER_ADDRESS"`
-	EmailSenderPassword string `mapstructure:"EMAIL_SENDER_PASSWORD"`
+	EmailSenderAddress  string
+	EmailSenderPassword string
 }
 
-func NewConfig(configPath string) (*Config, error) {
-	viper.SetConfigFile(configPath)
-	// Override variables from file with the environmet variables
-	viper.AutomaticEnv()
-	c := Config{}
-	err := viper.ReadInConfig()
-	if err != nil {
-		return nil, err
-	}
-	err = viper.Unmarshal(&c)
-	if err != nil {
-		return nil, err
+func NewConfig(configPath string) (Config, error) {
+	mode := os.Getenv("MODE")
+	if mode == "dev" || mode == "prod" {
+		Mode = mode
+	} else {
+		return Config{}, coderr.NewInternal(errors.New("'MODE' environmental variable is not set"))
 	}
 
-	// Set the global mode variable
-	Mode = c.Mode
+	config := Config{}
 
-	return &c, nil
+	config.HTMXPort = os.Getenv(HTMXPortKey)
+	config.TemplatePath = os.Getenv(TemplatePathKey)
+
+	config.HTTPPort = os.Getenv(HTTPPortKey)
+	config.HTTPDocsPath = os.Getenv(HTTPDocsPathKey)
+	config.WSPort = os.Getenv(WSPortKey)
+
+	config.GRPCPort = os.Getenv(GRPCPortKey)
+
+	config.DatabaseURL = os.Getenv(PostgresURLKey)
+
+	config.RedisPort = os.Getenv(RedisPortKey)
+	config.RedisUser = os.Getenv(RedisUserKey)
+	config.RedisPass = os.Getenv(RedisPassKey)
+
+	if accessTokenDurationEnv := os.Getenv(AccessTokenDurationKey); accessTokenDurationEnv != "" {
+		accessTokenDuration, err := time.ParseDuration(accessTokenDurationEnv)
+		if err != nil {
+			return Config{}, coderr.NewInternal(errors.New("invalid value for 'ACCESS_TOKEN_DURATION' environmental variable"))
+		}
+		config.AccessTokenDuration = accessTokenDuration
+	}
+
+	if refreshTokenDurationEnv := os.Getenv(RefreshTokenDurationKey); refreshTokenDurationEnv != "" {
+		refreshTokenDuration, err := time.ParseDuration(refreshTokenDurationEnv)
+		if err != nil {
+			return Config{}, coderr.NewInternal(errors.New("invalid value for 'REFRESH_TOKEN_DURATION' environmental variable"))
+		}
+		config.RefreshTokenDuration = refreshTokenDuration
+	}
+
+	config.EmailSenderAddress = os.Getenv(EmailSenderAddressKey)
+	config.EmailSenderPassword = os.Getenv(EmailSenderPasswordKey)
+
+	return config, nil
 }

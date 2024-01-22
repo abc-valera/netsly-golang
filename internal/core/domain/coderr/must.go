@@ -1,16 +1,14 @@
 package coderr
 
 import (
-	"fmt"
-	"os"
+	"github.com/gofiber/fiber/v2/log"
 )
 
 // Must panics if err is not nil and stops program execution
 func Must[T any](val T, err error) T {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println("Fatal error occured: ", r)
-			os.Exit(1)
+			log.Fatal("Fatal error occured: ", r)
 		}
 	}()
 	if err != nil {

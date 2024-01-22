@@ -1,4 +1,4 @@
-package query
+package entquery
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmember"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/chatroom"
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/dto"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/dto"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query/spec"
@@ -66,4 +66,5 @@ func (c chatRoomQuery) SearchAllByName(ctx context.Context, keyword string, para
 	query.Offset(params.Offset)
 
 	return dto.FromEntChatRoomsWithErrHandle(query.All(ctx))
+
 }

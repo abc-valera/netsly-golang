@@ -103,7 +103,7 @@ func (t devTemplate) Render(wr io.Writer, data interface{}) error {
 }
 
 func NewTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
-	if config.Mode == config.DevMode {
+	if config.Mode == config.DevelopmentMode {
 		return newDevTemplate(fs, filenames...)
 	}
 	return newProdTemplate(fs, filenames...)

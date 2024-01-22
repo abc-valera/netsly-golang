@@ -1,4 +1,4 @@
-package query
+package entquery
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/dto"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/dto"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query/spec"

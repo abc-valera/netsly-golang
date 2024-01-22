@@ -1,4 +1,4 @@
-package errhandler
+package errors
 
 import (
 	"strings"

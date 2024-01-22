@@ -15,10 +15,10 @@ type Home struct {
 
 func NewHome(
 	templateFS fs.FS,
-) (Home, error) {
+) Home {
 	return Home{
 		homeIndex: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "home/index", "layout/base")),
-	}, nil
+	}
 }
 
 func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {

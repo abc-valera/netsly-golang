@@ -2,6 +2,7 @@ package command
 
 import (
 	"errors"
+	"log"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 )
@@ -24,28 +25,29 @@ func NewCommands(
 	chatRoom IChatRoom,
 	chatMember IChatMember,
 	chatMessage IChatMessage,
-) (Commands, error) {
+) Commands {
 	if user == nil {
-		return Commands{}, coderr.NewInternal(errors.New("user command is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("user command is nil")))
 	}
 	if joke == nil {
-		return Commands{}, coderr.NewInternal(errors.New("joke command is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("joke command is nil")))
 	}
 	if like == nil {
-		return Commands{}, coderr.NewInternal(errors.New("like command is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("like command is nil")))
 	}
 	if comment == nil {
-		return Commands{}, coderr.NewInternal(errors.New("comment command is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("comment command is nil")))
 	}
 	if chatRoom == nil {
-		return Commands{}, coderr.NewInternal(errors.New("chatRoom ommand is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("chatRoom ommand is nil")))
 	}
 	if chatMember == nil {
-		return Commands{}, coderr.NewInternal(errors.New("chatMember command is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("chatMember command is nil")))
 	}
 	if chatMessage == nil {
-		return Commands{}, coderr.NewInternal(errors.New("chatMessage command is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("chatMessage command is nil")))
 	}
+
 	return Commands{
 		User:        user,
 		Joke:        joke,
@@ -54,5 +56,5 @@ func NewCommands(
 		ChatRoom:    chatRoom,
 		ChatMember:  chatMember,
 		ChatMessage: chatMessage,
-	}, nil
+	}
 }

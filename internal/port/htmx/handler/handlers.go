@@ -15,23 +15,10 @@ type Handlers struct {
 func NewHandlers(
 	templateFS fs.FS,
 	usecases application.UseCases,
-) (Handlers, error) {
-	errorHandler, err := NewErrorHandler(templateFS)
-	if err != nil {
-		return Handlers{}, err
-	}
-	signHandler, err := NewSign(templateFS, usecases.SignUseCase)
-	if err != nil {
-		return Handlers{}, err
-	}
-	homeHandler, err := NewHome(templateFS)
-	if err != nil {
-		return Handlers{}, err
-	}
-
+) Handlers {
 	return Handlers{
-		Error: errorHandler,
-		Sign:  signHandler,
-		Home:  homeHandler,
-	}, nil
+		Error: NewErrorHandler(templateFS),
+		Sign:  NewSign(templateFS, usecases.SignUseCase),
+		Home:  NewHome(templateFS),
+	}
 }

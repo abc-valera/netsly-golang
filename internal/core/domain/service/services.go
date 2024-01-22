@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"log"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 )
@@ -14,27 +15,34 @@ type Services struct {
 }
 
 func NewServices(
+	logger ILogger,
 	emailSender IEmailSender,
 	passwordMaker IPasswordMaker,
 	tokenMaker ITokenMaker,
 	messageBroker IMessageBroker,
-) (Services, error) {
+) Services {
+	if logger == nil {
+		log.Fatal(coderr.NewInternal(errors.New("logger is nil")))
+	}
 	if emailSender == nil {
-		return Services{}, coderr.NewInternal(errors.New("emailSender is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("email sender is nil")))
 	}
 	if passwordMaker == nil {
-		return Services{}, coderr.NewInternal(errors.New("passwordMaker is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("password maker is nil")))
 	}
 	if tokenMaker == nil {
-		return Services{}, coderr.NewInternal(errors.New("tokenMaker is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("token maker is nil")))
 	}
 	if messageBroker == nil {
-		return Services{}, coderr.NewInternal(errors.New("messageBroker is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("message broker is nil")))
 	}
+
+	Log = logger
+
 	return Services{
 		EmailSender:   emailSender,
 		PasswordMaker: passwordMaker,
 		TokenMaker:    tokenMaker,
 		MessageBroker: messageBroker,
-	}, nil
+	}
 }

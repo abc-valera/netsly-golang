@@ -2,6 +2,7 @@ package query
 
 import (
 	"errors"
+	"log"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 )
@@ -24,28 +25,29 @@ func NewQueries(
 	chatRoom IChatRoom,
 	chatMember IChatMember,
 	chatMessage IChatMessage,
-) (Queries, error) {
+) Queries {
 	if user == nil {
-		return Queries{}, coderr.NewInternal(errors.New("user query is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("user query is nil")))
 	}
 	if joke == nil {
-		return Queries{}, coderr.NewInternal(errors.New("joke query is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("joke query is nil")))
 	}
 	if like == nil {
-		return Queries{}, coderr.NewInternal(errors.New("like query is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("like query is nil")))
 	}
 	if comment == nil {
-		return Queries{}, coderr.NewInternal(errors.New("comment query is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("comment query is nil")))
 	}
 	if chatRoom == nil {
-		return Queries{}, coderr.NewInternal(errors.New("chatRoom query is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("chatRoom query is nil")))
 	}
 	if chatMember == nil {
-		return Queries{}, coderr.NewInternal(errors.New("chatMember query is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("chatMember query is nil")))
 	}
 	if chatMessage == nil {
-		return Queries{}, coderr.NewInternal(errors.New("chatMessage query is nil"))
+		log.Fatal(coderr.NewInternal(errors.New("chatMessage query is nil")))
 	}
+
 	return Queries{
 		User:        user,
 		Joke:        joke,
@@ -54,5 +56,5 @@ func NewQueries(
 		ChatRoom:    chatRoom,
 		ChatMember:  chatMember,
 		ChatMessage: chatMessage,
-	}, nil
+	}
 }

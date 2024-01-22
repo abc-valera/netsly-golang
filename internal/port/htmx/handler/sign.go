@@ -16,12 +16,12 @@ type Sign struct {
 	application.SignUseCase
 }
 
-func NewSign(templateFS fs.FS, signUseCase application.SignUseCase) (Sign, error) {
+func NewSign(templateFS fs.FS, signUseCase application.SignUseCase) Sign {
 	return Sign{
 		signIndex: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "sign/index", "layout/base")),
 
 		SignUseCase: signUseCase,
-	}, nil
+	}
 }
 
 func (h Sign) SignGet(w http.ResponseWriter, r *http.Request) error {

@@ -1,11 +1,11 @@
-package transactioneer
+package enttransactioneer
 
 import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 
-	errhandler "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/err-handler"
+	errhandler "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/transactioneer"
 )
 

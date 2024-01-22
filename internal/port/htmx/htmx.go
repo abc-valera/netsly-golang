@@ -22,13 +22,10 @@ func RunServer(
 	usecases application.UseCases,
 ) error {
 	// Init handlers
-	handlers, err := handler.NewHandlers(
+	handlers := handler.NewHandlers(
 		os.DirFS(templatePath),
 		usecases,
 	)
-	if err != nil {
-		return err
-	}
 
 	// Init router
 	r := chi.NewRouter()

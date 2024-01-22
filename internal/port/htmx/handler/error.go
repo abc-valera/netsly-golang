@@ -16,13 +16,13 @@ type Error struct {
 	error500 common.ITemplate
 }
 
-func NewErrorHandler(templateFS fs.FS) (Error, error) {
+func NewErrorHandler(templateFS fs.FS) Error {
 	return Error{
 		error401: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "error/401", "layout/base")),
 		error403: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "error/403", "layout/base")),
 		error404: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "error/404", "layout/base")),
 		error500: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "error/500", "layout/base")),
-	}, nil
+	}
 }
 
 func (h Error) Error401Get(w http.ResponseWriter, r *http.Request) error {

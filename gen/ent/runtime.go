@@ -10,7 +10,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent/schema"
+	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

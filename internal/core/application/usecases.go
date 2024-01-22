@@ -16,7 +16,7 @@ func NewUseCases(
 	tx transactioneer.ITransactioneer,
 	domains domain.Domains,
 	services service.Services,
-) (UseCases, error) {
+) UseCases {
 	return UseCases{
 		SignUseCase: NewSignUseCase(
 			queries.User,
@@ -26,5 +26,5 @@ func NewUseCases(
 			services.TokenMaker,
 			services.MessageBroker,
 		),
-	}, nil
+	}
 }
