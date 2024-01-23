@@ -51,17 +51,19 @@ func RunServer(
 	if err != nil {
 		return coderr.NewInternal(err)
 	}
-	// Init middlewares
-	loggingMiddleware := middleware.NewLoggingMiddleware()
 
 	// Init chi router
 	r := chi.NewRouter()
+
+	// Regiter middlewares
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+
 	// Host documentation (docs are located in docs/http/index.html)
 	r.Mount("/docs/", http.StripPrefix("/docs/", http.FileServer(http.Dir(docsPath))))
-	// Register middlewares
-	httpHandler := loggingMiddleware(server)
+
 	// Register routes
-	r.Mount("/", httpHandler)
+	r.Mount("/", server)
 
 	// Start HTTP server
 	service.Log.Info("Starting HTTP server on " + port)

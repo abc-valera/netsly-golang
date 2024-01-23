@@ -56,6 +56,10 @@ type SignUpRequest struct {
 // creates hash of the password provided by user,
 // then it sends welcome email to the users's email address,
 func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
+	// TODO: remove it
+	var tmp service.ILogger = nil
+	tmp.Debug("test")
+
 	txFunc := func(ctx context.Context) error {
 		if err := uc.userDomain.Create(ctx, domain.UserCreateRequest{
 			Username: req.Username,

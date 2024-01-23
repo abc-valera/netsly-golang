@@ -3,8 +3,8 @@ package common
 import (
 	"fmt"
 	"html/template"
-	"io"
 	"io/fs"
+	"net/http"
 	"strings"
 
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/config"
@@ -12,7 +12,7 @@ import (
 )
 
 type ITemplate interface {
-	Render(w io.Writer, data interface{}) error
+	Render(w http.ResponseWriter, data interface{}) error
 }
 
 // prodTemplate is a wrapper for template.prodTemplate.
@@ -55,10 +55,13 @@ func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 }
 
 // Render executes the template with the given data.
-func (t prodTemplate) Render(wr io.Writer, data interface{}) error {
+func (t prodTemplate) Render(wr http.ResponseWriter, data interface{}) error {
 	if t.tmpl == nil {
 		return coderr.NewInternal(fmt.Errorf("template is nil"))
 	}
+
+	wr.WriteHeader(http.StatusOK)
+
 	return t.tmpl.ExecuteTemplate(wr, t.executeName, data)
 }
 
@@ -89,11 +92,14 @@ func newDevTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	}, nil
 }
 
-func (t devTemplate) Render(wr io.Writer, data interface{}) error {
+func (t devTemplate) Render(wr http.ResponseWriter, data interface{}) error {
 	tmpl, err := template.ParseFS(t.fs, t.filenames...)
 	if err != nil {
 		return coderr.NewInternal(err)
 	}
+
+	// wr.WriteHeader(http.StatusOK)
+
 	// Get executeName
 	executeName := t.filenames[0]
 	if len(t.filenames) > 1 {

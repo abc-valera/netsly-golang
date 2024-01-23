@@ -29,6 +29,10 @@ func (h Sign) SignGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
+	// TODO: remove it
+	// var tmp service.ILogger = nil
+	// tmp.Debug("test")
+
 	err := r.ParseForm()
 	if err != nil {
 		return coderr.NewInternal(err)
