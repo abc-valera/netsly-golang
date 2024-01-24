@@ -12,7 +12,7 @@ COPY --from=builder /src/flugo /src/cmd/http/
 COPY .deploy.env .
 COPY docs docs
 ENV CONFIG_PATH /src/.deploy.env
-ENV HTTP_DOCS_PATH /src/docs/http
+ENV JSON_REST_API_DOCS_PATH /src/docs/http
 
 EXPOSE 3000
 

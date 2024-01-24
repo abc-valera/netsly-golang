@@ -15,43 +15,17 @@ const (
 	ProductionMode  string = "prod"
 )
 
-const (
-	ModeKey = "MODE"
-
-	HTMXPortKey     = "HTMX_PORT"
-	TemplatePathKey = "TEMPLATE_PATH"
-
-	HTTPPortKey     = "HTTP_PORT"
-	HTTPDocsPathKey = "HTTP_DOCS_PATH"
-	WSPortKey       = "WS_PORT"
-
-	GRPCPortKey = "GRPC_PORT"
-
-	PostgresURLKey = "POSTGRES_URL"
-
-	RedisPortKey = "REDIS_PORT"
-	RedisUserKey = "REDIS_USER"
-	RedisPassKey = "REDIS_PASS"
-
-	AccessTokenDurationKey  = "ACCESS_TOKEN_DURATION"
-	RefreshTokenDurationKey = "REFRESH_TOKEN_DURATION"
-
-	EmailSenderAddressKey  = "EMAIL_SENDER_ADDRESS"
-	EmailSenderPasswordKey = "EMAIL_SENDER_PASSWORD"
-)
-
 // Contains all configuration variables
 type Config struct {
-	HTMXPort     string
-	TemplatePath string
+	WebAppPort         string
+	WebAppTemplatePath string
 
-	HTTPPort     string
-	HTTPDocsPath string
-	WSPort       string
+	JsonRestApiPort string
+	JsonRestApiPath string
 
-	GRPCPort string
+	GRPCApiPort string
 
-	DatabaseURL string
+	PosrgresURL string
 
 	RedisPort string
 	RedisUser string
@@ -74,22 +48,21 @@ func NewConfig(configPath string) (Config, error) {
 
 	config := Config{}
 
-	config.HTMXPort = os.Getenv(HTMXPortKey)
-	config.TemplatePath = os.Getenv(TemplatePathKey)
+	config.WebAppPort = os.Getenv("WEB_APP_PORT")
+	config.WebAppTemplatePath = os.Getenv("WEB_APP_TEMPLATE_PATH")
 
-	config.HTTPPort = os.Getenv(HTTPPortKey)
-	config.HTTPDocsPath = os.Getenv(HTTPDocsPathKey)
-	config.WSPort = os.Getenv(WSPortKey)
+	config.JsonRestApiPort = os.Getenv("JSON_REST_API_PORT")
+	config.JsonRestApiPath = os.Getenv("JSON_REST_API_DOCS_PATH")
 
-	config.GRPCPort = os.Getenv(GRPCPortKey)
+	config.GRPCApiPort = os.Getenv("GRPC_API_PORT")
 
-	config.DatabaseURL = os.Getenv(PostgresURLKey)
+	config.PosrgresURL = os.Getenv("POSTGRES_URL")
 
-	config.RedisPort = os.Getenv(RedisPortKey)
-	config.RedisUser = os.Getenv(RedisUserKey)
-	config.RedisPass = os.Getenv(RedisPassKey)
+	config.RedisPort = os.Getenv("REDIS_PORT")
+	config.RedisUser = os.Getenv("REDIS_USER")
+	config.RedisPass = os.Getenv("REDIS_PASS")
 
-	if accessTokenDurationEnv := os.Getenv(AccessTokenDurationKey); accessTokenDurationEnv != "" {
+	if accessTokenDurationEnv := os.Getenv("ACCESS_TOKEN_DURATION"); accessTokenDurationEnv != "" {
 		accessTokenDuration, err := time.ParseDuration(accessTokenDurationEnv)
 		if err != nil {
 			return Config{}, coderr.NewInternal(errors.New("invalid value for 'ACCESS_TOKEN_DURATION' environmental variable"))
@@ -97,7 +70,7 @@ func NewConfig(configPath string) (Config, error) {
 		config.AccessTokenDuration = accessTokenDuration
 	}
 
-	if refreshTokenDurationEnv := os.Getenv(RefreshTokenDurationKey); refreshTokenDurationEnv != "" {
+	if refreshTokenDurationEnv := os.Getenv("REFRESH_TOKEN_DURATION"); refreshTokenDurationEnv != "" {
 		refreshTokenDuration, err := time.ParseDuration(refreshTokenDurationEnv)
 		if err != nil {
 			return Config{}, coderr.NewInternal(errors.New("invalid value for 'REFRESH_TOKEN_DURATION' environmental variable"))
@@ -105,8 +78,8 @@ func NewConfig(configPath string) (Config, error) {
 		config.RefreshTokenDuration = refreshTokenDuration
 	}
 
-	config.EmailSenderAddress = os.Getenv(EmailSenderAddressKey)
-	config.EmailSenderPassword = os.Getenv(EmailSenderPasswordKey)
+	config.EmailSenderAddress = os.Getenv("EMAIL_SENDER_ADDRESS")
+	config.EmailSenderPassword = os.Getenv("EMAIL_SENDER_PASSWORD")
 
 	return config, nil
 }

@@ -2,15 +2,35 @@
 
 ## Initial project setup
 
-### 1. Create .env (or .dev.env) file
+Create .env (or .dev.env) file. Project should be launched with the correct environment set.
 
-### 2. Initialize formatter for go templates
+## Formatters setup
+
+Prettier extension should be installed. And the .prettierrc file should be created in the project root.
+
+The contents of the .prettierrc should be as follows:
+
+```json
+{
+  "plugins": ["prettier-plugin-go-template", "prettier-plugin-tailwindcss"],
+  "overrides": [
+    {
+      "files": ["*.html"],
+      "options": {
+        "parser": "go-template"
+      }
+    }
+  ]
+}
+```
+
+### Golang Templates formatter
 
 https://github.com/NiklasPor/prettier-plugin-go-template
 
 Command to install prettier plugin: `npm install --save-dev prettier prettier-plugin-go-template`
 
-### 3. Initialize tailwind extension
+### Tailwind CSS formatter
 
 https://tailwindcss.com/docs/editor-setup
 
