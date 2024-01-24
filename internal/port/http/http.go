@@ -14,15 +14,15 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// RunServer runs HTTP server
-func RunServer(
+// NewServer returns HTTP server
+func NewServer(
 	port string,
 	docsPath string,
 	queries query.Queries,
 	domains domain.Domains,
 	services service.Services,
 	usecases application.UseCases,
-) error {
+) http.Server {
 	// Init handlers (ogenHandler implements ogen.Server interface)
 	ogenHandler := &struct {
 		handler.ErrorHandler
@@ -47,10 +47,7 @@ func RunServer(
 	securityHandler := handler.NewSecurityHandler(services.TokenMaker)
 
 	// Init ogen server
-	server, err := ogen.NewServer(ogenHandler, securityHandler)
-	if err != nil {
-		return coderr.NewInternal(err)
-	}
+	server := coderr.Must[*ogen.Server](ogen.NewServer(ogenHandler, securityHandler))
 
 	// Init chi router
 	r := chi.NewRouter()
@@ -65,11 +62,9 @@ func RunServer(
 	// Register routes
 	r.Mount("/", server)
 
-	// Start HTTP server
-	service.Log.Info("Starting HTTP server on " + port)
-	if err := http.ListenAndServe(port, r); err != nil {
-		return coderr.NewInternal(err)
+	// Init server
+	return http.Server{
+		Addr:    port,
+		Handler: r,
 	}
-
-	return nil
 }

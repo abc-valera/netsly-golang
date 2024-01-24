@@ -1,8 +1,13 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
+	"time"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/config"
@@ -22,7 +27,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/transactioneer"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
-	"github.com/abc-valera/flugo-api-golang/internal/port/http"
+	httpPort "github.com/abc-valera/flugo-api-golang/internal/port/http"
 )
 
 // services initializes all services
@@ -100,14 +105,35 @@ func main() {
 	// Init usecases
 	usecases := application.NewUseCases(queries, tx, domains, services)
 
-	if err := http.RunServer(
-		config.HTMXPort,
-		config.TemplatePath,
+	// Init server
+	server := httpPort.NewServer(
+		config.HTTPPort,
+		config.HTTPDocsPath,
 		queries,
 		domains,
 		services,
 		usecases,
-	); err != nil {
-		log.Fatal("Run server error: ", err)
+	)
+
+	// Run server
+	go func() {
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal("Run server error: ", err)
+		}
+	}()
+	service.Log.Info("HTTP server started", "port", config.HTTPPort)
+
+	// Stop program execution until receiving an interrupt signal
+	gracefulShutdown := make(chan os.Signal, 1)
+	signal.Notify(gracefulShutdown, os.Interrupt)
+	<-gracefulShutdown
+
+	// After receiving an interrupt signal, wait for all requests to be processed or 15 seconds
+	// and then shutdown the server
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(ctx); err != nil {
+		log.Fatal("Shutdown server error: ", err)
 	}
 }
