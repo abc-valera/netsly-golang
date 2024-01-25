@@ -3,6 +3,24 @@
 version: "3"
 
 tasks:
+  entrypoint:json-rest-api:
+    dotenv: ["env/.dev.env"]
+    cmds:
+      - go build -o build/json-rest-api cmd/json-rest-api/main.go
+      - ./build/json-rest-api
+
+  entrypoint:web-app:
+    dotenv: ["env/.dev.env"]
+    cmds:
+      - go build -o build/web-app cmd/web-app/main.go
+      - ./build/web-app
+
+  entrypoint:grpc-api:
+    dotenv: ["env/.dev.env"]
+    cmds:
+      - go build -o build/grpc-api cmd/grpc-api/main.go
+      - ./build/grpc-api
+
   generate:json-rest-api:main:
     desc: Generate docs and code for the HTTP port from the OpenAPI spec directory
     cmds:
@@ -13,15 +31,15 @@ tasks:
   generate:json-rest-api:single_openapi_config_file:
     cmds:
       - podman run --rm -v ${PWD}:/spec:Z
-        docker.io/redocly/cli bundle
+        redocly/cli bundle
         -o /spec/gen/openapi/openapi.yaml
         /spec/internal/port/json-rest-api/schema/openapi.yaml
 
   generate:json-rest-api:docs:
     cmds:
       - podman run --rm -v ${PWD}:/spec:Z
-        docker.io/redocly/cli build-docs
-        -o /spec/internal/port/json-rest-api/docs/index.html
+        redocly/cli build-docs
+        -o /spec/internal/port/json-rest-api/static/docs/index.html
         /spec/internal/port/json-rest-api/schema/openapi.yaml
 
   generate:json-rest-api:code:
@@ -51,45 +69,57 @@ tasks:
 
   infrastructure:up:
     cmds:
-      - podman rm -f flugo-db
-      - podman rm -f flugo-redis
       - task: infrastructure:run_postgres
       - task: infrastructure:run_redis
+
+  infrastructure:down:
+    cmds:
+      - podman rm -f flugo-postgres
+      - podman rm -f flugo-redis
 
   infrastructure:run_postgres:
     cmds:
       - podman run
-        --name flugo-db
+        --name flugo-postgres
+        --network flugo-network
         -p 5432:5432
         -e POSTGRES_USER=flugo
         -e POSTGRES_PASSWORD=flugo
         -e POSTGRES_DB=flugo
-        -d docker.io/library/postgres:15-alpine
+        -d library/postgres:15-alpine
 
   infrastructure:run_redis:
     cmds:
       - podman run
         --name flugo-redis
+        --network flugo-network
         -p 6379:6379
-        -d docker.io/redis/redis-stack:latest
+        -d redis/redis-stack:latest
 
-  entrypoint:json-rest-api:
-    dotenv: ["env/.dev.env"]
+  image:json-rest-api:build:
     cmds:
-      - go build -o build/json-rest-api cmd/json-rest-api/main.go
-      - ./build/json-rest-api
+      - podman build -t flugo/json-rest-api:latest -f docker/json-rest-api.Dockerfile .
 
-  entrypoint:web-app:
-    dotenv: ["env/.dev.env"]
+  image:json-rest-api:up:
     cmds:
-      - go build -o build/web-app cmd/web-app/main.go
-      - ./build/web-app
+      - podman run
+        --name flugo_json-rest-api
+        --network flugo-network
+        -p 3010:3010
+        --env-file env/.deploy.env
+        localhost/flugo/json-rest-api:latest
 
-  entrypoint:grpc-api:
-    dotenv: ["env/.dev.env"]
+  image:json-rest-api:down:
     cmds:
-      - go build -o build/grpc-api cmd/grpc-api/main.go
-      - ./build/grpc-api
+      - podman rm flugo_json-rest-api
+
+  compose:up:
+    cmds:
+      - podman-compose -f docker/dev.docker-compose.yml --env-file env/.dev.env up -d
+
+  compose:down:
+    cmds:
+      - podman-compose -f docker/dev.docker-compose.yml down
 
   other:run_evans:
     cmds:

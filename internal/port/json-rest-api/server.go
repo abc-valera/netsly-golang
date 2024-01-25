@@ -1,6 +1,7 @@
 package jsonrestapi
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
@@ -17,12 +18,19 @@ import (
 // NewServer returns HTTP server
 func NewServer(
 	port string,
-	docsPath string,
+	staticPath string,
 	queries query.Queries,
 	domains domain.Domains,
 	services service.Services,
 	usecases application.UseCases,
 ) http.Server {
+	if port == "" {
+		log.Fatal("port is not set")
+	}
+	if staticPath == "" {
+		log.Fatal("static path is not set")
+	}
+
 	// Init handlers (ogenHandler implements ogen.Server interface)
 	ogenHandler := &struct {
 		handler.ErrorHandler
@@ -56,8 +64,8 @@ func NewServer(
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	// Host documentation (docs are located in docs/http/index.html)
-	r.Mount("/docs/", http.StripPrefix("/docs/", http.FileServer(http.Dir(docsPath))))
+	// Host static files (docs are hosted in /static/docs/index.html)
+	r.Mount("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticPath))))
 
 	// Register routes
 	r.Mount("/", server)

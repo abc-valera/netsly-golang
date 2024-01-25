@@ -1,21 +1,23 @@
 version: "3.9"
 services:
-  flugo-api:
-    build:
-      context: .
-      dockerfile: ./dev.Dockerfile
+  json-rest-api:
+    image: localhost/flugo/json-rest-api:latest
     ports:
-      - "3000:3000"
+      - "3010:3010"
+    env_file:
+      - ../env/.deploy.env
     environment:
+      - POSTGRES_URL=postgres://flugo:flugo@flugo-postgres:5432/flugo?sslmode=disable
       - REDIS_PORT=flugo-redis:6379
-      - DATABASE_URL=postgres://flugo:flugo@flugo-db:5432/flugo?sslmode=disable
+      - REDIS_USER=flugo-redis
+      - REDIS_PASS=
     depends_on:
-      - flugo-db
+      - flugo-postgres
       - flugo-redis
     restart: always
 
   flugo-redis:
-    image: redis:7-alpine
+    image: docker.io/redis/redis-stack:latest
     ports:
       - "6379:6379"
     healthcheck:
@@ -24,8 +26,8 @@ services:
       timeout: 5s
       retries: 5
 
-  flugo-db:
-    image: postgres:15-alpine
+  flugo-postgres:
+    image: library/postgres:15-alpine
     ports:
       - "5432:5432"
     environment:

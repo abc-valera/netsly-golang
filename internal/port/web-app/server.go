@@ -1,6 +1,7 @@
 package webapp
 
 import (
+	"log"
 	"net/http"
 	"os"
 
@@ -21,6 +22,13 @@ func NewServer(
 	services service.Services,
 	usecases application.UseCases,
 ) http.Server {
+	if port == "" {
+		log.Fatal("port is not set")
+	}
+	if templatePath == "" {
+		log.Fatal("template path is not set")
+	}
+
 	// Init handlers
 	handlers := handler.NewHandlers(
 		os.DirFS(templatePath),

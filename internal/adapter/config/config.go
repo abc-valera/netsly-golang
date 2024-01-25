@@ -20,8 +20,8 @@ type Config struct {
 	WebAppPort         string
 	WebAppTemplatePath string
 
-	JsonRestApiPort string
-	JsonRestApiPath string
+	JsonRestApiPort       string
+	JsonRestApiStaticPath string
 
 	GRPCApiPort string
 
@@ -52,7 +52,7 @@ func NewConfig(configPath string) (Config, error) {
 	config.WebAppTemplatePath = os.Getenv("WEB_APP_TEMPLATE_PATH")
 
 	config.JsonRestApiPort = os.Getenv("JSON_REST_API_PORT")
-	config.JsonRestApiPath = os.Getenv("JSON_REST_API_DOCS_PATH")
+	config.JsonRestApiStaticPath = os.Getenv("JSON_REST_API_STATIC_PATH")
 
 	config.GRPCApiPort = os.Getenv("GRPC_API_PORT")
 

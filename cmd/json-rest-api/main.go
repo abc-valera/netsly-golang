@@ -108,7 +108,7 @@ func main() {
 	// Init server
 	server := jsonrestapi.NewServer(
 		config.JsonRestApiPort,
-		config.JsonRestApiPath,
+		config.JsonRestApiStaticPath,
 		queries,
 		domains,
 		services,
