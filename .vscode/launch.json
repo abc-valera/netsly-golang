@@ -10,7 +10,7 @@
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/json-rest-api",
-      "envFile": "${workspaceFolder}/env/.dev.env"
+      "envFile": "${workspaceFolder}/env/dev.env"
     },
     {
       "name": "web-app Debug Package",
@@ -18,7 +18,7 @@
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/web-app",
-      "envFile": "${workspaceFolder}/env/.dev.env"
+      "envFile": "${workspaceFolder}/env/dev.env"
     }
   ]
 }

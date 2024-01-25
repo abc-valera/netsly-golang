@@ -4,19 +4,19 @@ version: "3"
 
 tasks:
   entrypoint:json-rest-api:
-    dotenv: ["env/.dev.env"]
+    dotenv: ["env/dev.env"]
     cmds:
       - go build -o build/json-rest-api cmd/json-rest-api/main.go
       - ./build/json-rest-api
 
   entrypoint:web-app:
-    dotenv: ["env/.dev.env"]
+    dotenv: ["env/dev.env"]
     cmds:
       - go build -o build/web-app cmd/web-app/main.go
       - ./build/web-app
 
   entrypoint:grpc-api:
-    dotenv: ["env/.dev.env"]
+    dotenv: ["env/dev.env"]
     cmds:
       - go build -o build/grpc-api cmd/grpc-api/main.go
       - ./build/grpc-api
@@ -106,7 +106,7 @@ tasks:
         --name flugo_json-rest-api
         --network flugo-network
         -p 3010:3010
-        --env-file env/.deploy.env
+        --env-file env/deploy.env
         localhost/flugo/json-rest-api:latest
 
   image:json-rest-api:down:
@@ -115,7 +115,7 @@ tasks:
 
   compose:up:
     cmds:
-      - podman-compose -f docker/dev.docker-compose.yml --env-file env/.dev.env up -d
+      - podman-compose -f docker/dev.docker-compose.yml --env-file env/dev.env up -d
 
   compose:down:
     cmds:

@@ -2,7 +2,7 @@
 
 ## Initial project setup
 
-Create .env (or .dev.env) file. Project should be launched with the correct environment set.
+Create .env (or dev.env) file. Project should be launched with the correct environment set.
 
 ## Formatters setup
 

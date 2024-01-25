@@ -5,7 +5,7 @@ services:
     ports:
       - "3010:3010"
     env_file:
-      - ../env/.deploy.env
+      - ../env/deploy.env
     environment:
       - POSTGRES_URL=postgres://flugo:flugo@flugo-postgres:5432/flugo?sslmode=disable
       - REDIS_PORT=flugo-redis:6379
