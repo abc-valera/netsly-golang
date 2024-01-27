@@ -1,10 +1,8 @@
 package application
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/transactioneer"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/transactioneer"
 )
 
 type UseCases struct {
@@ -12,10 +10,10 @@ type UseCases struct {
 }
 
 func NewUseCases(
-	queries query.Queries,
+	queries domain.Queries,
 	tx transactioneer.ITransactioneer,
 	domains domain.Domains,
-	services service.Services,
+	services domain.Services,
 ) UseCases {
 	return UseCases{
 		SignUseCase: NewSignUseCase(

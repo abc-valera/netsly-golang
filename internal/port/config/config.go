@@ -6,16 +6,12 @@ import (
 	"time"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
 )
 
-var Mode string
-
-const (
-	DevelopmentMode string = "dev"
-	ProductionMode  string = "prod"
-)
-
-// Contains all configuration variables
+// Contains all configuration variables.
+//
+// Values are loaded from environmental variables.
 type Config struct {
 	WebAppPort         string
 	WebAppTemplatePath string
@@ -38,11 +34,14 @@ type Config struct {
 	EmailSenderPassword string
 }
 
-func NewConfig(configPath string) (Config, error) {
+func NewConfig() (Config, error) {
 	mode := os.Getenv("MODE")
-	if mode == "dev" || mode == "prod" {
-		Mode = mode
-	} else {
+	switch mode {
+	case "dev":
+		global.Mode = global.ModeDevelopment
+	case "prod":
+		global.Mode = global.ModeProduction
+	default:
 		return Config{}, coderr.NewInternal(errors.New("'MODE' environmental variable is not set"))
 	}
 

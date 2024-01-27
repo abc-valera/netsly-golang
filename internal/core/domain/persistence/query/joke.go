@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query/spec"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query/spec"
 )
 
 type IJoke interface {

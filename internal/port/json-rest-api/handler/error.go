@@ -5,7 +5,7 @@ import (
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
 )
 
 type ErrorHandler struct {
@@ -39,7 +39,7 @@ func (h ErrorHandler) NewError(ctx context.Context, err error) *ogen.CodeErrorSt
 		}
 	}
 
-	service.Log.Error("REQUEST_ERROR", "err", err.Error())
+	global.Log.Error("REQUEST_ERROR", "err", err.Error())
 	return &ogen.CodeErrorStatusCode{
 		StatusCode: 500,
 		Response:   codeError,

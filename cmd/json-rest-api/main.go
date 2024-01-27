@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/config"
 	entimpl "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl"
 	entcommand "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/ent-command"
 	entquery "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/ent-query"
@@ -21,17 +20,16 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/password"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/token"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/transactioneer"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/transactioneer"
+	"github.com/abc-valera/flugo-api-golang/internal/port/config"
 	jsonrestapi "github.com/abc-valera/flugo-api-golang/internal/port/json-rest-api"
 )
 
 // services initializes all services
-func services(config config.Config) service.Services {
+func services(config config.Config) domain.Services {
 	emailSender :=
 		email.NewDummyEmailSender()
 	logger :=
@@ -43,7 +41,7 @@ func services(config config.Config) service.Services {
 	broker :=
 		dummy.NewMessagingBroker(emailSender)
 
-	return service.NewServices(
+	return domain.NewServices(
 		logger,
 		emailSender,
 		passwordMaker,
@@ -54,15 +52,15 @@ func services(config config.Config) service.Services {
 
 // persistence initializes persistence
 func persistence(config config.Config) (
-	command.Commands,
-	query.Queries,
+	domain.Commands,
+	domain.Queries,
 	transactioneer.ITransactioneer,
 ) {
 	// Init dependencies
 	client := coderr.Must[*ent.Client](entimpl.InitEntClient(config.PosrgresURL))
 
 	// Init commands
-	commands := command.NewCommands(
+	commands := domain.NewCommands(
 		entcommand.NewUserCommand(client),
 		entcommand.NewJokeCommand(client),
 		entcommand.NewLikeCommand(client),
@@ -73,7 +71,7 @@ func persistence(config config.Config) (
 	)
 
 	// Init queries
-	queries := query.NewQueries(
+	queries := domain.NewQueries(
 		entquery.NewUserQuery(client),
 		entquery.NewJokeQuery(client),
 		entquery.NewLikeQuery(client),
@@ -91,7 +89,7 @@ func persistence(config config.Config) (
 
 func main() {
 	// Init config
-	config := coderr.Must[config.Config](config.NewConfig(os.Getenv("CONFIG_PATH")))
+	config := coderr.Must[config.Config](config.NewConfig())
 
 	// Init services
 	services := services(config)
@@ -121,7 +119,7 @@ func main() {
 			log.Fatal("Run server error: ", err)
 		}
 	}()
-	service.Log.Info("json-rest-api server started", "port", config.JsonRestApiPort)
+	global.Log.Info("json-rest-api server started", "port", config.JsonRestApiPort)
 
 	// Stop program execution until receiving an interrupt signal
 	gracefulShutdown := make(chan os.Signal, 1)

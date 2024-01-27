@@ -4,19 +4,19 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domainval"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query"
 	"github.com/abc-valera/flugo-api-golang/internal/port/json-rest-api/dto"
 )
 
 type MeJokesHandler struct {
 	jokeQuery  query.IJoke
-	jokeDomain domain.Joke
+	jokeDomain domainval.Joke
 }
 
 func NewMeJokesHandler(
 	jokeQuery query.IJoke,
-	jokeDomain domain.Joke,
+	jokeDomain domainval.Joke,
 ) MeJokesHandler {
 	return MeJokesHandler{
 		jokeQuery:  jokeQuery,
@@ -35,7 +35,7 @@ func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesG
 }
 
 func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostReq) error {
-	return h.jokeDomain.Create(ctx, domain.JokeCreateRequest{
+	return h.jokeDomain.Create(ctx, domainval.JokeCreateRequest{
 		UserID:      payloadUserID(ctx),
 		Title:       req.Title,
 		Text:        req.Text,
@@ -44,7 +44,7 @@ func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostRe
 }
 
 func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq) error {
-	return h.jokeDomain.Update(ctx, req.JokeID, domain.JokeUpdateRequest{
+	return h.jokeDomain.Update(ctx, req.JokeID, domainval.JokeUpdateRequest{
 		Title:       dto.NewPointerString(req.Title),
 		Text:        dto.NewPointerString(req.Text),
 		Explanation: dto.NewPointerString(req.Explanation),

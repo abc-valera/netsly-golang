@@ -8,8 +8,8 @@ import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent/chatroom"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/dto"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query/spec"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query/spec"
 )
 
 type chatRoomQuery struct {

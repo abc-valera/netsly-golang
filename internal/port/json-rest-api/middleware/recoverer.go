@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
 	"github.com/go-stack/stack"
 )
 
@@ -38,7 +38,7 @@ func Recoverer(next http.Handler) http.Handler {
 				}
 
 				panicLocation, _ := strings.CutPrefix(fmt.Sprintf("%+v", stackTrace[3]), "github.com/abc-valera/flugo-api-golang/internal/")
-				service.Log.Error("PANIC_OCCURED",
+				global.Log.Error("PANIC_OCCURED",
 					"err", err,
 					"stack", panicLocation,
 				)

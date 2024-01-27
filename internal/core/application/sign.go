@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domainval"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/transactioneer"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/transactioneer"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 )
 
@@ -19,7 +19,7 @@ var (
 type SignUseCase struct {
 	tx            transactioneer.ITransactioneer
 	userQuery     query.IUser
-	userDomain    domain.User
+	userDomain    domainval.User
 	passwordMaker service.IPasswordMaker
 	tokenMaker    service.ITokenMaker
 	messageBroker service.IMessageBroker
@@ -28,7 +28,7 @@ type SignUseCase struct {
 func NewSignUseCase(
 	userQuery query.IUser,
 	tx transactioneer.ITransactioneer,
-	userDomain domain.User,
+	userDomain domainval.User,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
 	messageBroker service.IMessageBroker,
@@ -57,7 +57,7 @@ type SignUpRequest struct {
 // then it sends welcome email to the users's email address,
 func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 	txFunc := func(ctx context.Context) error {
-		if err := uc.userDomain.Create(ctx, domain.UserCreateRequest{
+		if err := uc.userDomain.Create(ctx, domainval.UserCreateRequest{
 			Username: req.Username,
 			Email:    req.Email,
 			Password: req.Password,

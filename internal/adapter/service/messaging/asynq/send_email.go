@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 	"github.com/hibiken/asynq"
 )
@@ -43,7 +44,7 @@ func (p sendEmailProcessor) ProcessTask(ctx context.Context, task *asynq.Task) e
 	if err := json.Unmarshal(task.Payload(), &payload); err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
-	service.Log.Info("TASK",
+	global.Log.Info("TASK",
 		"type", task.Type())
 	return p.emailSender.SendEmail(service.Email{})
 }

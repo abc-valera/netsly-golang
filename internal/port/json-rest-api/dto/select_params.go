@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query/spec"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query/spec"
 )
 
 type ISelectParamsHelper interface {

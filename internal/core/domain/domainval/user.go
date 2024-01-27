@@ -1,13 +1,13 @@
-package domain
+package domainval
 
 import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain/common"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domainval/common"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/command"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 )
 

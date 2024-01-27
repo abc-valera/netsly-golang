@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/config"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
 )
 
 type ITemplate interface {
@@ -106,7 +106,7 @@ func (t devTemplate) Render(wr http.ResponseWriter, data interface{}) error {
 }
 
 func NewTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
-	if config.Mode == config.DevelopmentMode {
+	if global.Mode == global.ModeDevelopment {
 		return newDevTemplate(fs, filenames...)
 	}
 	return newProdTemplate(fs, filenames...)

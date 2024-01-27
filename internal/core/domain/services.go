@@ -1,25 +1,27 @@
-package service
+package domain
 
 import (
 	"errors"
 	"log"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
 )
 
 type Services struct {
-	EmailSender   IEmailSender
-	PasswordMaker IPasswordMaker
-	TokenMaker    ITokenMaker
-	MessageBroker IMessageBroker
+	EmailSender   service.IEmailSender
+	PasswordMaker service.IPasswordMaker
+	TokenMaker    service.ITokenMaker
+	MessageBroker service.IMessageBroker
 }
 
 func NewServices(
-	logger ILogger,
-	emailSender IEmailSender,
-	passwordMaker IPasswordMaker,
-	tokenMaker ITokenMaker,
-	messageBroker IMessageBroker,
+	logger service.ILogger,
+	emailSender service.IEmailSender,
+	passwordMaker service.IPasswordMaker,
+	tokenMaker service.ITokenMaker,
+	messageBroker service.IMessageBroker,
 ) Services {
 	if logger == nil {
 		log.Fatal(coderr.NewInternal(errors.New("logger is nil")))
@@ -37,7 +39,7 @@ func NewServices(
 		log.Fatal(coderr.NewInternal(errors.New("message broker is nil")))
 	}
 
-	Log = logger
+	global.Log = logger
 
 	return Services{
 		EmailSender:   emailSender,

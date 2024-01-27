@@ -1,4 +1,4 @@
-package domain
+package domainval
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/command"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/command"
 )
 
 var (

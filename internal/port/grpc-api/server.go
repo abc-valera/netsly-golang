@@ -5,7 +5,8 @@ import (
 
 	"github.com/abc-valera/flugo-api-golang/gen/pb"
 	"github.com/abc-valera/flugo-api-golang/internal/core/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
 	"github.com/abc-valera/flugo-api-golang/internal/port/grpc-api/handler"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -14,7 +15,7 @@ import (
 // TODO: remade to the new standard
 func RunServer(
 	port string,
-	services service.Services,
+	services domain.Services,
 	usecases application.UseCases,
 ) error {
 	// Init handlers
@@ -32,6 +33,6 @@ func RunServer(
 		return err
 	}
 
-	service.Log.Info("Starting gRPC server on " + port)
+	global.Log.Info("Starting gRPC server on " + port)
 	return server.Serve(lis)
 }

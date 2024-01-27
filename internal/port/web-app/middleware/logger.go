@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
 )
 
 // responseWriter is a minimal wrapper for http.ResponseWriter that allows the
@@ -56,9 +56,9 @@ func Logger(next http.Handler) http.Handler {
 			"duration(ms)", time.Since(start).Milliseconds(),
 		}
 		if wrapped.status < 500 {
-			service.Log.Info("REQUEST", logMsg...)
+			global.Log.Info("REQUEST", logMsg...)
 		} else {
-			service.Log.Error("REQUEST", logMsg...)
+			global.Log.Error("REQUEST", logMsg...)
 		}
 	}
 	return http.HandlerFunc(fn)

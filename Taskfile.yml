@@ -63,7 +63,7 @@ tasks:
         --go-grpc_opt=paths=source_relative
         --proto_path=internal/port/grpc-api/proto
 
-  generate:persistance:code:
+  generate:persistence:code:
     cmds:
       - go generate gen/ent/generate.go
 

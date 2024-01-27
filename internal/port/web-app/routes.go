@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
 	"github.com/abc-valera/flugo-api-golang/internal/port/web-app/handler"
 	"github.com/abc-valera/flugo-api-golang/internal/port/web-app/middleware"
 	"github.com/go-chi/chi/v5"
@@ -66,7 +66,7 @@ func (h handlerWithError) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		service.Log.Error("REQUEST_ERROR", "err", err.Error())
+		global.Log.Error("REQUEST_ERROR", "err", err.Error())
 		http.Redirect(w, r, "/error/500", http.StatusMovedPermanently)
 	}
 }

@@ -4,19 +4,19 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/repository/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domainval"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query"
 	"github.com/abc-valera/flugo-api-golang/internal/port/json-rest-api/dto"
 )
 
 type MeHandler struct {
 	userQuery  query.IUser
-	userDomain domain.User
+	userDomain domainval.User
 }
 
 func NewMeHandler(
 	userQuery query.IUser,
-	userDomain domain.User,
+	userDomain domainval.User,
 ) MeHandler {
 	return MeHandler{
 		userQuery:  userQuery,
@@ -33,7 +33,7 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 }
 
 func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) error {
-	return h.userDomain.Update(ctx, payloadUserID(ctx), domain.UserUpdateRequest{
+	return h.userDomain.Update(ctx, payloadUserID(ctx), domainval.UserUpdateRequest{
 		Password: dto.NewPointerString(req.Password),
 		Fullname: dto.NewPointerString(req.Fullname),
 		Status:   dto.NewPointerString(req.Status),
@@ -41,7 +41,7 @@ func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) error {
 }
 
 func (h MeHandler) MeDel(ctx context.Context, req *ogen.MeDelReq) error {
-	return h.userDomain.Delete(ctx, payloadUserID(ctx), domain.UserDeleteRequest{
+	return h.userDomain.Delete(ctx, payloadUserID(ctx), domainval.UserDeleteRequest{
 		Password: req.Password,
 	})
 }
