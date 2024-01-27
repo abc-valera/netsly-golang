@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/global"
+	"github.com/abc-valera/flugo-api-golang/internal/core/service"
 	"github.com/hibiken/asynq"
 )
 

@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/service"
 	"golang.org/x/crypto/argon2"
 )
 

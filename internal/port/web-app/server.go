@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
+	"github.com/abc-valera/flugo-api-golang/internal/application"
+	"github.com/abc-valera/flugo-api-golang/internal/core"
 	"github.com/abc-valera/flugo-api-golang/internal/port/web-app/handler"
 	"github.com/go-chi/chi/v5"
 )
@@ -15,9 +15,9 @@ import (
 func NewServer(
 	port string,
 	templatePath string,
-	queries domain.Queries,
-	domains domain.Domains,
-	services domain.Services,
+	queries core.Queries,
+	domains core.Domains,
+	services core.Services,
 	usecases application.UseCases,
 ) http.Server {
 	if port == "" {

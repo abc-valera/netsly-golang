@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

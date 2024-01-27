@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
 
 	_ "github.com/lib/pq"
 )

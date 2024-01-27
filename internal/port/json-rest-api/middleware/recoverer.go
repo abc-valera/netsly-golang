@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
+	"github.com/abc-valera/flugo-api-golang/internal/core/global"
 	"github.com/go-stack/stack"
 )
 

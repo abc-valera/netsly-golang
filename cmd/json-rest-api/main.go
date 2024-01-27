@@ -19,17 +19,17 @@ import (
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/messaging/dummy"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/password"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/service/token"
-	"github.com/abc-valera/flugo-api-golang/internal/core/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/transactioneer"
+	"github.com/abc-valera/flugo-api-golang/internal/application"
+	"github.com/abc-valera/flugo-api-golang/internal/core"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/global"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/transactioneer"
 	"github.com/abc-valera/flugo-api-golang/internal/port/config"
 	jsonrestapi "github.com/abc-valera/flugo-api-golang/internal/port/json-rest-api"
 )
 
 // services initializes all services
-func services(config config.Config) domain.Services {
+func services(config config.Config) core.Services {
 	emailSender :=
 		email.NewDummyEmailSender()
 	logger :=
@@ -41,7 +41,7 @@ func services(config config.Config) domain.Services {
 	broker :=
 		dummy.NewMessagingBroker(emailSender)
 
-	return domain.NewServices(
+	return core.NewServices(
 		logger,
 		emailSender,
 		passwordMaker,
@@ -52,15 +52,15 @@ func services(config config.Config) domain.Services {
 
 // persistence initializes persistence
 func persistence(config config.Config) (
-	domain.Commands,
-	domain.Queries,
+	core.Commands,
+	core.Queries,
 	transactioneer.ITransactioneer,
 ) {
 	// Init dependencies
 	client := coderr.Must[*ent.Client](entimpl.InitEntClient(config.PosrgresURL))
 
 	// Init commands
-	commands := domain.NewCommands(
+	commands := core.NewCommands(
 		entcommand.NewUserCommand(client),
 		entcommand.NewJokeCommand(client),
 		entcommand.NewLikeCommand(client),
@@ -71,7 +71,7 @@ func persistence(config config.Config) (
 	)
 
 	// Init queries
-	queries := domain.NewQueries(
+	queries := core.NewQueries(
 		entquery.NewUserQuery(client),
 		entquery.NewJokeQuery(client),
 		entquery.NewLikeQuery(client),
@@ -98,7 +98,7 @@ func main() {
 	commands, queries, tx := persistence(config)
 
 	// Init domains
-	domains := domain.NewDomains(commands, queries, services)
+	domains := core.NewDomains(commands, queries, services)
 
 	// Init usecases
 	usecases := application.NewUseCases(queries, tx, domains, services)

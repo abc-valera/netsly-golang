@@ -4,18 +4,18 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domainval"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query"
 )
 
 type MeLikesHandler struct {
 	likeQuery  query.ILike
-	likeDomain domainval.Like
+	likeDomain domain.Like
 }
 
 func NewMeLikesHandler(
 	likeQuery query.ILike,
-	likeDomain domainval.Like,
+	likeDomain domain.Like,
 ) MeLikesHandler {
 	return MeLikesHandler{
 		likeQuery:  likeQuery,
@@ -24,14 +24,14 @@ func NewMeLikesHandler(
 }
 
 func (h MeLikesHandler) MeLikesPost(ctx context.Context, req *ogen.MeLikesPostReq) error {
-	return h.likeDomain.Create(ctx, domainval.LikeCreateRequest{
+	return h.likeDomain.Create(ctx, domain.LikeCreateRequest{
 		UserID: payloadUserID(ctx),
 		JokeID: req.JokeID,
 	})
 }
 
 func (h MeLikesHandler) MeLikesDel(ctx context.Context, req *ogen.MeLikesDelReq) error {
-	return h.likeDomain.Delete(ctx, domainval.DeleteLikeRequest{
+	return h.likeDomain.Delete(ctx, domain.DeleteLikeRequest{
 		UserID: payloadUserID(ctx),
 		JokeID: req.JokeID,
 	})

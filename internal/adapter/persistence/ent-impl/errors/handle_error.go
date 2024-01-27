@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/model"
 )
 
 // HandleErr handles errors from db driver and converts them to domain errors

@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/global"
 )
 
 type ITemplate interface {

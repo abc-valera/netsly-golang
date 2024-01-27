@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/application"
+	"github.com/abc-valera/flugo-api-golang/internal/core"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/port/json-rest-api/handler"
 	"github.com/abc-valera/flugo-api-golang/internal/port/json-rest-api/middleware"
 	"github.com/go-chi/chi/v5"
@@ -17,9 +17,9 @@ import (
 func NewServer(
 	port string,
 	staticPath string,
-	queries domain.Queries,
-	domains domain.Domains,
-	services domain.Services,
+	queries core.Queries,
+	domains core.Domains,
+	services core.Services,
 	usecases application.UseCases,
 ) http.Server {
 	if port == "" {

@@ -3,7 +3,7 @@ package asynq
 import (
 	"log"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/service"
 )
 
 type customAsynqLogger struct {

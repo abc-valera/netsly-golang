@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
 	errhandler "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/errors"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query"
 )
 
 type likeQuery struct {

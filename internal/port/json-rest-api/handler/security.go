@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/service"
+	"github.com/abc-valera/flugo-api-golang/internal/core/service"
 )
 
 type Key string

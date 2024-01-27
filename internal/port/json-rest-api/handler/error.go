@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/global"
 )
 
 type ErrorHandler struct {

@@ -4,9 +4,9 @@ import (
 	"net"
 
 	"github.com/abc-valera/flugo-api-golang/gen/pb"
-	"github.com/abc-valera/flugo-api-golang/internal/core/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
+	"github.com/abc-valera/flugo-api-golang/internal/application"
+	"github.com/abc-valera/flugo-api-golang/internal/core"
+	"github.com/abc-valera/flugo-api-golang/internal/core/global"
 	"github.com/abc-valera/flugo-api-golang/internal/port/grpc-api/handler"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -15,7 +15,7 @@ import (
 // TODO: remade to the new standard
 func RunServer(
 	port string,
-	services domain.Services,
+	services core.Services,
 	usecases application.UseCases,
 ) error {
 	// Init handlers

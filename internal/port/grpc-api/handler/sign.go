@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/pb"
-	"github.com/abc-valera/flugo-api-golang/internal/core/application"
+	"github.com/abc-valera/flugo-api-golang/internal/application"
 	"github.com/abc-valera/flugo-api-golang/internal/port/grpc-api/dto"
 )
 

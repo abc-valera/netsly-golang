@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/pb"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/model"
 )
 
 func NewUserResponse(user model.User) *pb.UserResponse {

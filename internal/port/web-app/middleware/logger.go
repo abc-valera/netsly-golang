@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/global"
+	"github.com/abc-valera/flugo-api-golang/internal/core/global"
 )
 
 // responseWriter is a minimal wrapper for http.ResponseWriter that allows the

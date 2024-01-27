@@ -3,7 +3,7 @@ package handler
 import (
 	"io/fs"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/application"
+	"github.com/abc-valera/flugo-api-golang/internal/application"
 )
 
 type Handlers struct {

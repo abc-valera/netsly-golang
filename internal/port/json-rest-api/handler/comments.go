@@ -4,19 +4,19 @@ import (
 	"context"
 
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/domainval"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/persistence/query"
+	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query"
 	"github.com/abc-valera/flugo-api-golang/internal/port/json-rest-api/dto"
 )
 
 type CommentsHandler struct {
 	commentQuery  query.IComment
-	commentDomain domainval.Comment
+	commentDomain domain.Comment
 }
 
 func NewCommentsHandler(
 	commentQuery query.IComment,
-	commentDomain domainval.Comment,
+	commentDomain domain.Comment,
 ) CommentsHandler {
 	return CommentsHandler{
 		commentQuery:  commentQuery,

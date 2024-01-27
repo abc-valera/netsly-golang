@@ -4,7 +4,7 @@ import (
 	"io/fs"
 	"net/http"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/port/web-app/handler/common"
 	"github.com/abc-valera/flugo-api-golang/internal/port/web-app/handler/cookie"
 )
