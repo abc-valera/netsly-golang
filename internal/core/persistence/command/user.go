@@ -3,7 +3,13 @@ package command
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
+)
+
+var (
+	ErrUserWithUsernameAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "User with such username already exists")
+	ErrUserWithEmailAlreadyExists    = coderr.NewMessage(coderr.CodeAlreadyExists, "User with such email already exists")
 )
 
 type IUser interface {

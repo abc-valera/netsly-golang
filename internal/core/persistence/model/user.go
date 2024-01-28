@@ -2,14 +2,11 @@ package model
 
 import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/model/common"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model/common"
 )
 
 var (
 	ErrUserNotFound = coderr.NewMessage(coderr.CodeNotFound, "User not found")
-
-	ErrUserWithUsernameAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "User with such username already exists")
-	ErrUserWithEmailAlreadyExists    = coderr.NewMessage(coderr.CodeAlreadyExists, "User with such email already exists")
 )
 
 type User struct {

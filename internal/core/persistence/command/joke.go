@@ -3,7 +3,12 @@ package command
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
+)
+
+var (
+	ErrJokeOwnerTitleAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "Joke with such title already exists by such user")
 )
 
 type IJoke interface {

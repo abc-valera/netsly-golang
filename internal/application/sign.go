@@ -6,7 +6,7 @@ import (
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
 	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/core/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query"
 	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/transactioneer"
 	"github.com/abc-valera/flugo-api-golang/internal/core/service"

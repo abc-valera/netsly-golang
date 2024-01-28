@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/command"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
 )
 
 var (

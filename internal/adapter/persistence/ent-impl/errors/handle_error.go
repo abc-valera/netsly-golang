@@ -5,7 +5,8 @@ import (
 
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/command"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
 )
 
 // HandleErr handles errors from db driver and converts them to domain errors
@@ -60,32 +61,32 @@ func HandleErr(err error) error {
 		if strings.Contains(err.Error(), "users") {
 			// username field
 			if strings.Contains(err.Error(), "username") {
-				return model.ErrUserWithUsernameAlreadyExists
+				return command.ErrUserWithUsernameAlreadyExists
 			}
 			// email field
 			if strings.Contains(err.Error(), "email") {
-				return model.ErrUserWithEmailAlreadyExists
+				return command.ErrUserWithEmailAlreadyExists
 			}
 		}
 
 		// jokes table
 		if strings.Contains(err.Error(), "jokes") {
-			return model.ErrJokeOwnerTitleAlreadyExists
+			return command.ErrJokeOwnerTitleAlreadyExists
 		}
 
 		// likes table
 		if strings.Contains(err.Error(), "likes") {
-			return model.ErrLikeAlreadyExists
+			return command.ErrLikeAlreadyExists
 		}
 
 		// chat rooms table
 		if strings.Contains(err.Error(), "chat_rooms") {
-			return model.ErrChatRoomNameAlreadyExists
+			return command.ErrChatRoomNameAlreadyExists
 		}
 
 		// chat members table
 		if strings.Contains(err.Error(), "chat_members") {
-			return model.ErrChatMemberAlreadyExists
+			return command.ErrChatMemberAlreadyExists
 		}
 
 		return coderr.NewMessage(coderr.CodeAlreadyExists, "")

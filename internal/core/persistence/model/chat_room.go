@@ -2,13 +2,11 @@ package model
 
 import (
 	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/model/common"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model/common"
 )
 
 var (
 	ErrChatRoomNotFound = coderr.NewMessage(coderr.CodeNotFound, "ChatRoom not found")
-
-	ErrChatRoomNameAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "ChatRoom already exists")
 )
 
 type ChatRoom struct {

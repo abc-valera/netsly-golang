@@ -3,8 +3,8 @@ package dto
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	errhandler "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/errors"
-	"github.com/abc-valera/flugo-api-golang/internal/core/model"
-	"github.com/abc-valera/flugo-api-golang/internal/core/model/common"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model/common"
 )
 
 func FromEntUser(entUser *ent.User) model.User {

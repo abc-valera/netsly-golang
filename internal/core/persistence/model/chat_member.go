@@ -8,8 +8,6 @@ import (
 
 var (
 	ErrChatMemberNotFound = coderr.NewMessage(coderr.CodeNotFound, "ChatMember not found")
-
-	ErrChatMemberAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "ChatMember already exists")
 )
 
 // ChatMember is a struct that represents a chat member entity.

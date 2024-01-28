@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
 )
 
 func NewCommentResponse(comment model.Comment) *ogen.Comment {

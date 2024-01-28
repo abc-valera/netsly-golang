@@ -3,7 +3,7 @@ package common
 import (
 	"time"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/model/common"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model/common"
 	"github.com/google/uuid"
 )
 

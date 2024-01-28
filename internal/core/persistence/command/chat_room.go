@@ -3,7 +3,12 @@ package command
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
+)
+
+var (
+	ErrChatRoomNameAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "ChatRoom already exists")
 )
 
 type IChatRoom interface {

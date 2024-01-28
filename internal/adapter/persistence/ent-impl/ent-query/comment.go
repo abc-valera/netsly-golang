@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/flugo-api-golang/gen/ent"
 	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
 	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/dto"
-	"github.com/abc-valera/flugo-api-golang/internal/core/model"
+	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
 	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query"
 	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query/spec"
 )
