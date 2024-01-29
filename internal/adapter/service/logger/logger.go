@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/core/service"
+	"github.com/abc-valera/netsly-api-golang/internal/core/service"
 	"golang.org/x/exp/slog"
 )
 

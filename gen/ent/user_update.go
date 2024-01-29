@@ -10,13 +10,13 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmember"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmessage"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmember"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmessage"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/comment"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/predicate"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 )
 
 // UserUpdate is the builder for updating User entities.

@@ -1,4 +1,4 @@
-# flugo-api-golang
+# netsly-api-golang
 
 ## Initial project setup
 
@@ -11,7 +11,7 @@
 
 ## Formatters setup
 
-Prettier extension should be installed. And the .prettierrc file should be created in the project root.
+Prettier extension should be installed. And the `.prettierrc` file should be created in the project root.
 
 The contents of the .prettierrc should be as follows:
 

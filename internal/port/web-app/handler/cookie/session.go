@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	AccessTokenKey  = "flug_access_token"
-	RefreshTokenKey = "flug_refresh_token"
-	TestKey         = "flug_test"
+	AccessTokenKey  = "netsly_access_token"
+	RefreshTokenKey = "netsly_refresh_token"
+	TestKey         = "netsly_test"
 )
 
 // NOTE: should be env variable

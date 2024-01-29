@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/comment"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 )
 
 // CommentCreate is the builder for creating a Comment entity.

@@ -4,9 +4,9 @@ import (
 	"io/fs"
 	"net/http"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/port/web-app/handler/common"
-	"github.com/abc-valera/flugo-api-golang/internal/port/web-app/handler/cookie"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/common"
+	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/cookie"
 )
 
 type Home struct {

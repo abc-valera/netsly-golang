@@ -1,4 +1,4 @@
-module github.com/abc-valera/flugo-api-golang
+module github.com/abc-valera/netsly-api-golang
 
 go 1.21.1
 

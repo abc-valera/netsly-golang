@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmessage"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatroom"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmessage"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatroom"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 )
 
 // ChatMessageCreate is the builder for creating a ChatMessage entity.

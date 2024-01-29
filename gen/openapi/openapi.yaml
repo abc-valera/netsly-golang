@@ -1,12 +1,12 @@
 openapi: 3.0.0
 info:
   version: 0.1.0
-  title: Flugo API
-  termsOfService: https://github.com/abc-valera/flugo-api-golang
+  title: Netsly API
+  termsOfService: https://github.com/abc-valera/netsly-api-golang
   contact:
     email: zoocity14@gmail.com
-    url: https://github.com/abc-valera/flugo-api-golang
-  description: API for Flugo social network
+    url: https://github.com/abc-valera/netsly-api-golang
+  description: API for Netsly social network
 servers:
   - url: http://localhost:3000
 tags:
@@ -24,7 +24,7 @@ tags:
     description: Everything about managing current user profile
 externalDocs:
   description: Learn more about the project.
-  url: https://github.com/abc-valera/flugo-api-golang
+  url: https://github.com/abc-valera/netsly-api-golang
 paths:
   /sign_up:
     post:

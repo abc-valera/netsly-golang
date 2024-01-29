@@ -3,10 +3,10 @@ package handler
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query"
-	"github.com/abc-valera/flugo-api-golang/internal/port/json-rest-api/dto"
+	"github.com/abc-valera/netsly-api-golang/gen/ogen"
+	"github.com/abc-valera/netsly-api-golang/internal/core/domain"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/internal/port/json-rest-api/dto"
 )
 
 type CommentsHandler struct {

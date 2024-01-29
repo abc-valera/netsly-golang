@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/predicate"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/predicate"
 )
 
 // LikeDelete is the builder for deleting a Like entity.

@@ -3,14 +3,14 @@
 package ent
 
 import (
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmember"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmessage"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatroom"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
-	"github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/schema"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmember"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmessage"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatroom"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/comment"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
+	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

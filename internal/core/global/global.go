@@ -1,6 +1,6 @@
 package global
 
-import "github.com/abc-valera/flugo-api-golang/internal/core/service"
+import "github.com/abc-valera/netsly-api-golang/internal/core/service"
 
 // Mode is the application running mode.
 // It can be either "development" or "production".

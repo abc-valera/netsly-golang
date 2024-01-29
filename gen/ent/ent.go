@@ -12,13 +12,13 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmember"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatmessage"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatroom"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/like"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmember"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmessage"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatroom"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/comment"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 )
 
 // ent aliases to avoid import conflicts in user's code.

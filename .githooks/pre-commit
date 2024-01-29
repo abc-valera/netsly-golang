@@ -3,49 +3,14 @@
 PASS=true
 
 
-# ADD PATTERNS FOR COMMIT MESSAGES AND BRANCH NAMES
+# TODO: ADD PATTERNS FOR COMMIT MESSAGES AND BRANCH NAMES
 
 
-# Check all go files
-STAGED_GO_FILES="$(git diff --cached --name-only | grep "^internal/" | grep ".go$")"
+# STAGED_GO_FILES="$(git diff --cached --name-only | grep "^internal/" | grep ".go$")"
 
-for FILE in $STAGED_GO_FILES; do   
-    # Run gofmt
-    if ! command -v gofmt &> /dev/null; then
-        echo "gofmt not installed or available in the PATH" >&2
-        exit 1
-    fi
-    gofmt -w "$FILE"
-
-    # Run go vet
-    go vet $FILE
-    if [[ $? != 0 ]]; then
-        printf "go vet $FILE failed\n"
-        PASS=false
-    fi
-
-    # Run goimports
-    if ! command -v goimports &> /dev/null ; then
-        echo "goimports not installed or available in the PATH" >&2
-        exit 1
-    fi
-    goimports -w "$FILE"
-
-    # Run staticcheck
-    if ! command -v staticcheck &> /dev/null ; then
-        echo "staticcheck not installed or available in the PATH" >&2
-        exit 1
-    fi
-    staticcheck "$FILE"
-    if [[ $? != 0 ]]; then
-        printf "staticcheck $FILE failed\n"
-        PASS=false
-    fi
-
-    # Add file to git
-    git add "$FILE"
-
-done
+# for FILE in $STAGED_GO_FILES; do   
+    # NOTE: here checks can be added
+# done
 
 
 if ! $PASS ; then

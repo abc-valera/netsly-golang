@@ -3,10 +3,10 @@ package domain
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain/common"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/command"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/domain/common"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/command"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model"
 )
 
 var (

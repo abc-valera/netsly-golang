@@ -2,7 +2,7 @@
 
 package runtime
 
-// The schema-stitching logic is generated in github.com/abc-valera/flugo-api-golang/gen/ent/runtime.go
+// The schema-stitching logic is generated in github.com/abc-valera/netsly-api-golang/gen/ent/runtime.go
 
 const (
 	Version = "v0.12.5"                                         // Version of ent codegen.

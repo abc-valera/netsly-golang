@@ -1,22 +1,22 @@
 version: "3.9"
 services:
   json-rest-api:
-    image: localhost/flugo/json-rest-api:latest
+    image: localhost/netsly/json-rest-api:latest
     ports:
       - "3010:3010"
     env_file:
       - ../env/deploy.env
     environment:
-      - POSTGRES_URL=postgres://flugo:flugo@flugo-postgres:5432/flugo?sslmode=disable
-      - REDIS_PORT=flugo-redis:6379
-      - REDIS_USER=flugo-redis
+      - POSTGRES_URL=postgres://netsly:netsly@netsly-postgres:5432/netsly?sslmode=disable
+      - REDIS_PORT=netsly-redis:6379
+      - REDIS_USER=netsly-redis
       - REDIS_PASS=
     depends_on:
-      - flugo-postgres
-      - flugo-redis
+      - netsly-postgres
+      - netsly-redis
     restart: always
 
-  flugo-redis:
+  netsly-redis:
     image: docker.io/redis/redis-stack:latest
     ports:
       - "6379:6379"
@@ -26,16 +26,16 @@ services:
       timeout: 5s
       retries: 5
 
-  flugo-postgres:
+  netsly-postgres:
     image: library/postgres:15-alpine
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=flugo
-      - POSTGRES_PASSWORD=flugo
-      - POSTGRES_DB=flugo
+      - POSTGRES_USER=netsly
+      - POSTGRES_PASSWORD=netsly
+      - POSTGRES_DB=netsly
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U flugo -d flugo"]
+      test: ["CMD-SHELL", "pg_isready -U netsly -d netsly"]
       interval: 5s
       timeout: 5s
       retries: 5

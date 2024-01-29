@@ -9,9 +9,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/comment"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/joke"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/user"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/comment"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 )
 
 // Comment is the model entity for the Comment schema.

@@ -4,12 +4,12 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core"
-	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/port/json-rest-api/handler"
-	"github.com/abc-valera/flugo-api-golang/internal/port/json-rest-api/middleware"
+	"github.com/abc-valera/netsly-api-golang/gen/ogen"
+	"github.com/abc-valera/netsly-api-golang/internal/application"
+	"github.com/abc-valera/netsly-api-golang/internal/core"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/port/json-rest-api/handler"
+	"github.com/abc-valera/netsly-api-golang/internal/port/json-rest-api/middleware"
 	"github.com/go-chi/chi/v5"
 )
 

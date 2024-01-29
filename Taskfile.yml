@@ -74,48 +74,48 @@ tasks:
 
   infrastructure:down:
     cmds:
-      - podman rm -f flugo-postgres
-      - podman rm -f flugo-redis
+      - podman rm -f netsly-postgres
+      - podman rm -f netsly-redis
 
   infrastructure:run_postgres:
     cmds:
       - podman run
-        --name flugo-postgres
-        --network flugo-network
+        --name netsly-postgres
+        --network netsly-network
         -p 5432:5432
-        -e POSTGRES_USER=flugo
-        -e POSTGRES_PASSWORD=flugo
-        -e POSTGRES_DB=flugo
+        -e POSTGRES_USER=netsly
+        -e POSTGRES_PASSWORD=netsly
+        -e POSTGRES_DB=netsly
         -d library/postgres:15-alpine
 
   infrastructure:run_redis:
     cmds:
       - podman run
-        --name flugo-redis
-        --network flugo-network
+        --name netsly-redis
+        --network netsly-network
         -p 6379:6379
         -d redis/redis-stack:latest
 
   image:json-rest-api:build:
     cmds:
-      - podman build -t flugo/json-rest-api:latest -f docker/json-rest-api.Dockerfile .
+      - podman build -t netsly/json-rest-api:latest -f docker/json-rest-api.Dockerfile .
 
   image:json-rest-api:up:
     cmds:
       - podman run
-        --name flugo_json-rest-api
-        --network flugo-network
+        --name netsly_json-rest-api
+        --network netsly-network
         -p 3010:3010
-        -e POSTGRES_URL=postgres://flugo:flugo@flugo-postgres:5432/flugo?sslmode=disable
-        -e REDIS_PORT=flugo-redis:6379
-        -e REDIS_USER=flugo-redis
+        -e POSTGRES_URL=postgres://netsly:netsly@netsly-postgres:5432/netsly?sslmode=disable
+        -e REDIS_PORT=netsly-redis:6379
+        -e REDIS_USER=netsly-redis
         -e REDIS_PASS=
         --env-file env/deploy.env
-        localhost/flugo/json-rest-api:latest
+        localhost/netsly/json-rest-api:latest
 
   image:json-rest-api:down:
     cmds:
-      - podman rm flugo_json-rest-api
+      - podman rm netsly_json-rest-api
 
   compose:up:
     cmds:

@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/abc-valera/flugo-api-golang/gen/ent/chatroom"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/chatroom"
 )
 
 // ChatRoom is the model entity for the ChatRoom schema.

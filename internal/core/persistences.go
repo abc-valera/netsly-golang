@@ -4,9 +4,9 @@ import (
 	"errors"
 	"log"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/command"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/command"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/query"
 )
 
 type Commands struct {

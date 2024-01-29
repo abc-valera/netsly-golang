@@ -1,8 +1,8 @@
 package model
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model/common"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model/common"
 )
 
 var (

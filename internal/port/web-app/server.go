@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/abc-valera/flugo-api-golang/internal/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core"
-	"github.com/abc-valera/flugo-api-golang/internal/port/web-app/handler"
+	"github.com/abc-valera/netsly-api-golang/internal/application"
+	"github.com/abc-valera/netsly-api-golang/internal/core"
+	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler"
 	"github.com/go-chi/chi/v5"
 )
 

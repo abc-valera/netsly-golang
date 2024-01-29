@@ -1,8 +1,8 @@
 package application
 
 import (
-	"github.com/abc-valera/flugo-api-golang/internal/core"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/transactioneer"
+	"github.com/abc-valera/netsly-api-golang/internal/core"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/transactioneer"
 )
 
 type UseCases struct {

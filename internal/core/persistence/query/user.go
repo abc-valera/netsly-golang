@@ -3,8 +3,8 @@ package query
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query/spec"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/query/spec"
 )
 
 type IUser interface {

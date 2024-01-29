@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abc-valera/flugo-api-golang/internal/core/coderr"
-	"github.com/abc-valera/flugo-api-golang/internal/core/domain"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/transactioneer"
-	"github.com/abc-valera/flugo-api-golang/internal/core/service"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/domain"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/transactioneer"
+	"github.com/abc-valera/netsly-api-golang/internal/core/service"
 )
 
 var (
@@ -68,8 +68,8 @@ func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 		}
 
 		welcomeEmail := service.Email{
-			Subject: "Verification Email for Flugo!",
-			Content: fmt.Sprintf("%s, congrats with joining the Flugo community!", req.Username),
+			Subject: "Verification Email for Netsly!",
+			Content: fmt.Sprintf("%s, congrats with joining the Netsly community!", req.Username),
 			To:      []string{req.Email},
 		}
 

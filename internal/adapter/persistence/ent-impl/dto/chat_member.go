@@ -1,9 +1,9 @@
 package dto
 
 import (
-	"github.com/abc-valera/flugo-api-golang/gen/ent"
-	errhandler "github.com/abc-valera/flugo-api-golang/internal/adapter/persistence/ent-impl/errors"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/gen/ent"
+	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model"
 )
 
 func FromEntChatMember(entChatMember *ent.ChatMember) model.ChatMember {

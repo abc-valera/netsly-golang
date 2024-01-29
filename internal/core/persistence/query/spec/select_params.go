@@ -1,6 +1,6 @@
 package spec
 
-import "github.com/abc-valera/flugo-api-golang/internal/core/coderr"
+import "github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 
 var (
 	ErrInvalidOrder  = coderr.NewMessage(coderr.CodeInvalidArgument, "Order must be 'asc' or 'desc'")

@@ -3,11 +3,11 @@ package grpcapi
 import (
 	"net"
 
-	"github.com/abc-valera/flugo-api-golang/gen/pb"
-	"github.com/abc-valera/flugo-api-golang/internal/application"
-	"github.com/abc-valera/flugo-api-golang/internal/core"
-	"github.com/abc-valera/flugo-api-golang/internal/core/global"
-	"github.com/abc-valera/flugo-api-golang/internal/port/grpc-api/handler"
+	"github.com/abc-valera/netsly-api-golang/gen/pb"
+	"github.com/abc-valera/netsly-api-golang/internal/application"
+	"github.com/abc-valera/netsly-api-golang/internal/core"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
+	"github.com/abc-valera/netsly-api-golang/internal/port/grpc-api/handler"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

@@ -3,8 +3,8 @@ package handler
 import (
 	"context"
 
-	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/service"
+	"github.com/abc-valera/netsly-api-golang/gen/ogen"
+	"github.com/abc-valera/netsly-api-golang/internal/core/service"
 )
 
 type Key string

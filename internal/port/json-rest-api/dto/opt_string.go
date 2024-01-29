@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"github.com/abc-valera/flugo-api-golang/gen/ogen"
+	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 )
 
 func NewOptString(s string) ogen.OptString {

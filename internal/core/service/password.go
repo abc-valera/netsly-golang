@@ -1,6 +1,6 @@
 package service
 
-import "github.com/abc-valera/flugo-api-golang/internal/core/coderr"
+import "github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 
 var (
 	ErrInvalidPassword = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided password is invalid")

@@ -1,8 +1,8 @@
 package dto
 
 import (
-	"github.com/abc-valera/flugo-api-golang/gen/ogen"
-	"github.com/abc-valera/flugo-api-golang/internal/core/persistence/query/spec"
+	"github.com/abc-valera/netsly-api-golang/gen/ogen"
+	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/query/spec"
 )
 
 type ISelectParamsHelper interface {

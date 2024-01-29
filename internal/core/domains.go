@@ -1,6 +1,6 @@
 package core
 
-import "github.com/abc-valera/flugo-api-golang/internal/core/domain"
+import "github.com/abc-valera/netsly-api-golang/internal/core/domain"
 
 type Domains struct {
 	User        domain.User

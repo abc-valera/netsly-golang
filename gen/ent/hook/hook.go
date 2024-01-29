@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abc-valera/flugo-api-golang/gen/ent"
+	"github.com/abc-valera/netsly-api-golang/gen/ent"
 )
 
 // The ChatMemberFunc type is an adapter to allow the use of ordinary
