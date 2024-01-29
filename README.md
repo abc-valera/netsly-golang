@@ -2,7 +2,12 @@
 
 ## Initial project setup
 
-Create .env (or dev.env) file. Project should be launched with the correct environment set.
+1. Make sure the correct version of go is installed on your machine
+2. Install Podman
+3. Install Task
+4. Clone the repo
+5. Run `git config --local core.hooksPath .githooks` in the root of the project
+6. Create .env (or dev.env) file. Project should be launched with the correct environment set.
 
 ## Formatters setup
 
