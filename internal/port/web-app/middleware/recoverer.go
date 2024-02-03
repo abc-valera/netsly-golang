@@ -14,7 +14,7 @@ func Recoverer(next http.Handler) http.Handler {
 		func(rw http.ResponseWriter, r *http.Request) {
 			defer func() {
 				if err := recover(); err != nil {
-					if err, ok := err.(error); !ok {
+					if _, ok := err.(error); !ok {
 						err = fmt.Errorf("%v", err)
 					}
 
