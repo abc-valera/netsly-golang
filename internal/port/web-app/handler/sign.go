@@ -6,8 +6,8 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/cookie"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/common"
-	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/cookie"
 )
 
 type Sign struct {
@@ -49,7 +49,6 @@ func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	_ = resp
 
 	cookie.Set(w, cookie.AccessTokenKey, resp.AccessToken)
 	cookie.Set(w, cookie.RefreshTokenKey, resp.RefreshToken)

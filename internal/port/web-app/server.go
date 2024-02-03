@@ -35,7 +35,7 @@ func NewServer(
 
 	// Init router
 	r := chi.NewRouter()
-	initRoutesMiddlewares(r, handlers)
+	initRoutes(r, services, handlers)
 
 	// Init server
 	return http.Server{

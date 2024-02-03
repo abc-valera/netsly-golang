@@ -3,6 +3,7 @@ package webapp
 import (
 	"net/http"
 
+	"github.com/abc-valera/netsly-api-golang/internal/core"
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler"
@@ -10,30 +11,43 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func initRoutesMiddlewares(r *chi.Mux, handlers handler.Handlers) {
-	// middlewares
-	r.Use(middleware.Tracer)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
-
-	// 404 handler
-	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/error/404", http.StatusMovedPermanently)
-	})
-
-	// static files
+func initRoutes(r *chi.Mux, services core.Services, handlers handler.Handlers) {
+	// Static files (before middleware)
 	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("internal/port/web-app/static"))))
 
-	r.Get("/error/401", newHandlerFunc(handlers.Error.Error401Get))
-	r.Get("/error/403", newHandlerFunc(handlers.Error.Error403Get))
-	r.Get("/error/404", newHandlerFunc(handlers.Error.Error404Get))
-	r.Get("/error/500", newHandlerFunc(handlers.Error.Error500Get))
+	r.Route("/", func(r chi.Router) {
+		// Middleware
+		r.Use(
+			middleware.Logger,
+			middleware.Recoverer,
+			middleware.NewSessionMiddleware(services.TokenMaker),
+		)
 
-	r.Get("/sign", newHandlerFunc(handlers.Sign.SignGet))
-	r.Post("/sign/up", newHandlerFunc(handlers.Sign.SignUpPost))
-	r.Post("/sign/in", newHandlerFunc(handlers.Sign.SignInPost))
+		// 404 handler
+		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+			http.Redirect(w, r, "/error/404", http.StatusMovedPermanently)
+		})
 
-	r.Get("/home", newHandlerFunc(handlers.Home.HomeGet))
+		// Error routes
+		r.Route("/error", func(r chi.Router) {
+			r.Get("/401", newHandlerFunc(handlers.Error.Error401Get))
+			r.Get("/403", newHandlerFunc(handlers.Error.Error403Get))
+			r.Get("/404", newHandlerFunc(handlers.Error.Error404Get))
+			r.Get("/500", newHandlerFunc(handlers.Error.Error500Get))
+		})
+
+		// Sign routes
+		r.Route("/sign", func(r chi.Router) {
+			r.Get("/", newHandlerFunc(handlers.Sign.SignGet))
+			r.Post("/up", newHandlerFunc(handlers.Sign.SignUpPost))
+			r.Post("/in", newHandlerFunc(handlers.Sign.SignInPost))
+		})
+
+		// Home routes
+		r.Route("/home", func(r chi.Router) {
+			r.Get("/", newHandlerFunc(handlers.Home.HomeGet))
+		})
+	})
 }
 
 func newHandlerFunc(h handlerWithError) http.HandlerFunc {
