@@ -2,21 +2,24 @@
 
 version: "3"
 
+vars:
+  ENV_FILE_PATH: "env/dev.env"
+
 tasks:
   entrypoint:json-rest-api:
-    dotenv: ["env/dev.env"]
+    dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/json-rest-api cmd/json-rest-api/main.go
       - ./build/json-rest-api
 
   entrypoint:web-app:
-    dotenv: ["env/dev.env"]
+    dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/web-app cmd/web-app/main.go
       - ./build/web-app
 
   entrypoint:grpc-api:
-    dotenv: ["env/dev.env"]
+    dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/grpc-api cmd/grpc-api/main.go
       - ./build/grpc-api

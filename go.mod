@@ -8,7 +8,6 @@ require (
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
 	github.com/go-stack/stack v1.8.1
-	github.com/gofiber/fiber/v2 v2.51.0
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/google/uuid v1.5.0
 	github.com/lib/pq v1.10.9
@@ -43,7 +42,6 @@ require (
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
-	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/zclconf/go-cty v1.14.1 // indirect
 	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/mod v0.14.0 // indirect
