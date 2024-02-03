@@ -17,7 +17,7 @@ func NewHome(
 	templateFS fs.FS,
 ) Home {
 	return Home{
-		homeIndex: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "home/index", "layout/base")),
+		homeIndex: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "home/index", "layout/home", "layout/base")),
 	}
 }
 

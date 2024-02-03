@@ -1,3 +1,11 @@
+<!-- 
+  This is the base layout for all pages in the web app.
+  
+  To use this layout, a template must define the following blocks:
+  - PageTitle: The title of the page.
+  - BaseContent: The main content of the page.
+-->
+
 <!doctype html>
 <html>
   <head>
@@ -21,8 +29,6 @@
     </title>
   </head>
   <body>
-    <div>
-      {{ template "BaseContent" . }}
-    </div>
+    {{ template "BaseContent" . }}
   </body>
 </html>

@@ -1,145 +1,151 @@
-{{ define "PageTitle" }} Sign - Netsly {{ end }} {{ define "BaseContent" }}
-<!-- Main Content Start -->
-<div class="flex min-h-screen flex-col items-center justify-center">
-  <div class="flex w-full max-w-md flex-col items-center justify-center">
-    <div class="mb-32 flex w-full flex-col items-center justify-center">
-      <h1 class="text-center text-4xl font-bold text-slate-400">Netsly logo</h1>
-    </div>
-    <div class="mb-8 flex w-full flex-col items-center justify-center">
-      <h1 class="text-center text-4xl font-bold">Welcome to Netsly</h1>
-    </div>
-    <div class="flex w-full flex-col items-center justify-center">
-      <button
-        class="mt-2 w-full rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-        _="on click call #sign-up-modal.showModal()"
-      >
-        Sign Up
-      </button>
-    </div>
-    <div class="flex w-full flex-col items-center justify-center">
-      <button
-        class="mt-2 w-full rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-        _="on click call #sign-in-modal.showModal()"
-      >
-        Sign In
-      </button>
+{{ define "PageTitle" }}
+  Sign - Netsly
+{{ end }}
+
+{{ define "BaseContent" }}
+  <!-- Main Content Start -->
+  <div class="flex min-h-screen flex-col items-center justify-center">
+    <div class="flex w-full max-w-md flex-col items-center justify-center">
+      <div class="mb-32 flex w-full flex-col items-center justify-center">
+        <h1 class="text-center text-4xl font-bold text-slate-400">
+          Netsly logo
+        </h1>
+      </div>
+      <div class="mb-8 flex w-full flex-col items-center justify-center">
+        <h1 class="text-center text-4xl font-bold">Welcome to Netsly</h1>
+      </div>
+      <div class="flex w-full flex-col items-center justify-center">
+        <button
+          class="mt-2 w-full rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+          _="on click call #sign-up-modal.showModal()"
+        >
+          Sign Up
+        </button>
+      </div>
+      <div class="flex w-full flex-col items-center justify-center">
+        <button
+          class="mt-2 w-full rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+          _="on click call #sign-in-modal.showModal()"
+        >
+          Sign In
+        </button>
+      </div>
     </div>
   </div>
-</div>
-<!-- Main Content End -->
+  <!-- Main Content End -->
 
-<!-- Sign Up Modal Start -->
-<dialog
-  id="sign-up-modal"
-  class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40"
-  _="on click if event.target is me then call me.querySelector('form').reset() then call me.close()"
->
-  <div class="p-10">
-    <h1 class="mb-8 text-4xl font-extrabold">Register</h1>
-    <form action="/sign/up" method="POST">
-      <div>
-        <label class="block font-semibold" for="name">Username</label>
-        <input
-          class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
-          id="name"
-          type="text"
-          name="username"
-          required="required"
-          autofocus="autofocus"
-        />
-      </div>
-      <div class="mt-4">
-        <label class="block font-semibold" for="email">Email</label>
-        <input
-          class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
-          id="email"
-          type="email"
-          name="email"
-          required="required"
-        />
-      </div>
-      <div class="mt-4">
-        <label class="block font-semibold" for="password">Password</label>
-        <input
-          class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
-          id="password"
-          type="password"
-          name="password"
-          required="required"
-          autocomplete="new-password"
-        />
-      </div>
-      <div class="mt-8 flex items-center justify-between">
-        <button
-          type="submit"
-          class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:px-10 md:py-4 md:text-lg"
-        >
-          Register
-        </button>
-        <a
-          class="cursor-pointer font-semibold"
-          _="on click 
+  <!-- Sign Up Modal Start -->
+  <dialog
+    id="sign-up-modal"
+    class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40"
+    _="on click if event.target is me then call me.querySelector('form').reset() then call me.close()"
+  >
+    <div class="p-10">
+      <h1 class="mb-8 text-4xl font-extrabold">Register</h1>
+      <form action="/sign/up" method="POST">
+        <div>
+          <label class="block font-semibold" for="name">Username</label>
+          <input
+            class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+            id="name"
+            type="text"
+            name="username"
+            required="required"
+            autofocus="autofocus"
+          />
+        </div>
+        <div class="mt-4">
+          <label class="block font-semibold" for="email">Email</label>
+          <input
+            class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+            id="email"
+            type="email"
+            name="email"
+            required="required"
+          />
+        </div>
+        <div class="mt-4">
+          <label class="block font-semibold" for="password">Password</label>
+          <input
+            class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+            id="password"
+            type="password"
+            name="password"
+            required="required"
+            autocomplete="new-password"
+          />
+        </div>
+        <div class="mt-8 flex items-center justify-between">
+          <button
+            type="submit"
+            class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:px-10 md:py-4 md:text-lg"
+          >
+            Register
+          </button>
+          <a
+            class="cursor-pointer font-semibold"
+            _="on click 
             call #sign-up-modal.close() 
             then call #sign-up-modal.querySelector('form').reset() 
             then call #sign-in-modal.showModal()"
-        >
-          Already registered?
-        </a>
-      </div>
-    </form>
-  </div>
-</dialog>
-<!-- Sign Up Modal End -->
+          >
+            Already registered?
+          </a>
+        </div>
+      </form>
+    </div>
+  </dialog>
+  <!-- Sign Up Modal End -->
 
-<!-- Sign In Modal Start -->
-<dialog
-  id="sign-in-modal"
-  class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40"
-  _="on click if event.target is me then call me.querySelector('form').reset() then call me.close()"
->
-  <div class="p-10">
-    <h1 class="mb-8 text-4xl font-extrabold">Sign In</h1>
-    <form action="/sign/in" method="POST">
-      <div>
-        <label class="block font-semibold" for="email">Email</label>
-        <input
-          class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
-          id="email"
-          type="email"
-          name="email"
-          required="required"
-        />
-      </div>
-      <div class="mt-4">
-        <label class="block font-semibold" for="password">Password</label>
-        <input
-          class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
-          id="password"
-          type="password"
-          name="password"
-          required="required"
-          autocomplete="current-password"
-        />
-      </div>
-      <div class="mt-8 flex items-center justify-between">
-        <button
-          type="submit"
-          class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:px-10 md:py-4 md:text-lg"
-        >
-          Login
-        </button>
-        <a
-          class="cursor-pointer font-semibold"
-          _="on click 
+  <!-- Sign In Modal Start -->
+  <dialog
+    id="sign-in-modal"
+    class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40"
+    _="on click if event.target is me then call me.querySelector('form').reset() then call me.close()"
+  >
+    <div class="p-10">
+      <h1 class="mb-8 text-4xl font-extrabold">Sign In</h1>
+      <form action="/sign/in" method="POST">
+        <div>
+          <label class="block font-semibold" for="email">Email</label>
+          <input
+            class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+            id="email"
+            type="email"
+            name="email"
+            required="required"
+          />
+        </div>
+        <div class="mt-4">
+          <label class="block font-semibold" for="password">Password</label>
+          <input
+            class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+            id="password"
+            type="password"
+            name="password"
+            required="required"
+            autocomplete="current-password"
+          />
+        </div>
+        <div class="mt-8 flex items-center justify-between">
+          <button
+            type="submit"
+            class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:px-10 md:py-4 md:text-lg"
+          >
+            Login
+          </button>
+          <a
+            class="cursor-pointer font-semibold"
+            _="on click 
             call #sign-in-modal.close() 
             then call #sign-in-modal.querySelector('form').reset() 
             then call #sign-up-modal.showModal()"
-        >
-          Not registered?
-        </a>
-      </div>
-    </form>
-  </div>
-</dialog>
-<!-- Sign In Modal End -->
+          >
+            Not registered?
+          </a>
+        </div>
+      </form>
+    </div>
+  </dialog>
+  <!-- Sign In Modal End -->
 {{ end }}
