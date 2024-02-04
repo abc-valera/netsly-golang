@@ -85,3 +85,16 @@ func Set(w http.ResponseWriter, key string, value string) {
 
 	http.SetCookie(w, &cookie)
 }
+
+func Delete(w http.ResponseWriter, key string) {
+	cookie := http.Cookie{
+		Name:     key,
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		MaxAge:   -1,
+		Secure:   true,
+	}
+
+	http.SetCookie(w, &cookie)
+}
