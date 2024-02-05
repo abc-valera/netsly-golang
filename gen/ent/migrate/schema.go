@@ -94,8 +94,8 @@ var (
 		{Name: "joke_id", Type: field.TypeString},
 		{Name: "text", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "joke_comments", Type: field.TypeString},
-		{Name: "user_comments", Type: field.TypeString},
+		{Name: "joke_comments", Type: field.TypeString, Nullable: true},
+		{Name: "user_comments", Type: field.TypeString, Nullable: true},
 	}
 	// CommentsTable holds the schema information for the "comments" table.
 	CommentsTable = &schema.Table{
@@ -107,13 +107,13 @@ var (
 				Symbol:     "comments_jokes_comments",
 				Columns:    []*schema.Column{CommentsColumns[5]},
 				RefColumns: []*schema.Column{JokesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "comments_users_comments",
 				Columns:    []*schema.Column{CommentsColumns[6]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}
@@ -125,7 +125,7 @@ var (
 		{Name: "text", Type: field.TypeString},
 		{Name: "explanation", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_jokes", Type: field.TypeString},
+		{Name: "user_jokes", Type: field.TypeString, Nullable: true},
 	}
 	// JokesTable holds the schema information for the "jokes" table.
 	JokesTable = &schema.Table{
@@ -137,7 +137,7 @@ var (
 				Symbol:     "jokes_users_jokes",
 				Columns:    []*schema.Column{JokesColumns[6]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 		},
 		Indexes: []*schema.Index{
@@ -154,8 +154,8 @@ var (
 		{Name: "user_id", Type: field.TypeString},
 		{Name: "joke_id", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "joke_likes", Type: field.TypeString},
-		{Name: "user_likes", Type: field.TypeString},
+		{Name: "joke_likes", Type: field.TypeString, Nullable: true},
+		{Name: "user_likes", Type: field.TypeString, Nullable: true},
 	}
 	// LikesTable holds the schema information for the "likes" table.
 	LikesTable = &schema.Table{
@@ -167,13 +167,13 @@ var (
 				Symbol:     "likes_jokes_likes",
 				Columns:    []*schema.Column{LikesColumns[4]},
 				RefColumns: []*schema.Column{JokesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "likes_users_likes",
 				Columns:    []*schema.Column{LikesColumns[5]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 		},
 		Indexes: []*schema.Index{

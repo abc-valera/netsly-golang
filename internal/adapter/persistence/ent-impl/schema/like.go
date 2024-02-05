@@ -31,12 +31,10 @@ func (Like) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("owner", User.Type).
 			Ref("likes").
-			Unique().
-			Required(),
+			Unique(),
 		edge.From("liked_joke", Joke.Type).
 			Ref("likes").
-			Unique().
-			Required(),
+			Unique(),
 	}
 }
 

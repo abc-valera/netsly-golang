@@ -58,6 +58,14 @@ func (cc *CommentCreate) SetOwnerID(id string) *CommentCreate {
 	return cc
 }
 
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (cc *CommentCreate) SetNillableOwnerID(id *string) *CommentCreate {
+	if id != nil {
+		cc = cc.SetOwnerID(*id)
+	}
+	return cc
+}
+
 // SetOwner sets the "owner" edge to the User entity.
 func (cc *CommentCreate) SetOwner(u *User) *CommentCreate {
 	return cc.SetOwnerID(u.ID)
@@ -66,6 +74,14 @@ func (cc *CommentCreate) SetOwner(u *User) *CommentCreate {
 // SetCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID.
 func (cc *CommentCreate) SetCommentedJokeID(id string) *CommentCreate {
 	cc.mutation.SetCommentedJokeID(id)
+	return cc
+}
+
+// SetNillableCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID if the given value is not nil.
+func (cc *CommentCreate) SetNillableCommentedJokeID(id *string) *CommentCreate {
+	if id != nil {
+		cc = cc.SetCommentedJokeID(*id)
+	}
 	return cc
 }
 
@@ -139,12 +155,6 @@ func (cc *CommentCreate) check() error {
 		if err := comment.IDValidator(v); err != nil {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "Comment.id": %w`, err)}
 		}
-	}
-	if _, ok := cc.mutation.OwnerID(); !ok {
-		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "Comment.owner"`)}
-	}
-	if _, ok := cc.mutation.CommentedJokeID(); !ok {
-		return &ValidationError{Name: "commented_joke", err: errors.New(`ent: missing required edge "Comment.commented_joke"`)}
 	}
 	return nil
 }

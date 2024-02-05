@@ -78,6 +78,14 @@ func (ju *JokeUpdate) SetOwnerID(id string) *JokeUpdate {
 	return ju
 }
 
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (ju *JokeUpdate) SetNillableOwnerID(id *string) *JokeUpdate {
+	if id != nil {
+		ju = ju.SetOwnerID(*id)
+	}
+	return ju
+}
+
 // SetOwner sets the "owner" edge to the User entity.
 func (ju *JokeUpdate) SetOwner(u *User) *JokeUpdate {
 	return ju.SetOwnerID(u.ID)
@@ -204,9 +212,6 @@ func (ju *JokeUpdate) check() error {
 		if err := joke.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`ent: validator failed for field "Joke.text": %w`, err)}
 		}
-	}
-	if _, ok := ju.mutation.OwnerID(); ju.mutation.OwnerCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Joke.owner"`)
 	}
 	return nil
 }
@@ -419,6 +424,14 @@ func (juo *JokeUpdateOne) SetOwnerID(id string) *JokeUpdateOne {
 	return juo
 }
 
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (juo *JokeUpdateOne) SetNillableOwnerID(id *string) *JokeUpdateOne {
+	if id != nil {
+		juo = juo.SetOwnerID(*id)
+	}
+	return juo
+}
+
 // SetOwner sets the "owner" edge to the User entity.
 func (juo *JokeUpdateOne) SetOwner(u *User) *JokeUpdateOne {
 	return juo.SetOwnerID(u.ID)
@@ -558,9 +571,6 @@ func (juo *JokeUpdateOne) check() error {
 		if err := joke.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`ent: validator failed for field "Joke.text": %w`, err)}
 		}
-	}
-	if _, ok := juo.mutation.OwnerID(); juo.mutation.OwnerCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Joke.owner"`)
 	}
 	return nil
 }

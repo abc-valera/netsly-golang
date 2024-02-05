@@ -37,8 +37,7 @@ func (Joke) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("owner", User.Type).
 			Ref("jokes").
-			Unique().
-			Required(),
+			Unique(),
 		edge.To("comments", Comment.Type),
 		edge.To("likes", Like.Type),
 	}

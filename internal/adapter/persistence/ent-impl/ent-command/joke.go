@@ -24,7 +24,9 @@ func (jc jokeCommand) Create(ctx context.Context, req model.Joke) error {
 	_, err := jc.Joke.Create().
 		SetID(req.ID).
 		SetUserID(req.UserID).
+		SetTitle(req.Title).
 		SetText(req.Text).
+		SetExplanation(req.Explanation).
 		SetCreatedAt(req.CreatedAt).
 		Save(ctx)
 	return errhandler.HandleErr(err)

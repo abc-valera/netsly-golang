@@ -80,6 +80,22 @@ tasks:
       - podman rm -f netsly-postgres
       - podman rm -f netsly-redis
 
+  infrastructure:start:
+    cmds:
+      - podman start netsly-postgres
+      - podman start netsly-redis
+
+  infrastructure:stop:
+    cmds:
+      - podman stop netsly-postgres
+      - podman stop netsly-redis
+
+  infrastructure:seed:
+    dotenv: ["{{ .ENV_FILE_PATH }}"]
+    cmds:
+      - go build -o build/seed cmd/seed/main.go
+      - ./build/seed
+
   infrastructure:run_postgres:
     cmds:
       - podman run

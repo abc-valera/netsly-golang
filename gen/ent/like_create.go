@@ -46,6 +46,14 @@ func (lc *LikeCreate) SetOwnerID(id string) *LikeCreate {
 	return lc
 }
 
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (lc *LikeCreate) SetNillableOwnerID(id *string) *LikeCreate {
+	if id != nil {
+		lc = lc.SetOwnerID(*id)
+	}
+	return lc
+}
+
 // SetOwner sets the "owner" edge to the User entity.
 func (lc *LikeCreate) SetOwner(u *User) *LikeCreate {
 	return lc.SetOwnerID(u.ID)
@@ -54,6 +62,14 @@ func (lc *LikeCreate) SetOwner(u *User) *LikeCreate {
 // SetLikedJokeID sets the "liked_joke" edge to the Joke entity by ID.
 func (lc *LikeCreate) SetLikedJokeID(id string) *LikeCreate {
 	lc.mutation.SetLikedJokeID(id)
+	return lc
+}
+
+// SetNillableLikedJokeID sets the "liked_joke" edge to the Joke entity by ID if the given value is not nil.
+func (lc *LikeCreate) SetNillableLikedJokeID(id *string) *LikeCreate {
+	if id != nil {
+		lc = lc.SetLikedJokeID(*id)
+	}
 	return lc
 }
 
@@ -114,12 +130,6 @@ func (lc *LikeCreate) check() error {
 	}
 	if _, ok := lc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Like.created_at"`)}
-	}
-	if _, ok := lc.mutation.OwnerID(); !ok {
-		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "Like.owner"`)}
-	}
-	if _, ok := lc.mutation.LikedJokeID(); !ok {
-		return &ValidationError{Name: "liked_joke", err: errors.New(`ent: missing required edge "Like.liked_joke"`)}
 	}
 	return nil
 }

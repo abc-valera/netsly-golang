@@ -35,6 +35,14 @@ func (lu *LikeUpdate) SetOwnerID(id string) *LikeUpdate {
 	return lu
 }
 
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (lu *LikeUpdate) SetNillableOwnerID(id *string) *LikeUpdate {
+	if id != nil {
+		lu = lu.SetOwnerID(*id)
+	}
+	return lu
+}
+
 // SetOwner sets the "owner" edge to the User entity.
 func (lu *LikeUpdate) SetOwner(u *User) *LikeUpdate {
 	return lu.SetOwnerID(u.ID)
@@ -43,6 +51,14 @@ func (lu *LikeUpdate) SetOwner(u *User) *LikeUpdate {
 // SetLikedJokeID sets the "liked_joke" edge to the Joke entity by ID.
 func (lu *LikeUpdate) SetLikedJokeID(id string) *LikeUpdate {
 	lu.mutation.SetLikedJokeID(id)
+	return lu
+}
+
+// SetNillableLikedJokeID sets the "liked_joke" edge to the Joke entity by ID if the given value is not nil.
+func (lu *LikeUpdate) SetNillableLikedJokeID(id *string) *LikeUpdate {
+	if id != nil {
+		lu = lu.SetLikedJokeID(*id)
+	}
 	return lu
 }
 
@@ -95,21 +111,7 @@ func (lu *LikeUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (lu *LikeUpdate) check() error {
-	if _, ok := lu.mutation.OwnerID(); lu.mutation.OwnerCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Like.owner"`)
-	}
-	if _, ok := lu.mutation.LikedJokeID(); lu.mutation.LikedJokeCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Like.liked_joke"`)
-	}
-	return nil
-}
-
 func (lu *LikeUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := lu.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(like.Table, like.Columns, sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt))
 	if ps := lu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -202,6 +204,14 @@ func (luo *LikeUpdateOne) SetOwnerID(id string) *LikeUpdateOne {
 	return luo
 }
 
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (luo *LikeUpdateOne) SetNillableOwnerID(id *string) *LikeUpdateOne {
+	if id != nil {
+		luo = luo.SetOwnerID(*id)
+	}
+	return luo
+}
+
 // SetOwner sets the "owner" edge to the User entity.
 func (luo *LikeUpdateOne) SetOwner(u *User) *LikeUpdateOne {
 	return luo.SetOwnerID(u.ID)
@@ -210,6 +220,14 @@ func (luo *LikeUpdateOne) SetOwner(u *User) *LikeUpdateOne {
 // SetLikedJokeID sets the "liked_joke" edge to the Joke entity by ID.
 func (luo *LikeUpdateOne) SetLikedJokeID(id string) *LikeUpdateOne {
 	luo.mutation.SetLikedJokeID(id)
+	return luo
+}
+
+// SetNillableLikedJokeID sets the "liked_joke" edge to the Joke entity by ID if the given value is not nil.
+func (luo *LikeUpdateOne) SetNillableLikedJokeID(id *string) *LikeUpdateOne {
+	if id != nil {
+		luo = luo.SetLikedJokeID(*id)
+	}
 	return luo
 }
 
@@ -275,21 +293,7 @@ func (luo *LikeUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (luo *LikeUpdateOne) check() error {
-	if _, ok := luo.mutation.OwnerID(); luo.mutation.OwnerCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Like.owner"`)
-	}
-	if _, ok := luo.mutation.LikedJokeID(); luo.mutation.LikedJokeCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Like.liked_joke"`)
-	}
-	return nil
-}
-
 func (luo *LikeUpdateOne) sqlSave(ctx context.Context) (_node *Like, err error) {
-	if err := luo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(like.Table, like.Columns, sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt))
 	id, ok := luo.mutation.ID()
 	if !ok {

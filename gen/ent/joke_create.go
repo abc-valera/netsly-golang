@@ -65,6 +65,14 @@ func (jc *JokeCreate) SetOwnerID(id string) *JokeCreate {
 	return jc
 }
 
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (jc *JokeCreate) SetNillableOwnerID(id *string) *JokeCreate {
+	if id != nil {
+		jc = jc.SetOwnerID(*id)
+	}
+	return jc
+}
+
 // SetOwner sets the "owner" edge to the User entity.
 func (jc *JokeCreate) SetOwner(u *User) *JokeCreate {
 	return jc.SetOwnerID(u.ID)
@@ -168,9 +176,6 @@ func (jc *JokeCreate) check() error {
 		if err := joke.IDValidator(v); err != nil {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "Joke.id": %w`, err)}
 		}
-	}
-	if _, ok := jc.mutation.OwnerID(); !ok {
-		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "Joke.owner"`)}
 	}
 	return nil
 }

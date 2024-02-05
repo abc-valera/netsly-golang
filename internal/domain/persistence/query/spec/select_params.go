@@ -10,7 +10,7 @@ var (
 
 // SelectParams represents query data for specifying select details.
 type SelectParams struct {
-	Order  string // Order is order of sorting ('acs' or 'desc')
+	Order  string // Order is order of sorting ('asc' or 'desc')
 	Limit  int    // Limit limits number of returned units
 	Offset int    // Offset sets an offset for returned units
 }

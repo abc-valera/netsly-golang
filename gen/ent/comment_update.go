@@ -49,6 +49,14 @@ func (cu *CommentUpdate) SetOwnerID(id string) *CommentUpdate {
 	return cu
 }
 
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (cu *CommentUpdate) SetNillableOwnerID(id *string) *CommentUpdate {
+	if id != nil {
+		cu = cu.SetOwnerID(*id)
+	}
+	return cu
+}
+
 // SetOwner sets the "owner" edge to the User entity.
 func (cu *CommentUpdate) SetOwner(u *User) *CommentUpdate {
 	return cu.SetOwnerID(u.ID)
@@ -57,6 +65,14 @@ func (cu *CommentUpdate) SetOwner(u *User) *CommentUpdate {
 // SetCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID.
 func (cu *CommentUpdate) SetCommentedJokeID(id string) *CommentUpdate {
 	cu.mutation.SetCommentedJokeID(id)
+	return cu
+}
+
+// SetNillableCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID if the given value is not nil.
+func (cu *CommentUpdate) SetNillableCommentedJokeID(id *string) *CommentUpdate {
+	if id != nil {
+		cu = cu.SetCommentedJokeID(*id)
+	}
 	return cu
 }
 
@@ -115,12 +131,6 @@ func (cu *CommentUpdate) check() error {
 		if err := comment.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`ent: validator failed for field "Comment.text": %w`, err)}
 		}
-	}
-	if _, ok := cu.mutation.OwnerID(); cu.mutation.OwnerCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Comment.owner"`)
-	}
-	if _, ok := cu.mutation.CommentedJokeID(); cu.mutation.CommentedJokeCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Comment.commented_joke"`)
 	}
 	return nil
 }
@@ -238,6 +248,14 @@ func (cuo *CommentUpdateOne) SetOwnerID(id string) *CommentUpdateOne {
 	return cuo
 }
 
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (cuo *CommentUpdateOne) SetNillableOwnerID(id *string) *CommentUpdateOne {
+	if id != nil {
+		cuo = cuo.SetOwnerID(*id)
+	}
+	return cuo
+}
+
 // SetOwner sets the "owner" edge to the User entity.
 func (cuo *CommentUpdateOne) SetOwner(u *User) *CommentUpdateOne {
 	return cuo.SetOwnerID(u.ID)
@@ -246,6 +264,14 @@ func (cuo *CommentUpdateOne) SetOwner(u *User) *CommentUpdateOne {
 // SetCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID.
 func (cuo *CommentUpdateOne) SetCommentedJokeID(id string) *CommentUpdateOne {
 	cuo.mutation.SetCommentedJokeID(id)
+	return cuo
+}
+
+// SetNillableCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID if the given value is not nil.
+func (cuo *CommentUpdateOne) SetNillableCommentedJokeID(id *string) *CommentUpdateOne {
+	if id != nil {
+		cuo = cuo.SetCommentedJokeID(*id)
+	}
 	return cuo
 }
 
@@ -317,12 +343,6 @@ func (cuo *CommentUpdateOne) check() error {
 		if err := comment.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`ent: validator failed for field "Comment.text": %w`, err)}
 		}
-	}
-	if _, ok := cuo.mutation.OwnerID(); cuo.mutation.OwnerCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Comment.owner"`)
-	}
-	if _, ok := cuo.mutation.CommentedJokeID(); cuo.mutation.CommentedJokeCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Comment.commented_joke"`)
 	}
 	return nil
 }

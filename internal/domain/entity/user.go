@@ -52,13 +52,13 @@ type UserCreateRequest struct {
 
 func (u User) Create(ctx context.Context, req UserCreateRequest) error {
 	// Validation
-	if req.Username == "" || len(req.Username) < 4 || len(req.Username) > 32 {
+	if req.Username == "" || len(req.Username) < 2 || len(req.Username) > 32 {
 		return ErrUserUsernameInvalid
 	}
 	if req.Email == "" {
 		return ErrUserEmailInvalid
 	}
-	if req.Password == "" || len(req.Password) < 4 || len(req.Password) > 32 {
+	if req.Password == "" || len(req.Password) < 2 || len(req.Password) > 32 {
 		return ErrUserPasswordInvalid
 	}
 	if len(req.Fullname) > 64 {
