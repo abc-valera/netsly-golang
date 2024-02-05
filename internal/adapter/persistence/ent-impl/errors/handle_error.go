@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/command"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 )
 
 // HandleErr handles errors from db driver and converts them to domain errors

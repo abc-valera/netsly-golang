@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/abc-valera/netsly-api-golang/internal/application"
-	"github.com/abc-valera/netsly-api-golang/internal/core"
+	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler"
 	"github.com/go-chi/chi/v5"
 )
@@ -15,9 +15,9 @@ import (
 func NewServer(
 	port string,
 	templatePath string,
-	queries core.Queries,
-	domains core.Domains,
-	services core.Services,
+	queries domain.Queries,
+	entities domain.Entities,
+	services domain.Services,
 	usecases application.UseCases,
 ) http.Server {
 	if port == "" {

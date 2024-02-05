@@ -3,8 +3,8 @@ package dto
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model/common"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model/common"
 )
 
 func FromEntJokeToJoke(entJoke *ent.Joke) model.Joke {
@@ -12,7 +12,7 @@ func FromEntJokeToJoke(entJoke *ent.Joke) model.Joke {
 		return model.Joke{}
 	}
 	return model.Joke{
-		BaseModel: common.BaseModel{
+		BaseEntity: common.BaseEntity{
 			ID:        entJoke.ID,
 			CreatedAt: entJoke.CreatedAt,
 		},

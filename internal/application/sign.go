@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/transactioneer"
-	"github.com/abc-valera/netsly-api-golang/internal/core/service"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/transactioneer"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 
 var (
@@ -19,7 +19,7 @@ var (
 type SignUseCase struct {
 	tx            transactioneer.ITransactioneer
 	userQuery     query.IUser
-	userDomain    domain.User
+	userDomain    entity.User
 	passwordMaker service.IPasswordMaker
 	tokenMaker    service.ITokenMaker
 	messageBroker service.IMessageBroker
@@ -28,7 +28,7 @@ type SignUseCase struct {
 func NewSignUseCase(
 	userQuery query.IUser,
 	tx transactioneer.ITransactioneer,
-	userDomain domain.User,
+	userDomain entity.User,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
 	messageBroker service.IMessageBroker,
@@ -57,7 +57,7 @@ type SignUpRequest struct {
 // then it sends welcome email to the users's email address,
 func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 	txFunc := func(ctx context.Context) error {
-		if err := uc.userDomain.Create(ctx, domain.UserCreateRequest{
+		if err := uc.userDomain.Create(ctx, entity.UserCreateRequest{
 			Username: req.Username,
 			Email:    req.Email,
 			Password: req.Password,

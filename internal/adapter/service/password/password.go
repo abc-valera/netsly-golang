@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/service"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"golang.org/x/crypto/argon2"
 )
 

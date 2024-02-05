@@ -4,19 +4,19 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/internal/core/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/port/json-rest-api/dto"
 )
 
 type MeHandler struct {
 	userQuery  query.IUser
-	userDomain domain.User
+	userDomain entity.User
 }
 
 func NewMeHandler(
 	userQuery query.IUser,
-	userDomain domain.User,
+	userDomain entity.User,
 ) MeHandler {
 	return MeHandler{
 		userQuery:  userQuery,
@@ -33,7 +33,7 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 }
 
 func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) error {
-	return h.userDomain.Update(ctx, payloadUserID(ctx), domain.UserUpdateRequest{
+	return h.userDomain.Update(ctx, payloadUserID(ctx), entity.UserUpdateRequest{
 		Password: dto.NewPointerString(req.Password),
 		Fullname: dto.NewPointerString(req.Fullname),
 		Status:   dto.NewPointerString(req.Status),
@@ -41,7 +41,7 @@ func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) error {
 }
 
 func (h MeHandler) MeDel(ctx context.Context, req *ogen.MeDelReq) error {
-	return h.userDomain.Delete(ctx, payloadUserID(ctx), domain.UserDeleteRequest{
+	return h.userDomain.Delete(ctx, payloadUserID(ctx), entity.UserDeleteRequest{
 		Password: req.Password,
 	})
 }

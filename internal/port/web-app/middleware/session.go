@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/global"
-	"github.com/abc-valera/netsly-api-golang/internal/core/service"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/cookie"
 )
 

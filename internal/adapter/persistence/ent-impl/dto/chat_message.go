@@ -2,8 +2,8 @@ package dto
 
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/model/common"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model/common"
 )
 
 func FromEntChatMessage(entChatMessage *ent.ChatMessage) model.ChatMessage {
@@ -11,7 +11,7 @@ func FromEntChatMessage(entChatMessage *ent.ChatMessage) model.ChatMessage {
 		return model.ChatMessage{}
 	}
 	return model.ChatMessage{
-		BaseModel: common.BaseModel{
+		BaseEntity: common.BaseEntity{
 			ID:        entChatMessage.ID,
 			CreatedAt: entChatMessage.CreatedAt,
 		},

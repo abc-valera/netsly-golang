@@ -20,16 +20,16 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/adapter/service/password"
 	"github.com/abc-valera/netsly-api-golang/internal/adapter/service/token"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
-	"github.com/abc-valera/netsly-api-golang/internal/core"
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/global"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/transactioneer"
+	"github.com/abc-valera/netsly-api-golang/internal/domain"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/transactioneer"
 	"github.com/abc-valera/netsly-api-golang/internal/port/config"
 	webapp "github.com/abc-valera/netsly-api-golang/internal/port/web-app"
 )
 
 // services initializes all services
-func services(config config.Config) core.Services {
+func services(config config.Config) domain.Services {
 	emailSender :=
 		email.NewDummyEmailSender()
 	logger :=
@@ -41,7 +41,7 @@ func services(config config.Config) core.Services {
 	broker :=
 		dummy.NewMessagingBroker(emailSender)
 
-	return core.NewServices(
+	return domain.NewServices(
 		logger,
 		emailSender,
 		passwordMaker,
@@ -52,15 +52,15 @@ func services(config config.Config) core.Services {
 
 // persistence initializes persistence
 func persistence(config config.Config) (
-	core.Commands,
-	core.Queries,
+	domain.Commands,
+	domain.Queries,
 	transactioneer.ITransactioneer,
 ) {
 	// Init dependencies
 	client := coderr.Must[*ent.Client](entimpl.InitEntClient(config.PosrgresURL))
 
 	// Init commands
-	commands := core.NewCommands(
+	commands := domain.NewCommands(
 		entcommand.NewUserCommand(client),
 		entcommand.NewJokeCommand(client),
 		entcommand.NewLikeCommand(client),
@@ -71,7 +71,7 @@ func persistence(config config.Config) (
 	)
 
 	// Init queries
-	queries := core.NewQueries(
+	queries := domain.NewQueries(
 		entquery.NewUserQuery(client),
 		entquery.NewJokeQuery(client),
 		entquery.NewLikeQuery(client),
@@ -97,18 +97,18 @@ func main() {
 	// Init persistence
 	commands, queries, tx := persistence(config)
 
-	// Init domains
-	domains := core.NewDomains(commands, queries, services)
+	// Init entities
+	entities := domain.NewEntities(commands, queries, services)
 
 	// Init usecases
-	usecases := application.NewUseCases(queries, tx, domains, services)
+	usecases := application.NewUseCases(queries, tx, entities, services)
 
 	// Init server
 	server := webapp.NewServer(
 		config.WebAppPort,
 		config.WebAppTemplatePath,
 		queries,
-		domains,
+		entities,
 		services,
 		usecases,
 	)

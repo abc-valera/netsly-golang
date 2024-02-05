@@ -3,15 +3,15 @@ package webapp
 import (
 	"net/http"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core"
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/global"
+	"github.com/abc-valera/netsly-api-golang/internal/domain"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
-func initRoutes(r *chi.Mux, services core.Services, handlers handler.Handlers) {
+func initRoutes(r *chi.Mux, services domain.Services, handlers handler.Handlers) {
 	// Static files (before middleware)
 	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("internal/port/web-app/static"))))
 

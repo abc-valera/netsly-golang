@@ -4,19 +4,19 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/internal/core/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/port/json-rest-api/dto"
 )
 
 type CommentsHandler struct {
 	commentQuery  query.IComment
-	commentDomain domain.Comment
+	commentDomain entity.Comment
 }
 
 func NewCommentsHandler(
 	commentQuery query.IComment,
-	commentDomain domain.Comment,
+	commentDomain entity.Comment,
 ) CommentsHandler {
 	return CommentsHandler{
 		commentQuery:  commentQuery,

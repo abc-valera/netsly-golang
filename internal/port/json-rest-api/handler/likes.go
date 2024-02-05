@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/internal/core/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 )
 
 type LikesHandler struct {

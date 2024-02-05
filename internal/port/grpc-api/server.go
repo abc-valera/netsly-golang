@@ -5,8 +5,8 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/pb"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
-	"github.com/abc-valera/netsly-api-golang/internal/core"
-	"github.com/abc-valera/netsly-api-golang/internal/core/global"
+	"github.com/abc-valera/netsly-api-golang/internal/domain"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/port/grpc-api/handler"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -15,7 +15,7 @@ import (
 // TODO: remade to the new standard
 func RunServer(
 	port string,
-	services core.Services,
+	services domain.Services,
 	usecases application.UseCases,
 ) error {
 	// Init handlers

@@ -6,8 +6,8 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
-	"github.com/abc-valera/netsly-api-golang/internal/core"
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/domain"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/port/json-rest-api/handler"
 	"github.com/abc-valera/netsly-api-golang/internal/port/json-rest-api/middleware"
 	"github.com/go-chi/chi/v5"
@@ -17,9 +17,9 @@ import (
 func NewServer(
 	port string,
 	staticPath string,
-	queries core.Queries,
-	domains core.Domains,
-	services core.Services,
+	queries domain.Queries,
+	entities domain.Entities,
+	services domain.Services,
 	usecases application.UseCases,
 ) http.Server {
 	if port == "" {
@@ -42,11 +42,11 @@ func NewServer(
 	}{
 		ErrorHandler:      handler.NewErrorHandler(),
 		SignHandler:       handler.NewSignHandler(usecases.SignUseCase),
-		MeHandler:         handler.NewMeHandler(queries.User, domains.User),
-		MeJokesHandler:    handler.NewMeJokesHandler(queries.Joke, domains.Joke),
-		MeCommentsHandler: handler.NewMeCommentsHandler(queries.Comment, domains.Comment),
-		MeLikesHandler:    handler.NewMeLikesHandler(queries.Like, domains.Like),
-		CommentsHandler:   handler.NewCommentsHandler(queries.Comment, domains.Comment),
+		MeHandler:         handler.NewMeHandler(queries.User, entities.User),
+		MeJokesHandler:    handler.NewMeJokesHandler(queries.Joke, entities.Joke),
+		MeCommentsHandler: handler.NewMeCommentsHandler(queries.Comment, entities.Comment),
+		MeLikesHandler:    handler.NewMeLikesHandler(queries.Like, entities.Like),
+		CommentsHandler:   handler.NewCommentsHandler(queries.Comment, entities.Comment),
 		LikesHandler:      handler.NewLikesHandler(queries.Like),
 	}
 	// Init security handler
