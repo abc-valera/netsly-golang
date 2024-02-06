@@ -15,6 +15,7 @@ import (
 type Config struct {
 	WebAppPort         string
 	WebAppTemplatePath string
+	WebAppStaticPath   string
 
 	JsonRestApiPort       string
 	JsonRestApiStaticPath string
@@ -49,6 +50,7 @@ func NewConfig() (Config, error) {
 
 	config.WebAppPort = os.Getenv("WEB_APP_PORT")
 	config.WebAppTemplatePath = os.Getenv("WEB_APP_TEMPLATE_PATH")
+	config.WebAppStaticPath = os.Getenv("WEB_APP_STATIC_PATH")
 
 	config.JsonRestApiPort = os.Getenv("JSON_REST_API_PORT")
 	config.JsonRestApiStaticPath = os.Getenv("JSON_REST_API_STATIC_PATH")

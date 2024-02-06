@@ -1,19 +1,13 @@
 package middleware
 
 import (
-	"context"
 	"net/http"
 	"strings"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/cookie"
-)
-
-type ContextKey string
-
-const (
-	UserIDKey ContextKey = "user_id"
+	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/session"
 )
 
 func NewSessionMiddleware(tokenMaker service.ITokenMaker) func(http.Handler) http.Handler {
@@ -27,14 +21,15 @@ func NewSessionMiddleware(tokenMaker service.ITokenMaker) func(http.Handler) htt
 
 				if accessToken != "" {
 					payload, err := tokenMaker.VerifyToken(accessToken)
-					if err != nil && err != service.ErrExpiredToken && err != service.ErrInvalidToken {
-						global.Log.Error("failed to verify access token", "err", err)
-					} else {
+					if err == nil {
 						if strings.HasPrefix(r.URL.Path, "/sign") {
 							http.Redirect(w, r, "/home", http.StatusMovedPermanently)
 						}
-						next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), UserIDKey, payload.UserID)))
+						next.ServeHTTP(w, session.SetUserID(r, payload.UserID))
 						return
+					}
+					if err != service.ErrExpiredToken && err != service.ErrInvalidToken {
+						global.Log.Error("failed to verify access token", "err", err)
 					}
 				}
 
@@ -45,19 +40,21 @@ func NewSessionMiddleware(tokenMaker service.ITokenMaker) func(http.Handler) htt
 
 				if refreshToken != "" {
 					payload, err := tokenMaker.VerifyToken(refreshToken)
-					if err != nil && err != service.ErrExpiredToken && err != service.ErrInvalidToken {
-						global.Log.Error("failed to verify access token", "err", err)
-					} else {
-						if strings.HasPrefix(r.URL.Path, "/sign") {
-							http.Redirect(w, r, "/home", http.StatusMovedPermanently)
-						}
-						next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), UserIDKey, payload.UserID)))
+					if err == nil {
 						access, _, err := tokenMaker.CreateAccessToken(payload.UserID)
 						if err != nil {
 							global.Log.Error("failed to create access token", "err", err)
 						}
 						cookie.Set(w, cookie.AccessTokenKey, access)
+						if strings.HasPrefix(r.URL.Path, "/sign") {
+							http.Redirect(w, r, "/home", http.StatusMovedPermanently)
+						} else {
+							next.ServeHTTP(w, session.SetUserID(r, payload.UserID))
+						}
 						return
+					}
+					if err != service.ErrExpiredToken && err != service.ErrInvalidToken {
+						global.Log.Error("failed to verify refresh token", "err", err)
 					}
 				}
 

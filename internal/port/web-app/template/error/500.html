@@ -3,10 +3,22 @@
 {{ end }}
 
 {{ define "BaseContent" }}
-  <div class="container">
-    <div class="col-12">
-      <h1>500 - Internal Server Error</h1>
-      <p>Something went wrong on our end. Please try again later.</p>
+  <div
+    class="flex h-screen flex-col items-center justify-center bg-gray-100 align-middle"
+  >
+    <div class="block text-6xl text-gray-500">
+      <span>5 0 0</span>
+    </div>
+    <div class="mt-8 tracking-widest">
+      <span class="text-xl text-gray-500"> Something went wrong :( </span>
+    </div>
+    <div class="mt-6">
+      <a
+        href="/home"
+        class="rounded-md bg-gray-200 p-3 font-mono text-xl text-gray-500 hover:shadow-md"
+      >
+        Go back
+      </a>
     </div>
   </div>
 {{ end }}

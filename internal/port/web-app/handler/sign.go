@@ -7,18 +7,18 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/cookie"
-	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/common"
+	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/tmpl"
 )
 
 type Sign struct {
-	signIndex common.ITemplate
+	signIndex tmpl.ITemplate
 
 	application.SignUseCase
 }
 
 func NewSign(templateFS fs.FS, signUseCase application.SignUseCase) Sign {
 	return Sign{
-		signIndex: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "sign/index", "layout/base")),
+		signIndex: coderr.Must[tmpl.ITemplate](tmpl.NewTemplate(templateFS, "sign/index", "layout")),
 
 		SignUseCase: signUseCase,
 	}

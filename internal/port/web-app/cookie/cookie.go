@@ -79,6 +79,7 @@ func Set(w http.ResponseWriter, key string, value string) {
 		Value:    value,
 		Path:     "/",
 		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
 		MaxAge:   60 * 60 * 24 * 365,
 		Secure:   true,
 	}

@@ -15,6 +15,7 @@ import (
 func NewServer(
 	port string,
 	templatePath string,
+	staticPath string,
 	queries domain.Queries,
 	entities domain.Entities,
 	services domain.Services,
@@ -30,12 +31,14 @@ func NewServer(
 	// Init handlers
 	handlers := handler.NewHandlers(
 		os.DirFS(templatePath),
+		queries,
+		entities,
 		usecases,
 	)
 
 	// Init router
 	r := chi.NewRouter()
-	initRoutes(r, services, handlers)
+	initRoutes(r, staticPath, services, handlers)
 
 	// Init server
 	return http.Server{

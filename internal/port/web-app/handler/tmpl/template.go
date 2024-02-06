@@ -1,4 +1,4 @@
-package common
+package tmpl
 
 import (
 	"fmt"
@@ -10,6 +10,8 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 )
+
+type Data map[string]interface{}
 
 type ITemplate interface {
 	Render(w http.ResponseWriter, data interface{}) error
@@ -43,10 +45,7 @@ func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	}
 
 	// Get executeName
-	executeName := filenames[0]
-	if len(filenames) > 1 {
-		executeName = strings.Split(filenames[len(filenames)-1], "/")[len(strings.Split(filenames[len(filenames)-1], "/"))-1]
-	}
+	executeName := strings.Split(filenames[len(filenames)-1], "/")[len(strings.Split(filenames[len(filenames)-1], "/"))-1]
 
 	return prodTemplate{
 		executeName: executeName,
@@ -97,10 +96,7 @@ func (t devTemplate) Render(wr http.ResponseWriter, data interface{}) error {
 	}
 
 	// Get executeName
-	executeName := t.filenames[0]
-	if len(t.filenames) > 1 {
-		executeName = strings.Split(t.filenames[len(t.filenames)-1], "/")[len(strings.Split(t.filenames[len(t.filenames)-1], "/"))-1]
-	}
+	executeName := strings.Split(t.filenames[len(t.filenames)-1], "/")[len(strings.Split(t.filenames[len(t.filenames)-1], "/"))-1]
 
 	return tmpl.ExecuteTemplate(wr, executeName, data)
 }

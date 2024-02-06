@@ -1,33 +1,71 @@
 package handler
 
 import (
+	"context"
 	"io/fs"
 	"net/http"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/cookie"
-	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/common"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/spec"
+	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/session"
+	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/tmpl"
 )
 
 type Home struct {
-	homeIndex common.ITemplate
+	homeIndex    tmpl.ITemplate
+	partialJokes tmpl.ITemplate
+
+	userQuery query.IUser
+	jokeQuery query.IJoke
 }
 
 func NewHome(
 	templateFS fs.FS,
+	userQuery query.IUser,
+	jokeQuery query.IJoke,
 ) Home {
 	return Home{
-		homeIndex: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "home/index", "layout/home", "layout/base")),
+		homeIndex:    coderr.Must[tmpl.ITemplate](tmpl.NewTemplate(templateFS, "home/index/index", "home/layout", "layout")),
+		partialJokes: coderr.Must[tmpl.ITemplate](tmpl.NewTemplate(templateFS, "home/index/partial_jokes.html")),
+
+		userQuery: userQuery,
+		jokeQuery: jokeQuery,
 	}
 }
 
 func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
-	access, err := cookie.Get(r, cookie.AccessTokenKey)
+	userID := r.Context().Value(session.UserIDKey).(string)
+
+	user, err := h.userQuery.GetByID(r.Context(), userID)
+	if err != nil {
+		return err
+	}
+
+	jokes, err := h.jokeQuery.GetAllByUserID(r.Context(), userID, spec.SelectParams{
+		Order: "desc",
+		Limit: 5,
+	})
 	if err != nil {
 		return err
 	}
 
 	return h.homeIndex.Render(w, map[string]any{
-		"AccessToken": access,
+		"User":  user,
+		"Jokes": jokes,
+	})
+}
+
+func (h Home) HomePartialJokes(w http.ResponseWriter, r *http.Request) error {
+	jokes, err := h.jokeQuery.GetAllByUserID(context.Background(), session.GetUserID(r), spec.SelectParams{
+		Order: "desc",
+		Limit: 5,
+	})
+	if err != nil {
+		return err
+	}
+
+	return h.partialJokes.Render(w, tmpl.Data{
+		"Jokes": jokes,
 	})
 }

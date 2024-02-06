@@ -6,22 +6,22 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/common"
+	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/tmpl"
 )
 
 type Error struct {
-	error401 common.ITemplate
-	error403 common.ITemplate
-	error404 common.ITemplate
-	error500 common.ITemplate
+	error401 tmpl.ITemplate
+	error403 tmpl.ITemplate
+	error404 tmpl.ITemplate
+	error500 tmpl.ITemplate
 }
 
 func NewErrorHandler(templateFS fs.FS) Error {
 	return Error{
-		error401: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "error/401", "layout/base")),
-		error403: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "error/403", "layout/base")),
-		error404: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "error/404", "layout/base")),
-		error500: coderr.Must[common.ITemplate](common.NewTemplate(templateFS, "error/500", "layout/base")),
+		error401: coderr.Must[tmpl.ITemplate](tmpl.NewTemplate(templateFS, "error/401", "layout")),
+		error403: coderr.Must[tmpl.ITemplate](tmpl.NewTemplate(templateFS, "error/403", "layout")),
+		error404: coderr.Must[tmpl.ITemplate](tmpl.NewTemplate(templateFS, "error/404", "layout")),
+		error500: coderr.Must[tmpl.ITemplate](tmpl.NewTemplate(templateFS, "error/500", "layout")),
 	}
 }
 

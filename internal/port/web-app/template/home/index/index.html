@@ -1,0 +1,85 @@
+{{ define "PageTitle" }}
+  Home - Netsly
+{{ end }}
+
+{{ define "HomeContent" }}
+  <div class="p-5">
+    <div class="flex items-center justify-center">
+      <h1>Welcome, {{ .User.Username }}!</h1>
+    </div>
+    <div class="my-5 flex justify-between">
+      <h2>Your Latest Jokes:</h2>
+      <button _="on click call #create-joke-modal.showModal()">Add joke</button>
+    </div>
+    <div
+      hx-get="/home/partial/jokes"
+      hx-target="this"
+      hx-swap="innerHTML"
+      hx-trigger="load"
+    >
+      <!-- Jokes partial -->
+    </div>
+  </div>
+
+  <!-- Create Joke Modal Start -->
+  <dialog
+    id="create-joke-modal"
+    class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40"
+    _="on click if event.target is me then call me.querySelector('form').reset() then call me.close()"
+  >
+    <div class="p-10">
+      <h1 class="mb-8 text-4xl font-extrabold">Register</h1>
+      <form action="/jokes" method="POST">
+        <div>
+          <label class="block font-semibold" for="title">Title</label>
+          <input
+            class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+            id="title"
+            type="text"
+            name="title"
+            required="required"
+            autofocus="autofocus"
+          />
+        </div>
+        <div class="mt-4">
+          <label class="block font-semibold" for="text">Text</label>
+          <input
+            class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+            id="text"
+            type="text"
+            name="text"
+            required="required"
+          />
+        </div>
+        <div class="mt-4">
+          <label class="block font-semibold" for="explanation">
+            Explanation
+          </label>
+          <input
+            class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
+            id="explanation"
+            type="text"
+            name="explanation"
+          />
+        </div>
+        <div class="mt-8 flex items-center justify-between">
+          <button
+            type="submit"
+            class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:px-10 md:py-4 md:text-lg"
+          >
+            Create
+          </button>
+          <a
+            class="cursor-pointer pr-4 font-semibold"
+            _="on click 
+              call #create-joke-modal.close() 
+              then call #create-joke-modal.querySelector('form').reset()"
+          >
+            Back
+          </a>
+        </div>
+      </form>
+    </div>
+  </dialog>
+  <!-- Create Joke Modal End -->
+{{ end }}

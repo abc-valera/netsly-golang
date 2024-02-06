@@ -1,0 +1,48 @@
+<!-- 
+    This is the home page layout, which is used for all pages from /templates/home directory.
+    It extends the base layout and provides a content block for the home page content.
+    Template contains left sidebar with navigation links and a content block for the home page content.
+
+    To use this layout, a template must define the following blocks:
+    - PageTitle: The title of the page.
+    - HomeContent: The main content of the page.
+ -->
+
+{{ define "BaseContent" }}
+  <div class="flex">
+    <aside class="grid h-screen w-1/6 grid-rows-6 border-r-4 border-black p-5">
+      <div class="row-span-2">
+        <image
+          src="/static/images/netsly_logo.svg"
+          alt="logo"
+          class="h-40 w-40"
+        >
+        </image>
+      </div>
+      <nav class="row-span-3">
+        <ul>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/jokes">Jokes</a></li>
+          <li><a href="/friends">Friends</a></li>
+          <li><a href="/profile">Profile</a></li>
+          <li><a href="#">Sign Out</a></li>
+        </ul>
+      </nav>
+      <footer class="row-span-1 grid grid-cols-2 grid-rows-3">
+        <section class="col-span-2 row-span-1">&copy; 2024 Netsly</section>
+        <section class="col-span-1 row-span-2">
+          <div>Terms of Service</div>
+          <div>Privacy Policy</div>
+        </section>
+        <section class="col-span-1 row-span-2">
+          <div>Contact Us</div>
+          <div>Jobs</div>
+        </section>
+      </footer>
+    </aside>
+
+    <div class="m-10 w-5/6">
+      {{ template "HomeContent" . }}
+    </div>
+  </div>
+{{ end }}

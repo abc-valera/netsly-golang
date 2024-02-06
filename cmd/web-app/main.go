@@ -107,6 +107,7 @@ func main() {
 	server := webapp.NewServer(
 		config.WebAppPort,
 		config.WebAppTemplatePath,
+		config.WebAppStaticPath,
 		queries,
 		entities,
 		services,

@@ -11,9 +11,9 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func initRoutes(r *chi.Mux, services domain.Services, handlers handler.Handlers) {
+func initRoutes(r *chi.Mux, staticPath string, services domain.Services, handlers handler.Handlers) {
 	// Static files (before middleware)
-	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("internal/port/web-app/static"))))
+	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir(staticPath))))
 
 	r.Route("/", func(r chi.Router) {
 		// Middleware
@@ -46,6 +46,12 @@ func initRoutes(r *chi.Mux, services domain.Services, handlers handler.Handlers)
 		// Home routes
 		r.Route("/home", func(r chi.Router) {
 			r.Get("/", newHandlerFunc(handlers.Home.HomeGet))
+			r.Get("/partial/jokes", newHandlerFunc(handlers.Home.HomePartialJokes))
+		})
+
+		// Jokes routes
+		r.Route("/jokes", func(r chi.Router) {
+			r.Post("/", newHandlerFunc(handlers.Joke.JokePost))
 		})
 	})
 }
@@ -63,12 +69,15 @@ func (h handlerWithError) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		code := coderr.ErrorCode(err)
 
-		// These errors should be handled in handlers
-		// if code == codeerr.CodeInvalidArgument ||
-		// 	code == codeerr.CodeNotFound ||
-		// 	code == codeerr.CodeAlreadyExists {
-		// 	return
-		// }
+		if code == coderr.CodeInvalidArgument || code == coderr.CodeNotFound || code == coderr.CodeAlreadyExists {
+			msg := coderr.ErrorMessage(err)
+			if msg == "" {
+				msg = "Something wrong with your input!"
+			}
+			w.Write([]byte(msg))
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
 		if code == coderr.CodeUnauthenticated {
 			http.Redirect(w, r, "/error/401", http.StatusUnauthorized)
