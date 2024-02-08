@@ -9,20 +9,20 @@ tasks:
   entrypoint:json-rest-api:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
-      - go build -o build/json-rest-api cmd/json-rest-api/main.go
-      - ./build/json-rest-api
+      - go build -o build/netsly cmd/app/main.go
+      - ./build/web-app -entrypoint json-rest-api
 
   entrypoint:web-app:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
-      - go build -o build/web-app cmd/web-app/main.go
-      - ./build/web-app
+      - go build -o build/netsly cmd/app/main.go
+      - ./build/web-app -entrypoint web-app
 
   entrypoint:grpc-api:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
-      - go build -o build/grpc-api cmd/grpc-api/main.go
-      - ./build/grpc-api
+      - go build -o build/netsly cmd/app/main.go
+      - ./build/web-app -entrypoint grpc-api
 
   generate:json-rest-api:main:
     desc: Generate docs and code for the HTTP port from the OpenAPI spec directory
@@ -58,8 +58,7 @@ tasks:
 
   generate:grpc-api:code:
     cmds:
-      - rm -f gen/pb/*.pb.go
-        protoc internal/port/grpc-api/proto/*.proto
+      - protoc internal/port/grpc-api/proto/*.proto
         --go_out=gen/pb
         --go_opt=paths=source_relative
         --go-grpc_out=gen/pb
@@ -138,7 +137,7 @@ tasks:
 
   compose:up:
     cmds:
-      - podman-compose -f docker/dev.docker-compose.yml --env-file env/dev.env up -d
+      - podman-compose -f docker/dev.docker-compose.yml --env-file env/deploy.env up -d
 
   compose:down:
     cmds:

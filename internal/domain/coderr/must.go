@@ -5,29 +5,28 @@ import (
 	"os"
 )
 
-// Must panics if err is not nil and stops program execution
+// Must stops program execution if err is not nil
 func Must[T any](val T, err error) T {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println(r)
-			os.Exit(1)
-		}
-	}()
 	if err != nil {
-		panic(err)
+		fmt.Print("Fatal: ")
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	return val
 }
 
-// NoErr panics if err is not nil and stops program execution
+// NoErr stops program execution if err is not nil
 func NoErr(err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println(r)
-			os.Exit(1)
-		}
-	}()
 	if err != nil {
-		panic(err)
+		fmt.Print("Fatal: ")
+		fmt.Println(err)
+		os.Exit(1)
 	}
+}
+
+// Fatal stops program execution and prints vals
+func Fatal(vals ...interface{}) {
+	fmt.Print("Fatal: ")
+	fmt.Println(vals...)
+	os.Exit(1)
 }

@@ -2,6 +2,7 @@ package entimpl
 
 import (
 	"context"
+	"os"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
@@ -9,11 +10,15 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func InitEntClient(databaseURL string) (*ent.Client, error) {
+var (
+	postgresUrl = os.Getenv("POSTGRES_URL")
+)
+
+func InitEntClient() (*ent.Client, error) {
 	// Connect to the database
 	client, err := ent.Open(
 		"postgres",
-		databaseURL,
+		postgresUrl,
 	)
 	if err != nil {
 		return nil, coderr.NewInternal(err)

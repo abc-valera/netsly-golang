@@ -46,7 +46,7 @@ func (b broker) SendEmailTask(ctx context.Context, priority service.Priority, em
 	if err != nil {
 		return err
 	}
-	global.Log.Info("ENQUEUED TASK",
+	global.Log().Info("ENQUEUED TASK",
 		"type", task.Type(),
 		"queue", info.Queue,
 		"max_retry", info.MaxRetry,

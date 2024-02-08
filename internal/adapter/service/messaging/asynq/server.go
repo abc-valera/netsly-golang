@@ -21,7 +21,7 @@ func newAsynqServer(
 		if code == "" {
 			code = coderr.CodeInternal
 		}
-		global.Log.Error("PROCESS TASK",
+		global.Log().Error("PROCESS TASK",
 			"code", code,
 			"msg", msg,
 			"error", err,
@@ -39,7 +39,7 @@ func newAsynqServer(
 				string(service.Low):      1,
 			},
 			ErrorHandler:    errHandler,
-			Logger:          &customAsynqLogger{global.Log},
+			Logger:          &customAsynqLogger{global.Log()},
 			ShutdownTimeout: time.Millisecond * 100,
 		},
 	)

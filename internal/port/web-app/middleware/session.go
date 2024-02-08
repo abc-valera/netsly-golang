@@ -16,7 +16,7 @@ func NewSessionMiddleware(tokenMaker service.ITokenMaker) func(http.Handler) htt
 			func(w http.ResponseWriter, r *http.Request) {
 				accessToken, err := cookie.Get(r, cookie.AccessTokenKey)
 				if err != nil && err != cookie.ErrNoCookie && err != cookie.ErrInvalidValue {
-					global.Log.Error("failed to get access token", "err", err)
+					global.Log().Error("failed to get access token", "err", err)
 				}
 
 				if accessToken != "" {
@@ -29,13 +29,13 @@ func NewSessionMiddleware(tokenMaker service.ITokenMaker) func(http.Handler) htt
 						return
 					}
 					if err != service.ErrExpiredToken && err != service.ErrInvalidToken {
-						global.Log.Error("failed to verify access token", "err", err)
+						global.Log().Error("failed to verify access token", "err", err)
 					}
 				}
 
 				refreshToken, err := cookie.Get(r, cookie.RefreshTokenKey)
 				if err != nil && err != cookie.ErrNoCookie && err != cookie.ErrInvalidValue {
-					global.Log.Error("failed to get refresh token", "err", err)
+					global.Log().Error("failed to get refresh token", "err", err)
 				}
 
 				if refreshToken != "" {
@@ -43,7 +43,7 @@ func NewSessionMiddleware(tokenMaker service.ITokenMaker) func(http.Handler) htt
 					if err == nil {
 						access, _, err := tokenMaker.CreateAccessToken(payload.UserID)
 						if err != nil {
-							global.Log.Error("failed to create access token", "err", err)
+							global.Log().Error("failed to create access token", "err", err)
 						}
 						cookie.Set(w, cookie.AccessTokenKey, access)
 						if strings.HasPrefix(r.URL.Path, "/sign") {
@@ -54,7 +54,7 @@ func NewSessionMiddleware(tokenMaker service.ITokenMaker) func(http.Handler) htt
 						return
 					}
 					if err != service.ErrExpiredToken && err != service.ErrInvalidToken {
-						global.Log.Error("failed to verify refresh token", "err", err)
+						global.Log().Error("failed to verify refresh token", "err", err)
 					}
 				}
 

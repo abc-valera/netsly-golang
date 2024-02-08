@@ -89,7 +89,7 @@ func (h handlerWithError) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		global.Log.Error("REQUEST_ERROR", "err", err.Error())
+		global.Log().Error("REQUEST_ERROR", "err", err.Error())
 		http.Redirect(w, r, "/error/500", http.StatusMovedPermanently)
 	}
 }

@@ -1,6 +1,7 @@
 package token
 
 import (
+	"os"
 	"time"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
@@ -8,17 +9,40 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-const secretKey = "12345678901234567890123456789012"
+var (
+	accessTokenDurationEnv  = os.Getenv("ACCESS_TOKEN_DURATION")
+	refreshTokenDurationEnv = os.Getenv("REFRESH_TOKEN_DURATION")
+	signKeyEnv              = os.Getenv("JWT_SIGN_KEY")
+)
 
 type jwtToken struct {
 	accessDuration  time.Duration
 	refreshDuration time.Duration
+
+	signMethod jwt.SigningMethod
+	signKey    string
 }
 
-func NewTokenMaker(accessDuration, refreshDuration time.Duration) service.ITokenMaker {
+func NewTokenMaker() service.ITokenMaker {
+	accessDuration, err := time.ParseDuration(accessTokenDurationEnv)
+	if err != nil {
+		coderr.Fatal("'ACCESS_TOKEN_DURATION' environmental variable is invalid")
+	}
+
+	refreshDuration, err := time.ParseDuration(refreshTokenDurationEnv)
+	if err != nil {
+		coderr.Fatal("'REFRESH_TOKEN_DURATION' environmental variable is invalid")
+	}
+
+	if len(signKeyEnv) < 32 {
+		coderr.Fatal("'JWT_SIGN_KEY' environmental variable is invalid")
+	}
+
 	return &jwtToken{
 		accessDuration:  accessDuration,
 		refreshDuration: refreshDuration,
+		signMethod:      jwt.SigningMethodHS256,
+		signKey:         signKeyEnv,
 	}
 }
 
@@ -28,7 +52,7 @@ func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Durat
 		return "", service.Payload{}, err
 	}
 
-	token := jwt.New(jwt.SigningMethodHS256)
+	token := jwt.New(s.signMethod)
 
 	claims := jwt.MapClaims{
 		"user_id":    payload.UserID,
@@ -38,7 +62,7 @@ func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Durat
 	}
 	token.Claims = claims
 
-	tokenString, err := token.SignedString([]byte(secretKey))
+	tokenString, err := token.SignedString([]byte(s.signKey))
 	if err != nil {
 		return "", service.Payload{}, coderr.NewInternal(err)
 	}
@@ -57,7 +81,7 @@ func (s jwtToken) CreateRefreshToken(userID string) (string, service.Payload, er
 func (s *jwtToken) VerifyToken(token string) (service.Payload, error) {
 	var claims jwt.MapClaims
 	_, err := jwt.ParseWithClaims(token, &claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secretKey), nil
+		return []byte(s.signKey), nil
 	})
 	if err != nil {
 		return service.Payload{}, service.ErrInvalidToken

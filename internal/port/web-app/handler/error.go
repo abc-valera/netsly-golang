@@ -43,7 +43,7 @@ func (h Error) Error404Get(w http.ResponseWriter, r *http.Request) error {
 func (h Error) Error500Get(w http.ResponseWriter, r *http.Request) error {
 	w.WriteHeader(http.StatusInternalServerError)
 	if err := h.error500.Render(w, nil); err != nil {
-		global.Log.Error("Error500Get", "err", err.Error())
+		global.Log().Error("Error500Get", "err", err.Error())
 		w.Write([]byte("500 - Internal server error"))
 	}
 	return nil

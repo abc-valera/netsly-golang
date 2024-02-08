@@ -14,14 +14,12 @@ type Internal struct {
 }
 
 func NewInternal(err error) error {
-	// Get the caller program counter and line number
-	pc, _, line, _ := runtime.Caller(1)
-	// Get the function name
-	split := strings.Split(runtime.FuncForPC(pc).Name(), "/")
-	funcName := strings.Join(split[4:], "/")
+	// Get the caller
+	_, file, line, _ := runtime.Caller(1)
+	file = strings.Split(file, "netsly-golang/")[1]
 	return &Internal{
 		Code:   CodeInternal,
-		Caller: fmt.Sprintf("%s:%d", funcName, line),
+		Caller: fmt.Sprintf("%s:%d", file, line),
 		Err:    err,
 	}
 }

@@ -39,7 +39,7 @@ func (h ErrorHandler) NewError(ctx context.Context, err error) *ogen.CodeErrorSt
 		}
 	}
 
-	global.Log.Error("REQUEST_ERROR", "err", err.Error())
+	global.Log().Error("REQUEST_ERROR", "err", err.Error())
 	return &ogen.CodeErrorStatusCode{
 		StatusCode: 500,
 		Response:   codeError,

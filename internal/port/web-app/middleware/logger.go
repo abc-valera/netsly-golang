@@ -57,9 +57,9 @@ func Logger(next http.Handler) http.Handler {
 				"duration(ms)", time.Since(start).Milliseconds(),
 			}
 			if wrapped.status < 500 {
-				global.Log.Info("REQUEST", logMsg...)
+				global.Log().Info("REQUEST", logMsg...)
 			} else {
-				global.Log.Error("REQUEST", logMsg...)
+				global.Log().Error("REQUEST", logMsg...)
 			}
 		},
 	)

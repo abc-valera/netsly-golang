@@ -1,19 +1,35 @@
 package global
 
-import "github.com/abc-valera/netsly-api-golang/internal/domain/service"
+import (
+	"sync"
 
-// Mode is the application running mode.
-// It can be either "development" or "production".
-//
-// It should be set at the startup of the application.
-var Mode string
-
-const (
-	ModeDevelopment = "development"
-	ModeProduction  = "production"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/mode"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 
-// Log is the global the application logger.
-//
-// It should be set at the startup of the application.
-var Log service.ILogger
+// global is a package that contains global variables that are used across the application.
+// Init() function must be called at the application startup.
+
+func Mode() mode.Mode {
+	return appMode
+}
+
+var appMode mode.Mode
+
+func Log() service.ILogger {
+	return log
+}
+
+var log service.ILogger
+
+func Init(
+	mode mode.Mode,
+	logger service.ILogger,
+) {
+	initOnce.Do(func() {
+		appMode = mode
+		log = logger
+	})
+}
+
+var initOnce sync.Once

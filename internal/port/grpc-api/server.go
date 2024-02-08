@@ -2,22 +2,30 @@ package grpcapi
 
 import (
 	"net"
+	"os"
 
 	"github.com/abc-valera/netsly-api-golang/gen/pb"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/port/grpc-api/handler"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
-// TODO: remade to the new standard
+var (
+	port       = os.Getenv("GRPC_API_PORT")
+	staticPath = os.Getenv("GRPC_API_STATIC_PATH")
+)
+
 func RunServer(
-	port string,
 	services domain.Services,
 	usecases application.UseCases,
-) error {
+) (
+	serverStart func(),
+	serverGracefulStop func(),
+) {
 	// Init handlers
 	signHandler := handler.NewSignHandler(usecases.SignUseCase)
 
@@ -28,11 +36,14 @@ func RunServer(
 	// ! Register reflection service on gRPC server (for development only)
 	reflection.Register(server)
 
-	lis, err := net.Listen("tcp", port)
-	if err != nil {
-		return err
-	}
+	lis := coderr.Must[net.Listener](net.Listen("tcp", port))
 
-	global.Log.Info("Starting gRPC server on " + port)
-	return server.Serve(lis)
+	return func() {
+			global.Log().Info("grpc-api is running on port ", "port", port)
+			if err := server.Serve(lis); err != nil {
+				coderr.Fatal("grpc-api server error: ", err)
+			}
+		}, func() {
+			server.GracefulStop()
+		}
 }

@@ -13,6 +13,6 @@ func NewDummyEmailSender() service.IEmailSender {
 }
 
 func (d dummyEmailSender) SendEmail(e service.Email) error {
-	global.Log.Info("EMAIL_SENT", "to", e.To, "subject", e.Subject, "body", e.Content)
+	global.Log().Info("EMAIL_SENT", "to", e.To, "subject", e.Subject, "body", e.Content)
 	return nil
 }

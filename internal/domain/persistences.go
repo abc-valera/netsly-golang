@@ -1,10 +1,6 @@
 package domain
 
 import (
-	"errors"
-	"log"
-
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 )
@@ -28,28 +24,6 @@ func NewCommands(
 	chatMember command.IChatMember,
 	chatMessage command.IChatMessage,
 ) Commands {
-	if user == nil {
-		log.Fatal(coderr.NewInternal(errors.New("user command is nil")))
-	}
-	if joke == nil {
-		log.Fatal(coderr.NewInternal(errors.New("joke command is nil")))
-	}
-	if like == nil {
-		log.Fatal(coderr.NewInternal(errors.New("like command is nil")))
-	}
-	if comment == nil {
-		log.Fatal(coderr.NewInternal(errors.New("comment command is nil")))
-	}
-	if chatRoom == nil {
-		log.Fatal(coderr.NewInternal(errors.New("chatRoom ommand is nil")))
-	}
-	if chatMember == nil {
-		log.Fatal(coderr.NewInternal(errors.New("chatMember command is nil")))
-	}
-	if chatMessage == nil {
-		log.Fatal(coderr.NewInternal(errors.New("chatMessage command is nil")))
-	}
-
 	return Commands{
 		User:        user,
 		Joke:        joke,
@@ -80,28 +54,6 @@ func NewQueries(
 	chatMember query.IChatMember,
 	chatMessage query.IChatMessage,
 ) Queries {
-	if user == nil {
-		log.Fatal(coderr.NewInternal(errors.New("user query is nil")))
-	}
-	if joke == nil {
-		log.Fatal(coderr.NewInternal(errors.New("joke query is nil")))
-	}
-	if like == nil {
-		log.Fatal(coderr.NewInternal(errors.New("like query is nil")))
-	}
-	if comment == nil {
-		log.Fatal(coderr.NewInternal(errors.New("comment query is nil")))
-	}
-	if chatRoom == nil {
-		log.Fatal(coderr.NewInternal(errors.New("chatRoom query is nil")))
-	}
-	if chatMember == nil {
-		log.Fatal(coderr.NewInternal(errors.New("chatMember query is nil")))
-	}
-	if chatMessage == nil {
-		log.Fatal(coderr.NewInternal(errors.New("chatMessage query is nil")))
-	}
-
 	return Queries{
 		User:        user,
 		Joke:        joke,

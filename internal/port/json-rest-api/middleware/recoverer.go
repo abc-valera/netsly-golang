@@ -38,7 +38,7 @@ func Recoverer(next http.Handler) http.Handler {
 				}
 
 				panicLocation, _ := strings.CutPrefix(fmt.Sprintf("%+v", stackTrace[3]), "github.com/abc-valera/netsly-api-golang/internal/")
-				global.Log.Error("PANIC_OCCURED",
+				global.Log().Error("PANIC_OCCURED",
 					"err", err,
 					"stack", panicLocation,
 				)

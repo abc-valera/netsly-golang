@@ -1,8 +1,6 @@
 package asynq
 
 import (
-	"log"
-
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 
@@ -27,5 +25,5 @@ func (l customAsynqLogger) Error(args ...interface{}) {
 }
 
 func (l customAsynqLogger) Fatal(args ...interface{}) {
-	log.Fatalln("ASYNQ", "FATAL", args)
+	l.ILogger.Error("ASYNQ", "FATAL", args)
 }
