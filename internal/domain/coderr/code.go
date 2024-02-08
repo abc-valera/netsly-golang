@@ -5,11 +5,12 @@ import "errors"
 // codeerr package provides a way to represent errors as a code and a message.
 
 const (
-	// CodeUnauthenticated indicates the request does not have valid authentication credentials for the operation
-	CodeUnauthenticated Code = "unauthenticated"
+	// VALIDATION CODES
 
-	// CodeInvalidArgument indicates client specified an invalid argument
+	// CodeInvalidArgument is a validation error. Should be returned with all failed validation checks.
 	CodeInvalidArgument Code = "invalid_argument"
+
+	// DATASOURCE CODES
 
 	// CodeNotFound means requested entity was not found
 	CodeNotFound Code = "not_found"
@@ -17,8 +18,15 @@ const (
 	// CodeAlreadyExists means an attempt to create an entity failed because one already exists
 	CodeAlreadyExists Code = "already_exists"
 
+	// ROLES CODES
+
+	// CodeUnauthenticated indicates the request does not have valid authentication credentials for the operation
+	CodeUnauthenticated Code = "unauthenticated"
+
 	// CodePermissionDenied indicates the caller does not have permission to execute the specified operation
 	CodePermissionDenied Code = "permission_denied"
+
+	// INTERNAL CODES
 
 	// CodeInternal means an internal error occured
 	CodeInternal Code = "internal"

@@ -89,7 +89,7 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, user := range userRequests {
-		coderr.MustErr(entities.User.Create(context.Background(), user))
+		coderr.NoErr(entities.User.Create(context.Background(), user))
 	}
 	// Generated users
 	users := coderr.Must[model.Users](queries.User.SearchAllByUsername(context.Background(), "", params))
@@ -188,7 +188,7 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, joke := range jokeRequests {
-		coderr.MustErr(entities.Joke.Create(context.Background(), joke))
+		coderr.NoErr(entities.Joke.Create(context.Background(), joke))
 	}
 	// Generated jokes
 	jokes := coderr.Must[model.Jokes](queries.Joke.SearchByTitle(context.Background(), "", params))
@@ -277,7 +277,7 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, like := range likes {
-		coderr.MustErr(entities.Like.Create(context.Background(), like))
+		coderr.NoErr(entities.Like.Create(context.Background(), like))
 	}
 
 	// Comments
@@ -394,6 +394,6 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, comment := range comments {
-		coderr.MustErr(entities.Comment.Create(context.Background(), comment))
+		coderr.NoErr(entities.Comment.Create(context.Background(), comment))
 	}
 }
