@@ -9,7 +9,6 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler"
 	"github.com/go-chi/chi/v5"
@@ -52,14 +51,14 @@ func NewServer(
 	return func() {
 			global.Log().Info("web-app is running on port ", "port", port)
 			if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-				coderr.Fatal("web-app server error: ", err)
+				global.Log().Fatal("web-app server error: ", err)
 			}
 		}, func() {
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 
 			if err := server.Shutdown(ctx); err != nil {
-				coderr.Fatal("Shutdown server error: ", err)
+				global.Log().Fatal("Shutdown server error: ", err)
 			}
 		}
 }

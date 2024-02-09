@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -26,16 +27,16 @@ type jwtToken struct {
 func NewTokenMaker() service.ITokenMaker {
 	accessDuration, err := time.ParseDuration(accessTokenDurationEnv)
 	if err != nil {
-		coderr.Fatal("'ACCESS_TOKEN_DURATION' environmental variable is invalid")
+		global.Log().Fatal("'ACCESS_TOKEN_DURATION' environmental variable is invalid")
 	}
 
 	refreshDuration, err := time.ParseDuration(refreshTokenDurationEnv)
 	if err != nil {
-		coderr.Fatal("'REFRESH_TOKEN_DURATION' environmental variable is invalid")
+		global.Log().Fatal("'REFRESH_TOKEN_DURATION' environmental variable is invalid")
 	}
 
 	if len(signKeyEnv) < 32 {
-		coderr.Fatal("'JWT_SIGN_KEY' environmental variable is invalid")
+		global.Log().Fatal("'JWT_SIGN_KEY' environmental variable is invalid")
 	}
 
 	return &jwtToken{

@@ -80,14 +80,14 @@ func NewServer(
 	return func() {
 			global.Log().Info("json-rest-api is running on port ", "port", port)
 			if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-				coderr.Fatal("json-rest-api server error: ", err)
+				global.Log().Fatal("json-rest-api server error: ", err)
 			}
 		}, func() {
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 
 			if err := server.Shutdown(ctx); err != nil {
-				coderr.Fatal("Shutdown server error: ", err)
+				global.Log().Fatal("Shutdown server error: ", err)
 			}
 		}
 }

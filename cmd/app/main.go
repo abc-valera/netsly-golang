@@ -29,8 +29,25 @@ func main() {
 	// Get cli flags
 	entrypoint := *flag.String("entrypoint", "web-app", "Port flag specifies the application port to be run: web-app, json-rest-api, grpc-api")
 
-	// Init services
+	// Init global variables
+	var appMode mode.Mode
+	switch os.Getenv("MODE") {
+	case "dev":
+		appMode = mode.Development
+	case "prod":
+		appMode = mode.Production
+	default:
+		global.Log().Fatal("'MODE' environmental variable is invalid")
+	}
+
 	logger := logger.NewSlogLogger()
+
+	global.Init(
+		appMode,
+		logger,
+	)
+
+	// Init services
 	passwordMaker := password.NewPasswordMaker()
 	tokenMaker := token.NewTokenMaker()
 	emailSender := email.NewDummyEmailSender()
@@ -72,22 +89,6 @@ func main() {
 	// Init transactioneer
 	tx := enttransactioneer.NewTransactioneer(client)
 
-	// Init global variables
-	var appMode mode.Mode
-	switch os.Getenv("MODE") {
-	case "dev":
-		appMode = mode.Development
-	case "prod":
-		appMode = mode.Production
-	default:
-		coderr.Fatal("'MODE' environmental variable is invalid")
-	}
-
-	global.Init(
-		appMode,
-		logger,
-	)
-
 	// Init entities
 	entities := domain.NewEntities(commands, queries, services)
 
@@ -104,7 +105,7 @@ func main() {
 	case "grpc-api":
 		serverStart, serverGracefulStop = grpcapi.RunServer(services, usecases)
 	default:
-		coderr.Fatal("Provided invalid entrypoint flag")
+		global.Log().Fatal("Provided invalid entrypoint flag")
 	}
 
 	// Run server

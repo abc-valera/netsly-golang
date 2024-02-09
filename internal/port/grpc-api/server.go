@@ -41,7 +41,7 @@ func RunServer(
 	return func() {
 			global.Log().Info("grpc-api is running on port ", "port", port)
 			if err := server.Serve(lis); err != nil {
-				coderr.Fatal("grpc-api server error: ", err)
+				global.Log().Fatal("grpc-api server error: ", err)
 			}
 		}, func() {
 			server.GracefulStop()

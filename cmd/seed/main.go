@@ -68,7 +68,7 @@ func main() {
 	case "prod":
 		appMode = mode.Production
 	default:
-		coderr.Fatal("'MODE' environmental variable is invalid")
+		global.Log().Fatal("'MODE' environmental variable is invalid")
 	}
 
 	global.Init(
