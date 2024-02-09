@@ -1,6 +1,6 @@
 module github.com/abc-valera/netsly-api-golang
 
-go 1.21.1
+go 1.22
 
 require (
 	entgo.io/ent v0.12.5
