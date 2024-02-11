@@ -4,6 +4,7 @@ import (
 	"flag"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 	entimpl "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl"
@@ -15,7 +16,6 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/adapter/service/messaging/dummy"
 	"github.com/abc-valera/netsly-api-golang/internal/adapter/service/password"
 	"github.com/abc-valera/netsly-api-golang/internal/adapter/service/token"
-	"github.com/abc-valera/netsly-api-golang/internal/adapter/service/validator"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
@@ -63,14 +63,11 @@ func main() {
 	}
 	global.InitMode(appMode)
 
-	validator := validator.NewPlaygroundValidator()
-	global.InitValidator(validator)
-
 	// Init services
 	passwordMaker := password.NewPasswordMaker()
 	tokenMaker := token.NewTokenMaker(
-		accessTokenDurationEnv,
-		refreshTokenDurationEnv,
+		coderr.Must[time.Duration](time.ParseDuration(accessTokenDurationEnv)),
+		coderr.Must[time.Duration](time.ParseDuration(refreshTokenDurationEnv)),
 		signKeyEnv,
 	)
 	emailSender := email.NewDummyEmailSender()
@@ -78,7 +75,6 @@ func main() {
 
 	services := domain.NewServices(
 		logger,
-		validator,
 		emailSender,
 		passwordMaker,
 		tokenMaker,

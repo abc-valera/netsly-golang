@@ -18,27 +18,17 @@ type jwtToken struct {
 }
 
 func NewTokenMaker(
-	accessTokenDurationStr string,
-	refreshTokenDurationStr string,
+	accessTokenDuration time.Duration,
+	refreshTokenDuration time.Duration,
 	signKey string,
 ) service.ITokenMaker {
-	accessDuration, err := time.ParseDuration(accessTokenDurationStr)
-	if err != nil {
-		global.Log().Fatal("'ACCESS_TOKEN_DURATION' environmental variable is invalid")
-	}
-
-	refreshDuration, err := time.ParseDuration(refreshTokenDurationStr)
-	if err != nil {
-		global.Log().Fatal("'REFRESH_TOKEN_DURATION' environmental variable is invalid")
-	}
-
 	if len(signKey) < 32 {
 		global.Log().Fatal("'JWT_SIGN_KEY' environmental variable is invalid")
 	}
 
 	return &jwtToken{
-		accessDuration:  accessDuration,
-		refreshDuration: refreshDuration,
+		accessDuration:  accessTokenDuration,
+		refreshDuration: refreshTokenDuration,
 		signMethod:      jwt.SigningMethodHS256,
 		signKey:         signKey,
 	}

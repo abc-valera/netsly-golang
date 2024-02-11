@@ -23,10 +23,3 @@ func NoErr(err error) {
 		os.Exit(1)
 	}
 }
-
-// Fatal stops program execution and prints vals
-func Fatal(vals ...interface{}) {
-	fmt.Print("Fatal: ")
-	fmt.Println(vals...)
-	os.Exit(1)
-}

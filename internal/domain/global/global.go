@@ -5,6 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mode"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/validation"
 )
 
 // global is a package that contains global variables that are used across the application.
@@ -40,17 +41,8 @@ func Mode() mode.Mode {
 	return appMode
 }
 
-var (
-	validate     service.IValidator
-	validateOnce sync.Once
-)
+var validate validation.Validator = validation.NewValidator()
 
-func InitValidator(validator service.IValidator) {
-	validateOnce.Do(func() {
-		validate = validator
-	})
-}
-
-func Validator() service.IValidator {
+func Validator() validation.Validator {
 	return validate
 }
