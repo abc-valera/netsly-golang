@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
@@ -17,13 +16,11 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var (
-	port       = os.Getenv("JSON_REST_API_PORT")
-	staticPath = os.Getenv("JSON_REST_API_STATIC_PATH")
-)
-
 // NewServer returns HTTP server
 func NewServer(
+	port string,
+	staticPath string,
+
 	queries domain.Queries,
 	entities domain.Entities,
 	services domain.Services,

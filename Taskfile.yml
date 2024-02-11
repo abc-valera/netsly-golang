@@ -9,20 +9,26 @@ tasks:
   entrypoint:json-rest-api:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
-      - go build -o build/netsly cmd/app/main.go
-      - ./build/web-app -entrypoint json-rest-api
+      - go build -o build/netsly cmd/main.go
+      - ./build/netsly -entrypoint json-rest-api
 
   entrypoint:web-app:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
-      - go build -o build/netsly cmd/app/main.go
-      - ./build/web-app -entrypoint web-app
+      - go build -o build/netsly cmd/main.go
+      - ./build/netsly -entrypoint web-app
 
   entrypoint:grpc-api:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
-      - go build -o build/netsly cmd/app/main.go
-      - ./build/web-app -entrypoint grpc-api
+      - go build -o build/netsly cmd/main.go
+      - ./build/netsly -entrypoint grpc-api
+
+  entrypoint:seed:
+    dotenv: ["{{ .ENV_FILE_PATH }}"]
+    cmds:
+      - go build -o build/netsly cmd/main.go
+      - ./build/netsly -entrypoint seed
 
   generate:json-rest-api:main:
     desc: Generate docs and code for the HTTP port from the OpenAPI spec directory
@@ -88,12 +94,6 @@ tasks:
     cmds:
       - podman stop netsly-postgres
       - podman stop netsly-redis
-
-  infrastructure:seed:
-    dotenv: ["{{ .ENV_FILE_PATH }}"]
-    cmds:
-      - go build -o build/seed cmd/seed/main.go
-      - ./build/seed
 
   infrastructure:run_postgres:
     cmds:

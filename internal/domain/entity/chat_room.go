@@ -3,16 +3,10 @@ package entity
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity/common"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-)
-
-var (
-	ErrChatRoomIDInvalid          = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid chat room ID")
-	ErrChatRoomNameInvalid        = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid chat room name")
-	ErrChatRoomDescriptionInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid chat room description")
 )
 
 type ChatRoom struct {
@@ -28,17 +22,13 @@ func NewChatRoom(
 }
 
 type ChatRoomCreateRequest struct {
-	Name        string
-	Description string
+	Name        string `validate:"required,min=4,max=64"`
+	Description string `validate:"max=256"`
 }
 
 func (c ChatRoom) Create(ctx context.Context, req ChatRoomCreateRequest) error {
-	// Validation
-	if req.Name == "" || len(req.Name) < 4 || len(req.Name) > 64 {
-		return ErrChatRoomNameInvalid
-	}
-	if len(req.Description) > 64 {
-		return ErrChatRoomDescriptionInvalid
+	if err := global.Validator().Struct(req); err != nil {
+		return err
 	}
 
 	baseModel := common.NewBaseEntity()
@@ -51,20 +41,13 @@ func (c ChatRoom) Create(ctx context.Context, req ChatRoomCreateRequest) error {
 }
 
 type ChatRoomUpdateRequest struct {
-	Name        *string
-	Description *string
+	Name        *string `validate:"min=4,max=64"`
+	Description *string `validate:"max=256"`
 }
 
 func (c ChatRoom) Update(ctx context.Context, chatRoomID string, req ChatRoomUpdateRequest) error {
-	// Validation
-	if chatRoomID == "" {
-		return ErrChatRoomIDInvalid
-	}
-	if req.Name != nil && (len(*req.Name) < 4 || len(*req.Name) > 64) {
-		return ErrChatRoomNameInvalid
-	}
-	if req.Description != nil && len(*req.Description) > 64 {
-		return ErrChatRoomDescriptionInvalid
+	if err := global.Validator().Struct(req); err != nil {
+		return err
 	}
 
 	return c.command.Update(ctx, chatRoomID, command.ChatRoomUpdate{
@@ -73,9 +56,8 @@ func (c ChatRoom) Update(ctx context.Context, chatRoomID string, req ChatRoomUpd
 }
 
 func (c ChatRoom) Delete(ctx context.Context, chatRoomID string) error {
-	// Validation
-	if chatRoomID == "" {
-		return ErrChatRoomIDInvalid
+	if err := global.Validator().Var(chatRoomID, "uuid"); err != nil {
+		return err
 	}
 
 	return c.command.Delete(ctx, chatRoomID)

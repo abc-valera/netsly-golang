@@ -4,14 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-)
-
-var (
-	ErrChatMemberChatIDInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid chat ID")
-	ErrChatMemberUserIDInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID")
 )
 
 type ChatMember struct {
@@ -27,17 +22,13 @@ func NewChatMember(
 }
 
 type ChatMemberCreateRequest struct {
-	ChatRoomID string
-	UserID     string
+	ChatRoomID string `validate:"required,uuid"`
+	UserID     string `validate:"required,uuid"`
 }
 
 func (c ChatMember) Create(ctx context.Context, req ChatMemberCreateRequest) error {
-	// Validation
-	if req.ChatRoomID == "" {
-		return ErrChatMemberChatIDInvalid
-	}
-	if req.UserID == "" {
-		return ErrChatMemberUserIDInvalid
+	if err := global.Validator().Struct(req); err != nil {
+		return err
 	}
 
 	createdAt := time.Now()
@@ -50,12 +41,8 @@ func (c ChatMember) Create(ctx context.Context, req ChatMemberCreateRequest) err
 }
 
 func (c ChatMember) Delete(ctx context.Context, chatRoomID, userID string) error {
-	// Validation
-	if chatRoomID == "" {
-		return ErrChatMemberChatIDInvalid
-	}
-	if userID == "" {
-		return ErrChatMemberUserIDInvalid
+	if err := global.Validator().Var(chatRoomID, "uuid"); err != nil {
+		return err
 	}
 
 	return c.command.Delete(ctx, chatRoomID, userID)

@@ -10,26 +10,47 @@ import (
 // global is a package that contains global variables that are used across the application.
 // Init() function must be called at the application startup.
 
-func Mode() mode.Mode {
-	return appMode
-}
+var (
+	log     service.ILogger
+	logOnce sync.Once
+)
 
-var appMode mode.Mode
+func InitLog(logger service.ILogger) {
+	logOnce.Do(func() {
+		log = logger
+	})
+}
 
 func Log() service.ILogger {
 	return log
 }
 
-var log service.ILogger
+var (
+	appMode     mode.Mode
+	appModeOnce sync.Once
+)
 
-func Init(
-	mode mode.Mode,
-	logger service.ILogger,
-) {
-	initOnce.Do(func() {
+func InitMode(mode mode.Mode) {
+	appModeOnce.Do(func() {
 		appMode = mode
-		log = logger
 	})
 }
 
-var initOnce sync.Once
+func Mode() mode.Mode {
+	return appMode
+}
+
+var (
+	validate     service.IValidator
+	validateOnce sync.Once
+)
+
+func InitValidator(validator service.IValidator) {
+	validateOnce.Do(func() {
+		validate = validator
+	})
+}
+
+func Validator() service.IValidator {
+	return validate
+}

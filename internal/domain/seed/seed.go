@@ -6,6 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/spec"
 )
@@ -396,4 +397,6 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 	for _, comment := range comments {
 		coderr.NoErr(entities.Comment.Create(context.Background(), comment))
 	}
+
+	global.Log().Info("Database has been seeded")
 }

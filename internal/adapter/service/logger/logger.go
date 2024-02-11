@@ -70,4 +70,5 @@ func (l slogLogger) Error(msg string, vals ...interface{}) {
 
 func (l slogLogger) Fatal(msg string, vals ...interface{}) {
 	l.logger.Log(context.Background(), LevelFatal, msg, vals...)
+	os.Exit(1)
 }

@@ -6,7 +6,7 @@ COPY go.* .
 RUN go mod download
 
 COPY . .
-RUN go build -o build/netsly cmd/app/main.go
+RUN go build -o build/netsly cmd/main.go
 
 # Run stage
 FROM library/alpine

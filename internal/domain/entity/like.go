@@ -4,14 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-)
-
-var (
-	ErrLikeUserIDInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID for like")
-	ErrLikeJokeIDInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid joke ID for like")
 )
 
 type Like struct {
@@ -27,17 +22,13 @@ func NewLike(
 }
 
 type LikeCreateRequest struct {
-	UserID string
-	JokeID string
+	UserID string `validate:"required,uuid"`
+	JokeID string `validate:"required,uuid"`
 }
 
 func (l Like) Create(ctx context.Context, req LikeCreateRequest) error {
-	// Validation
-	if req.UserID == "" {
-		return ErrLikeUserIDInvalid
-	}
-	if req.JokeID == "" {
-		return ErrLikeJokeIDInvalid
+	if err := global.Validator().Struct(req); err != nil {
+		return err
 	}
 
 	// Domain logic
@@ -52,17 +43,13 @@ func (l Like) Create(ctx context.Context, req LikeCreateRequest) error {
 }
 
 type DeleteLikeRequest struct {
-	UserID string
-	JokeID string
+	UserID string `validate:"required,uuid"`
+	JokeID string `validate:"required,uuid"`
 }
 
 func (l Like) Delete(ctx context.Context, req DeleteLikeRequest) error {
-	// Validation
-	if req.UserID == "" {
-		return ErrLikeUserIDInvalid
-	}
-	if req.JokeID == "" {
-		return ErrLikeJokeIDInvalid
+	if err := global.Validator().Struct(req); err != nil {
+		return err
 	}
 
 	// Delete from the data source

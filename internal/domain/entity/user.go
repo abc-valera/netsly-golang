@@ -3,21 +3,12 @@ package entity
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity/common"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
-)
-
-var (
-	ErrUserIDInvalid       = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID")
-	ErrUserUsernameInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid username")
-	ErrUserEmailInvalid    = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid email")
-	ErrUserPasswordInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid hashed password")
-	ErrUserFullnameInvalid = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid fullname")
-	ErrUserStatusInvalid   = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid status")
 )
 
 // User is responsible for validation and handling user domain logic
@@ -43,32 +34,18 @@ func NewUser(
 }
 
 type UserCreateRequest struct {
-	Username string
-	Email    string
-	Password string
-	Fullname string
-	Status   string
+	Username string `validate:"required,min=2,max=32"`
+	Email    string `validate:"required,email"`
+	Password string `validate:"required,min=2,max=32"`
+	Fullname string `validate:"max=64"`
+	Status   string `validate:"max=128"`
 }
 
 func (u User) Create(ctx context.Context, req UserCreateRequest) error {
-	// Validation
-	if req.Username == "" || len(req.Username) < 2 || len(req.Username) > 32 {
-		return ErrUserUsernameInvalid
-	}
-	if req.Email == "" {
-		return ErrUserEmailInvalid
-	}
-	if req.Password == "" || len(req.Password) < 2 || len(req.Password) > 32 {
-		return ErrUserPasswordInvalid
-	}
-	if len(req.Fullname) > 64 {
-		return ErrUserFullnameInvalid
-	}
-	if len(req.Status) > 128 {
-		return ErrUserStatusInvalid
+	if err := global.Validator().Struct(req); err != nil {
+		return err
 	}
 
-	// Domain logic
 	baseModel := common.NewBaseEntity()
 
 	hashedPassword, err := u.passMaker.HashPassword(req.Password)
@@ -76,7 +53,6 @@ func (u User) Create(ctx context.Context, req UserCreateRequest) error {
 		return err
 	}
 
-	// Save to data source
 	return u.command.Create(ctx, model.User{
 		BaseEntity:     baseModel,
 		Username:       req.Username,
@@ -88,24 +64,14 @@ func (u User) Create(ctx context.Context, req UserCreateRequest) error {
 }
 
 type UserUpdateRequest struct {
-	Password *string
-	Fullname *string
-	Status   *string
+	Password *string `validate:"min=2,max=32"`
+	Fullname *string `validate:"max=64"`
+	Status   *string `validate:"max=128"`
 }
 
 func (u User) Update(ctx context.Context, userID string, req UserUpdateRequest) error {
-	// Validation
-	if userID == "" {
-		return ErrUserIDInvalid
-	}
-	if req.Password != nil || len(*req.Password) < 4 || len(*req.Password) > 32 {
-		return ErrUserPasswordInvalid
-	}
-	if req.Fullname != nil || len(*req.Fullname) > 64 {
-		return ErrUserFullnameInvalid
-	}
-	if req.Status != nil || len(*req.Status) > 128 {
-		return ErrUserStatusInvalid
+	if err := global.Validator().Struct(req); err != nil {
+		return err
 	}
 
 	// Domain logic
@@ -123,13 +89,12 @@ func (u User) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 }
 
 type UserDeleteRequest struct {
-	Password string
+	Password string `validate:"required,min=2,max=32"`
 }
 
 func (u User) Delete(ctx context.Context, userID string, req UserDeleteRequest) error {
-	// Validation
-	if userID == "" {
-		return ErrUserIDInvalid
+	if err := global.Validator().Struct(req); err != nil {
+		return err
 	}
 
 	// Domain logic

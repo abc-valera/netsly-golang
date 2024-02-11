@@ -2,7 +2,6 @@ package grpcapi
 
 import (
 	"net"
-	"os"
 
 	"github.com/abc-valera/netsly-api-golang/gen/pb"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
@@ -14,12 +13,10 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var (
-	port       = os.Getenv("GRPC_API_PORT")
-	staticPath = os.Getenv("GRPC_API_STATIC_PATH")
-)
-
 func RunServer(
+	port string,
+	staicPath string,
+
 	services domain.Services,
 	usecases application.UseCases,
 ) (

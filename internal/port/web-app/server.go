@@ -14,14 +14,12 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var (
-	port         = os.Getenv("WEB_APP_PORT")
-	templatePath = os.Getenv("WEB_APP_TEMPLATE_PATH")
-	staticPath   = os.Getenv("WEB_APP_STATIC_PATH")
-)
-
 // NewServer returns HTTP server
 func NewServer(
+	port string,
+	templatePath string,
+	staticPath string,
+
 	queries domain.Queries,
 	entities domain.Entities,
 	services domain.Services,
