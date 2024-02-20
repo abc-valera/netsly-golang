@@ -75,7 +75,7 @@ func NewServer(
 	}
 
 	return func() {
-			global.Log().Info("json-rest-api is running on port ", "port", port)
+			global.Log().Info("json-rest-api is running", "port", port)
 			if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 				global.Log().Fatal("json-rest-api server error: ", err)
 			}

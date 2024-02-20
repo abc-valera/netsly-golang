@@ -12,10 +12,11 @@
       <button _="on click call #create-joke-modal.showModal()">Add joke</button>
     </div>
     <div
+      id="jokes"
       hx-get="/home/partial/jokes"
       hx-target="this"
       hx-swap="innerHTML"
-      hx-trigger="load"
+      hx-trigger="load, click from:#another"
     >
       <!-- Jokes partial -->
     </div>
@@ -29,7 +30,11 @@
   >
     <div class="p-10">
       <h1 class="mb-8 text-4xl font-extrabold">Register</h1>
-      <form action="/jokes" method="POST">
+      <form
+        id="create-joke-form"
+        hx-post="/jokes"
+        _="on submit call #create-joke-modal.close() then call me.reset()"
+      >
         <div>
           <label class="block font-semibold" for="title">Title</label>
           <input

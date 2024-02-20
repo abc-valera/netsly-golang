@@ -25,7 +25,8 @@ func initRoutes(r *chi.Mux, staticPath string, services domain.Services, handler
 
 		// 404 handler
 		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-			http.Redirect(w, r, "/error/404", http.StatusMovedPermanently)
+			w.WriteHeader(404)
+			w.Header().Set("HX-Redirect", "/error/404")
 		})
 
 		// Error routes
@@ -69,27 +70,25 @@ func (h handlerWithError) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		code := coderr.ErrorCode(err)
 
+		// These codes should be handled in handlers
 		if code == coderr.CodeInvalidArgument || code == coderr.CodeNotFound || code == coderr.CodeAlreadyExists {
-			msg := coderr.ErrorMessage(err)
-			if msg == "" {
-				msg = "Something wrong with your input!"
-			}
-			w.Write([]byte(msg))
-			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 		if code == coderr.CodeUnauthenticated {
-			http.Redirect(w, r, "/error/401", http.StatusUnauthorized)
+			w.WriteHeader(401)
+			w.Header().Set("HX-Redirect", "/error/401")
 			return
 		}
 
 		if code == coderr.CodePermissionDenied {
-			http.Redirect(w, r, "/error/403", http.StatusForbidden)
+			w.WriteHeader(403)
+			w.Header().Set("HX-Redirect", "/error/403")
 			return
 		}
 
 		global.Log().Error("REQUEST_ERROR", "err", err.Error())
-		http.Redirect(w, r, "/error/500", http.StatusMovedPermanently)
+		w.WriteHeader(500)
+		w.Header().Set("HX-Redirect", "/error/500")
 	}
 }

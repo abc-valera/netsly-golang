@@ -44,17 +44,23 @@
   >
     <div class="p-10">
       <h1 class="mb-8 text-4xl font-extrabold">Register</h1>
-      <form action="/sign/up" method="POST">
+      <form
+        hx-post="/sign/up"
+        hx-target-491="#sign-up-username-error"
+        hx-target-492="#sign-up-email-error"
+        hx-target-493="#sign-up-password-error"
+      >
         <div>
-          <label class="block font-semibold" for="name">Username</label>
+          <label class="block font-semibold" for="username">Username</label>
           <input
             class="mt-1 block w-full rounded-lg border-none bg-gray-100 p-4 text-2xl placeholder-black shadow-inner"
-            id="name"
+            id="username"
             type="text"
             name="username"
-            required="required"
             autofocus="autofocus"
+            _="on input put '' into the next <span/>"
           />
+          <span id="sign-up-username-error" class="text-sm text-red-600"></span>
         </div>
         <div class="mt-4">
           <label class="block font-semibold" for="email">Email</label>
@@ -63,8 +69,9 @@
             id="email"
             type="email"
             name="email"
-            required="required"
+            _="on input put '' into the next <span/>"
           />
+          <span id="sign-up-email-error" class="text-sm text-red-600"></span>
         </div>
         <div class="mt-4">
           <label class="block font-semibold" for="password">Password</label>
@@ -73,9 +80,9 @@
             id="password"
             type="password"
             name="password"
-            required="required"
-            autocomplete="new-password"
+            _="on input put '' into the next <span/>"
           />
+          <span id="sign-up-password-error" class="text-sm text-red-600"></span>
         </div>
         <div class="mt-8 flex items-center justify-between">
           <button
@@ -107,7 +114,11 @@
   >
     <div class="p-10">
       <h1 class="mb-8 text-4xl font-extrabold">Sign In</h1>
-      <form action="/sign/in" method="POST">
+      <form
+        hx-post="/sign/in"
+        hx-target-491="#sign-in-email-error"
+        hx-target-492="#sign-in-password-error"
+      >
         <div>
           <label class="block font-semibold" for="email">Email</label>
           <input
@@ -115,8 +126,9 @@
             id="email"
             type="email"
             name="email"
-            required="required"
+            _="on input put '' into the next <span/>"
           />
+          <span id="sign-in-email-error" class="text-sm text-red-600"></span>
         </div>
         <div class="mt-4">
           <label class="block font-semibold" for="password">Password</label>
@@ -125,9 +137,9 @@
             id="password"
             type="password"
             name="password"
-            required="required"
-            autocomplete="current-password"
+            _="on input put '' into the next <span/>"
           />
+          <span id="sign-in-password-error" class="text-sm text-red-600"></span>
         </div>
         <div class="mt-8 flex items-center justify-between">
           <button

@@ -22,13 +22,14 @@
       integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
       crossorigin="anonymous"
     ></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
     <!-- Hyperscript CDN -->
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
     <title>
       {{ template "PageTitle" }}
     </title>
   </head>
-  <body>
+  <body hx-ext="response-targets">
     {{ template "BaseContent" . }}
   </body>
 </html>

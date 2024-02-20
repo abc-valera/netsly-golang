@@ -47,7 +47,7 @@ func NewServer(
 	}
 
 	return func() {
-			global.Log().Info("web-app is running on port ", "port", port)
+			global.Log().Info("web-app is running", "port", port)
 			if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 				global.Log().Fatal("web-app server error: ", err)
 			}

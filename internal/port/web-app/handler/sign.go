@@ -3,9 +3,11 @@ package handler
 import (
 	"io/fs"
 	"net/http"
+	"strings"
 
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/cookie"
 	"github.com/abc-valera/netsly-api-golang/internal/port/web-app/handler/tmpl"
 )
@@ -39,6 +41,21 @@ func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 	}); err != nil {
+		if strings.Contains(strings.ToLower(err.Error()), "username") {
+			w.WriteHeader(491)
+			w.Write([]byte(err.Error()))
+			return nil
+		}
+		if strings.Contains(strings.ToLower(err.Error()), "email") {
+			w.WriteHeader(492)
+			w.Write([]byte(err.Error()))
+			return nil
+		}
+		if strings.Contains(strings.ToLower(err.Error()), "password") {
+			w.WriteHeader(493)
+			w.Write([]byte(err.Error()))
+			return nil
+		}
 		return err
 	}
 
@@ -53,7 +70,7 @@ func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 	cookie.Set(w, cookie.AccessTokenKey, resp.AccessToken)
 	cookie.Set(w, cookie.RefreshTokenKey, resp.RefreshToken)
 
-	http.Redirect(w, r, "/home", http.StatusMovedPermanently)
+	w.Header().Set("HX-Redirect", "/home")
 	return nil
 }
 
@@ -68,12 +85,27 @@ func (h Sign) SignInPost(w http.ResponseWriter, r *http.Request) error {
 		Password: r.FormValue("password"),
 	})
 	if err != nil {
+		if strings.Contains(strings.ToLower(err.Error()), "email") {
+			w.WriteHeader(491)
+			w.Write([]byte(err.Error()))
+			return nil
+		}
+		if err == model.ErrUserNotFound {
+			w.WriteHeader(491)
+			w.Write([]byte(err.Error()))
+			return nil
+		}
+		if strings.Contains(strings.ToLower(err.Error()), "password") {
+			w.WriteHeader(492)
+			w.Write([]byte(err.Error()))
+			return nil
+		}
 		return err
 	}
 
 	cookie.Set(w, cookie.AccessTokenKey, resp.AccessToken)
 	cookie.Set(w, cookie.RefreshTokenKey, resp.RefreshToken)
 
-	http.Redirect(w, r, "/home", http.StatusMovedPermanently)
+	w.Header().Set("HX-Redirect", "/home")
 	return nil
 }

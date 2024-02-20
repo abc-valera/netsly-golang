@@ -36,7 +36,7 @@ func RunServer(
 	lis := coderr.Must[net.Listener](net.Listen("tcp", port))
 
 	return func() {
-			global.Log().Info("grpc-api is running on port ", "port", port)
+			global.Log().Info("grpc-api is running", "port", port)
 			if err := server.Serve(lis); err != nil {
 				global.Log().Fatal("grpc-api server error: ", err)
 			}
