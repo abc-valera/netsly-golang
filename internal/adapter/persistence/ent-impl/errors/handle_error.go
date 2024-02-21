@@ -69,8 +69,8 @@ func HandleErr(err error) error {
 			}
 		}
 
-		// jokes table
-		if strings.Contains(err.Error(), "jokes") {
+		// joke-owner edge
+		if strings.Contains(err.Error(), "joke") {
 			return command.ErrJokeOwnerTitleAlreadyExists
 		}
 
