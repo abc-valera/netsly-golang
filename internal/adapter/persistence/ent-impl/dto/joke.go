@@ -7,7 +7,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model/common"
 )
 
-func FromEntJokeToJoke(entJoke *ent.Joke) model.Joke {
+func FromEntJoke(entJoke *ent.Joke) model.Joke {
 	if entJoke == nil {
 		return model.Joke{}
 	}
@@ -24,13 +24,13 @@ func FromEntJokeToJoke(entJoke *ent.Joke) model.Joke {
 }
 
 func FromEntJokeToJokeWithErrHandle(entJoke *ent.Joke, err error) (model.Joke, error) {
-	return FromEntJokeToJoke(entJoke), errhandler.HandleErr(err)
+	return FromEntJoke(entJoke), errhandler.HandleErr(err)
 }
 
 func FromEntJokesToJokes(entJokes []*ent.Joke) model.Jokes {
 	jokes := make(model.Jokes, len(entJokes))
 	for i, entJoke := range entJokes {
-		jokes[i] = FromEntJokeToJoke(entJoke)
+		jokes[i] = FromEntJoke(entJoke)
 	}
 	return jokes
 }

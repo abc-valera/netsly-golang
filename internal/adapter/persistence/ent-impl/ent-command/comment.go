@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/comment"
+	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/dto"
 	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
@@ -20,27 +20,26 @@ func NewCommentCommand(client *ent.Client) command.IComment {
 	}
 }
 
-func (cc commentCommand) Create(ctx context.Context, req model.Comment) error {
-	_, err := cc.Comment.Create().
+func (cc commentCommand) Create(ctx context.Context, req model.Comment) (model.Comment, error) {
+	comment, err := cc.Comment.Create().
 		SetID(req.ID).
 		SetUserID(req.UserID).
 		SetJokeID(req.JokeID).
 		SetText(req.Text).
 		SetCreatedAt(req.CreatedAt).
 		Save(ctx)
-	return errhandler.HandleErr(err)
+	return dto.FromEntComment(comment), errhandler.HandleErr(err)
 }
 
-func (cc commentCommand) Update(ctx context.Context, commentID string, req command.CommentUpdate) error {
-	query := cc.Comment.Update()
+func (cc commentCommand) Update(ctx context.Context, id string, req command.CommentUpdate) (model.Comment, error) {
+	query := cc.Comment.UpdateOneID(id)
 	if req.Text != nil {
 		query.SetText(*req.Text)
 	}
 
-	_, err := query.
-		Where(comment.ID(commentID)).
+	comment, err := query.
 		Save(ctx)
-	return errhandler.HandleErr(err)
+	return dto.FromEntComment(comment), errhandler.HandleErr(err)
 }
 
 func (cc commentCommand) Delete(ctx context.Context, id string) error {

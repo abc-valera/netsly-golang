@@ -42,7 +42,7 @@ post:
             - text
   responses:
     "201":
-      description: Joke created
+      $ref: "../../components/responses/joke.yaml"
     default:
       $ref: "../../components/responses/code_error.yaml"
 put:
@@ -76,7 +76,7 @@ put:
             - joke_id
   responses:
     "201":
-      description: Joke updated
+      $ref: "../../components/responses/joke.yaml"
     default:
       $ref: "../../components/responses/code_error.yaml"
 delete:

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmessage"
+	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/dto"
 	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
@@ -20,28 +20,27 @@ func NewChatMessageCommand(client *ent.Client) command.IChatMessage {
 	}
 }
 
-func (cm chatMessageCommand) Create(ctx context.Context, req model.ChatMessage) error {
-	_, err := cm.ChatMessage.Create().
+func (cm chatMessageCommand) Create(ctx context.Context, req model.ChatMessage) (model.ChatMessage, error) {
+	msg, err := cm.ChatMessage.Create().
 		SetID(req.ID).
 		SetChatRoomID(req.ChatRoomID).
 		SetUserID(req.UserID).
 		SetText(req.Text).
 		SetCreatedAt(req.CreatedAt).
 		Save(ctx)
-	return errhandler.HandleErr(err)
+	return dto.FromEntChatMessage(msg), errhandler.HandleErr(err)
 }
 
-func (cm chatMessageCommand) Update(ctx context.Context, id string, req command.ChatMessageUpdate) error {
-	query := cm.ChatMessage.Update()
+func (cm chatMessageCommand) Update(ctx context.Context, id string, req command.ChatMessageUpdate) (model.ChatMessage, error) {
+	query := cm.ChatMessage.UpdateOneID(id)
 	if req.Text != nil {
 		query.SetText(*req.Text)
 	}
 
-	_, err := query.
-		Where(chatmessage.ID(id)).
+	msg, err := query.
 		Save(ctx)
 
-	return errhandler.HandleErr(err)
+	return dto.FromEntChatMessage(msg), errhandler.HandleErr(err)
 }
 
 func (cm chatMessageCommand) Delete(ctx context.Context, id string) error {

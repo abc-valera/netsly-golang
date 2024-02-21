@@ -34,21 +34,29 @@ func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesG
 	return dto.NewJokesResponse(domainJokes), err
 }
 
-func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostReq) error {
-	return h.jokeDomain.Create(ctx, entity.JokeCreateRequest{
+func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostReq) (*ogen.Joke, error) {
+	joke, err := h.jokeDomain.Create(ctx, entity.JokeCreateRequest{
 		UserID:      payloadUserID(ctx),
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation.Value,
 	})
+	if err != nil {
+		return nil, err
+	}
+	return dto.NewJokeResponse(joke), err
 }
 
-func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq) error {
-	return h.jokeDomain.Update(ctx, req.JokeID, entity.JokeUpdateRequest{
+func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq) (*ogen.Joke, error) {
+	joke, err := h.jokeDomain.Update(ctx, req.JokeID, entity.JokeUpdateRequest{
 		Title:       dto.NewPointerString(req.Title),
 		Text:        dto.NewPointerString(req.Text),
 		Explanation: dto.NewPointerString(req.Explanation),
 	})
+	if err != nil {
+		return nil, err
+	}
+	return dto.NewJokeResponse(joke), err
 }
 
 func (h MeJokesHandler) MeJokesDel(ctx context.Context, req *ogen.MeJokesDelReq) error {

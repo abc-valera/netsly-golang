@@ -7,8 +7,8 @@ import (
 )
 
 type IComment interface {
-	Create(ctx context.Context, req model.Comment) error
-	Update(ctx context.Context, commentID string, req CommentUpdate) error
+	Create(ctx context.Context, req model.Comment) (model.Comment, error)
+	Update(ctx context.Context, commentID string, req CommentUpdate) (model.Comment, error)
 	Delete(ctx context.Context, id string) error
 }
 

@@ -26,9 +26,9 @@ type ChatMemberCreateRequest struct {
 	UserID     string `validate:"required,uuid"`
 }
 
-func (c ChatMember) Create(ctx context.Context, req ChatMemberCreateRequest) error {
+func (c ChatMember) Create(ctx context.Context, req ChatMemberCreateRequest) (model.ChatMember, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.ChatMember{}, err
 	}
 
 	createdAt := time.Now()

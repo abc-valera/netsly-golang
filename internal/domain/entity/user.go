@@ -41,16 +41,16 @@ type UserCreateRequest struct {
 	Status   string `validate:"max=128"`
 }
 
-func (u User) Create(ctx context.Context, req UserCreateRequest) error {
+func (u User) Create(ctx context.Context, req UserCreateRequest) (model.User, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.User{}, err
 	}
 
 	baseModel := common.NewBaseEntity()
 
 	hashedPassword, err := u.passMaker.HashPassword(req.Password)
 	if err != nil {
-		return err
+		return model.User{}, err
 	}
 
 	return u.command.Create(ctx, model.User{
@@ -69,15 +69,15 @@ type UserUpdateRequest struct {
 	Status   *string `validate:"max=128"`
 }
 
-func (u User) Update(ctx context.Context, userID string, req UserUpdateRequest) error {
+func (u User) Update(ctx context.Context, userID string, req UserUpdateRequest) (model.User, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.User{}, err
 	}
 
 	// Domain logic
 	hashedPassword, err := u.passMaker.HashPassword(*req.Password)
 	if err != nil {
-		return err
+		return model.User{}, err
 	}
 
 	// Edit in data source

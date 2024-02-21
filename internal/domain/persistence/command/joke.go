@@ -12,8 +12,8 @@ var (
 )
 
 type IJoke interface {
-	Create(ctx context.Context, req model.Joke) error
-	Update(ctx context.Context, id string, req JokeUpdate) error
+	Create(ctx context.Context, req model.Joke) (model.Joke, error)
+	Update(ctx context.Context, id string, req JokeUpdate) (model.Joke, error)
 	Delete(ctx context.Context, id string) error
 }
 

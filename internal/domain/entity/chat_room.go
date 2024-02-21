@@ -26,9 +26,9 @@ type ChatRoomCreateRequest struct {
 	Description string `validate:"max=256"`
 }
 
-func (c ChatRoom) Create(ctx context.Context, req ChatRoomCreateRequest) error {
+func (c ChatRoom) Create(ctx context.Context, req ChatRoomCreateRequest) (model.ChatRoom, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.ChatRoom{}, err
 	}
 
 	baseModel := common.NewBaseEntity()
@@ -45,9 +45,9 @@ type ChatRoomUpdateRequest struct {
 	Description *string `validate:"max=256"`
 }
 
-func (c ChatRoom) Update(ctx context.Context, chatRoomID string, req ChatRoomUpdateRequest) error {
+func (c ChatRoom) Update(ctx context.Context, chatRoomID string, req ChatRoomUpdateRequest) (model.ChatRoom, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.ChatRoom{}, err
 	}
 
 	return c.command.Update(ctx, chatRoomID, command.ChatRoomUpdate{

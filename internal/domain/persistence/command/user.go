@@ -13,8 +13,8 @@ var (
 )
 
 type IUser interface {
-	Create(ctx context.Context, req model.User) error
-	Update(ctx context.Context, id string, req UserUpdate) error
+	Create(ctx context.Context, req model.User) (model.User, error)
+	Update(ctx context.Context, id string, req UserUpdate) (model.User, error)
 	Delete(ctx context.Context, id string) error
 }
 

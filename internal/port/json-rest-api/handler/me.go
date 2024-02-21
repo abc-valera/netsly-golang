@@ -32,12 +32,16 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 	return dto.NewUserResponse(user), nil
 }
 
-func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) error {
-	return h.userDomain.Update(ctx, payloadUserID(ctx), entity.UserUpdateRequest{
+func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, error) {
+	user, err := h.userDomain.Update(ctx, payloadUserID(ctx), entity.UserUpdateRequest{
 		Password: dto.NewPointerString(req.Password),
 		Fullname: dto.NewPointerString(req.Fullname),
 		Status:   dto.NewPointerString(req.Status),
 	})
+	if err != nil {
+		return nil, err
+	}
+	return dto.NewUserResponse(user), nil
 }
 
 func (h MeHandler) MeDel(ctx context.Context, req *ogen.MeDelReq) error {

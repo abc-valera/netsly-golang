@@ -90,7 +90,7 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, user := range userRequests {
-		coderr.NoErr(entities.User.Create(context.Background(), user))
+		coderr.Must(entities.User.Create(context.Background(), user))
 	}
 	// Generated users
 	users := coderr.Must[model.Users](queries.User.SearchAllByUsername(context.Background(), "", params))
@@ -189,10 +189,10 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, joke := range jokeRequests {
-		coderr.NoErr(entities.Joke.Create(context.Background(), joke))
+		coderr.Must(entities.Joke.Create(context.Background(), joke))
 	}
 	// Generated jokes
-	jokes := coderr.Must[model.Jokes](queries.Joke.SearchByTitle(context.Background(), "", params))
+	jokes := coderr.Must(queries.Joke.SearchByTitle(context.Background(), "", params))
 
 	// Likes
 	likes := []entity.LikeCreateRequest{
@@ -278,7 +278,7 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, like := range likes {
-		coderr.NoErr(entities.Like.Create(context.Background(), like))
+		coderr.Must(entities.Like.Create(context.Background(), like))
 	}
 
 	// Comments
@@ -395,7 +395,7 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, comment := range comments {
-		coderr.NoErr(entities.Comment.Create(context.Background(), comment))
+		coderr.Must(entities.Comment.Create(context.Background(), comment))
 	}
 
 	global.Log().Info("Database has been seeded")

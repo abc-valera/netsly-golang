@@ -24,10 +24,11 @@ func NewMeLikesHandler(
 }
 
 func (h MeLikesHandler) MeLikesPost(ctx context.Context, req *ogen.MeLikesPostReq) error {
-	return h.likeDomain.Create(ctx, entity.LikeCreateRequest{
+	_, err := h.likeDomain.Create(ctx, entity.LikeCreateRequest{
 		UserID: payloadUserID(ctx),
 		JokeID: req.JokeID,
 	})
+	return err
 }
 
 func (h MeLikesHandler) MeLikesDel(ctx context.Context, req *ogen.MeLikesDelReq) error {

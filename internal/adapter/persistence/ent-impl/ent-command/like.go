@@ -5,6 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
+	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/dto"
 	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
@@ -20,13 +21,13 @@ func NewLikeCommand(client *ent.Client) command.ILike {
 	}
 }
 
-func (lc likeCommand) Create(ctx context.Context, req model.Like) error {
-	_, err := lc.Like.Create().
+func (lc likeCommand) Create(ctx context.Context, req model.Like) (model.Like, error) {
+	like, err := lc.Like.Create().
 		SetUserID(req.UserID).
 		SetJokeID(req.JokeID).
 		SetCreatedAt(req.CreatedAt).
 		Save(ctx)
-	return errhandler.HandleErr(err)
+	return dto.FromEntLike(like), errhandler.HandleErr(err)
 }
 
 func (lc likeCommand) Delete(ctx context.Context, userID string, jokeID string) error {

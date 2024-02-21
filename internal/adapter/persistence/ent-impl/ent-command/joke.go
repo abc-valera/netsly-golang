@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
+	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/dto"
 	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
@@ -20,8 +20,8 @@ func NewJokeCommand(client *ent.Client) command.IJoke {
 	}
 }
 
-func (jc jokeCommand) Create(ctx context.Context, req model.Joke) error {
-	_, err := jc.Joke.Create().
+func (jc jokeCommand) Create(ctx context.Context, req model.Joke) (model.Joke, error) {
+	joke, err := jc.Joke.Create().
 		SetID(req.ID).
 		SetUserID(req.UserID).
 		SetTitle(req.Title).
@@ -29,11 +29,11 @@ func (jc jokeCommand) Create(ctx context.Context, req model.Joke) error {
 		SetExplanation(req.Explanation).
 		SetCreatedAt(req.CreatedAt).
 		Save(ctx)
-	return errhandler.HandleErr(err)
+	return dto.FromEntJoke(joke), errhandler.HandleErr(err)
 }
 
-func (jc jokeCommand) Update(ctx context.Context, id string, req command.JokeUpdate) error {
-	query := jc.Joke.Update()
+func (jc jokeCommand) Update(ctx context.Context, id string, req command.JokeUpdate) (model.Joke, error) {
+	query := jc.Joke.UpdateOneID(id)
 	if req.Title != nil {
 		query.SetTitle(*req.Title)
 	}
@@ -44,10 +44,9 @@ func (jc jokeCommand) Update(ctx context.Context, id string, req command.JokeUpd
 		query.SetExplanation(*req.Explanation)
 	}
 
-	_, err := query.
-		Where(joke.ID(id)).
+	joke, err := query.
 		Save(ctx)
-	return errhandler.HandleErr(err)
+	return dto.FromEntJoke(joke), errhandler.HandleErr(err)
 }
 
 func (jc jokeCommand) Delete(ctx context.Context, id string) error {

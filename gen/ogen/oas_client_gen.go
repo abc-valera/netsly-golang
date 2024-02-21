@@ -47,13 +47,13 @@ type Invoker interface {
 	// Creates a comment for the current user and the current joke.
 	//
 	// POST /me/comments
-	MeCommentsPost(ctx context.Context, request *MeCommentsPostReq) error
+	MeCommentsPost(ctx context.Context, request *MeCommentsPostReq) (*Comment, error)
 	// MeCommentsPut invokes MeCommentsPut operation.
 	//
 	// Updates a comment of the current user.
 	//
 	// PUT /me/comments
-	MeCommentsPut(ctx context.Context, request *MeCommentsPutReq) error
+	MeCommentsPut(ctx context.Context, request *MeCommentsPutReq) (*Comment, error)
 	// MeDel invokes MeDel operation.
 	//
 	// Deletes current user profile.
@@ -83,13 +83,13 @@ type Invoker interface {
 	// Creates a new joke for current user.
 	//
 	// POST /me/jokes
-	MeJokesPost(ctx context.Context, request *MeJokesPostReq) error
+	MeJokesPost(ctx context.Context, request *MeJokesPostReq) (*Joke, error)
 	// MeJokesPut invokes MeJokesPut operation.
 	//
 	// Updates joke for current user.
 	//
 	// PUT /me/jokes
-	MeJokesPut(ctx context.Context, request *MeJokesPutReq) error
+	MeJokesPut(ctx context.Context, request *MeJokesPutReq) (*Joke, error)
 	// MeLikesDel invokes MeLikesDel operation.
 	//
 	// Deletes a like of the current user.
@@ -107,7 +107,7 @@ type Invoker interface {
 	// Updates current user profile.
 	//
 	// PUT /me
-	MePut(ctx context.Context, request *MePutReq) error
+	MePut(ctx context.Context, request *MePutReq) (*User, error)
 	// SignInPost invokes SignInPost operation.
 	//
 	// Performs user authentication.
@@ -493,12 +493,12 @@ func (c *Client) sendMeCommentsDel(ctx context.Context, request *MeCommentsDelRe
 // Creates a comment for the current user and the current joke.
 //
 // POST /me/comments
-func (c *Client) MeCommentsPost(ctx context.Context, request *MeCommentsPostReq) error {
-	_, err := c.sendMeCommentsPost(ctx, request)
-	return err
+func (c *Client) MeCommentsPost(ctx context.Context, request *MeCommentsPostReq) (*Comment, error) {
+	res, err := c.sendMeCommentsPost(ctx, request)
+	return res, err
 }
 
-func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPostReq) (res *MeCommentsPostOK, err error) {
+func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPostReq) (res *Comment, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MeCommentsPost"),
 		semconv.HTTPMethodKey.String("POST"),
@@ -601,12 +601,12 @@ func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPost
 // Updates a comment of the current user.
 //
 // PUT /me/comments
-func (c *Client) MeCommentsPut(ctx context.Context, request *MeCommentsPutReq) error {
-	_, err := c.sendMeCommentsPut(ctx, request)
-	return err
+func (c *Client) MeCommentsPut(ctx context.Context, request *MeCommentsPutReq) (*Comment, error) {
+	res, err := c.sendMeCommentsPut(ctx, request)
+	return res, err
 }
 
-func (c *Client) sendMeCommentsPut(ctx context.Context, request *MeCommentsPutReq) (res *MeCommentsPutOK, err error) {
+func (c *Client) sendMeCommentsPut(ctx context.Context, request *MeCommentsPutReq) (res *Comment, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MeCommentsPut"),
 		semconv.HTTPMethodKey.String("PUT"),
@@ -1153,12 +1153,12 @@ func (c *Client) sendMeJokesGet(ctx context.Context, params MeJokesGetParams) (r
 // Creates a new joke for current user.
 //
 // POST /me/jokes
-func (c *Client) MeJokesPost(ctx context.Context, request *MeJokesPostReq) error {
-	_, err := c.sendMeJokesPost(ctx, request)
-	return err
+func (c *Client) MeJokesPost(ctx context.Context, request *MeJokesPostReq) (*Joke, error) {
+	res, err := c.sendMeJokesPost(ctx, request)
+	return res, err
 }
 
-func (c *Client) sendMeJokesPost(ctx context.Context, request *MeJokesPostReq) (res *MeJokesPostCreated, err error) {
+func (c *Client) sendMeJokesPost(ctx context.Context, request *MeJokesPostReq) (res *Joke, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MeJokesPost"),
 		semconv.HTTPMethodKey.String("POST"),
@@ -1261,12 +1261,12 @@ func (c *Client) sendMeJokesPost(ctx context.Context, request *MeJokesPostReq) (
 // Updates joke for current user.
 //
 // PUT /me/jokes
-func (c *Client) MeJokesPut(ctx context.Context, request *MeJokesPutReq) error {
-	_, err := c.sendMeJokesPut(ctx, request)
-	return err
+func (c *Client) MeJokesPut(ctx context.Context, request *MeJokesPutReq) (*Joke, error) {
+	res, err := c.sendMeJokesPut(ctx, request)
+	return res, err
 }
 
-func (c *Client) sendMeJokesPut(ctx context.Context, request *MeJokesPutReq) (res *MeJokesPutCreated, err error) {
+func (c *Client) sendMeJokesPut(ctx context.Context, request *MeJokesPutReq) (res *Joke, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MeJokesPut"),
 		semconv.HTTPMethodKey.String("PUT"),
@@ -1585,12 +1585,12 @@ func (c *Client) sendMeLikesPost(ctx context.Context, request *MeLikesPostReq) (
 // Updates current user profile.
 //
 // PUT /me
-func (c *Client) MePut(ctx context.Context, request *MePutReq) error {
-	_, err := c.sendMePut(ctx, request)
-	return err
+func (c *Client) MePut(ctx context.Context, request *MePutReq) (*User, error) {
+	res, err := c.sendMePut(ctx, request)
+	return res, err
 }
 
-func (c *Client) sendMePut(ctx context.Context, request *MePutReq) (res *MePutCreated, err error) {
+func (c *Client) sendMePut(ctx context.Context, request *MePutReq) (res *User, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MePut"),
 		semconv.HTTPMethodKey.String("PUT"),

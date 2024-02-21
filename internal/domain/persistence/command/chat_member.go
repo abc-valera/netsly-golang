@@ -12,6 +12,6 @@ var (
 )
 
 type IChatMember interface {
-	Create(ctx context.Context, req model.ChatMember) error
+	Create(ctx context.Context, req model.ChatMember) (model.ChatMember, error)
 	Delete(ctx context.Context, ChatRoomID, UserID string) error
 }

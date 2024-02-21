@@ -45,8 +45,8 @@ func (UnimplementedHandler) MeCommentsDel(ctx context.Context, req *MeCommentsDe
 // Creates a comment for the current user and the current joke.
 //
 // POST /me/comments
-func (UnimplementedHandler) MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) (r *Comment, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // MeCommentsPut implements MeCommentsPut operation.
@@ -54,8 +54,8 @@ func (UnimplementedHandler) MeCommentsPost(ctx context.Context, req *MeCommentsP
 // Updates a comment of the current user.
 //
 // PUT /me/comments
-func (UnimplementedHandler) MeCommentsPut(ctx context.Context, req *MeCommentsPutReq) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) MeCommentsPut(ctx context.Context, req *MeCommentsPutReq) (r *Comment, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // MeDel implements MeDel operation.
@@ -99,8 +99,8 @@ func (UnimplementedHandler) MeJokesGet(ctx context.Context, params MeJokesGetPar
 // Creates a new joke for current user.
 //
 // POST /me/jokes
-func (UnimplementedHandler) MeJokesPost(ctx context.Context, req *MeJokesPostReq) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) MeJokesPost(ctx context.Context, req *MeJokesPostReq) (r *Joke, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // MeJokesPut implements MeJokesPut operation.
@@ -108,8 +108,8 @@ func (UnimplementedHandler) MeJokesPost(ctx context.Context, req *MeJokesPostReq
 // Updates joke for current user.
 //
 // PUT /me/jokes
-func (UnimplementedHandler) MeJokesPut(ctx context.Context, req *MeJokesPutReq) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) MeJokesPut(ctx context.Context, req *MeJokesPutReq) (r *Joke, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // MeLikesDel implements MeLikesDel operation.
@@ -135,8 +135,8 @@ func (UnimplementedHandler) MeLikesPost(ctx context.Context, req *MeLikesPostReq
 // Updates current user profile.
 //
 // PUT /me
-func (UnimplementedHandler) MePut(ctx context.Context, req *MePutReq) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) MePut(ctx context.Context, req *MePutReq) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // SignInPost implements SignInPost operation.

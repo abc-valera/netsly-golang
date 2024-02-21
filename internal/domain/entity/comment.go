@@ -27,9 +27,9 @@ type CommentCreateRequest struct {
 	Text   string `validate:"required,min=4,max=256"`
 }
 
-func (c Comment) Create(ctx context.Context, req CommentCreateRequest) error {
+func (c Comment) Create(ctx context.Context, req CommentCreateRequest) (model.Comment, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.Comment{}, err
 	}
 
 	baseModel := common.NewBaseEntity()
@@ -46,9 +46,9 @@ type CommentUpdateRequest struct {
 	Text *string `validate:"min=4,max=256"`
 }
 
-func (c Comment) Update(ctx context.Context, commentID string, req CommentUpdateRequest) error {
+func (c Comment) Update(ctx context.Context, commentID string, req CommentUpdateRequest) (model.Comment, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.Comment{}, err
 	}
 
 	return c.command.Update(ctx, commentID, command.CommentUpdate{

@@ -12,6 +12,6 @@ var (
 )
 
 type ILike interface {
-	Create(ctx context.Context, req model.Like) error
+	Create(ctx context.Context, req model.Like) (model.Like, error)
 	Delete(ctx context.Context, userID, jokeID string) error
 }

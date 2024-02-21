@@ -48,16 +48,30 @@ func encodeMeCommentsDelResponse(response *MeCommentsDelNoContent, w http.Respon
 	return nil
 }
 
-func encodeMeCommentsPostResponse(response *MeCommentsPostOK, w http.ResponseWriter, span trace.Span) error {
+func encodeMeCommentsPostResponse(response *Comment, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
 	return nil
 }
 
-func encodeMeCommentsPutResponse(response *MeCommentsPutOK, w http.ResponseWriter, span trace.Span) error {
+func encodeMeCommentsPutResponse(response *Comment, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
 	return nil
 }
@@ -104,16 +118,30 @@ func encodeMeJokesGetResponse(response *Jokes, w http.ResponseWriter, span trace
 	return nil
 }
 
-func encodeMeJokesPostResponse(response *MeJokesPostCreated, w http.ResponseWriter, span trace.Span) error {
+func encodeMeJokesPostResponse(response *Joke, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(201)
 	span.SetStatus(codes.Ok, http.StatusText(201))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
 	return nil
 }
 
-func encodeMeJokesPutResponse(response *MeJokesPutCreated, w http.ResponseWriter, span trace.Span) error {
+func encodeMeJokesPutResponse(response *Joke, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(201)
 	span.SetStatus(codes.Ok, http.StatusText(201))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
 	return nil
 }
@@ -132,9 +160,16 @@ func encodeMeLikesPostResponse(response *MeLikesPostCreated, w http.ResponseWrit
 	return nil
 }
 
-func encodeMePutResponse(response *MePutCreated, w http.ResponseWriter, span trace.Span) error {
+func encodeMePutResponse(response *User, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(201)
 	span.SetStatus(codes.Ok, http.StatusText(201))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
 
 	return nil
 }

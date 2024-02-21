@@ -57,7 +57,7 @@ type SignUpRequest struct {
 // then it sends welcome email to the users's email address,
 func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 	txFunc := func(ctx context.Context) error {
-		if err := uc.userDomain.Create(ctx, entity.UserCreateRequest{
+		if _, err := uc.userDomain.Create(ctx, entity.UserCreateRequest{
 			Username: req.Username,
 			Email:    req.Email,
 			Password: req.Password,

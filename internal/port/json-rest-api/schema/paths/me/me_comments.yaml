@@ -25,7 +25,7 @@ post:
             - text
   responses:
     "200":
-      description: Comment created
+      $ref: "../../components/responses/comment.yaml"
     default:
       $ref: "../../components/responses/code_error.yaml"
 put:
@@ -53,7 +53,7 @@ put:
             - comment_id
   responses:
     "200":
-      description: Comment updated
+      $ref: "../../components/responses/comment.yaml"
     default:
       $ref: "../../components/responses/code_error.yaml"
 delete:

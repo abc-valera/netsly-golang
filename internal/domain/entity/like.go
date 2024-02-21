@@ -26,9 +26,9 @@ type LikeCreateRequest struct {
 	JokeID string `validate:"required,uuid"`
 }
 
-func (l Like) Create(ctx context.Context, req LikeCreateRequest) error {
+func (l Like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.Like{}, err
 	}
 
 	// Domain logic

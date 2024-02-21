@@ -525,7 +525,7 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 		}
 	}()
 
-	var response *MeCommentsPostOK
+	var response *Comment
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -540,7 +540,7 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 		type (
 			Request  = *MeCommentsPostReq
 			Params   = struct{}
-			Response = *MeCommentsPostOK
+			Response = *Comment
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -551,12 +551,12 @@ func (s *Server) handleMeCommentsPostRequest(args [0]string, argsEscaped bool, w
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeCommentsPost(ctx, request)
+				response, err = s.h.MeCommentsPost(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeCommentsPost(ctx, request)
+		response, err = s.h.MeCommentsPost(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -688,7 +688,7 @@ func (s *Server) handleMeCommentsPutRequest(args [0]string, argsEscaped bool, w 
 		}
 	}()
 
-	var response *MeCommentsPutOK
+	var response *Comment
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -703,7 +703,7 @@ func (s *Server) handleMeCommentsPutRequest(args [0]string, argsEscaped bool, w 
 		type (
 			Request  = *MeCommentsPutReq
 			Params   = struct{}
-			Response = *MeCommentsPutOK
+			Response = *Comment
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -714,12 +714,12 @@ func (s *Server) handleMeCommentsPutRequest(args [0]string, argsEscaped bool, w 
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeCommentsPut(ctx, request)
+				response, err = s.h.MeCommentsPut(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeCommentsPut(ctx, request)
+		response, err = s.h.MeCommentsPut(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -1488,7 +1488,7 @@ func (s *Server) handleMeJokesPostRequest(args [0]string, argsEscaped bool, w ht
 		}
 	}()
 
-	var response *MeJokesPostCreated
+	var response *Joke
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1503,7 +1503,7 @@ func (s *Server) handleMeJokesPostRequest(args [0]string, argsEscaped bool, w ht
 		type (
 			Request  = *MeJokesPostReq
 			Params   = struct{}
-			Response = *MeJokesPostCreated
+			Response = *Joke
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1514,12 +1514,12 @@ func (s *Server) handleMeJokesPostRequest(args [0]string, argsEscaped bool, w ht
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeJokesPost(ctx, request)
+				response, err = s.h.MeJokesPost(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeJokesPost(ctx, request)
+		response, err = s.h.MeJokesPost(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -1651,7 +1651,7 @@ func (s *Server) handleMeJokesPutRequest(args [0]string, argsEscaped bool, w htt
 		}
 	}()
 
-	var response *MeJokesPutCreated
+	var response *Joke
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1666,7 +1666,7 @@ func (s *Server) handleMeJokesPutRequest(args [0]string, argsEscaped bool, w htt
 		type (
 			Request  = *MeJokesPutReq
 			Params   = struct{}
-			Response = *MeJokesPutCreated
+			Response = *Joke
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1677,12 +1677,12 @@ func (s *Server) handleMeJokesPutRequest(args [0]string, argsEscaped bool, w htt
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MeJokesPut(ctx, request)
+				response, err = s.h.MeJokesPut(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MeJokesPut(ctx, request)
+		response, err = s.h.MeJokesPut(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {
@@ -2140,7 +2140,7 @@ func (s *Server) handleMePutRequest(args [0]string, argsEscaped bool, w http.Res
 		}
 	}()
 
-	var response *MePutCreated
+	var response *User
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2155,7 +2155,7 @@ func (s *Server) handleMePutRequest(args [0]string, argsEscaped bool, w http.Res
 		type (
 			Request  = *MePutReq
 			Params   = struct{}
-			Response = *MePutCreated
+			Response = *User
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2166,12 +2166,12 @@ func (s *Server) handleMePutRequest(args [0]string, argsEscaped bool, w http.Res
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.MePut(ctx, request)
+				response, err = s.h.MePut(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.MePut(ctx, request)
+		response, err = s.h.MePut(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*CodeErrorStatusCode](err); ok {

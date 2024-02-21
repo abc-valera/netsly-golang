@@ -27,9 +27,9 @@ type ChatMessageCreateRequest struct {
 	Text   string `validate:"required,min=1,max=2048"`
 }
 
-func (c ChatMessage) Create(ctx context.Context, req ChatMessageCreateRequest) error {
+func (c ChatMessage) Create(ctx context.Context, req ChatMessageCreateRequest) (model.ChatMessage, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.ChatMessage{}, err
 	}
 
 	baseModel := common.NewBaseEntity()
@@ -46,9 +46,9 @@ type ChatMessageUpdateRequest struct {
 	Text *string `validate:"min=1,max=2048"`
 }
 
-func (c ChatMessage) Update(ctx context.Context, id string, req ChatMessageUpdateRequest) error {
+func (c ChatMessage) Update(ctx context.Context, id string, req ChatMessageUpdateRequest) (model.ChatMessage, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.ChatMessage{}, err
 	}
 
 	return c.command.Update(ctx, id, command.ChatMessageUpdate{

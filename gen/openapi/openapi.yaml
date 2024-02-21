@@ -176,7 +176,7 @@ paths:
                   example: active
       responses:
         '201':
-          description: Updated successfully
+          $ref: '#/components/responses/user'
         default:
           $ref: '#/components/responses/code_error'
     delete:
@@ -249,7 +249,7 @@ paths:
                 - text
       responses:
         '201':
-          description: Joke created
+          $ref: '#/components/responses/joke'
         default:
           $ref: '#/components/responses/code_error'
     put:
@@ -283,7 +283,7 @@ paths:
                 - joke_id
       responses:
         '201':
-          description: Joke updated
+          $ref: '#/components/responses/joke'
         default:
           $ref: '#/components/responses/code_error'
     delete:
@@ -339,7 +339,7 @@ paths:
                 - text
       responses:
         '200':
-          description: Comment created
+          $ref: '#/components/responses/comment'
         default:
           $ref: '#/components/responses/code_error'
     put:
@@ -367,7 +367,7 @@ paths:
                 - comment_id
       responses:
         '200':
-          description: Comment updated
+          $ref: '#/components/responses/comment'
         default:
           $ref: '#/components/responses/code_error'
     delete:
@@ -610,6 +610,18 @@ components:
                   $ref: '#/components/schemas/joke'
             required:
               - jokes
+    joke:
+      description: Joke
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/joke'
+    comment:
+      description: Comment
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/comment'
     comments:
       description: Array of comments
       content:

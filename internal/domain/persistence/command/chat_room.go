@@ -12,8 +12,8 @@ var (
 )
 
 type IChatRoom interface {
-	Create(ctx context.Context, req model.ChatRoom) error
-	Update(ctx context.Context, id string, req ChatRoomUpdate) error
+	Create(ctx context.Context, req model.ChatRoom) (model.ChatRoom, error)
+	Update(ctx context.Context, id string, req ChatRoomUpdate) (model.ChatRoom, error)
 	Delete(ctx context.Context, id string) error
 }
 

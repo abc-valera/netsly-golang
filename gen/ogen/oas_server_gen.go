@@ -31,13 +31,13 @@ type Handler interface {
 	// Creates a comment for the current user and the current joke.
 	//
 	// POST /me/comments
-	MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) error
+	MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) (*Comment, error)
 	// MeCommentsPut implements MeCommentsPut operation.
 	//
 	// Updates a comment of the current user.
 	//
 	// PUT /me/comments
-	MeCommentsPut(ctx context.Context, req *MeCommentsPutReq) error
+	MeCommentsPut(ctx context.Context, req *MeCommentsPutReq) (*Comment, error)
 	// MeDel implements MeDel operation.
 	//
 	// Deletes current user profile.
@@ -67,13 +67,13 @@ type Handler interface {
 	// Creates a new joke for current user.
 	//
 	// POST /me/jokes
-	MeJokesPost(ctx context.Context, req *MeJokesPostReq) error
+	MeJokesPost(ctx context.Context, req *MeJokesPostReq) (*Joke, error)
 	// MeJokesPut implements MeJokesPut operation.
 	//
 	// Updates joke for current user.
 	//
 	// PUT /me/jokes
-	MeJokesPut(ctx context.Context, req *MeJokesPutReq) error
+	MeJokesPut(ctx context.Context, req *MeJokesPutReq) (*Joke, error)
 	// MeLikesDel implements MeLikesDel operation.
 	//
 	// Deletes a like of the current user.
@@ -91,7 +91,7 @@ type Handler interface {
 	// Updates current user profile.
 	//
 	// PUT /me
-	MePut(ctx context.Context, req *MePutReq) error
+	MePut(ctx context.Context, req *MePutReq) (*User, error)
 	// SignInPost implements SignInPost operation.
 	//
 	// Performs user authentication.

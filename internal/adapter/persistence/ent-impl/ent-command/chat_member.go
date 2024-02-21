@@ -5,6 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmember"
+	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/dto"
 	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
@@ -20,13 +21,13 @@ func NewChatMemberCommand(client *ent.Client) command.IChatMember {
 	}
 }
 
-func (cm chatMemberCommand) Create(ctx context.Context, req model.ChatMember) error {
-	_, err := cm.ChatMember.Create().
+func (cm chatMemberCommand) Create(ctx context.Context, req model.ChatMember) (model.ChatMember, error) {
+	chatMember, err := cm.ChatMember.Create().
 		SetChatRoomID(req.ChatRoomID).
 		SetUserID(req.UserID).
 		SetCreatedAt(req.CreatedAt).
 		Save(ctx)
-	return err
+	return dto.FromEntChatMember(chatMember), errhandler.HandleErr(err)
 }
 
 func (cm chatMemberCommand) Delete(ctx context.Context, ChatRoomID string, UserID string) error {

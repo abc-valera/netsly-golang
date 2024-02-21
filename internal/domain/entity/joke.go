@@ -28,9 +28,9 @@ type JokeCreateRequest struct {
 	Explanation string `validate:"max=4096"`
 }
 
-func (j Joke) Create(ctx context.Context, req JokeCreateRequest) error {
+func (j Joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.Joke{}, err
 	}
 
 	baseModel := common.NewBaseEntity()
@@ -50,9 +50,9 @@ type JokeUpdateRequest struct {
 	Explanation *string `validate:"max=4096"`
 }
 
-func (j Joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) error {
+func (j Joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) (model.Joke, error) {
 	if err := global.Validator().Struct(req); err != nil {
-		return err
+		return model.Joke{}, err
 	}
 
 	return j.command.Update(ctx, jokeID, command.JokeUpdate{

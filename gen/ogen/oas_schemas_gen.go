@@ -358,9 +358,6 @@ func (s *MeCommentsDelReq) SetCommentID(val string) {
 	s.CommentID = val
 }
 
-// MeCommentsPostOK is response for MeCommentsPost operation.
-type MeCommentsPostOK struct{}
-
 type MeCommentsPostReq struct {
 	JokeID string `json:"joke_id"`
 	Text   string `json:"text"`
@@ -385,9 +382,6 @@ func (s *MeCommentsPostReq) SetJokeID(val string) {
 func (s *MeCommentsPostReq) SetText(val string) {
 	s.Text = val
 }
-
-// MeCommentsPutOK is response for MeCommentsPut operation.
-type MeCommentsPutOK struct{}
 
 type MeCommentsPutReq struct {
 	CommentID string    `json:"comment_id"`
@@ -484,9 +478,6 @@ func (s *MeJokesGetSelectParams) SetOffset(val OptInt) {
 	s.Offset = val
 }
 
-// MeJokesPostCreated is response for MeJokesPost operation.
-type MeJokesPostCreated struct{}
-
 type MeJokesPostReq struct {
 	Title       string    `json:"title"`
 	Text        string    `json:"text"`
@@ -522,9 +513,6 @@ func (s *MeJokesPostReq) SetText(val string) {
 func (s *MeJokesPostReq) SetExplanation(val OptString) {
 	s.Explanation = val
 }
-
-// MeJokesPutCreated is response for MeJokesPut operation.
-type MeJokesPutCreated struct{}
 
 type MeJokesPutReq struct {
 	JokeID      string    `json:"joke_id"`
@@ -606,9 +594,6 @@ func (s *MeLikesPostReq) GetJokeID() string {
 func (s *MeLikesPostReq) SetJokeID(val string) {
 	s.JokeID = val
 }
-
-// MePutCreated is response for MePut operation.
-type MePutCreated struct{}
 
 type MePutReq struct {
 	Password OptString `json:"password"`

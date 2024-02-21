@@ -24,18 +24,23 @@ func NewMeCommentsHandler(
 	}
 }
 
-func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeCommentsPostReq) error {
-	return h.commentDomain.Create(ctx, entity.CommentCreateRequest{
+func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeCommentsPostReq) (*ogen.Comment, error) {
+	comment, err := h.commentDomain.Create(ctx, entity.CommentCreateRequest{
 		UserID: payloadUserID(ctx),
 		JokeID: req.JokeID,
 		Text:   req.Text,
 	})
+	if err != nil {
+		return nil, err
+	}
+	return dto.NewCommentResponse(comment), err
 }
 
-func (h MeCommentsHandler) MeCommentsPut(ctx context.Context, req *ogen.MeCommentsPutReq) error {
-	return h.commentDomain.Update(ctx, req.CommentID, entity.CommentUpdateRequest{
+func (h MeCommentsHandler) MeCommentsPut(ctx context.Context, req *ogen.MeCommentsPutReq) (*ogen.Comment, error) {
+	comment, err := h.commentDomain.Update(ctx, req.CommentID, entity.CommentUpdateRequest{
 		Text: dto.NewPointerString(req.Text),
 	})
+	return dto.NewCommentResponse(comment), err
 }
 
 func (h MeCommentsHandler) MeCommentsDel(ctx context.Context, req *ogen.MeCommentsDelReq) error {
