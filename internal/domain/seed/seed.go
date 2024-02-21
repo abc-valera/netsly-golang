@@ -7,14 +7,13 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/spec"
 )
 
 // Seed is used to populate the database with initial data.
 // Stops the program execution if an error occurs.
 func Seed(queries domain.Queries, entities domain.Entities) {
-	params := coderr.Must[spec.SelectParams](spec.NewSelectParams("asc", 100, 0))
+	params := coderr.MustWithVal(spec.NewSelectParams("asc", 100, 0))
 
 	// Users
 	userRequests := []entity.UserCreateRequest{
@@ -90,10 +89,10 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, user := range userRequests {
-		coderr.Must(entities.User.Create(context.Background(), user))
+		coderr.MustWithVal(entities.User.Create(context.Background(), user))
 	}
 	// Generated users
-	users := coderr.Must[model.Users](queries.User.SearchAllByUsername(context.Background(), "", params))
+	users := coderr.MustWithVal(queries.User.SearchAllByUsername(context.Background(), "", params))
 
 	// Jokes
 	jokeRequests := []entity.JokeCreateRequest{
@@ -189,10 +188,10 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, joke := range jokeRequests {
-		coderr.Must(entities.Joke.Create(context.Background(), joke))
+		coderr.MustWithVal(entities.Joke.Create(context.Background(), joke))
 	}
 	// Generated jokes
-	jokes := coderr.Must(queries.Joke.SearchByTitle(context.Background(), "", params))
+	jokes := coderr.MustWithVal(queries.Joke.SearchByTitle(context.Background(), "", params))
 
 	// Likes
 	likes := []entity.LikeCreateRequest{
@@ -278,7 +277,7 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, like := range likes {
-		coderr.Must(entities.Like.Create(context.Background(), like))
+		coderr.MustWithVal(entities.Like.Create(context.Background(), like))
 	}
 
 	// Comments
@@ -395,7 +394,7 @@ func Seed(queries domain.Queries, entities domain.Entities) {
 		},
 	}
 	for _, comment := range comments {
-		coderr.Must(entities.Comment.Create(context.Background(), comment))
+		coderr.MustWithVal(entities.Comment.Create(context.Background(), comment))
 	}
 
 	global.Log().Info("Database has been seeded")

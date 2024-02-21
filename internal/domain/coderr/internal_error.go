@@ -3,8 +3,6 @@ package coderr
 import (
 	"bytes"
 	"fmt"
-	"runtime"
-	"strings"
 )
 
 type Internal struct {
@@ -14,12 +12,9 @@ type Internal struct {
 }
 
 func NewInternal(err error) error {
-	// Get the caller
-	_, file, line, _ := runtime.Caller(1)
-	file = strings.Split(file, "netsly-golang/")[1]
 	return &Internal{
 		Code:   CodeInternal,
-		Caller: fmt.Sprintf("%s:%d", file, line),
+		Caller: caller(2),
 		Err:    err,
 	}
 }
@@ -28,7 +23,7 @@ func (e *Internal) Error() string {
 	var buf bytes.Buffer
 
 	if e.Caller != "" {
-		fmt.Fprintf(&buf, "[%s] ", e.Caller)
+		fmt.Fprintf(&buf, "%s ", e.Caller)
 	}
 
 	if e.Err != nil {

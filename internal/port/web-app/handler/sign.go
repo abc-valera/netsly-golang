@@ -20,7 +20,7 @@ type Sign struct {
 
 func NewSign(templateFS fs.FS, signUseCase application.SignUseCase) Sign {
 	return Sign{
-		signIndex: coderr.Must[tmpl.ITemplate](tmpl.NewTemplate(templateFS, "sign/index", "layout")),
+		signIndex: coderr.MustWithVal(tmpl.NewTemplate(templateFS, "sign/index", "layout")),
 
 		SignUseCase: signUseCase,
 	}

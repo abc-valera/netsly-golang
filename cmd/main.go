@@ -6,7 +6,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/gen/ent"
 	entimpl "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl"
 	entcommand "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/ent-command"
 	entquery "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/ent-query"
@@ -59,15 +58,15 @@ func main() {
 	case "prod":
 		appMode = mode.Production
 	default:
-		global.Log().Fatal("'MODE' environmental variable is invalid")
+		coderr.Panic("'MODE' environmental variable is invalid")
 	}
 	global.InitMode(appMode)
 
 	// Init services
 	passwordMaker := password.NewPasswordMaker()
 	tokenMaker := token.NewTokenMaker(
-		coderr.Must[time.Duration](time.ParseDuration(accessTokenDurationEnv)),
-		coderr.Must[time.Duration](time.ParseDuration(refreshTokenDurationEnv)),
+		coderr.MustWithVal(time.ParseDuration(accessTokenDurationEnv)),
+		coderr.MustWithVal(time.ParseDuration(refreshTokenDurationEnv)),
 		signKeyEnv,
 	)
 	emailSender := email.NewDummyEmailSender()
@@ -82,7 +81,7 @@ func main() {
 	)
 
 	// Init persistence dependencies
-	client := coderr.Must[*ent.Client](entimpl.InitEntClient(postgresUrlEnv))
+	client := coderr.MustWithVal(entimpl.InitEntClient(postgresUrlEnv))
 
 	// Init commands
 	commands := domain.NewCommands(
@@ -155,7 +154,7 @@ func main() {
 		)
 		return
 	default:
-		global.Log().Fatal("Provided invalid entrypoint flag")
+		coderr.Panic("Provided invalid entrypoint flag")
 		return
 	}
 

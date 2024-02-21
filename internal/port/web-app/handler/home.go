@@ -26,8 +26,8 @@ func NewHome(
 	jokeQuery query.IJoke,
 ) Home {
 	return Home{
-		homeIndex:    coderr.Must[tmpl.ITemplate](tmpl.NewTemplate(templateFS, "home/index/index", "home/layout", "layout")),
-		partialJokes: coderr.Must[tmpl.ITemplate](tmpl.NewTemplate(templateFS, "home/index/partial_jokes.html")),
+		homeIndex:    coderr.MustWithVal(tmpl.NewTemplate(templateFS, "home/index/index", "home/layout", "layout")),
+		partialJokes: coderr.MustWithVal(tmpl.NewTemplate(templateFS, "home/index/partial_jokes.html")),
 
 		userQuery: userQuery,
 		jokeQuery: jokeQuery,

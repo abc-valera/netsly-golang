@@ -33,7 +33,7 @@ func RunServer(
 	// ! Register reflection service on gRPC server (for development only)
 	reflection.Register(server)
 
-	lis := coderr.Must[net.Listener](net.Listen("tcp", port))
+	lis := coderr.MustWithVal(net.Listen("tcp", port))
 
 	return func() {
 			global.Log().Info("grpc-api is running", "port", port)

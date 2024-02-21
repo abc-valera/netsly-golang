@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -23,7 +22,7 @@ func NewTokenMaker(
 	signKey string,
 ) service.ITokenMaker {
 	if len(signKey) < 32 {
-		global.Log().Fatal("'JWT_SIGN_KEY' environmental variable is invalid")
+		coderr.Panic("JWT_SIGN_KEY environmental variable is invalid")
 	}
 
 	return &jwtToken{

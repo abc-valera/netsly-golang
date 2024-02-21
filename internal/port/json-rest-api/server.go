@@ -53,7 +53,7 @@ func NewServer(
 	securityHandler := handler.NewSecurityHandler(services.TokenMaker)
 
 	// Init ogen server
-	ogenServer := coderr.Must[*ogen.Server](ogen.NewServer(ogenHandler, securityHandler))
+	ogenServer := coderr.MustWithVal(ogen.NewServer(ogenHandler, securityHandler))
 
 	// Init chi router
 	r := chi.NewRouter()
