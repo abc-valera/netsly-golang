@@ -16,7 +16,7 @@
       hx-get="/home/partial/jokes"
       hx-target="this"
       hx-swap="innerHTML"
-      hx-trigger="load, click from:#another"
+      hx-trigger="load, newJoke from:body"
     >
       <!-- Jokes partial -->
     </div>
@@ -26,14 +26,23 @@
   <dialog
     id="create-joke-modal"
     class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40"
-    _="on click if event.target is me then call me.querySelector('form').reset() then call me.close()"
+    _="on click if event.target is me 
+      then call me.querySelector('form').reset() 
+      then call me.close()
+      then put '' into <span/> in me"
   >
     <div class="p-10">
       <h1 class="mb-8 text-4xl font-extrabold">Register</h1>
       <form
         id="create-joke-form"
         hx-post="/jokes"
-        _="on submit call #create-joke-modal.close() then call me.reset()"
+        hx-target-491="#add-joke-title-error"
+        hx-target-492="#add-joke-text-error"
+        hx-target-493="#add-joke-explanation-error"
+        _="on newJoke 
+          call #create-joke-modal.close() 
+          then call me.reset()
+          then put '' into <span/> in me"
       >
         <div>
           <label class="block font-semibold" for="title">Title</label>
@@ -42,9 +51,10 @@
             id="title"
             type="text"
             name="title"
-            required="required"
             autofocus="autofocus"
+            _="on input put '' into the next <span/>"
           />
+          <span id="add-joke-title-error" class="text-sm text-red-600"></span>
         </div>
         <div class="mt-4">
           <label class="block font-semibold" for="text">Text</label>
@@ -53,8 +63,9 @@
             id="text"
             type="text"
             name="text"
-            required="required"
+            _="on input put '' into the next <span/>"
           />
+          <span id="add-joke-text-error" class="text-sm text-red-600"></span>
         </div>
         <div class="mt-4">
           <label class="block font-semibold" for="explanation">
@@ -65,7 +76,12 @@
             id="explanation"
             type="text"
             name="explanation"
+            _="on input put '' into the next <span/>"
           />
+          <span
+            id="add-joke-explanation-error"
+            class="text-sm text-red-600"
+          ></span>
         </div>
         <div class="mt-8 flex items-center justify-between">
           <button

@@ -29,11 +29,13 @@ func (v Validator) Struct(s interface{}) error {
 					v.createFormattedErrorWithParam(e.Field(), e.Tag(), e.Param()),
 					returnErr,
 				)
+				break // Note: not sure if this is the best way to handle multiple errors
 			} else {
 				returnErr = errors.Join(
 					v.createFormattedError(e.Field(), e.Tag()),
 					returnErr,
 				)
+				break // Note: not sure if this is the best way to handle multiple errors
 			}
 		}
 		return returnErr

@@ -9,8 +9,11 @@ import (
 
 type Handlers struct {
 	Error Error
-	Sign  Sign
-	Home  Home
+
+	Sign Sign
+	Home Home
+
+	Joke Joke
 }
 
 func NewHandlers(
@@ -21,7 +24,10 @@ func NewHandlers(
 ) Handlers {
 	return Handlers{
 		Error: NewErrorHandler(templateFS),
-		Sign:  NewSign(templateFS, usecases.SignUseCase),
-		Home:  NewHome(templateFS, queries.User, queries.Joke),
+
+		Sign: NewSign(templateFS, usecases.SignUseCase),
+		Home: NewHome(templateFS, queries.User, queries.Joke),
+
+		Joke: NewJoke(entities.Joke),
 	}
 }

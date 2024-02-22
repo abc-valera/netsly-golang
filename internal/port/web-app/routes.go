@@ -47,7 +47,12 @@ func initRoutes(r *chi.Mux, staticPath string, services domain.Services, handler
 		// Home routes
 		r.Route("/home", func(r chi.Router) {
 			r.Get("/", newHandlerFunc(handlers.Home.HomeGet))
-			r.Get("/partial/jokes", newHandlerFunc(handlers.Home.HomePartialJokes))
+			r.Get("/partial/jokes", newHandlerFunc(handlers.Home.HomePartialJokesGet))
+		})
+
+		// Jokes routes
+		r.Route("/jokes", func(r chi.Router) {
+			r.Post("/", newHandlerFunc(handlers.Joke.JokesPost))
 		})
 	})
 }

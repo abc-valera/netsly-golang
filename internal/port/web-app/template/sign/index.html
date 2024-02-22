@@ -110,7 +110,10 @@
   <dialog
     id="sign-in-modal"
     class="rounded-lg border-solid p-0 backdrop:bg-gray-400 backdrop:opacity-40"
-    _="on click if event.target is me then call me.querySelector('form').reset() then call me.close()"
+    _="on click if event.target is me 
+      then call me.querySelector('form').reset() 
+      then call me.close()
+      then put '' into <span/> in me"
   >
     <div class="p-10">
       <h1 class="mb-8 text-4xl font-extrabold">Sign In</h1>

@@ -56,7 +56,7 @@ func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
 	})
 }
 
-func (h Home) HomePartialJokes(w http.ResponseWriter, r *http.Request) error {
+func (h Home) HomePartialJokesGet(w http.ResponseWriter, r *http.Request) error {
 	jokes, err := h.jokeQuery.GetAllByUserID(context.Background(), session.GetUserID(r), spec.SelectParams{
 		Order: "desc",
 		Limit: 5,
