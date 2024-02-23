@@ -233,9 +233,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 
 				elem = origElem
-			case 's': // Prefix: "sign_"
+			case 's': // Prefix: "sign/"
 				origElem := elem
-				if l := len("sign_"); len(elem) >= l && elem[0:l] == "sign_" {
+				if l := len("sign/"); len(elem) >= l && elem[0:l] == "sign/" {
 					elem = elem[l:]
 				} else {
 					break
@@ -652,9 +652,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 
 				elem = origElem
-			case 's': // Prefix: "sign_"
+			case 's': // Prefix: "sign/"
 				origElem := elem
-				if l := len("sign_"); len(elem) >= l && elem[0:l] == "sign_" {
+				if l := len("sign/"); len(elem) >= l && elem[0:l] == "sign/" {
 					elem = elem[l:]
 				} else {
 					break
@@ -679,7 +679,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = "SignInPost"
 							r.summary = "Performs user authentication"
 							r.operationID = "SignInPost"
-							r.pathPattern = "/sign_in"
+							r.pathPattern = "/sign/in"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -704,7 +704,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = "SignRefreshPost"
 							r.summary = "Exchanges a refresh token for an access token"
 							r.operationID = "SignRefreshPost"
-							r.pathPattern = "/sign_refresh"
+							r.pathPattern = "/sign/refresh"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -729,7 +729,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = "SignUpPost"
 							r.summary = "Performs user registration"
 							r.operationID = "SignUpPost"
-							r.pathPattern = "/sign_up"
+							r.pathPattern = "/sign/up"
 							r.args = args
 							r.count = 0
 							return r, true

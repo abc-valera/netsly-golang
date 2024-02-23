@@ -10,8 +10,8 @@ properties:
       - already_exists
       - permission_denied
       - internal
-  message:
+  error_message:
     type: string
 required:
   - code
-  - message
+  - error_message

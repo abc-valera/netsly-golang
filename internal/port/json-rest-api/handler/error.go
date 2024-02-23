@@ -16,32 +16,32 @@ func NewErrorHandler() ErrorHandler {
 }
 
 func (h ErrorHandler) NewError(ctx context.Context, err error) *ogen.CodeErrorStatusCode {
-	code := coderr.ErrorCode(err)
 	codeError := ogen.CodeError{
-		Code:    ogen.CodeErrorCode(code),
-		Message: coderr.ErrorMessage(err),
+		Code:         ogen.CodeErrorCode(coderr.ErrorCode(err)),
+		ErrorMessage: coderr.ErrorMessage(err),
 	}
 
-	if code == coderr.CodeInvalidArgument ||
-		code == coderr.CodeNotFound ||
-		code == coderr.CodeAlreadyExists {
+	switch coderr.ErrorCode(err) {
+	case coderr.CodeInvalidArgument, coderr.CodeNotFound, coderr.CodeAlreadyExists:
 		return &ogen.CodeErrorStatusCode{
 			StatusCode: 400,
 			Response:   codeError,
 		}
-	}
-
-	if code == coderr.CodePermissionDenied ||
-		code == coderr.CodeUnauthenticated {
+	case coderr.CodeUnauthenticated:
 		return &ogen.CodeErrorStatusCode{
 			StatusCode: 401,
 			Response:   codeError,
 		}
-	}
-
-	global.Log().Error("REQUEST_ERROR", "err", err.Error())
-	return &ogen.CodeErrorStatusCode{
-		StatusCode: 500,
-		Response:   codeError,
+	case coderr.CodePermissionDenied:
+		return &ogen.CodeErrorStatusCode{
+			StatusCode: 403,
+			Response:   codeError,
+		}
+	default:
+		global.Log().Error("REQUEST_ERROR", "err", err.Error())
+		return &ogen.CodeErrorStatusCode{
+			StatusCode: 500,
+			Response:   codeError,
+		}
 	}
 }

@@ -29,8 +29,8 @@ func (s *BearerAuth) SetToken(val string) {
 
 // Ref: #/components/schemas/code_error
 type CodeError struct {
-	Code    CodeErrorCode `json:"code"`
-	Message string        `json:"message"`
+	Code         CodeErrorCode `json:"code"`
+	ErrorMessage string        `json:"error_message"`
 }
 
 // GetCode returns the value of Code.
@@ -38,9 +38,9 @@ func (s *CodeError) GetCode() CodeErrorCode {
 	return s.Code
 }
 
-// GetMessage returns the value of Message.
-func (s *CodeError) GetMessage() string {
-	return s.Message
+// GetErrorMessage returns the value of ErrorMessage.
+func (s *CodeError) GetErrorMessage() string {
+	return s.ErrorMessage
 }
 
 // SetCode sets the value of Code.
@@ -48,9 +48,9 @@ func (s *CodeError) SetCode(val CodeErrorCode) {
 	s.Code = val
 }
 
-// SetMessage sets the value of Message.
-func (s *CodeError) SetMessage(val string) {
-	s.Message = val
+// SetErrorMessage sets the value of ErrorMessage.
+func (s *CodeError) SetErrorMessage(val string) {
+	s.ErrorMessage = val
 }
 
 type CodeErrorCode string

@@ -16,7 +16,7 @@ post:
               example: user1@gmail.com
             password:
               type: string
-              example: 123456789
+              example: qwerty
           required:
             - email
             - password

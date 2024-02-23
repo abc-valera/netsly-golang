@@ -27,14 +27,14 @@ func (s *CodeError) encodeFields(e *jx.Encoder) {
 		s.Code.Encode(e)
 	}
 	{
-		e.FieldStart("message")
-		e.Str(s.Message)
+		e.FieldStart("error_message")
+		e.Str(s.ErrorMessage)
 	}
 }
 
 var jsonFieldsNameOfCodeError = [2]string{
 	0: "code",
-	1: "message",
+	1: "error_message",
 }
 
 // Decode decodes CodeError from json.
@@ -56,17 +56,17 @@ func (s *CodeError) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"code\"")
 			}
-		case "message":
+		case "error_message":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
-				s.Message = string(v)
+				s.ErrorMessage = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"message\"")
+				return errors.Wrap(err, "decode field \"error_message\"")
 			}
 		default:
 			return d.Skip()

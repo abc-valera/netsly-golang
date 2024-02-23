@@ -143,7 +143,7 @@ func (UnimplementedHandler) MePut(ctx context.Context, req *MePutReq) (r *User, 
 //
 // Performs user authentication.
 //
-// POST /sign_in
+// POST /sign/in
 func (UnimplementedHandler) SignInPost(ctx context.Context, req *SignInPostReq) (r *SignInPostOK, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -152,7 +152,7 @@ func (UnimplementedHandler) SignInPost(ctx context.Context, req *SignInPostReq) 
 //
 // Exchanges a refresh token for an access token.
 //
-// POST /sign_refresh
+// POST /sign/refresh
 func (UnimplementedHandler) SignRefreshPost(ctx context.Context, req *SignRefreshPostReq) (r *SignRefreshPostOK, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -161,7 +161,7 @@ func (UnimplementedHandler) SignRefreshPost(ctx context.Context, req *SignRefres
 //
 // Performs user registration.
 //
-// POST /sign_up
+// POST /sign/up
 func (UnimplementedHandler) SignUpPost(ctx context.Context, req *SignUpPostReq) error {
 	return ht.ErrNotImplemented
 }

@@ -112,19 +112,19 @@ type Invoker interface {
 	//
 	// Performs user authentication.
 	//
-	// POST /sign_in
+	// POST /sign/in
 	SignInPost(ctx context.Context, request *SignInPostReq) (*SignInPostOK, error)
 	// SignRefreshPost invokes SignRefreshPost operation.
 	//
 	// Exchanges a refresh token for an access token.
 	//
-	// POST /sign_refresh
+	// POST /sign/refresh
 	SignRefreshPost(ctx context.Context, request *SignRefreshPostReq) (*SignRefreshPostOK, error)
 	// SignUpPost invokes SignUpPost operation.
 	//
 	// Performs user registration.
 	//
-	// POST /sign_up
+	// POST /sign/up
 	SignUpPost(ctx context.Context, request *SignUpPostReq) error
 }
 
@@ -1692,7 +1692,7 @@ func (c *Client) sendMePut(ctx context.Context, request *MePutReq) (res *User, e
 //
 // Performs user authentication.
 //
-// POST /sign_in
+// POST /sign/in
 func (c *Client) SignInPost(ctx context.Context, request *SignInPostReq) (*SignInPostOK, error) {
 	res, err := c.sendSignInPost(ctx, request)
 	return res, err
@@ -1702,7 +1702,7 @@ func (c *Client) sendSignInPost(ctx context.Context, request *SignInPostReq) (re
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("SignInPost"),
 		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/sign_in"),
+		semconv.HTTPRouteKey.String("/sign/in"),
 	}
 
 	// Run stopwatch.
@@ -1735,7 +1735,7 @@ func (c *Client) sendSignInPost(ctx context.Context, request *SignInPostReq) (re
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/sign_in"
+	pathParts[0] = "/sign/in"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -1767,7 +1767,7 @@ func (c *Client) sendSignInPost(ctx context.Context, request *SignInPostReq) (re
 //
 // Exchanges a refresh token for an access token.
 //
-// POST /sign_refresh
+// POST /sign/refresh
 func (c *Client) SignRefreshPost(ctx context.Context, request *SignRefreshPostReq) (*SignRefreshPostOK, error) {
 	res, err := c.sendSignRefreshPost(ctx, request)
 	return res, err
@@ -1777,7 +1777,7 @@ func (c *Client) sendSignRefreshPost(ctx context.Context, request *SignRefreshPo
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("SignRefreshPost"),
 		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/sign_refresh"),
+		semconv.HTTPRouteKey.String("/sign/refresh"),
 	}
 
 	// Run stopwatch.
@@ -1810,7 +1810,7 @@ func (c *Client) sendSignRefreshPost(ctx context.Context, request *SignRefreshPo
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/sign_refresh"
+	pathParts[0] = "/sign/refresh"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -1842,7 +1842,7 @@ func (c *Client) sendSignRefreshPost(ctx context.Context, request *SignRefreshPo
 //
 // Performs user registration.
 //
-// POST /sign_up
+// POST /sign/up
 func (c *Client) SignUpPost(ctx context.Context, request *SignUpPostReq) error {
 	_, err := c.sendSignUpPost(ctx, request)
 	return err
@@ -1852,7 +1852,7 @@ func (c *Client) sendSignUpPost(ctx context.Context, request *SignUpPostReq) (re
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("SignUpPost"),
 		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/sign_up"),
+		semconv.HTTPRouteKey.String("/sign/up"),
 	}
 
 	// Run stopwatch.
@@ -1885,7 +1885,7 @@ func (c *Client) sendSignUpPost(ctx context.Context, request *SignUpPostReq) (re
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/sign_up"
+	pathParts[0] = "/sign/up"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"

@@ -2203,12 +2203,12 @@ func (s *Server) handleMePutRequest(args [0]string, argsEscaped bool, w http.Res
 //
 // Performs user authentication.
 //
-// POST /sign_in
+// POST /sign/in
 func (s *Server) handleSignInPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("SignInPost"),
 		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/sign_in"),
+		semconv.HTTPRouteKey.String("/sign/in"),
 	}
 
 	// Start a span for this request.
@@ -2320,12 +2320,12 @@ func (s *Server) handleSignInPostRequest(args [0]string, argsEscaped bool, w htt
 //
 // Exchanges a refresh token for an access token.
 //
-// POST /sign_refresh
+// POST /sign/refresh
 func (s *Server) handleSignRefreshPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("SignRefreshPost"),
 		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/sign_refresh"),
+		semconv.HTTPRouteKey.String("/sign/refresh"),
 	}
 
 	// Start a span for this request.
@@ -2437,12 +2437,12 @@ func (s *Server) handleSignRefreshPostRequest(args [0]string, argsEscaped bool, 
 //
 // Performs user registration.
 //
-// POST /sign_up
+// POST /sign/up
 func (s *Server) handleSignUpPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("SignUpPost"),
 		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/sign_up"),
+		semconv.HTTPRouteKey.String("/sign/up"),
 	}
 
 	// Start a span for this request.

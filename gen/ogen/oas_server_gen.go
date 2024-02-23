@@ -96,19 +96,19 @@ type Handler interface {
 	//
 	// Performs user authentication.
 	//
-	// POST /sign_in
+	// POST /sign/in
 	SignInPost(ctx context.Context, req *SignInPostReq) (*SignInPostOK, error)
 	// SignRefreshPost implements SignRefreshPost operation.
 	//
 	// Exchanges a refresh token for an access token.
 	//
-	// POST /sign_refresh
+	// POST /sign/refresh
 	SignRefreshPost(ctx context.Context, req *SignRefreshPostReq) (*SignRefreshPostOK, error)
 	// SignUpPost implements SignUpPost operation.
 	//
 	// Performs user registration.
 	//
-	// POST /sign_up
+	// POST /sign/up
 	SignUpPost(ctx context.Context, req *SignUpPostReq) error
 	// NewError creates *CodeErrorStatusCode from error returned by handler.
 	//

@@ -2,19 +2,21 @@ openapi: 3.0.0
 info:
   version: 0.1.0
   title: Netsly API
-  termsOfService: "https://github.com/abc-valera/netsly-api-golang"
+  termsOfService: "https://github.com/abc-valera/netsly-golang"
   contact:
     email: zoocity14@gmail.com
-    url: "https://github.com/abc-valera/netsly-api-golang"
+    url: "https://github.com/abc-valera/netsly-golang"
   # x-logo:
   #   url: "https://apis.guru/openapi-template/logo.png"
   description: API for Netsly social network
 externalDocs:
   description: Learn more about the project.
-  url: "https://github.com/abc-valera/netsly-api-golang"
+  url: "https://github.com/abc-valera/netsly-golang"
 tags:
   - name: sign
     description: Everything about managing user sessions
+  - name: me
+    description: Everything about managing current user profile
   - name: users
     description: Everything about searching users
   - name: jokes
@@ -23,29 +25,25 @@ tags:
     description: Everything about searching comments
   - name: likes
     description: Everything about counting likes
-  - name: me
-    description: Everything about managing current user profile
-servers:
-  - url: "http://localhost:3000"
 paths:
-  /sign_up:
-    $ref: paths/sign/sign-up.yaml
-  /sign_in:
-    $ref: paths/sign/sign-in.yaml
-  /sign_refresh:
-    $ref: paths/sign/sign-refresh.yaml
+  /sign/up:
+    $ref: paths/sign/up.yaml
+  /sign/in:
+    $ref: paths/sign/in.yaml
+  /sign/refresh:
+    $ref: paths/sign/refresh.yaml
   /me:
-    $ref: paths/me/me.yaml
+    $ref: paths/me/_.yaml
   /me/jokes:
-    $ref: paths/me/me_jokes.yaml
+    $ref: paths/me/jokes.yaml
   /me/comments:
-    $ref: paths/me/me_comments.yaml
+    $ref: paths/me/comments.yaml
   /me/likes:
-    $ref: paths/me/me_likes.yaml
+    $ref: paths/me/likes.yaml
   /comments/{joke_id}:
-    $ref: paths/comments/comments_{joke_id}.yaml
+    $ref: paths/comments/{joke_id}.yaml
   /likes/{joke_id}:
-    $ref: paths/likes/likes_{joke_id}.yaml
+    $ref: paths/likes/{joke_id}.yaml
 components:
   securitySchemes:
     bearerAuth:

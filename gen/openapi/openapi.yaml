@@ -2,16 +2,16 @@ openapi: 3.0.0
 info:
   version: 0.1.0
   title: Netsly API
-  termsOfService: https://github.com/abc-valera/netsly-api-golang
+  termsOfService: https://github.com/abc-valera/netsly-golang
   contact:
     email: zoocity14@gmail.com
-    url: https://github.com/abc-valera/netsly-api-golang
+    url: https://github.com/abc-valera/netsly-golang
   description: API for Netsly social network
-servers:
-  - url: http://localhost:3000
 tags:
   - name: sign
     description: Everything about managing user sessions
+  - name: me
+    description: Everything about managing current user profile
   - name: users
     description: Everything about searching users
   - name: jokes
@@ -20,13 +20,11 @@ tags:
     description: Everything about searching comments
   - name: likes
     description: Everything about counting likes
-  - name: me
-    description: Everything about managing current user profile
 externalDocs:
   description: Learn more about the project.
-  url: https://github.com/abc-valera/netsly-api-golang
+  url: https://github.com/abc-valera/netsly-golang
 paths:
-  /sign_up:
+  /sign/up:
     post:
       tags:
         - sign
@@ -48,7 +46,7 @@ paths:
                   example: user1@gmail.com
                 password:
                   type: string
-                  example: 123456789
+                  example: qwerty
               required:
                 - username
                 - email
@@ -58,7 +56,7 @@ paths:
           description: Successful operation
         default:
           $ref: '#/components/responses/code_error'
-  /sign_in:
+  /sign/in:
     post:
       tags:
         - sign
@@ -77,7 +75,7 @@ paths:
                   example: user1@gmail.com
                 password:
                   type: string
-                  example: 123456789
+                  example: qwerty
               required:
                 - email
                 - password
@@ -103,7 +101,7 @@ paths:
                   - refresh_token
         default:
           $ref: '#/components/responses/code_error'
-  /sign_refresh:
+  /sign/refresh:
     post:
       tags:
         - sign
@@ -498,11 +496,11 @@ components:
             - already_exists
             - permission_denied
             - internal
-        message:
+        error_message:
           type: string
       required:
         - code
-        - message
+        - error_message
     user:
       type: object
       properties:
