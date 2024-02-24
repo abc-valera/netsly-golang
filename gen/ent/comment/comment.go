@@ -12,41 +12,35 @@ const (
 	Label = "comment"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldUserID holds the string denoting the user_id field in the database.
-	FieldUserID = "user_id"
-	// FieldJokeID holds the string denoting the joke_id field in the database.
-	FieldJokeID = "joke_id"
 	// FieldText holds the string denoting the text field in the database.
 	FieldText = "text"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgeOwner holds the string denoting the owner edge name in mutations.
-	EdgeOwner = "owner"
-	// EdgeCommentedJoke holds the string denoting the commented_joke edge name in mutations.
-	EdgeCommentedJoke = "commented_joke"
+	// EdgeUser holds the string denoting the user edge name in mutations.
+	EdgeUser = "user"
+	// EdgeJoke holds the string denoting the joke edge name in mutations.
+	EdgeJoke = "joke"
 	// Table holds the table name of the comment in the database.
 	Table = "comments"
-	// OwnerTable is the table that holds the owner relation/edge.
-	OwnerTable = "comments"
-	// OwnerInverseTable is the table name for the User entity.
+	// UserTable is the table that holds the user relation/edge.
+	UserTable = "comments"
+	// UserInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
-	OwnerInverseTable = "users"
-	// OwnerColumn is the table column denoting the owner relation/edge.
-	OwnerColumn = "user_comments"
-	// CommentedJokeTable is the table that holds the commented_joke relation/edge.
-	CommentedJokeTable = "comments"
-	// CommentedJokeInverseTable is the table name for the Joke entity.
+	UserInverseTable = "users"
+	// UserColumn is the table column denoting the user relation/edge.
+	UserColumn = "user_comments"
+	// JokeTable is the table that holds the joke relation/edge.
+	JokeTable = "comments"
+	// JokeInverseTable is the table name for the Joke entity.
 	// It exists in this package in order to avoid circular dependency with the "joke" package.
-	CommentedJokeInverseTable = "jokes"
-	// CommentedJokeColumn is the table column denoting the commented_joke relation/edge.
-	CommentedJokeColumn = "joke_comments"
+	JokeInverseTable = "jokes"
+	// JokeColumn is the table column denoting the joke relation/edge.
+	JokeColumn = "joke_comments"
 )
 
 // Columns holds all SQL columns for comment fields.
 var Columns = []string{
 	FieldID,
-	FieldUserID,
-	FieldJokeID,
 	FieldText,
 	FieldCreatedAt,
 }
@@ -74,10 +68,6 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
-	UserIDValidator func(string) error
-	// JokeIDValidator is a validator for the "joke_id" field. It is called by the builders before save.
-	JokeIDValidator func(string) error
 	// TextValidator is a validator for the "text" field. It is called by the builders before save.
 	TextValidator func(string) error
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -92,16 +82,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByUserID orders the results by the user_id field.
-func ByUserID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUserID, opts...).ToFunc()
-}
-
-// ByJokeID orders the results by the joke_id field.
-func ByJokeID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldJokeID, opts...).ToFunc()
-}
-
 // ByText orders the results by the text field.
 func ByText(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldText, opts...).ToFunc()
@@ -112,30 +92,30 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
-// ByOwnerField orders the results by owner field.
-func ByOwnerField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByUserField orders the results by user field.
+func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newOwnerStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByCommentedJokeField orders the results by commented_joke field.
-func ByCommentedJokeField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByJokeField orders the results by joke field.
+func ByJokeField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newCommentedJokeStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newJokeStep(), sql.OrderByField(field, opts...))
 	}
 }
-func newOwnerStep() *sqlgraph.Step {
+func newUserStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(OwnerInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+		sqlgraph.To(UserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
 	)
 }
-func newCommentedJokeStep() *sqlgraph.Step {
+func newJokeStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(CommentedJokeInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, CommentedJokeTable, CommentedJokeColumn),
+		sqlgraph.To(JokeInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, JokeTable, JokeColumn),
 	)
 }

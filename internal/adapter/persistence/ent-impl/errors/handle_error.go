@@ -38,18 +38,18 @@ func HandleErr(err error) error {
 		}
 
 		// chat rooms table
-		if strings.Contains(err.Error(), "chat_room") {
-			return model.ErrChatRoomNotFound
+		if strings.Contains(err.Error(), "room") {
+			return model.ErrRoomNotFound
 		}
 
 		// chat members table
 		if strings.Contains(err.Error(), "chat_member") {
-			return model.ErrChatMemberNotFound
+			return model.ErrRoomMemberNotFound
 		}
 
 		// chat msgs table
 		if strings.Contains(err.Error(), "chat_msg") {
-			return model.ErrChatMessageNotFound
+			return model.ErrRoomMessageNotFound
 		}
 
 		return coderr.NewMessage(coderr.CodeNotFound, "")
@@ -80,13 +80,13 @@ func HandleErr(err error) error {
 		}
 
 		// chat rooms table
-		if strings.Contains(err.Error(), "chat_rooms") {
-			return command.ErrChatRoomNameAlreadyExists
+		if strings.Contains(err.Error(), "rooms") {
+			return command.ErrRoomNameAlreadyExists
 		}
 
 		// chat members table
 		if strings.Contains(err.Error(), "chat_members") {
-			return command.ErrChatMemberAlreadyExists
+			return command.ErrRoomMemberAlreadyExists
 		}
 
 		return coderr.NewMessage(coderr.CodeAlreadyExists, "")

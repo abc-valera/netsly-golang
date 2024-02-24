@@ -19,13 +19,13 @@ import (
 // CommentQuery is the builder for querying Comment entities.
 type CommentQuery struct {
 	config
-	ctx               *QueryContext
-	order             []comment.OrderOption
-	inters            []Interceptor
-	predicates        []predicate.Comment
-	withOwner         *UserQuery
-	withCommentedJoke *JokeQuery
-	withFKs           bool
+	ctx        *QueryContext
+	order      []comment.OrderOption
+	inters     []Interceptor
+	predicates []predicate.Comment
+	withUser   *UserQuery
+	withJoke   *JokeQuery
+	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -62,8 +62,8 @@ func (cq *CommentQuery) Order(o ...comment.OrderOption) *CommentQuery {
 	return cq
 }
 
-// QueryOwner chains the current query on the "owner" edge.
-func (cq *CommentQuery) QueryOwner() *UserQuery {
+// QueryUser chains the current query on the "user" edge.
+func (cq *CommentQuery) QueryUser() *UserQuery {
 	query := (&UserClient{config: cq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := cq.prepareQuery(ctx); err != nil {
@@ -76,7 +76,7 @@ func (cq *CommentQuery) QueryOwner() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(comment.Table, comment.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, comment.OwnerTable, comment.OwnerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, comment.UserTable, comment.UserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
 		return fromU, nil
@@ -84,8 +84,8 @@ func (cq *CommentQuery) QueryOwner() *UserQuery {
 	return query
 }
 
-// QueryCommentedJoke chains the current query on the "commented_joke" edge.
-func (cq *CommentQuery) QueryCommentedJoke() *JokeQuery {
+// QueryJoke chains the current query on the "joke" edge.
+func (cq *CommentQuery) QueryJoke() *JokeQuery {
 	query := (&JokeClient{config: cq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := cq.prepareQuery(ctx); err != nil {
@@ -98,7 +98,7 @@ func (cq *CommentQuery) QueryCommentedJoke() *JokeQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(comment.Table, comment.FieldID, selector),
 			sqlgraph.To(joke.Table, joke.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, comment.CommentedJokeTable, comment.CommentedJokeColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, comment.JokeTable, comment.JokeColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
 		return fromU, nil
@@ -293,38 +293,38 @@ func (cq *CommentQuery) Clone() *CommentQuery {
 		return nil
 	}
 	return &CommentQuery{
-		config:            cq.config,
-		ctx:               cq.ctx.Clone(),
-		order:             append([]comment.OrderOption{}, cq.order...),
-		inters:            append([]Interceptor{}, cq.inters...),
-		predicates:        append([]predicate.Comment{}, cq.predicates...),
-		withOwner:         cq.withOwner.Clone(),
-		withCommentedJoke: cq.withCommentedJoke.Clone(),
+		config:     cq.config,
+		ctx:        cq.ctx.Clone(),
+		order:      append([]comment.OrderOption{}, cq.order...),
+		inters:     append([]Interceptor{}, cq.inters...),
+		predicates: append([]predicate.Comment{}, cq.predicates...),
+		withUser:   cq.withUser.Clone(),
+		withJoke:   cq.withJoke.Clone(),
 		// clone intermediate query.
 		sql:  cq.sql.Clone(),
 		path: cq.path,
 	}
 }
 
-// WithOwner tells the query-builder to eager-load the nodes that are connected to
-// the "owner" edge. The optional arguments are used to configure the query builder of the edge.
-func (cq *CommentQuery) WithOwner(opts ...func(*UserQuery)) *CommentQuery {
+// WithUser tells the query-builder to eager-load the nodes that are connected to
+// the "user" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *CommentQuery) WithUser(opts ...func(*UserQuery)) *CommentQuery {
 	query := (&UserClient{config: cq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	cq.withOwner = query
+	cq.withUser = query
 	return cq
 }
 
-// WithCommentedJoke tells the query-builder to eager-load the nodes that are connected to
-// the "commented_joke" edge. The optional arguments are used to configure the query builder of the edge.
-func (cq *CommentQuery) WithCommentedJoke(opts ...func(*JokeQuery)) *CommentQuery {
+// WithJoke tells the query-builder to eager-load the nodes that are connected to
+// the "joke" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *CommentQuery) WithJoke(opts ...func(*JokeQuery)) *CommentQuery {
 	query := (&JokeClient{config: cq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	cq.withCommentedJoke = query
+	cq.withJoke = query
 	return cq
 }
 
@@ -334,12 +334,12 @@ func (cq *CommentQuery) WithCommentedJoke(opts ...func(*JokeQuery)) *CommentQuer
 // Example:
 //
 //	var v []struct {
-//		UserID string `json:"user_id,omitempty"`
+//		Text string `json:"text,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Comment.Query().
-//		GroupBy(comment.FieldUserID).
+//		GroupBy(comment.FieldText).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (cq *CommentQuery) GroupBy(field string, fields ...string) *CommentGroupBy {
@@ -357,11 +357,11 @@ func (cq *CommentQuery) GroupBy(field string, fields ...string) *CommentGroupBy 
 // Example:
 //
 //	var v []struct {
-//		UserID string `json:"user_id,omitempty"`
+//		Text string `json:"text,omitempty"`
 //	}
 //
 //	client.Comment.Query().
-//		Select(comment.FieldUserID).
+//		Select(comment.FieldText).
 //		Scan(ctx, &v)
 func (cq *CommentQuery) Select(fields ...string) *CommentSelect {
 	cq.ctx.Fields = append(cq.ctx.Fields, fields...)
@@ -408,11 +408,11 @@ func (cq *CommentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Comm
 		withFKs     = cq.withFKs
 		_spec       = cq.querySpec()
 		loadedTypes = [2]bool{
-			cq.withOwner != nil,
-			cq.withCommentedJoke != nil,
+			cq.withUser != nil,
+			cq.withJoke != nil,
 		}
 	)
-	if cq.withOwner != nil || cq.withCommentedJoke != nil {
+	if cq.withUser != nil || cq.withJoke != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -436,22 +436,22 @@ func (cq *CommentQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Comm
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := cq.withOwner; query != nil {
-		if err := cq.loadOwner(ctx, query, nodes, nil,
-			func(n *Comment, e *User) { n.Edges.Owner = e }); err != nil {
+	if query := cq.withUser; query != nil {
+		if err := cq.loadUser(ctx, query, nodes, nil,
+			func(n *Comment, e *User) { n.Edges.User = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := cq.withCommentedJoke; query != nil {
-		if err := cq.loadCommentedJoke(ctx, query, nodes, nil,
-			func(n *Comment, e *Joke) { n.Edges.CommentedJoke = e }); err != nil {
+	if query := cq.withJoke; query != nil {
+		if err := cq.loadJoke(ctx, query, nodes, nil,
+			func(n *Comment, e *Joke) { n.Edges.Joke = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (cq *CommentQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Comment, init func(*Comment), assign func(*Comment, *User)) error {
+func (cq *CommentQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Comment, init func(*Comment), assign func(*Comment, *User)) error {
 	ids := make([]string, 0, len(nodes))
 	nodeids := make(map[string][]*Comment)
 	for i := range nodes {
@@ -483,7 +483,7 @@ func (cq *CommentQuery) loadOwner(ctx context.Context, query *UserQuery, nodes [
 	}
 	return nil
 }
-func (cq *CommentQuery) loadCommentedJoke(ctx context.Context, query *JokeQuery, nodes []*Comment, init func(*Comment), assign func(*Comment, *Joke)) error {
+func (cq *CommentQuery) loadJoke(ctx context.Context, query *JokeQuery, nodes []*Comment, init func(*Comment), assign func(*Comment, *Joke)) error {
 	ids := make([]string, 0, len(nodes))
 	nodeids := make(map[string][]*Comment)
 	for i := range nodes {

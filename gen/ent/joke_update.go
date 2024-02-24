@@ -72,23 +72,23 @@ func (ju *JokeUpdate) SetNillableExplanation(s *string) *JokeUpdate {
 	return ju
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by ID.
-func (ju *JokeUpdate) SetOwnerID(id string) *JokeUpdate {
-	ju.mutation.SetOwnerID(id)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (ju *JokeUpdate) SetUserID(id string) *JokeUpdate {
+	ju.mutation.SetUserID(id)
 	return ju
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (ju *JokeUpdate) SetNillableOwnerID(id *string) *JokeUpdate {
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (ju *JokeUpdate) SetNillableUserID(id *string) *JokeUpdate {
 	if id != nil {
-		ju = ju.SetOwnerID(*id)
+		ju = ju.SetUserID(*id)
 	}
 	return ju
 }
 
-// SetOwner sets the "owner" edge to the User entity.
-func (ju *JokeUpdate) SetOwner(u *User) *JokeUpdate {
-	return ju.SetOwnerID(u.ID)
+// SetUser sets the "user" edge to the User entity.
+func (ju *JokeUpdate) SetUser(u *User) *JokeUpdate {
+	return ju.SetUserID(u.ID)
 }
 
 // AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
@@ -126,9 +126,9 @@ func (ju *JokeUpdate) Mutation() *JokeMutation {
 	return ju.mutation
 }
 
-// ClearOwner clears the "owner" edge to the User entity.
-func (ju *JokeUpdate) ClearOwner() *JokeUpdate {
-	ju.mutation.ClearOwner()
+// ClearUser clears the "user" edge to the User entity.
+func (ju *JokeUpdate) ClearUser() *JokeUpdate {
+	ju.mutation.ClearUser()
 	return ju
 }
 
@@ -237,12 +237,12 @@ func (ju *JokeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ju.mutation.Explanation(); ok {
 		_spec.SetField(joke.FieldExplanation, field.TypeString, value)
 	}
-	if ju.mutation.OwnerCleared() {
+	if ju.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   joke.OwnerTable,
-			Columns: []string{joke.OwnerColumn},
+			Table:   joke.UserTable,
+			Columns: []string{joke.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -250,12 +250,12 @@ func (ju *JokeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ju.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := ju.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   joke.OwnerTable,
-			Columns: []string{joke.OwnerColumn},
+			Table:   joke.UserTable,
+			Columns: []string{joke.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -418,23 +418,23 @@ func (juo *JokeUpdateOne) SetNillableExplanation(s *string) *JokeUpdateOne {
 	return juo
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by ID.
-func (juo *JokeUpdateOne) SetOwnerID(id string) *JokeUpdateOne {
-	juo.mutation.SetOwnerID(id)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (juo *JokeUpdateOne) SetUserID(id string) *JokeUpdateOne {
+	juo.mutation.SetUserID(id)
 	return juo
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (juo *JokeUpdateOne) SetNillableOwnerID(id *string) *JokeUpdateOne {
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (juo *JokeUpdateOne) SetNillableUserID(id *string) *JokeUpdateOne {
 	if id != nil {
-		juo = juo.SetOwnerID(*id)
+		juo = juo.SetUserID(*id)
 	}
 	return juo
 }
 
-// SetOwner sets the "owner" edge to the User entity.
-func (juo *JokeUpdateOne) SetOwner(u *User) *JokeUpdateOne {
-	return juo.SetOwnerID(u.ID)
+// SetUser sets the "user" edge to the User entity.
+func (juo *JokeUpdateOne) SetUser(u *User) *JokeUpdateOne {
+	return juo.SetUserID(u.ID)
 }
 
 // AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
@@ -472,9 +472,9 @@ func (juo *JokeUpdateOne) Mutation() *JokeMutation {
 	return juo.mutation
 }
 
-// ClearOwner clears the "owner" edge to the User entity.
-func (juo *JokeUpdateOne) ClearOwner() *JokeUpdateOne {
-	juo.mutation.ClearOwner()
+// ClearUser clears the "user" edge to the User entity.
+func (juo *JokeUpdateOne) ClearUser() *JokeUpdateOne {
+	juo.mutation.ClearUser()
 	return juo
 }
 
@@ -613,12 +613,12 @@ func (juo *JokeUpdateOne) sqlSave(ctx context.Context) (_node *Joke, err error) 
 	if value, ok := juo.mutation.Explanation(); ok {
 		_spec.SetField(joke.FieldExplanation, field.TypeString, value)
 	}
-	if juo.mutation.OwnerCleared() {
+	if juo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   joke.OwnerTable,
-			Columns: []string{joke.OwnerColumn},
+			Table:   joke.UserTable,
+			Columns: []string{joke.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -626,12 +626,12 @@ func (juo *JokeUpdateOne) sqlSave(ctx context.Context) (_node *Joke, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := juo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := juo.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   joke.OwnerTable,
-			Columns: []string{joke.OwnerColumn},
+			Table:   joke.UserTable,
+			Columns: []string{joke.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),

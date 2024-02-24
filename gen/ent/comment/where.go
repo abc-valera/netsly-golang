@@ -65,16 +65,6 @@ func IDContainsFold(id string) predicate.Comment {
 	return predicate.Comment(sql.FieldContainsFold(FieldID, id))
 }
 
-// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldEQ(FieldUserID, v))
-}
-
-// JokeID applies equality check predicate on the "joke_id" field. It's identical to JokeIDEQ.
-func JokeID(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldEQ(FieldJokeID, v))
-}
-
 // Text applies equality check predicate on the "text" field. It's identical to TextEQ.
 func Text(v string) predicate.Comment {
 	return predicate.Comment(sql.FieldEQ(FieldText, v))
@@ -83,136 +73,6 @@ func Text(v string) predicate.Comment {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Comment {
 	return predicate.Comment(sql.FieldEQ(FieldCreatedAt, v))
-}
-
-// UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldEQ(FieldUserID, v))
-}
-
-// UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldNEQ(FieldUserID, v))
-}
-
-// UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...string) predicate.Comment {
-	return predicate.Comment(sql.FieldIn(FieldUserID, vs...))
-}
-
-// UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...string) predicate.Comment {
-	return predicate.Comment(sql.FieldNotIn(FieldUserID, vs...))
-}
-
-// UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldGT(FieldUserID, v))
-}
-
-// UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldGTE(FieldUserID, v))
-}
-
-// UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldLT(FieldUserID, v))
-}
-
-// UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldLTE(FieldUserID, v))
-}
-
-// UserIDContains applies the Contains predicate on the "user_id" field.
-func UserIDContains(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldContains(FieldUserID, v))
-}
-
-// UserIDHasPrefix applies the HasPrefix predicate on the "user_id" field.
-func UserIDHasPrefix(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldHasPrefix(FieldUserID, v))
-}
-
-// UserIDHasSuffix applies the HasSuffix predicate on the "user_id" field.
-func UserIDHasSuffix(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldHasSuffix(FieldUserID, v))
-}
-
-// UserIDEqualFold applies the EqualFold predicate on the "user_id" field.
-func UserIDEqualFold(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldEqualFold(FieldUserID, v))
-}
-
-// UserIDContainsFold applies the ContainsFold predicate on the "user_id" field.
-func UserIDContainsFold(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldContainsFold(FieldUserID, v))
-}
-
-// JokeIDEQ applies the EQ predicate on the "joke_id" field.
-func JokeIDEQ(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldEQ(FieldJokeID, v))
-}
-
-// JokeIDNEQ applies the NEQ predicate on the "joke_id" field.
-func JokeIDNEQ(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldNEQ(FieldJokeID, v))
-}
-
-// JokeIDIn applies the In predicate on the "joke_id" field.
-func JokeIDIn(vs ...string) predicate.Comment {
-	return predicate.Comment(sql.FieldIn(FieldJokeID, vs...))
-}
-
-// JokeIDNotIn applies the NotIn predicate on the "joke_id" field.
-func JokeIDNotIn(vs ...string) predicate.Comment {
-	return predicate.Comment(sql.FieldNotIn(FieldJokeID, vs...))
-}
-
-// JokeIDGT applies the GT predicate on the "joke_id" field.
-func JokeIDGT(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldGT(FieldJokeID, v))
-}
-
-// JokeIDGTE applies the GTE predicate on the "joke_id" field.
-func JokeIDGTE(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldGTE(FieldJokeID, v))
-}
-
-// JokeIDLT applies the LT predicate on the "joke_id" field.
-func JokeIDLT(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldLT(FieldJokeID, v))
-}
-
-// JokeIDLTE applies the LTE predicate on the "joke_id" field.
-func JokeIDLTE(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldLTE(FieldJokeID, v))
-}
-
-// JokeIDContains applies the Contains predicate on the "joke_id" field.
-func JokeIDContains(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldContains(FieldJokeID, v))
-}
-
-// JokeIDHasPrefix applies the HasPrefix predicate on the "joke_id" field.
-func JokeIDHasPrefix(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldHasPrefix(FieldJokeID, v))
-}
-
-// JokeIDHasSuffix applies the HasSuffix predicate on the "joke_id" field.
-func JokeIDHasSuffix(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldHasSuffix(FieldJokeID, v))
-}
-
-// JokeIDEqualFold applies the EqualFold predicate on the "joke_id" field.
-func JokeIDEqualFold(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldEqualFold(FieldJokeID, v))
-}
-
-// JokeIDContainsFold applies the ContainsFold predicate on the "joke_id" field.
-func JokeIDContainsFold(v string) predicate.Comment {
-	return predicate.Comment(sql.FieldContainsFold(FieldJokeID, v))
 }
 
 // TextEQ applies the EQ predicate on the "text" field.
@@ -320,21 +180,21 @@ func CreatedAtLTE(v time.Time) predicate.Comment {
 	return predicate.Comment(sql.FieldLTE(FieldCreatedAt, v))
 }
 
-// HasOwner applies the HasEdge predicate on the "owner" edge.
-func HasOwner() predicate.Comment {
+// HasUser applies the HasEdge predicate on the "user" edge.
+func HasUser() predicate.Comment {
 	return predicate.Comment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasOwnerWith applies the HasEdge predicate on the "owner" edge with a given conditions (other predicates).
-func HasOwnerWith(preds ...predicate.User) predicate.Comment {
+// HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
+func HasUserWith(preds ...predicate.User) predicate.Comment {
 	return predicate.Comment(func(s *sql.Selector) {
-		step := newOwnerStep()
+		step := newUserStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -343,21 +203,21 @@ func HasOwnerWith(preds ...predicate.User) predicate.Comment {
 	})
 }
 
-// HasCommentedJoke applies the HasEdge predicate on the "commented_joke" edge.
-func HasCommentedJoke() predicate.Comment {
+// HasJoke applies the HasEdge predicate on the "joke" edge.
+func HasJoke() predicate.Comment {
 	return predicate.Comment(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, CommentedJokeTable, CommentedJokeColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, JokeTable, JokeColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasCommentedJokeWith applies the HasEdge predicate on the "commented_joke" edge with a given conditions (other predicates).
-func HasCommentedJokeWith(preds ...predicate.Joke) predicate.Comment {
+// HasJokeWith applies the HasEdge predicate on the "joke" edge with a given conditions (other predicates).
+func HasJokeWith(preds ...predicate.Joke) predicate.Comment {
 	return predicate.Comment(func(s *sql.Selector) {
-		step := newCommentedJokeStep()
+		step := newJokeStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

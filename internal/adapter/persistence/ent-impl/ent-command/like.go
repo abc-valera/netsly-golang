@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/dto"
 	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
@@ -32,7 +34,10 @@ func (lc likeCommand) Create(ctx context.Context, req model.Like) (model.Like, e
 
 func (lc likeCommand) Delete(ctx context.Context, userID string, jokeID string) error {
 	_, err := lc.Like.Delete().
-		Where(like.UserID(userID), like.JokeID(jokeID)).
+		Where(
+			like.HasUserWith(user.ID(userID)),
+			like.HasJokeWith(joke.ID(jokeID)),
+		).
 		Exec(ctx)
 	return errhandler.HandleErr(err)
 }

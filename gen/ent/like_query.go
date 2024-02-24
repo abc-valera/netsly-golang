@@ -19,13 +19,13 @@ import (
 // LikeQuery is the builder for querying Like entities.
 type LikeQuery struct {
 	config
-	ctx           *QueryContext
-	order         []like.OrderOption
-	inters        []Interceptor
-	predicates    []predicate.Like
-	withOwner     *UserQuery
-	withLikedJoke *JokeQuery
-	withFKs       bool
+	ctx        *QueryContext
+	order      []like.OrderOption
+	inters     []Interceptor
+	predicates []predicate.Like
+	withUser   *UserQuery
+	withJoke   *JokeQuery
+	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -62,8 +62,8 @@ func (lq *LikeQuery) Order(o ...like.OrderOption) *LikeQuery {
 	return lq
 }
 
-// QueryOwner chains the current query on the "owner" edge.
-func (lq *LikeQuery) QueryOwner() *UserQuery {
+// QueryUser chains the current query on the "user" edge.
+func (lq *LikeQuery) QueryUser() *UserQuery {
 	query := (&UserClient{config: lq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := lq.prepareQuery(ctx); err != nil {
@@ -76,7 +76,7 @@ func (lq *LikeQuery) QueryOwner() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(like.Table, like.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, like.OwnerTable, like.OwnerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, like.UserTable, like.UserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(lq.driver.Dialect(), step)
 		return fromU, nil
@@ -84,8 +84,8 @@ func (lq *LikeQuery) QueryOwner() *UserQuery {
 	return query
 }
 
-// QueryLikedJoke chains the current query on the "liked_joke" edge.
-func (lq *LikeQuery) QueryLikedJoke() *JokeQuery {
+// QueryJoke chains the current query on the "joke" edge.
+func (lq *LikeQuery) QueryJoke() *JokeQuery {
 	query := (&JokeClient{config: lq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := lq.prepareQuery(ctx); err != nil {
@@ -98,7 +98,7 @@ func (lq *LikeQuery) QueryLikedJoke() *JokeQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(like.Table, like.FieldID, selector),
 			sqlgraph.To(joke.Table, joke.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, like.LikedJokeTable, like.LikedJokeColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, like.JokeTable, like.JokeColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(lq.driver.Dialect(), step)
 		return fromU, nil
@@ -293,38 +293,38 @@ func (lq *LikeQuery) Clone() *LikeQuery {
 		return nil
 	}
 	return &LikeQuery{
-		config:        lq.config,
-		ctx:           lq.ctx.Clone(),
-		order:         append([]like.OrderOption{}, lq.order...),
-		inters:        append([]Interceptor{}, lq.inters...),
-		predicates:    append([]predicate.Like{}, lq.predicates...),
-		withOwner:     lq.withOwner.Clone(),
-		withLikedJoke: lq.withLikedJoke.Clone(),
+		config:     lq.config,
+		ctx:        lq.ctx.Clone(),
+		order:      append([]like.OrderOption{}, lq.order...),
+		inters:     append([]Interceptor{}, lq.inters...),
+		predicates: append([]predicate.Like{}, lq.predicates...),
+		withUser:   lq.withUser.Clone(),
+		withJoke:   lq.withJoke.Clone(),
 		// clone intermediate query.
 		sql:  lq.sql.Clone(),
 		path: lq.path,
 	}
 }
 
-// WithOwner tells the query-builder to eager-load the nodes that are connected to
-// the "owner" edge. The optional arguments are used to configure the query builder of the edge.
-func (lq *LikeQuery) WithOwner(opts ...func(*UserQuery)) *LikeQuery {
+// WithUser tells the query-builder to eager-load the nodes that are connected to
+// the "user" edge. The optional arguments are used to configure the query builder of the edge.
+func (lq *LikeQuery) WithUser(opts ...func(*UserQuery)) *LikeQuery {
 	query := (&UserClient{config: lq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	lq.withOwner = query
+	lq.withUser = query
 	return lq
 }
 
-// WithLikedJoke tells the query-builder to eager-load the nodes that are connected to
-// the "liked_joke" edge. The optional arguments are used to configure the query builder of the edge.
-func (lq *LikeQuery) WithLikedJoke(opts ...func(*JokeQuery)) *LikeQuery {
+// WithJoke tells the query-builder to eager-load the nodes that are connected to
+// the "joke" edge. The optional arguments are used to configure the query builder of the edge.
+func (lq *LikeQuery) WithJoke(opts ...func(*JokeQuery)) *LikeQuery {
 	query := (&JokeClient{config: lq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	lq.withLikedJoke = query
+	lq.withJoke = query
 	return lq
 }
 
@@ -334,12 +334,12 @@ func (lq *LikeQuery) WithLikedJoke(opts ...func(*JokeQuery)) *LikeQuery {
 // Example:
 //
 //	var v []struct {
-//		UserID string `json:"user_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Like.Query().
-//		GroupBy(like.FieldUserID).
+//		GroupBy(like.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (lq *LikeQuery) GroupBy(field string, fields ...string) *LikeGroupBy {
@@ -357,11 +357,11 @@ func (lq *LikeQuery) GroupBy(field string, fields ...string) *LikeGroupBy {
 // Example:
 //
 //	var v []struct {
-//		UserID string `json:"user_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.Like.Query().
-//		Select(like.FieldUserID).
+//		Select(like.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (lq *LikeQuery) Select(fields ...string) *LikeSelect {
 	lq.ctx.Fields = append(lq.ctx.Fields, fields...)
@@ -408,11 +408,11 @@ func (lq *LikeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Like, e
 		withFKs     = lq.withFKs
 		_spec       = lq.querySpec()
 		loadedTypes = [2]bool{
-			lq.withOwner != nil,
-			lq.withLikedJoke != nil,
+			lq.withUser != nil,
+			lq.withJoke != nil,
 		}
 	)
-	if lq.withOwner != nil || lq.withLikedJoke != nil {
+	if lq.withUser != nil || lq.withJoke != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -436,22 +436,22 @@ func (lq *LikeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Like, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := lq.withOwner; query != nil {
-		if err := lq.loadOwner(ctx, query, nodes, nil,
-			func(n *Like, e *User) { n.Edges.Owner = e }); err != nil {
+	if query := lq.withUser; query != nil {
+		if err := lq.loadUser(ctx, query, nodes, nil,
+			func(n *Like, e *User) { n.Edges.User = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := lq.withLikedJoke; query != nil {
-		if err := lq.loadLikedJoke(ctx, query, nodes, nil,
-			func(n *Like, e *Joke) { n.Edges.LikedJoke = e }); err != nil {
+	if query := lq.withJoke; query != nil {
+		if err := lq.loadJoke(ctx, query, nodes, nil,
+			func(n *Like, e *Joke) { n.Edges.Joke = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (lq *LikeQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Like, init func(*Like), assign func(*Like, *User)) error {
+func (lq *LikeQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Like, init func(*Like), assign func(*Like, *User)) error {
 	ids := make([]string, 0, len(nodes))
 	nodeids := make(map[string][]*Like)
 	for i := range nodes {
@@ -483,7 +483,7 @@ func (lq *LikeQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*L
 	}
 	return nil
 }
-func (lq *LikeQuery) loadLikedJoke(ctx context.Context, query *JokeQuery, nodes []*Like, init func(*Like), assign func(*Like, *Joke)) error {
+func (lq *LikeQuery) loadJoke(ctx context.Context, query *JokeQuery, nodes []*Like, init func(*Like), assign func(*Like, *Joke)) error {
 	ids := make([]string, 0, len(nodes))
 	nodeids := make(map[string][]*Like)
 	for i := range nodes {

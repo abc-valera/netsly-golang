@@ -7,8 +7,8 @@ import (
 
 func FromEntLike(entLike *ent.Like) model.Like {
 	return model.Like{
-		UserID:    entLike.UserID,
-		JokeID:    entLike.JokeID,
+		UserID:    entLike.Edges.User.ID,
+		JokeID:    entLike.Edges.Joke.ID,
 		CreatedAt: entLike.CreatedAt,
 	}
 }

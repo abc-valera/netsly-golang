@@ -30,10 +30,10 @@ const (
 	EdgeComments = "comments"
 	// EdgeLikes holds the string denoting the likes edge name in mutations.
 	EdgeLikes = "likes"
-	// EdgeChatRooms holds the string denoting the chat_rooms edge name in mutations.
-	EdgeChatRooms = "chat_rooms"
-	// EdgeChatMessages holds the string denoting the chat_messages edge name in mutations.
-	EdgeChatMessages = "chat_messages"
+	// EdgeRooms holds the string denoting the rooms edge name in mutations.
+	EdgeRooms = "rooms"
+	// EdgeRoomMessages holds the string denoting the room_messages edge name in mutations.
+	EdgeRoomMessages = "room_messages"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 	// JokesTable is the table that holds the jokes relation/edge.
@@ -57,20 +57,20 @@ const (
 	LikesInverseTable = "likes"
 	// LikesColumn is the table column denoting the likes relation/edge.
 	LikesColumn = "user_likes"
-	// ChatRoomsTable is the table that holds the chat_rooms relation/edge.
-	ChatRoomsTable = "chat_members"
-	// ChatRoomsInverseTable is the table name for the ChatMember entity.
-	// It exists in this package in order to avoid circular dependency with the "chatmember" package.
-	ChatRoomsInverseTable = "chat_members"
-	// ChatRoomsColumn is the table column denoting the chat_rooms relation/edge.
-	ChatRoomsColumn = "user_chat_rooms"
-	// ChatMessagesTable is the table that holds the chat_messages relation/edge.
-	ChatMessagesTable = "chat_messages"
-	// ChatMessagesInverseTable is the table name for the ChatMessage entity.
-	// It exists in this package in order to avoid circular dependency with the "chatmessage" package.
-	ChatMessagesInverseTable = "chat_messages"
-	// ChatMessagesColumn is the table column denoting the chat_messages relation/edge.
-	ChatMessagesColumn = "user_chat_messages"
+	// RoomsTable is the table that holds the rooms relation/edge.
+	RoomsTable = "room_members"
+	// RoomsInverseTable is the table name for the RoomMember entity.
+	// It exists in this package in order to avoid circular dependency with the "roommember" package.
+	RoomsInverseTable = "room_members"
+	// RoomsColumn is the table column denoting the rooms relation/edge.
+	RoomsColumn = "user_rooms"
+	// RoomMessagesTable is the table that holds the room_messages relation/edge.
+	RoomMessagesTable = "room_messages"
+	// RoomMessagesInverseTable is the table name for the RoomMessage entity.
+	// It exists in this package in order to avoid circular dependency with the "roommessage" package.
+	RoomMessagesInverseTable = "room_messages"
+	// RoomMessagesColumn is the table column denoting the room_messages relation/edge.
+	RoomMessagesColumn = "user_room_messages"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -185,31 +185,31 @@ func ByLikes(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByChatRoomsCount orders the results by chat_rooms count.
-func ByChatRoomsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByRoomsCount orders the results by rooms count.
+func ByRoomsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newChatRoomsStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newRoomsStep(), opts...)
 	}
 }
 
-// ByChatRooms orders the results by chat_rooms terms.
-func ByChatRooms(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByRooms orders the results by rooms terms.
+func ByRooms(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newChatRoomsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newRoomsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
-// ByChatMessagesCount orders the results by chat_messages count.
-func ByChatMessagesCount(opts ...sql.OrderTermOption) OrderOption {
+// ByRoomMessagesCount orders the results by room_messages count.
+func ByRoomMessagesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newChatMessagesStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newRoomMessagesStep(), opts...)
 	}
 }
 
-// ByChatMessages orders the results by chat_messages terms.
-func ByChatMessages(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByRoomMessages orders the results by room_messages terms.
+func ByRoomMessages(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newChatMessagesStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newRoomMessagesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newJokesStep() *sqlgraph.Step {
@@ -233,17 +233,17 @@ func newLikesStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, LikesTable, LikesColumn),
 	)
 }
-func newChatRoomsStep() *sqlgraph.Step {
+func newRoomsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ChatRoomsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, ChatRoomsTable, ChatRoomsColumn),
+		sqlgraph.To(RoomsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, RoomsTable, RoomsColumn),
 	)
 }
-func newChatMessagesStep() *sqlgraph.Step {
+func newRoomMessagesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ChatMessagesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, ChatMessagesTable, ChatMessagesColumn),
+		sqlgraph.To(RoomMessagesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, RoomMessagesTable, RoomMessagesColumn),
 	)
 }

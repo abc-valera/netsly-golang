@@ -12,8 +12,6 @@ const (
 	Label = "joke"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldUserID holds the string denoting the user_id field in the database.
-	FieldUserID = "user_id"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
 	// FieldText holds the string denoting the text field in the database.
@@ -22,21 +20,21 @@ const (
 	FieldExplanation = "explanation"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgeOwner holds the string denoting the owner edge name in mutations.
-	EdgeOwner = "owner"
+	// EdgeUser holds the string denoting the user edge name in mutations.
+	EdgeUser = "user"
 	// EdgeComments holds the string denoting the comments edge name in mutations.
 	EdgeComments = "comments"
 	// EdgeLikes holds the string denoting the likes edge name in mutations.
 	EdgeLikes = "likes"
 	// Table holds the table name of the joke in the database.
 	Table = "jokes"
-	// OwnerTable is the table that holds the owner relation/edge.
-	OwnerTable = "jokes"
-	// OwnerInverseTable is the table name for the User entity.
+	// UserTable is the table that holds the user relation/edge.
+	UserTable = "jokes"
+	// UserInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
-	OwnerInverseTable = "users"
-	// OwnerColumn is the table column denoting the owner relation/edge.
-	OwnerColumn = "user_jokes"
+	UserInverseTable = "users"
+	// UserColumn is the table column denoting the user relation/edge.
+	UserColumn = "user_jokes"
 	// CommentsTable is the table that holds the comments relation/edge.
 	CommentsTable = "comments"
 	// CommentsInverseTable is the table name for the Comment entity.
@@ -56,7 +54,6 @@ const (
 // Columns holds all SQL columns for joke fields.
 var Columns = []string{
 	FieldID,
-	FieldUserID,
 	FieldTitle,
 	FieldText,
 	FieldExplanation,
@@ -85,8 +82,6 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
-	UserIDValidator func(string) error
 	// TitleValidator is a validator for the "title" field. It is called by the builders before save.
 	TitleValidator func(string) error
 	// TextValidator is a validator for the "text" field. It is called by the builders before save.
@@ -101,11 +96,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByUserID orders the results by the user_id field.
-func ByUserID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
 // ByTitle orders the results by the title field.
@@ -128,10 +118,10 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
-// ByOwnerField orders the results by owner field.
-func ByOwnerField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByUserField orders the results by user field.
+func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newOwnerStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -162,11 +152,11 @@ func ByLikes(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newLikesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newOwnerStep() *sqlgraph.Step {
+func newUserStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(OwnerInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+		sqlgraph.To(UserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
 	)
 }
 func newCommentsStep() *sqlgraph.Step {

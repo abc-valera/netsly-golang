@@ -10,11 +10,11 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmember"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmessage"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/comment"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/roommember"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/roommessage"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 )
 
@@ -112,34 +112,34 @@ func (uc *UserCreate) AddLikes(l ...*Like) *UserCreate {
 	return uc.AddLikeIDs(ids...)
 }
 
-// AddChatRoomIDs adds the "chat_rooms" edge to the ChatMember entity by IDs.
-func (uc *UserCreate) AddChatRoomIDs(ids ...int) *UserCreate {
-	uc.mutation.AddChatRoomIDs(ids...)
+// AddRoomIDs adds the "rooms" edge to the RoomMember entity by IDs.
+func (uc *UserCreate) AddRoomIDs(ids ...int) *UserCreate {
+	uc.mutation.AddRoomIDs(ids...)
 	return uc
 }
 
-// AddChatRooms adds the "chat_rooms" edges to the ChatMember entity.
-func (uc *UserCreate) AddChatRooms(c ...*ChatMember) *UserCreate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// AddRooms adds the "rooms" edges to the RoomMember entity.
+func (uc *UserCreate) AddRooms(r ...*RoomMember) *UserCreate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
-	return uc.AddChatRoomIDs(ids...)
+	return uc.AddRoomIDs(ids...)
 }
 
-// AddChatMessageIDs adds the "chat_messages" edge to the ChatMessage entity by IDs.
-func (uc *UserCreate) AddChatMessageIDs(ids ...string) *UserCreate {
-	uc.mutation.AddChatMessageIDs(ids...)
+// AddRoomMessageIDs adds the "room_messages" edge to the RoomMessage entity by IDs.
+func (uc *UserCreate) AddRoomMessageIDs(ids ...string) *UserCreate {
+	uc.mutation.AddRoomMessageIDs(ids...)
 	return uc
 }
 
-// AddChatMessages adds the "chat_messages" edges to the ChatMessage entity.
-func (uc *UserCreate) AddChatMessages(c ...*ChatMessage) *UserCreate {
-	ids := make([]string, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// AddRoomMessages adds the "room_messages" edges to the RoomMessage entity.
+func (uc *UserCreate) AddRoomMessages(r ...*RoomMessage) *UserCreate {
+	ids := make([]string, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
-	return uc.AddChatMessageIDs(ids...)
+	return uc.AddRoomMessageIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -321,15 +321,15 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.ChatRoomsIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.RoomsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ChatRoomsTable,
-			Columns: []string{user.ChatRoomsColumn},
+			Table:   user.RoomsTable,
+			Columns: []string{user.RoomsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(chatmember.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(roommember.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -337,15 +337,15 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.ChatMessagesIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.RoomMessagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.ChatMessagesTable,
-			Columns: []string{user.ChatMessagesColumn},
+			Table:   user.RoomMessagesTable,
+			Columns: []string{user.RoomMessagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(chatmessage.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(roommessage.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

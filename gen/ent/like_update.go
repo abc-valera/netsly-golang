@@ -29,42 +29,42 @@ func (lu *LikeUpdate) Where(ps ...predicate.Like) *LikeUpdate {
 	return lu
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by ID.
-func (lu *LikeUpdate) SetOwnerID(id string) *LikeUpdate {
-	lu.mutation.SetOwnerID(id)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (lu *LikeUpdate) SetUserID(id string) *LikeUpdate {
+	lu.mutation.SetUserID(id)
 	return lu
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (lu *LikeUpdate) SetNillableOwnerID(id *string) *LikeUpdate {
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (lu *LikeUpdate) SetNillableUserID(id *string) *LikeUpdate {
 	if id != nil {
-		lu = lu.SetOwnerID(*id)
+		lu = lu.SetUserID(*id)
 	}
 	return lu
 }
 
-// SetOwner sets the "owner" edge to the User entity.
-func (lu *LikeUpdate) SetOwner(u *User) *LikeUpdate {
-	return lu.SetOwnerID(u.ID)
+// SetUser sets the "user" edge to the User entity.
+func (lu *LikeUpdate) SetUser(u *User) *LikeUpdate {
+	return lu.SetUserID(u.ID)
 }
 
-// SetLikedJokeID sets the "liked_joke" edge to the Joke entity by ID.
-func (lu *LikeUpdate) SetLikedJokeID(id string) *LikeUpdate {
-	lu.mutation.SetLikedJokeID(id)
+// SetJokeID sets the "joke" edge to the Joke entity by ID.
+func (lu *LikeUpdate) SetJokeID(id string) *LikeUpdate {
+	lu.mutation.SetJokeID(id)
 	return lu
 }
 
-// SetNillableLikedJokeID sets the "liked_joke" edge to the Joke entity by ID if the given value is not nil.
-func (lu *LikeUpdate) SetNillableLikedJokeID(id *string) *LikeUpdate {
+// SetNillableJokeID sets the "joke" edge to the Joke entity by ID if the given value is not nil.
+func (lu *LikeUpdate) SetNillableJokeID(id *string) *LikeUpdate {
 	if id != nil {
-		lu = lu.SetLikedJokeID(*id)
+		lu = lu.SetJokeID(*id)
 	}
 	return lu
 }
 
-// SetLikedJoke sets the "liked_joke" edge to the Joke entity.
-func (lu *LikeUpdate) SetLikedJoke(j *Joke) *LikeUpdate {
-	return lu.SetLikedJokeID(j.ID)
+// SetJoke sets the "joke" edge to the Joke entity.
+func (lu *LikeUpdate) SetJoke(j *Joke) *LikeUpdate {
+	return lu.SetJokeID(j.ID)
 }
 
 // Mutation returns the LikeMutation object of the builder.
@@ -72,15 +72,15 @@ func (lu *LikeUpdate) Mutation() *LikeMutation {
 	return lu.mutation
 }
 
-// ClearOwner clears the "owner" edge to the User entity.
-func (lu *LikeUpdate) ClearOwner() *LikeUpdate {
-	lu.mutation.ClearOwner()
+// ClearUser clears the "user" edge to the User entity.
+func (lu *LikeUpdate) ClearUser() *LikeUpdate {
+	lu.mutation.ClearUser()
 	return lu
 }
 
-// ClearLikedJoke clears the "liked_joke" edge to the Joke entity.
-func (lu *LikeUpdate) ClearLikedJoke() *LikeUpdate {
-	lu.mutation.ClearLikedJoke()
+// ClearJoke clears the "joke" edge to the Joke entity.
+func (lu *LikeUpdate) ClearJoke() *LikeUpdate {
+	lu.mutation.ClearJoke()
 	return lu
 }
 
@@ -120,12 +120,12 @@ func (lu *LikeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if lu.mutation.OwnerCleared() {
+	if lu.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   like.OwnerTable,
-			Columns: []string{like.OwnerColumn},
+			Table:   like.UserTable,
+			Columns: []string{like.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -133,12 +133,12 @@ func (lu *LikeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := lu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := lu.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   like.OwnerTable,
-			Columns: []string{like.OwnerColumn},
+			Table:   like.UserTable,
+			Columns: []string{like.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -149,12 +149,12 @@ func (lu *LikeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if lu.mutation.LikedJokeCleared() {
+	if lu.mutation.JokeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   like.LikedJokeTable,
-			Columns: []string{like.LikedJokeColumn},
+			Table:   like.JokeTable,
+			Columns: []string{like.JokeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
@@ -162,12 +162,12 @@ func (lu *LikeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := lu.mutation.LikedJokeIDs(); len(nodes) > 0 {
+	if nodes := lu.mutation.JokeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   like.LikedJokeTable,
-			Columns: []string{like.LikedJokeColumn},
+			Table:   like.JokeTable,
+			Columns: []string{like.JokeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
@@ -198,42 +198,42 @@ type LikeUpdateOne struct {
 	mutation *LikeMutation
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by ID.
-func (luo *LikeUpdateOne) SetOwnerID(id string) *LikeUpdateOne {
-	luo.mutation.SetOwnerID(id)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (luo *LikeUpdateOne) SetUserID(id string) *LikeUpdateOne {
+	luo.mutation.SetUserID(id)
 	return luo
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (luo *LikeUpdateOne) SetNillableOwnerID(id *string) *LikeUpdateOne {
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (luo *LikeUpdateOne) SetNillableUserID(id *string) *LikeUpdateOne {
 	if id != nil {
-		luo = luo.SetOwnerID(*id)
+		luo = luo.SetUserID(*id)
 	}
 	return luo
 }
 
-// SetOwner sets the "owner" edge to the User entity.
-func (luo *LikeUpdateOne) SetOwner(u *User) *LikeUpdateOne {
-	return luo.SetOwnerID(u.ID)
+// SetUser sets the "user" edge to the User entity.
+func (luo *LikeUpdateOne) SetUser(u *User) *LikeUpdateOne {
+	return luo.SetUserID(u.ID)
 }
 
-// SetLikedJokeID sets the "liked_joke" edge to the Joke entity by ID.
-func (luo *LikeUpdateOne) SetLikedJokeID(id string) *LikeUpdateOne {
-	luo.mutation.SetLikedJokeID(id)
+// SetJokeID sets the "joke" edge to the Joke entity by ID.
+func (luo *LikeUpdateOne) SetJokeID(id string) *LikeUpdateOne {
+	luo.mutation.SetJokeID(id)
 	return luo
 }
 
-// SetNillableLikedJokeID sets the "liked_joke" edge to the Joke entity by ID if the given value is not nil.
-func (luo *LikeUpdateOne) SetNillableLikedJokeID(id *string) *LikeUpdateOne {
+// SetNillableJokeID sets the "joke" edge to the Joke entity by ID if the given value is not nil.
+func (luo *LikeUpdateOne) SetNillableJokeID(id *string) *LikeUpdateOne {
 	if id != nil {
-		luo = luo.SetLikedJokeID(*id)
+		luo = luo.SetJokeID(*id)
 	}
 	return luo
 }
 
-// SetLikedJoke sets the "liked_joke" edge to the Joke entity.
-func (luo *LikeUpdateOne) SetLikedJoke(j *Joke) *LikeUpdateOne {
-	return luo.SetLikedJokeID(j.ID)
+// SetJoke sets the "joke" edge to the Joke entity.
+func (luo *LikeUpdateOne) SetJoke(j *Joke) *LikeUpdateOne {
+	return luo.SetJokeID(j.ID)
 }
 
 // Mutation returns the LikeMutation object of the builder.
@@ -241,15 +241,15 @@ func (luo *LikeUpdateOne) Mutation() *LikeMutation {
 	return luo.mutation
 }
 
-// ClearOwner clears the "owner" edge to the User entity.
-func (luo *LikeUpdateOne) ClearOwner() *LikeUpdateOne {
-	luo.mutation.ClearOwner()
+// ClearUser clears the "user" edge to the User entity.
+func (luo *LikeUpdateOne) ClearUser() *LikeUpdateOne {
+	luo.mutation.ClearUser()
 	return luo
 }
 
-// ClearLikedJoke clears the "liked_joke" edge to the Joke entity.
-func (luo *LikeUpdateOne) ClearLikedJoke() *LikeUpdateOne {
-	luo.mutation.ClearLikedJoke()
+// ClearJoke clears the "joke" edge to the Joke entity.
+func (luo *LikeUpdateOne) ClearJoke() *LikeUpdateOne {
+	luo.mutation.ClearJoke()
 	return luo
 }
 
@@ -319,12 +319,12 @@ func (luo *LikeUpdateOne) sqlSave(ctx context.Context) (_node *Like, err error) 
 			}
 		}
 	}
-	if luo.mutation.OwnerCleared() {
+	if luo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   like.OwnerTable,
-			Columns: []string{like.OwnerColumn},
+			Table:   like.UserTable,
+			Columns: []string{like.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -332,12 +332,12 @@ func (luo *LikeUpdateOne) sqlSave(ctx context.Context) (_node *Like, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := luo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := luo.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   like.OwnerTable,
-			Columns: []string{like.OwnerColumn},
+			Table:   like.UserTable,
+			Columns: []string{like.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -348,12 +348,12 @@ func (luo *LikeUpdateOne) sqlSave(ctx context.Context) (_node *Like, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if luo.mutation.LikedJokeCleared() {
+	if luo.mutation.JokeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   like.LikedJokeTable,
-			Columns: []string{like.LikedJokeColumn},
+			Table:   like.JokeTable,
+			Columns: []string{like.JokeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
@@ -361,12 +361,12 @@ func (luo *LikeUpdateOne) sqlSave(ctx context.Context) (_node *Like, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := luo.mutation.LikedJokeIDs(); len(nodes) > 0 {
+	if nodes := luo.mutation.JokeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   like.LikedJokeTable,
-			Columns: []string{like.LikedJokeColumn},
+			Table:   like.JokeTable,
+			Columns: []string{like.JokeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),

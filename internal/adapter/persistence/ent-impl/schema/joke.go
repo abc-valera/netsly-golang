@@ -19,9 +19,6 @@ func (Joke) Fields() []ent.Field {
 			NotEmpty().
 			Unique().
 			Immutable(),
-		field.String("user_id").
-			NotEmpty().
-			Immutable(),
 		field.String("title").
 			NotEmpty(),
 		field.String("text").
@@ -35,7 +32,7 @@ func (Joke) Fields() []ent.Field {
 // Edges of the Joke.
 func (Joke) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("owner", User.Type).
+		edge.From("user", User.Type).
 			Ref("jokes").
 			Unique(),
 		edge.To("comments", Comment.Type),
@@ -46,7 +43,8 @@ func (Joke) Edges() []ent.Edge {
 // Indexes of the Joke.
 func (Joke) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("user_id", "title").
+		index.Fields("title").
+			Edges("user").
 			Unique(),
 	}
 }

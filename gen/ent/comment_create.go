@@ -22,18 +22,6 @@ type CommentCreate struct {
 	hooks    []Hook
 }
 
-// SetUserID sets the "user_id" field.
-func (cc *CommentCreate) SetUserID(s string) *CommentCreate {
-	cc.mutation.SetUserID(s)
-	return cc
-}
-
-// SetJokeID sets the "joke_id" field.
-func (cc *CommentCreate) SetJokeID(s string) *CommentCreate {
-	cc.mutation.SetJokeID(s)
-	return cc
-}
-
 // SetText sets the "text" field.
 func (cc *CommentCreate) SetText(s string) *CommentCreate {
 	cc.mutation.SetText(s)
@@ -52,42 +40,42 @@ func (cc *CommentCreate) SetID(s string) *CommentCreate {
 	return cc
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by ID.
-func (cc *CommentCreate) SetOwnerID(id string) *CommentCreate {
-	cc.mutation.SetOwnerID(id)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (cc *CommentCreate) SetUserID(id string) *CommentCreate {
+	cc.mutation.SetUserID(id)
 	return cc
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (cc *CommentCreate) SetNillableOwnerID(id *string) *CommentCreate {
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (cc *CommentCreate) SetNillableUserID(id *string) *CommentCreate {
 	if id != nil {
-		cc = cc.SetOwnerID(*id)
+		cc = cc.SetUserID(*id)
 	}
 	return cc
 }
 
-// SetOwner sets the "owner" edge to the User entity.
-func (cc *CommentCreate) SetOwner(u *User) *CommentCreate {
-	return cc.SetOwnerID(u.ID)
+// SetUser sets the "user" edge to the User entity.
+func (cc *CommentCreate) SetUser(u *User) *CommentCreate {
+	return cc.SetUserID(u.ID)
 }
 
-// SetCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID.
-func (cc *CommentCreate) SetCommentedJokeID(id string) *CommentCreate {
-	cc.mutation.SetCommentedJokeID(id)
+// SetJokeID sets the "joke" edge to the Joke entity by ID.
+func (cc *CommentCreate) SetJokeID(id string) *CommentCreate {
+	cc.mutation.SetJokeID(id)
 	return cc
 }
 
-// SetNillableCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID if the given value is not nil.
-func (cc *CommentCreate) SetNillableCommentedJokeID(id *string) *CommentCreate {
+// SetNillableJokeID sets the "joke" edge to the Joke entity by ID if the given value is not nil.
+func (cc *CommentCreate) SetNillableJokeID(id *string) *CommentCreate {
 	if id != nil {
-		cc = cc.SetCommentedJokeID(*id)
+		cc = cc.SetJokeID(*id)
 	}
 	return cc
 }
 
-// SetCommentedJoke sets the "commented_joke" edge to the Joke entity.
-func (cc *CommentCreate) SetCommentedJoke(j *Joke) *CommentCreate {
-	return cc.SetCommentedJokeID(j.ID)
+// SetJoke sets the "joke" edge to the Joke entity.
+func (cc *CommentCreate) SetJoke(j *Joke) *CommentCreate {
+	return cc.SetJokeID(j.ID)
 }
 
 // Mutation returns the CommentMutation object of the builder.
@@ -124,22 +112,6 @@ func (cc *CommentCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (cc *CommentCreate) check() error {
-	if _, ok := cc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Comment.user_id"`)}
-	}
-	if v, ok := cc.mutation.UserID(); ok {
-		if err := comment.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "Comment.user_id": %w`, err)}
-		}
-	}
-	if _, ok := cc.mutation.JokeID(); !ok {
-		return &ValidationError{Name: "joke_id", err: errors.New(`ent: missing required field "Comment.joke_id"`)}
-	}
-	if v, ok := cc.mutation.JokeID(); ok {
-		if err := comment.JokeIDValidator(v); err != nil {
-			return &ValidationError{Name: "joke_id", err: fmt.Errorf(`ent: validator failed for field "Comment.joke_id": %w`, err)}
-		}
-	}
 	if _, ok := cc.mutation.Text(); !ok {
 		return &ValidationError{Name: "text", err: errors.New(`ent: missing required field "Comment.text"`)}
 	}
@@ -191,14 +163,6 @@ func (cc *CommentCreate) createSpec() (*Comment, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := cc.mutation.UserID(); ok {
-		_spec.SetField(comment.FieldUserID, field.TypeString, value)
-		_node.UserID = value
-	}
-	if value, ok := cc.mutation.JokeID(); ok {
-		_spec.SetField(comment.FieldJokeID, field.TypeString, value)
-		_node.JokeID = value
-	}
 	if value, ok := cc.mutation.Text(); ok {
 		_spec.SetField(comment.FieldText, field.TypeString, value)
 		_node.Text = value
@@ -207,12 +171,12 @@ func (cc *CommentCreate) createSpec() (*Comment, *sqlgraph.CreateSpec) {
 		_spec.SetField(comment.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := cc.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := cc.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   comment.OwnerTable,
-			Columns: []string{comment.OwnerColumn},
+			Table:   comment.UserTable,
+			Columns: []string{comment.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -224,12 +188,12 @@ func (cc *CommentCreate) createSpec() (*Comment, *sqlgraph.CreateSpec) {
 		_node.user_comments = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := cc.mutation.CommentedJokeIDs(); len(nodes) > 0 {
+	if nodes := cc.mutation.JokeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   comment.CommentedJokeTable,
-			Columns: []string{comment.CommentedJokeColumn},
+			Table:   comment.JokeTable,
+			Columns: []string{comment.JokeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),

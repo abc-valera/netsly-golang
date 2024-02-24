@@ -11,13 +11,13 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmember"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmessage"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatroom"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/comment"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/predicate"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/room"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/roommember"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/roommessage"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 )
 
@@ -30,1829 +30,31 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeChatMember  = "ChatMember"
-	TypeChatMessage = "ChatMessage"
-	TypeChatRoom    = "ChatRoom"
 	TypeComment     = "Comment"
 	TypeJoke        = "Joke"
 	TypeLike        = "Like"
+	TypeRoom        = "Room"
+	TypeRoomMember  = "RoomMember"
+	TypeRoomMessage = "RoomMessage"
 	TypeUser        = "User"
 )
-
-// ChatMemberMutation represents an operation that mutates the ChatMember nodes in the graph.
-type ChatMemberMutation struct {
-	config
-	op            Op
-	typ           string
-	id            *int
-	chat_room_id  *string
-	user_id       *string
-	created_at    *time.Time
-	clearedFields map[string]struct{}
-	room          *string
-	clearedroom   bool
-	member        *string
-	clearedmember bool
-	done          bool
-	oldValue      func(context.Context) (*ChatMember, error)
-	predicates    []predicate.ChatMember
-}
-
-var _ ent.Mutation = (*ChatMemberMutation)(nil)
-
-// chatmemberOption allows management of the mutation configuration using functional options.
-type chatmemberOption func(*ChatMemberMutation)
-
-// newChatMemberMutation creates new mutation for the ChatMember entity.
-func newChatMemberMutation(c config, op Op, opts ...chatmemberOption) *ChatMemberMutation {
-	m := &ChatMemberMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeChatMember,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withChatMemberID sets the ID field of the mutation.
-func withChatMemberID(id int) chatmemberOption {
-	return func(m *ChatMemberMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *ChatMember
-		)
-		m.oldValue = func(ctx context.Context) (*ChatMember, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().ChatMember.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withChatMember sets the old ChatMember of the mutation.
-func withChatMember(node *ChatMember) chatmemberOption {
-	return func(m *ChatMemberMutation) {
-		m.oldValue = func(context.Context) (*ChatMember, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ChatMemberMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ChatMemberMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ChatMemberMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ChatMemberMutation) IDs(ctx context.Context) ([]int, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ChatMember.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetChatRoomID sets the "chat_room_id" field.
-func (m *ChatMemberMutation) SetChatRoomID(s string) {
-	m.chat_room_id = &s
-}
-
-// ChatRoomID returns the value of the "chat_room_id" field in the mutation.
-func (m *ChatMemberMutation) ChatRoomID() (r string, exists bool) {
-	v := m.chat_room_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldChatRoomID returns the old "chat_room_id" field's value of the ChatMember entity.
-// If the ChatMember object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatMemberMutation) OldChatRoomID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldChatRoomID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldChatRoomID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldChatRoomID: %w", err)
-	}
-	return oldValue.ChatRoomID, nil
-}
-
-// ResetChatRoomID resets all changes to the "chat_room_id" field.
-func (m *ChatMemberMutation) ResetChatRoomID() {
-	m.chat_room_id = nil
-}
-
-// SetUserID sets the "user_id" field.
-func (m *ChatMemberMutation) SetUserID(s string) {
-	m.user_id = &s
-}
-
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *ChatMemberMutation) UserID() (r string, exists bool) {
-	v := m.user_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUserID returns the old "user_id" field's value of the ChatMember entity.
-// If the ChatMember object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatMemberMutation) OldUserID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
-	}
-	return oldValue.UserID, nil
-}
-
-// ResetUserID resets all changes to the "user_id" field.
-func (m *ChatMemberMutation) ResetUserID() {
-	m.user_id = nil
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *ChatMemberMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *ChatMemberMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the ChatMember entity.
-// If the ChatMember object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatMemberMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *ChatMemberMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetRoomID sets the "room" edge to the ChatRoom entity by id.
-func (m *ChatMemberMutation) SetRoomID(id string) {
-	m.room = &id
-}
-
-// ClearRoom clears the "room" edge to the ChatRoom entity.
-func (m *ChatMemberMutation) ClearRoom() {
-	m.clearedroom = true
-}
-
-// RoomCleared reports if the "room" edge to the ChatRoom entity was cleared.
-func (m *ChatMemberMutation) RoomCleared() bool {
-	return m.clearedroom
-}
-
-// RoomID returns the "room" edge ID in the mutation.
-func (m *ChatMemberMutation) RoomID() (id string, exists bool) {
-	if m.room != nil {
-		return *m.room, true
-	}
-	return
-}
-
-// RoomIDs returns the "room" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// RoomID instead. It exists only for internal usage by the builders.
-func (m *ChatMemberMutation) RoomIDs() (ids []string) {
-	if id := m.room; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetRoom resets all changes to the "room" edge.
-func (m *ChatMemberMutation) ResetRoom() {
-	m.room = nil
-	m.clearedroom = false
-}
-
-// SetMemberID sets the "member" edge to the User entity by id.
-func (m *ChatMemberMutation) SetMemberID(id string) {
-	m.member = &id
-}
-
-// ClearMember clears the "member" edge to the User entity.
-func (m *ChatMemberMutation) ClearMember() {
-	m.clearedmember = true
-}
-
-// MemberCleared reports if the "member" edge to the User entity was cleared.
-func (m *ChatMemberMutation) MemberCleared() bool {
-	return m.clearedmember
-}
-
-// MemberID returns the "member" edge ID in the mutation.
-func (m *ChatMemberMutation) MemberID() (id string, exists bool) {
-	if m.member != nil {
-		return *m.member, true
-	}
-	return
-}
-
-// MemberIDs returns the "member" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// MemberID instead. It exists only for internal usage by the builders.
-func (m *ChatMemberMutation) MemberIDs() (ids []string) {
-	if id := m.member; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetMember resets all changes to the "member" edge.
-func (m *ChatMemberMutation) ResetMember() {
-	m.member = nil
-	m.clearedmember = false
-}
-
-// Where appends a list predicates to the ChatMemberMutation builder.
-func (m *ChatMemberMutation) Where(ps ...predicate.ChatMember) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ChatMemberMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ChatMemberMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.ChatMember, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ChatMemberMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ChatMemberMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (ChatMember).
-func (m *ChatMemberMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ChatMemberMutation) Fields() []string {
-	fields := make([]string, 0, 3)
-	if m.chat_room_id != nil {
-		fields = append(fields, chatmember.FieldChatRoomID)
-	}
-	if m.user_id != nil {
-		fields = append(fields, chatmember.FieldUserID)
-	}
-	if m.created_at != nil {
-		fields = append(fields, chatmember.FieldCreatedAt)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ChatMemberMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case chatmember.FieldChatRoomID:
-		return m.ChatRoomID()
-	case chatmember.FieldUserID:
-		return m.UserID()
-	case chatmember.FieldCreatedAt:
-		return m.CreatedAt()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ChatMemberMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case chatmember.FieldChatRoomID:
-		return m.OldChatRoomID(ctx)
-	case chatmember.FieldUserID:
-		return m.OldUserID(ctx)
-	case chatmember.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	}
-	return nil, fmt.Errorf("unknown ChatMember field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ChatMemberMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case chatmember.FieldChatRoomID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetChatRoomID(v)
-		return nil
-	case chatmember.FieldUserID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUserID(v)
-		return nil
-	case chatmember.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	}
-	return fmt.Errorf("unknown ChatMember field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ChatMemberMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ChatMemberMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ChatMemberMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown ChatMember numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ChatMemberMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ChatMemberMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ChatMemberMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown ChatMember nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ChatMemberMutation) ResetField(name string) error {
-	switch name {
-	case chatmember.FieldChatRoomID:
-		m.ResetChatRoomID()
-		return nil
-	case chatmember.FieldUserID:
-		m.ResetUserID()
-		return nil
-	case chatmember.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	}
-	return fmt.Errorf("unknown ChatMember field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ChatMemberMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.room != nil {
-		edges = append(edges, chatmember.EdgeRoom)
-	}
-	if m.member != nil {
-		edges = append(edges, chatmember.EdgeMember)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ChatMemberMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case chatmember.EdgeRoom:
-		if id := m.room; id != nil {
-			return []ent.Value{*id}
-		}
-	case chatmember.EdgeMember:
-		if id := m.member; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ChatMemberMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ChatMemberMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ChatMemberMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedroom {
-		edges = append(edges, chatmember.EdgeRoom)
-	}
-	if m.clearedmember {
-		edges = append(edges, chatmember.EdgeMember)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ChatMemberMutation) EdgeCleared(name string) bool {
-	switch name {
-	case chatmember.EdgeRoom:
-		return m.clearedroom
-	case chatmember.EdgeMember:
-		return m.clearedmember
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ChatMemberMutation) ClearEdge(name string) error {
-	switch name {
-	case chatmember.EdgeRoom:
-		m.ClearRoom()
-		return nil
-	case chatmember.EdgeMember:
-		m.ClearMember()
-		return nil
-	}
-	return fmt.Errorf("unknown ChatMember unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ChatMemberMutation) ResetEdge(name string) error {
-	switch name {
-	case chatmember.EdgeRoom:
-		m.ResetRoom()
-		return nil
-	case chatmember.EdgeMember:
-		m.ResetMember()
-		return nil
-	}
-	return fmt.Errorf("unknown ChatMember edge %s", name)
-}
-
-// ChatMessageMutation represents an operation that mutates the ChatMessage nodes in the graph.
-type ChatMessageMutation struct {
-	config
-	op            Op
-	typ           string
-	id            *string
-	chat_room_id  *string
-	user_id       *string
-	text          *string
-	created_at    *time.Time
-	clearedFields map[string]struct{}
-	room          *string
-	clearedroom   bool
-	owner         *string
-	clearedowner  bool
-	done          bool
-	oldValue      func(context.Context) (*ChatMessage, error)
-	predicates    []predicate.ChatMessage
-}
-
-var _ ent.Mutation = (*ChatMessageMutation)(nil)
-
-// chatmessageOption allows management of the mutation configuration using functional options.
-type chatmessageOption func(*ChatMessageMutation)
-
-// newChatMessageMutation creates new mutation for the ChatMessage entity.
-func newChatMessageMutation(c config, op Op, opts ...chatmessageOption) *ChatMessageMutation {
-	m := &ChatMessageMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeChatMessage,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withChatMessageID sets the ID field of the mutation.
-func withChatMessageID(id string) chatmessageOption {
-	return func(m *ChatMessageMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *ChatMessage
-		)
-		m.oldValue = func(ctx context.Context) (*ChatMessage, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().ChatMessage.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withChatMessage sets the old ChatMessage of the mutation.
-func withChatMessage(node *ChatMessage) chatmessageOption {
-	return func(m *ChatMessageMutation) {
-		m.oldValue = func(context.Context) (*ChatMessage, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ChatMessageMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ChatMessageMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of ChatMessage entities.
-func (m *ChatMessageMutation) SetID(id string) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ChatMessageMutation) ID() (id string, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ChatMessageMutation) IDs(ctx context.Context) ([]string, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []string{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ChatMessage.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetChatRoomID sets the "chat_room_id" field.
-func (m *ChatMessageMutation) SetChatRoomID(s string) {
-	m.chat_room_id = &s
-}
-
-// ChatRoomID returns the value of the "chat_room_id" field in the mutation.
-func (m *ChatMessageMutation) ChatRoomID() (r string, exists bool) {
-	v := m.chat_room_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldChatRoomID returns the old "chat_room_id" field's value of the ChatMessage entity.
-// If the ChatMessage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatMessageMutation) OldChatRoomID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldChatRoomID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldChatRoomID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldChatRoomID: %w", err)
-	}
-	return oldValue.ChatRoomID, nil
-}
-
-// ResetChatRoomID resets all changes to the "chat_room_id" field.
-func (m *ChatMessageMutation) ResetChatRoomID() {
-	m.chat_room_id = nil
-}
-
-// SetUserID sets the "user_id" field.
-func (m *ChatMessageMutation) SetUserID(s string) {
-	m.user_id = &s
-}
-
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *ChatMessageMutation) UserID() (r string, exists bool) {
-	v := m.user_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUserID returns the old "user_id" field's value of the ChatMessage entity.
-// If the ChatMessage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatMessageMutation) OldUserID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
-	}
-	return oldValue.UserID, nil
-}
-
-// ResetUserID resets all changes to the "user_id" field.
-func (m *ChatMessageMutation) ResetUserID() {
-	m.user_id = nil
-}
-
-// SetText sets the "text" field.
-func (m *ChatMessageMutation) SetText(s string) {
-	m.text = &s
-}
-
-// Text returns the value of the "text" field in the mutation.
-func (m *ChatMessageMutation) Text() (r string, exists bool) {
-	v := m.text
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldText returns the old "text" field's value of the ChatMessage entity.
-// If the ChatMessage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatMessageMutation) OldText(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldText is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldText requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldText: %w", err)
-	}
-	return oldValue.Text, nil
-}
-
-// ResetText resets all changes to the "text" field.
-func (m *ChatMessageMutation) ResetText() {
-	m.text = nil
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *ChatMessageMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *ChatMessageMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the ChatMessage entity.
-// If the ChatMessage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatMessageMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *ChatMessageMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetRoomID sets the "room" edge to the ChatRoom entity by id.
-func (m *ChatMessageMutation) SetRoomID(id string) {
-	m.room = &id
-}
-
-// ClearRoom clears the "room" edge to the ChatRoom entity.
-func (m *ChatMessageMutation) ClearRoom() {
-	m.clearedroom = true
-}
-
-// RoomCleared reports if the "room" edge to the ChatRoom entity was cleared.
-func (m *ChatMessageMutation) RoomCleared() bool {
-	return m.clearedroom
-}
-
-// RoomID returns the "room" edge ID in the mutation.
-func (m *ChatMessageMutation) RoomID() (id string, exists bool) {
-	if m.room != nil {
-		return *m.room, true
-	}
-	return
-}
-
-// RoomIDs returns the "room" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// RoomID instead. It exists only for internal usage by the builders.
-func (m *ChatMessageMutation) RoomIDs() (ids []string) {
-	if id := m.room; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetRoom resets all changes to the "room" edge.
-func (m *ChatMessageMutation) ResetRoom() {
-	m.room = nil
-	m.clearedroom = false
-}
-
-// SetOwnerID sets the "owner" edge to the User entity by id.
-func (m *ChatMessageMutation) SetOwnerID(id string) {
-	m.owner = &id
-}
-
-// ClearOwner clears the "owner" edge to the User entity.
-func (m *ChatMessageMutation) ClearOwner() {
-	m.clearedowner = true
-}
-
-// OwnerCleared reports if the "owner" edge to the User entity was cleared.
-func (m *ChatMessageMutation) OwnerCleared() bool {
-	return m.clearedowner
-}
-
-// OwnerID returns the "owner" edge ID in the mutation.
-func (m *ChatMessageMutation) OwnerID() (id string, exists bool) {
-	if m.owner != nil {
-		return *m.owner, true
-	}
-	return
-}
-
-// OwnerIDs returns the "owner" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OwnerID instead. It exists only for internal usage by the builders.
-func (m *ChatMessageMutation) OwnerIDs() (ids []string) {
-	if id := m.owner; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetOwner resets all changes to the "owner" edge.
-func (m *ChatMessageMutation) ResetOwner() {
-	m.owner = nil
-	m.clearedowner = false
-}
-
-// Where appends a list predicates to the ChatMessageMutation builder.
-func (m *ChatMessageMutation) Where(ps ...predicate.ChatMessage) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ChatMessageMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ChatMessageMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.ChatMessage, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ChatMessageMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ChatMessageMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (ChatMessage).
-func (m *ChatMessageMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ChatMessageMutation) Fields() []string {
-	fields := make([]string, 0, 4)
-	if m.chat_room_id != nil {
-		fields = append(fields, chatmessage.FieldChatRoomID)
-	}
-	if m.user_id != nil {
-		fields = append(fields, chatmessage.FieldUserID)
-	}
-	if m.text != nil {
-		fields = append(fields, chatmessage.FieldText)
-	}
-	if m.created_at != nil {
-		fields = append(fields, chatmessage.FieldCreatedAt)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ChatMessageMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case chatmessage.FieldChatRoomID:
-		return m.ChatRoomID()
-	case chatmessage.FieldUserID:
-		return m.UserID()
-	case chatmessage.FieldText:
-		return m.Text()
-	case chatmessage.FieldCreatedAt:
-		return m.CreatedAt()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ChatMessageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case chatmessage.FieldChatRoomID:
-		return m.OldChatRoomID(ctx)
-	case chatmessage.FieldUserID:
-		return m.OldUserID(ctx)
-	case chatmessage.FieldText:
-		return m.OldText(ctx)
-	case chatmessage.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	}
-	return nil, fmt.Errorf("unknown ChatMessage field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ChatMessageMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case chatmessage.FieldChatRoomID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetChatRoomID(v)
-		return nil
-	case chatmessage.FieldUserID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUserID(v)
-		return nil
-	case chatmessage.FieldText:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetText(v)
-		return nil
-	case chatmessage.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	}
-	return fmt.Errorf("unknown ChatMessage field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ChatMessageMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ChatMessageMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ChatMessageMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown ChatMessage numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ChatMessageMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ChatMessageMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ChatMessageMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown ChatMessage nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ChatMessageMutation) ResetField(name string) error {
-	switch name {
-	case chatmessage.FieldChatRoomID:
-		m.ResetChatRoomID()
-		return nil
-	case chatmessage.FieldUserID:
-		m.ResetUserID()
-		return nil
-	case chatmessage.FieldText:
-		m.ResetText()
-		return nil
-	case chatmessage.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	}
-	return fmt.Errorf("unknown ChatMessage field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ChatMessageMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.room != nil {
-		edges = append(edges, chatmessage.EdgeRoom)
-	}
-	if m.owner != nil {
-		edges = append(edges, chatmessage.EdgeOwner)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ChatMessageMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case chatmessage.EdgeRoom:
-		if id := m.room; id != nil {
-			return []ent.Value{*id}
-		}
-	case chatmessage.EdgeOwner:
-		if id := m.owner; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ChatMessageMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ChatMessageMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ChatMessageMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedroom {
-		edges = append(edges, chatmessage.EdgeRoom)
-	}
-	if m.clearedowner {
-		edges = append(edges, chatmessage.EdgeOwner)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ChatMessageMutation) EdgeCleared(name string) bool {
-	switch name {
-	case chatmessage.EdgeRoom:
-		return m.clearedroom
-	case chatmessage.EdgeOwner:
-		return m.clearedowner
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ChatMessageMutation) ClearEdge(name string) error {
-	switch name {
-	case chatmessage.EdgeRoom:
-		m.ClearRoom()
-		return nil
-	case chatmessage.EdgeOwner:
-		m.ClearOwner()
-		return nil
-	}
-	return fmt.Errorf("unknown ChatMessage unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ChatMessageMutation) ResetEdge(name string) error {
-	switch name {
-	case chatmessage.EdgeRoom:
-		m.ResetRoom()
-		return nil
-	case chatmessage.EdgeOwner:
-		m.ResetOwner()
-		return nil
-	}
-	return fmt.Errorf("unknown ChatMessage edge %s", name)
-}
-
-// ChatRoomMutation represents an operation that mutates the ChatRoom nodes in the graph.
-type ChatRoomMutation struct {
-	config
-	op              Op
-	typ             string
-	id              *string
-	name            *string
-	description     *string
-	created_at      *time.Time
-	clearedFields   map[string]struct{}
-	members         map[int]struct{}
-	removedmembers  map[int]struct{}
-	clearedmembers  bool
-	messages        map[string]struct{}
-	removedmessages map[string]struct{}
-	clearedmessages bool
-	done            bool
-	oldValue        func(context.Context) (*ChatRoom, error)
-	predicates      []predicate.ChatRoom
-}
-
-var _ ent.Mutation = (*ChatRoomMutation)(nil)
-
-// chatroomOption allows management of the mutation configuration using functional options.
-type chatroomOption func(*ChatRoomMutation)
-
-// newChatRoomMutation creates new mutation for the ChatRoom entity.
-func newChatRoomMutation(c config, op Op, opts ...chatroomOption) *ChatRoomMutation {
-	m := &ChatRoomMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeChatRoom,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withChatRoomID sets the ID field of the mutation.
-func withChatRoomID(id string) chatroomOption {
-	return func(m *ChatRoomMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *ChatRoom
-		)
-		m.oldValue = func(ctx context.Context) (*ChatRoom, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().ChatRoom.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withChatRoom sets the old ChatRoom of the mutation.
-func withChatRoom(node *ChatRoom) chatroomOption {
-	return func(m *ChatRoomMutation) {
-		m.oldValue = func(context.Context) (*ChatRoom, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ChatRoomMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ChatRoomMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of ChatRoom entities.
-func (m *ChatRoomMutation) SetID(id string) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ChatRoomMutation) ID() (id string, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ChatRoomMutation) IDs(ctx context.Context) ([]string, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []string{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ChatRoom.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetName sets the "name" field.
-func (m *ChatRoomMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *ChatRoomMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the ChatRoom entity.
-// If the ChatRoom object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatRoomMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *ChatRoomMutation) ResetName() {
-	m.name = nil
-}
-
-// SetDescription sets the "description" field.
-func (m *ChatRoomMutation) SetDescription(s string) {
-	m.description = &s
-}
-
-// Description returns the value of the "description" field in the mutation.
-func (m *ChatRoomMutation) Description() (r string, exists bool) {
-	v := m.description
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDescription returns the old "description" field's value of the ChatRoom entity.
-// If the ChatRoom object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatRoomMutation) OldDescription(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDescription requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
-	}
-	return oldValue.Description, nil
-}
-
-// ResetDescription resets all changes to the "description" field.
-func (m *ChatRoomMutation) ResetDescription() {
-	m.description = nil
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *ChatRoomMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *ChatRoomMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the ChatRoom entity.
-// If the ChatRoom object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChatRoomMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *ChatRoomMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// AddMemberIDs adds the "members" edge to the ChatMember entity by ids.
-func (m *ChatRoomMutation) AddMemberIDs(ids ...int) {
-	if m.members == nil {
-		m.members = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.members[ids[i]] = struct{}{}
-	}
-}
-
-// ClearMembers clears the "members" edge to the ChatMember entity.
-func (m *ChatRoomMutation) ClearMembers() {
-	m.clearedmembers = true
-}
-
-// MembersCleared reports if the "members" edge to the ChatMember entity was cleared.
-func (m *ChatRoomMutation) MembersCleared() bool {
-	return m.clearedmembers
-}
-
-// RemoveMemberIDs removes the "members" edge to the ChatMember entity by IDs.
-func (m *ChatRoomMutation) RemoveMemberIDs(ids ...int) {
-	if m.removedmembers == nil {
-		m.removedmembers = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.members, ids[i])
-		m.removedmembers[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMembers returns the removed IDs of the "members" edge to the ChatMember entity.
-func (m *ChatRoomMutation) RemovedMembersIDs() (ids []int) {
-	for id := range m.removedmembers {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// MembersIDs returns the "members" edge IDs in the mutation.
-func (m *ChatRoomMutation) MembersIDs() (ids []int) {
-	for id := range m.members {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetMembers resets all changes to the "members" edge.
-func (m *ChatRoomMutation) ResetMembers() {
-	m.members = nil
-	m.clearedmembers = false
-	m.removedmembers = nil
-}
-
-// AddMessageIDs adds the "messages" edge to the ChatMessage entity by ids.
-func (m *ChatRoomMutation) AddMessageIDs(ids ...string) {
-	if m.messages == nil {
-		m.messages = make(map[string]struct{})
-	}
-	for i := range ids {
-		m.messages[ids[i]] = struct{}{}
-	}
-}
-
-// ClearMessages clears the "messages" edge to the ChatMessage entity.
-func (m *ChatRoomMutation) ClearMessages() {
-	m.clearedmessages = true
-}
-
-// MessagesCleared reports if the "messages" edge to the ChatMessage entity was cleared.
-func (m *ChatRoomMutation) MessagesCleared() bool {
-	return m.clearedmessages
-}
-
-// RemoveMessageIDs removes the "messages" edge to the ChatMessage entity by IDs.
-func (m *ChatRoomMutation) RemoveMessageIDs(ids ...string) {
-	if m.removedmessages == nil {
-		m.removedmessages = make(map[string]struct{})
-	}
-	for i := range ids {
-		delete(m.messages, ids[i])
-		m.removedmessages[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMessages returns the removed IDs of the "messages" edge to the ChatMessage entity.
-func (m *ChatRoomMutation) RemovedMessagesIDs() (ids []string) {
-	for id := range m.removedmessages {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// MessagesIDs returns the "messages" edge IDs in the mutation.
-func (m *ChatRoomMutation) MessagesIDs() (ids []string) {
-	for id := range m.messages {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetMessages resets all changes to the "messages" edge.
-func (m *ChatRoomMutation) ResetMessages() {
-	m.messages = nil
-	m.clearedmessages = false
-	m.removedmessages = nil
-}
-
-// Where appends a list predicates to the ChatRoomMutation builder.
-func (m *ChatRoomMutation) Where(ps ...predicate.ChatRoom) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ChatRoomMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ChatRoomMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.ChatRoom, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ChatRoomMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ChatRoomMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (ChatRoom).
-func (m *ChatRoomMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ChatRoomMutation) Fields() []string {
-	fields := make([]string, 0, 3)
-	if m.name != nil {
-		fields = append(fields, chatroom.FieldName)
-	}
-	if m.description != nil {
-		fields = append(fields, chatroom.FieldDescription)
-	}
-	if m.created_at != nil {
-		fields = append(fields, chatroom.FieldCreatedAt)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ChatRoomMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case chatroom.FieldName:
-		return m.Name()
-	case chatroom.FieldDescription:
-		return m.Description()
-	case chatroom.FieldCreatedAt:
-		return m.CreatedAt()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ChatRoomMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case chatroom.FieldName:
-		return m.OldName(ctx)
-	case chatroom.FieldDescription:
-		return m.OldDescription(ctx)
-	case chatroom.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	}
-	return nil, fmt.Errorf("unknown ChatRoom field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ChatRoomMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case chatroom.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case chatroom.FieldDescription:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDescription(v)
-		return nil
-	case chatroom.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	}
-	return fmt.Errorf("unknown ChatRoom field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ChatRoomMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ChatRoomMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ChatRoomMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown ChatRoom numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ChatRoomMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ChatRoomMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ChatRoomMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown ChatRoom nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ChatRoomMutation) ResetField(name string) error {
-	switch name {
-	case chatroom.FieldName:
-		m.ResetName()
-		return nil
-	case chatroom.FieldDescription:
-		m.ResetDescription()
-		return nil
-	case chatroom.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	}
-	return fmt.Errorf("unknown ChatRoom field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ChatRoomMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.members != nil {
-		edges = append(edges, chatroom.EdgeMembers)
-	}
-	if m.messages != nil {
-		edges = append(edges, chatroom.EdgeMessages)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ChatRoomMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case chatroom.EdgeMembers:
-		ids := make([]ent.Value, 0, len(m.members))
-		for id := range m.members {
-			ids = append(ids, id)
-		}
-		return ids
-	case chatroom.EdgeMessages:
-		ids := make([]ent.Value, 0, len(m.messages))
-		for id := range m.messages {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ChatRoomMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.removedmembers != nil {
-		edges = append(edges, chatroom.EdgeMembers)
-	}
-	if m.removedmessages != nil {
-		edges = append(edges, chatroom.EdgeMessages)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ChatRoomMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case chatroom.EdgeMembers:
-		ids := make([]ent.Value, 0, len(m.removedmembers))
-		for id := range m.removedmembers {
-			ids = append(ids, id)
-		}
-		return ids
-	case chatroom.EdgeMessages:
-		ids := make([]ent.Value, 0, len(m.removedmessages))
-		for id := range m.removedmessages {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ChatRoomMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedmembers {
-		edges = append(edges, chatroom.EdgeMembers)
-	}
-	if m.clearedmessages {
-		edges = append(edges, chatroom.EdgeMessages)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ChatRoomMutation) EdgeCleared(name string) bool {
-	switch name {
-	case chatroom.EdgeMembers:
-		return m.clearedmembers
-	case chatroom.EdgeMessages:
-		return m.clearedmessages
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ChatRoomMutation) ClearEdge(name string) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown ChatRoom unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ChatRoomMutation) ResetEdge(name string) error {
-	switch name {
-	case chatroom.EdgeMembers:
-		m.ResetMembers()
-		return nil
-	case chatroom.EdgeMessages:
-		m.ResetMessages()
-		return nil
-	}
-	return fmt.Errorf("unknown ChatRoom edge %s", name)
-}
 
 // CommentMutation represents an operation that mutates the Comment nodes in the graph.
 type CommentMutation struct {
 	config
-	op                    Op
-	typ                   string
-	id                    *string
-	user_id               *string
-	joke_id               *string
-	text                  *string
-	created_at            *time.Time
-	clearedFields         map[string]struct{}
-	owner                 *string
-	clearedowner          bool
-	commented_joke        *string
-	clearedcommented_joke bool
-	done                  bool
-	oldValue              func(context.Context) (*Comment, error)
-	predicates            []predicate.Comment
+	op            Op
+	typ           string
+	id            *string
+	text          *string
+	created_at    *time.Time
+	clearedFields map[string]struct{}
+	user          *string
+	cleareduser   bool
+	joke          *string
+	clearedjoke   bool
+	done          bool
+	oldValue      func(context.Context) (*Comment, error)
+	predicates    []predicate.Comment
 }
 
 var _ ent.Mutation = (*CommentMutation)(nil)
@@ -1959,78 +161,6 @@ func (m *CommentMutation) IDs(ctx context.Context) ([]string, error) {
 	}
 }
 
-// SetUserID sets the "user_id" field.
-func (m *CommentMutation) SetUserID(s string) {
-	m.user_id = &s
-}
-
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *CommentMutation) UserID() (r string, exists bool) {
-	v := m.user_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUserID returns the old "user_id" field's value of the Comment entity.
-// If the Comment object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CommentMutation) OldUserID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
-	}
-	return oldValue.UserID, nil
-}
-
-// ResetUserID resets all changes to the "user_id" field.
-func (m *CommentMutation) ResetUserID() {
-	m.user_id = nil
-}
-
-// SetJokeID sets the "joke_id" field.
-func (m *CommentMutation) SetJokeID(s string) {
-	m.joke_id = &s
-}
-
-// JokeID returns the value of the "joke_id" field in the mutation.
-func (m *CommentMutation) JokeID() (r string, exists bool) {
-	v := m.joke_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldJokeID returns the old "joke_id" field's value of the Comment entity.
-// If the Comment object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CommentMutation) OldJokeID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldJokeID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldJokeID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldJokeID: %w", err)
-	}
-	return oldValue.JokeID, nil
-}
-
-// ResetJokeID resets all changes to the "joke_id" field.
-func (m *CommentMutation) ResetJokeID() {
-	m.joke_id = nil
-}
-
 // SetText sets the "text" field.
 func (m *CommentMutation) SetText(s string) {
 	m.text = &s
@@ -2103,82 +233,82 @@ func (m *CommentMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by id.
-func (m *CommentMutation) SetOwnerID(id string) {
-	m.owner = &id
+// SetUserID sets the "user" edge to the User entity by id.
+func (m *CommentMutation) SetUserID(id string) {
+	m.user = &id
 }
 
-// ClearOwner clears the "owner" edge to the User entity.
-func (m *CommentMutation) ClearOwner() {
-	m.clearedowner = true
+// ClearUser clears the "user" edge to the User entity.
+func (m *CommentMutation) ClearUser() {
+	m.cleareduser = true
 }
 
-// OwnerCleared reports if the "owner" edge to the User entity was cleared.
-func (m *CommentMutation) OwnerCleared() bool {
-	return m.clearedowner
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *CommentMutation) UserCleared() bool {
+	return m.cleareduser
 }
 
-// OwnerID returns the "owner" edge ID in the mutation.
-func (m *CommentMutation) OwnerID() (id string, exists bool) {
-	if m.owner != nil {
-		return *m.owner, true
+// UserID returns the "user" edge ID in the mutation.
+func (m *CommentMutation) UserID() (id string, exists bool) {
+	if m.user != nil {
+		return *m.user, true
 	}
 	return
 }
 
-// OwnerIDs returns the "owner" edge IDs in the mutation.
+// UserIDs returns the "user" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OwnerID instead. It exists only for internal usage by the builders.
-func (m *CommentMutation) OwnerIDs() (ids []string) {
-	if id := m.owner; id != nil {
+// UserID instead. It exists only for internal usage by the builders.
+func (m *CommentMutation) UserIDs() (ids []string) {
+	if id := m.user; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetOwner resets all changes to the "owner" edge.
-func (m *CommentMutation) ResetOwner() {
-	m.owner = nil
-	m.clearedowner = false
+// ResetUser resets all changes to the "user" edge.
+func (m *CommentMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
 }
 
-// SetCommentedJokeID sets the "commented_joke" edge to the Joke entity by id.
-func (m *CommentMutation) SetCommentedJokeID(id string) {
-	m.commented_joke = &id
+// SetJokeID sets the "joke" edge to the Joke entity by id.
+func (m *CommentMutation) SetJokeID(id string) {
+	m.joke = &id
 }
 
-// ClearCommentedJoke clears the "commented_joke" edge to the Joke entity.
-func (m *CommentMutation) ClearCommentedJoke() {
-	m.clearedcommented_joke = true
+// ClearJoke clears the "joke" edge to the Joke entity.
+func (m *CommentMutation) ClearJoke() {
+	m.clearedjoke = true
 }
 
-// CommentedJokeCleared reports if the "commented_joke" edge to the Joke entity was cleared.
-func (m *CommentMutation) CommentedJokeCleared() bool {
-	return m.clearedcommented_joke
+// JokeCleared reports if the "joke" edge to the Joke entity was cleared.
+func (m *CommentMutation) JokeCleared() bool {
+	return m.clearedjoke
 }
 
-// CommentedJokeID returns the "commented_joke" edge ID in the mutation.
-func (m *CommentMutation) CommentedJokeID() (id string, exists bool) {
-	if m.commented_joke != nil {
-		return *m.commented_joke, true
+// JokeID returns the "joke" edge ID in the mutation.
+func (m *CommentMutation) JokeID() (id string, exists bool) {
+	if m.joke != nil {
+		return *m.joke, true
 	}
 	return
 }
 
-// CommentedJokeIDs returns the "commented_joke" edge IDs in the mutation.
+// JokeIDs returns the "joke" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// CommentedJokeID instead. It exists only for internal usage by the builders.
-func (m *CommentMutation) CommentedJokeIDs() (ids []string) {
-	if id := m.commented_joke; id != nil {
+// JokeID instead. It exists only for internal usage by the builders.
+func (m *CommentMutation) JokeIDs() (ids []string) {
+	if id := m.joke; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetCommentedJoke resets all changes to the "commented_joke" edge.
-func (m *CommentMutation) ResetCommentedJoke() {
-	m.commented_joke = nil
-	m.clearedcommented_joke = false
+// ResetJoke resets all changes to the "joke" edge.
+func (m *CommentMutation) ResetJoke() {
+	m.joke = nil
+	m.clearedjoke = false
 }
 
 // Where appends a list predicates to the CommentMutation builder.
@@ -2215,13 +345,7 @@ func (m *CommentMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CommentMutation) Fields() []string {
-	fields := make([]string, 0, 4)
-	if m.user_id != nil {
-		fields = append(fields, comment.FieldUserID)
-	}
-	if m.joke_id != nil {
-		fields = append(fields, comment.FieldJokeID)
-	}
+	fields := make([]string, 0, 2)
 	if m.text != nil {
 		fields = append(fields, comment.FieldText)
 	}
@@ -2236,10 +360,6 @@ func (m *CommentMutation) Fields() []string {
 // schema.
 func (m *CommentMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case comment.FieldUserID:
-		return m.UserID()
-	case comment.FieldJokeID:
-		return m.JokeID()
 	case comment.FieldText:
 		return m.Text()
 	case comment.FieldCreatedAt:
@@ -2253,10 +373,6 @@ func (m *CommentMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *CommentMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case comment.FieldUserID:
-		return m.OldUserID(ctx)
-	case comment.FieldJokeID:
-		return m.OldJokeID(ctx)
 	case comment.FieldText:
 		return m.OldText(ctx)
 	case comment.FieldCreatedAt:
@@ -2270,20 +386,6 @@ func (m *CommentMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *CommentMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case comment.FieldUserID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUserID(v)
-		return nil
-	case comment.FieldJokeID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetJokeID(v)
-		return nil
 	case comment.FieldText:
 		v, ok := value.(string)
 		if !ok {
@@ -2347,12 +449,6 @@ func (m *CommentMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *CommentMutation) ResetField(name string) error {
 	switch name {
-	case comment.FieldUserID:
-		m.ResetUserID()
-		return nil
-	case comment.FieldJokeID:
-		m.ResetJokeID()
-		return nil
 	case comment.FieldText:
 		m.ResetText()
 		return nil
@@ -2366,11 +462,11 @@ func (m *CommentMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CommentMutation) AddedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.owner != nil {
-		edges = append(edges, comment.EdgeOwner)
+	if m.user != nil {
+		edges = append(edges, comment.EdgeUser)
 	}
-	if m.commented_joke != nil {
-		edges = append(edges, comment.EdgeCommentedJoke)
+	if m.joke != nil {
+		edges = append(edges, comment.EdgeJoke)
 	}
 	return edges
 }
@@ -2379,12 +475,12 @@ func (m *CommentMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *CommentMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case comment.EdgeOwner:
-		if id := m.owner; id != nil {
+	case comment.EdgeUser:
+		if id := m.user; id != nil {
 			return []ent.Value{*id}
 		}
-	case comment.EdgeCommentedJoke:
-		if id := m.commented_joke; id != nil {
+	case comment.EdgeJoke:
+		if id := m.joke; id != nil {
 			return []ent.Value{*id}
 		}
 	}
@@ -2406,11 +502,11 @@ func (m *CommentMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CommentMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.clearedowner {
-		edges = append(edges, comment.EdgeOwner)
+	if m.cleareduser {
+		edges = append(edges, comment.EdgeUser)
 	}
-	if m.clearedcommented_joke {
-		edges = append(edges, comment.EdgeCommentedJoke)
+	if m.clearedjoke {
+		edges = append(edges, comment.EdgeJoke)
 	}
 	return edges
 }
@@ -2419,10 +515,10 @@ func (m *CommentMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *CommentMutation) EdgeCleared(name string) bool {
 	switch name {
-	case comment.EdgeOwner:
-		return m.clearedowner
-	case comment.EdgeCommentedJoke:
-		return m.clearedcommented_joke
+	case comment.EdgeUser:
+		return m.cleareduser
+	case comment.EdgeJoke:
+		return m.clearedjoke
 	}
 	return false
 }
@@ -2431,11 +527,11 @@ func (m *CommentMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *CommentMutation) ClearEdge(name string) error {
 	switch name {
-	case comment.EdgeOwner:
-		m.ClearOwner()
+	case comment.EdgeUser:
+		m.ClearUser()
 		return nil
-	case comment.EdgeCommentedJoke:
-		m.ClearCommentedJoke()
+	case comment.EdgeJoke:
+		m.ClearJoke()
 		return nil
 	}
 	return fmt.Errorf("unknown Comment unique edge %s", name)
@@ -2445,11 +541,11 @@ func (m *CommentMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *CommentMutation) ResetEdge(name string) error {
 	switch name {
-	case comment.EdgeOwner:
-		m.ResetOwner()
+	case comment.EdgeUser:
+		m.ResetUser()
 		return nil
-	case comment.EdgeCommentedJoke:
-		m.ResetCommentedJoke()
+	case comment.EdgeJoke:
+		m.ResetJoke()
 		return nil
 	}
 	return fmt.Errorf("unknown Comment edge %s", name)
@@ -2461,14 +557,13 @@ type JokeMutation struct {
 	op              Op
 	typ             string
 	id              *string
-	user_id         *string
 	title           *string
 	text            *string
 	explanation     *string
 	created_at      *time.Time
 	clearedFields   map[string]struct{}
-	owner           *string
-	clearedowner    bool
+	user            *string
+	cleareduser     bool
 	comments        map[string]struct{}
 	removedcomments map[string]struct{}
 	clearedcomments bool
@@ -2582,42 +677,6 @@ func (m *JokeMutation) IDs(ctx context.Context) ([]string, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetUserID sets the "user_id" field.
-func (m *JokeMutation) SetUserID(s string) {
-	m.user_id = &s
-}
-
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *JokeMutation) UserID() (r string, exists bool) {
-	v := m.user_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUserID returns the old "user_id" field's value of the Joke entity.
-// If the Joke object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *JokeMutation) OldUserID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
-	}
-	return oldValue.UserID, nil
-}
-
-// ResetUserID resets all changes to the "user_id" field.
-func (m *JokeMutation) ResetUserID() {
-	m.user_id = nil
 }
 
 // SetTitle sets the "title" field.
@@ -2764,43 +823,43 @@ func (m *JokeMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by id.
-func (m *JokeMutation) SetOwnerID(id string) {
-	m.owner = &id
+// SetUserID sets the "user" edge to the User entity by id.
+func (m *JokeMutation) SetUserID(id string) {
+	m.user = &id
 }
 
-// ClearOwner clears the "owner" edge to the User entity.
-func (m *JokeMutation) ClearOwner() {
-	m.clearedowner = true
+// ClearUser clears the "user" edge to the User entity.
+func (m *JokeMutation) ClearUser() {
+	m.cleareduser = true
 }
 
-// OwnerCleared reports if the "owner" edge to the User entity was cleared.
-func (m *JokeMutation) OwnerCleared() bool {
-	return m.clearedowner
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *JokeMutation) UserCleared() bool {
+	return m.cleareduser
 }
 
-// OwnerID returns the "owner" edge ID in the mutation.
-func (m *JokeMutation) OwnerID() (id string, exists bool) {
-	if m.owner != nil {
-		return *m.owner, true
+// UserID returns the "user" edge ID in the mutation.
+func (m *JokeMutation) UserID() (id string, exists bool) {
+	if m.user != nil {
+		return *m.user, true
 	}
 	return
 }
 
-// OwnerIDs returns the "owner" edge IDs in the mutation.
+// UserIDs returns the "user" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OwnerID instead. It exists only for internal usage by the builders.
-func (m *JokeMutation) OwnerIDs() (ids []string) {
-	if id := m.owner; id != nil {
+// UserID instead. It exists only for internal usage by the builders.
+func (m *JokeMutation) UserIDs() (ids []string) {
+	if id := m.user; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetOwner resets all changes to the "owner" edge.
-func (m *JokeMutation) ResetOwner() {
-	m.owner = nil
-	m.clearedowner = false
+// ResetUser resets all changes to the "user" edge.
+func (m *JokeMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
 }
 
 // AddCommentIDs adds the "comments" edge to the Comment entity by ids.
@@ -2945,10 +1004,7 @@ func (m *JokeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *JokeMutation) Fields() []string {
-	fields := make([]string, 0, 5)
-	if m.user_id != nil {
-		fields = append(fields, joke.FieldUserID)
-	}
+	fields := make([]string, 0, 4)
 	if m.title != nil {
 		fields = append(fields, joke.FieldTitle)
 	}
@@ -2969,8 +1025,6 @@ func (m *JokeMutation) Fields() []string {
 // schema.
 func (m *JokeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case joke.FieldUserID:
-		return m.UserID()
 	case joke.FieldTitle:
 		return m.Title()
 	case joke.FieldText:
@@ -2988,8 +1042,6 @@ func (m *JokeMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *JokeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case joke.FieldUserID:
-		return m.OldUserID(ctx)
 	case joke.FieldTitle:
 		return m.OldTitle(ctx)
 	case joke.FieldText:
@@ -3007,13 +1059,6 @@ func (m *JokeMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *JokeMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case joke.FieldUserID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUserID(v)
-		return nil
 	case joke.FieldTitle:
 		v, ok := value.(string)
 		if !ok {
@@ -3091,9 +1136,6 @@ func (m *JokeMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *JokeMutation) ResetField(name string) error {
 	switch name {
-	case joke.FieldUserID:
-		m.ResetUserID()
-		return nil
 	case joke.FieldTitle:
 		m.ResetTitle()
 		return nil
@@ -3113,8 +1155,8 @@ func (m *JokeMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *JokeMutation) AddedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.owner != nil {
-		edges = append(edges, joke.EdgeOwner)
+	if m.user != nil {
+		edges = append(edges, joke.EdgeUser)
 	}
 	if m.comments != nil {
 		edges = append(edges, joke.EdgeComments)
@@ -3129,8 +1171,8 @@ func (m *JokeMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *JokeMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case joke.EdgeOwner:
-		if id := m.owner; id != nil {
+	case joke.EdgeUser:
+		if id := m.user; id != nil {
 			return []ent.Value{*id}
 		}
 	case joke.EdgeComments:
@@ -3184,8 +1226,8 @@ func (m *JokeMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *JokeMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.clearedowner {
-		edges = append(edges, joke.EdgeOwner)
+	if m.cleareduser {
+		edges = append(edges, joke.EdgeUser)
 	}
 	if m.clearedcomments {
 		edges = append(edges, joke.EdgeComments)
@@ -3200,8 +1242,8 @@ func (m *JokeMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *JokeMutation) EdgeCleared(name string) bool {
 	switch name {
-	case joke.EdgeOwner:
-		return m.clearedowner
+	case joke.EdgeUser:
+		return m.cleareduser
 	case joke.EdgeComments:
 		return m.clearedcomments
 	case joke.EdgeLikes:
@@ -3214,8 +1256,8 @@ func (m *JokeMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *JokeMutation) ClearEdge(name string) error {
 	switch name {
-	case joke.EdgeOwner:
-		m.ClearOwner()
+	case joke.EdgeUser:
+		m.ClearUser()
 		return nil
 	}
 	return fmt.Errorf("unknown Joke unique edge %s", name)
@@ -3225,8 +1267,8 @@ func (m *JokeMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *JokeMutation) ResetEdge(name string) error {
 	switch name {
-	case joke.EdgeOwner:
-		m.ResetOwner()
+	case joke.EdgeUser:
+		m.ResetUser()
 		return nil
 	case joke.EdgeComments:
 		m.ResetComments()
@@ -3241,20 +1283,18 @@ func (m *JokeMutation) ResetEdge(name string) error {
 // LikeMutation represents an operation that mutates the Like nodes in the graph.
 type LikeMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *int
-	user_id           *string
-	joke_id           *string
-	created_at        *time.Time
-	clearedFields     map[string]struct{}
-	owner             *string
-	clearedowner      bool
-	liked_joke        *string
-	clearedliked_joke bool
-	done              bool
-	oldValue          func(context.Context) (*Like, error)
-	predicates        []predicate.Like
+	op            Op
+	typ           string
+	id            *int
+	created_at    *time.Time
+	clearedFields map[string]struct{}
+	user          *string
+	cleareduser   bool
+	joke          *string
+	clearedjoke   bool
+	done          bool
+	oldValue      func(context.Context) (*Like, error)
+	predicates    []predicate.Like
 }
 
 var _ ent.Mutation = (*LikeMutation)(nil)
@@ -3355,78 +1395,6 @@ func (m *LikeMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetUserID sets the "user_id" field.
-func (m *LikeMutation) SetUserID(s string) {
-	m.user_id = &s
-}
-
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *LikeMutation) UserID() (r string, exists bool) {
-	v := m.user_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUserID returns the old "user_id" field's value of the Like entity.
-// If the Like object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LikeMutation) OldUserID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
-	}
-	return oldValue.UserID, nil
-}
-
-// ResetUserID resets all changes to the "user_id" field.
-func (m *LikeMutation) ResetUserID() {
-	m.user_id = nil
-}
-
-// SetJokeID sets the "joke_id" field.
-func (m *LikeMutation) SetJokeID(s string) {
-	m.joke_id = &s
-}
-
-// JokeID returns the value of the "joke_id" field in the mutation.
-func (m *LikeMutation) JokeID() (r string, exists bool) {
-	v := m.joke_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldJokeID returns the old "joke_id" field's value of the Like entity.
-// If the Like object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LikeMutation) OldJokeID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldJokeID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldJokeID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldJokeID: %w", err)
-	}
-	return oldValue.JokeID, nil
-}
-
-// ResetJokeID resets all changes to the "joke_id" field.
-func (m *LikeMutation) ResetJokeID() {
-	m.joke_id = nil
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (m *LikeMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -3463,82 +1431,82 @@ func (m *LikeMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by id.
-func (m *LikeMutation) SetOwnerID(id string) {
-	m.owner = &id
+// SetUserID sets the "user" edge to the User entity by id.
+func (m *LikeMutation) SetUserID(id string) {
+	m.user = &id
 }
 
-// ClearOwner clears the "owner" edge to the User entity.
-func (m *LikeMutation) ClearOwner() {
-	m.clearedowner = true
+// ClearUser clears the "user" edge to the User entity.
+func (m *LikeMutation) ClearUser() {
+	m.cleareduser = true
 }
 
-// OwnerCleared reports if the "owner" edge to the User entity was cleared.
-func (m *LikeMutation) OwnerCleared() bool {
-	return m.clearedowner
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *LikeMutation) UserCleared() bool {
+	return m.cleareduser
 }
 
-// OwnerID returns the "owner" edge ID in the mutation.
-func (m *LikeMutation) OwnerID() (id string, exists bool) {
-	if m.owner != nil {
-		return *m.owner, true
+// UserID returns the "user" edge ID in the mutation.
+func (m *LikeMutation) UserID() (id string, exists bool) {
+	if m.user != nil {
+		return *m.user, true
 	}
 	return
 }
 
-// OwnerIDs returns the "owner" edge IDs in the mutation.
+// UserIDs returns the "user" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OwnerID instead. It exists only for internal usage by the builders.
-func (m *LikeMutation) OwnerIDs() (ids []string) {
-	if id := m.owner; id != nil {
+// UserID instead. It exists only for internal usage by the builders.
+func (m *LikeMutation) UserIDs() (ids []string) {
+	if id := m.user; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetOwner resets all changes to the "owner" edge.
-func (m *LikeMutation) ResetOwner() {
-	m.owner = nil
-	m.clearedowner = false
+// ResetUser resets all changes to the "user" edge.
+func (m *LikeMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
 }
 
-// SetLikedJokeID sets the "liked_joke" edge to the Joke entity by id.
-func (m *LikeMutation) SetLikedJokeID(id string) {
-	m.liked_joke = &id
+// SetJokeID sets the "joke" edge to the Joke entity by id.
+func (m *LikeMutation) SetJokeID(id string) {
+	m.joke = &id
 }
 
-// ClearLikedJoke clears the "liked_joke" edge to the Joke entity.
-func (m *LikeMutation) ClearLikedJoke() {
-	m.clearedliked_joke = true
+// ClearJoke clears the "joke" edge to the Joke entity.
+func (m *LikeMutation) ClearJoke() {
+	m.clearedjoke = true
 }
 
-// LikedJokeCleared reports if the "liked_joke" edge to the Joke entity was cleared.
-func (m *LikeMutation) LikedJokeCleared() bool {
-	return m.clearedliked_joke
+// JokeCleared reports if the "joke" edge to the Joke entity was cleared.
+func (m *LikeMutation) JokeCleared() bool {
+	return m.clearedjoke
 }
 
-// LikedJokeID returns the "liked_joke" edge ID in the mutation.
-func (m *LikeMutation) LikedJokeID() (id string, exists bool) {
-	if m.liked_joke != nil {
-		return *m.liked_joke, true
+// JokeID returns the "joke" edge ID in the mutation.
+func (m *LikeMutation) JokeID() (id string, exists bool) {
+	if m.joke != nil {
+		return *m.joke, true
 	}
 	return
 }
 
-// LikedJokeIDs returns the "liked_joke" edge IDs in the mutation.
+// JokeIDs returns the "joke" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// LikedJokeID instead. It exists only for internal usage by the builders.
-func (m *LikeMutation) LikedJokeIDs() (ids []string) {
-	if id := m.liked_joke; id != nil {
+// JokeID instead. It exists only for internal usage by the builders.
+func (m *LikeMutation) JokeIDs() (ids []string) {
+	if id := m.joke; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetLikedJoke resets all changes to the "liked_joke" edge.
-func (m *LikeMutation) ResetLikedJoke() {
-	m.liked_joke = nil
-	m.clearedliked_joke = false
+// ResetJoke resets all changes to the "joke" edge.
+func (m *LikeMutation) ResetJoke() {
+	m.joke = nil
+	m.clearedjoke = false
 }
 
 // Where appends a list predicates to the LikeMutation builder.
@@ -3575,13 +1543,7 @@ func (m *LikeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *LikeMutation) Fields() []string {
-	fields := make([]string, 0, 3)
-	if m.user_id != nil {
-		fields = append(fields, like.FieldUserID)
-	}
-	if m.joke_id != nil {
-		fields = append(fields, like.FieldJokeID)
-	}
+	fields := make([]string, 0, 1)
 	if m.created_at != nil {
 		fields = append(fields, like.FieldCreatedAt)
 	}
@@ -3593,10 +1555,6 @@ func (m *LikeMutation) Fields() []string {
 // schema.
 func (m *LikeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case like.FieldUserID:
-		return m.UserID()
-	case like.FieldJokeID:
-		return m.JokeID()
 	case like.FieldCreatedAt:
 		return m.CreatedAt()
 	}
@@ -3608,10 +1566,6 @@ func (m *LikeMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *LikeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case like.FieldUserID:
-		return m.OldUserID(ctx)
-	case like.FieldJokeID:
-		return m.OldJokeID(ctx)
 	case like.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	}
@@ -3623,20 +1577,6 @@ func (m *LikeMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *LikeMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case like.FieldUserID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUserID(v)
-		return nil
-	case like.FieldJokeID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetJokeID(v)
-		return nil
 	case like.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -3693,12 +1633,6 @@ func (m *LikeMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *LikeMutation) ResetField(name string) error {
 	switch name {
-	case like.FieldUserID:
-		m.ResetUserID()
-		return nil
-	case like.FieldJokeID:
-		m.ResetJokeID()
-		return nil
 	case like.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
@@ -3709,11 +1643,11 @@ func (m *LikeMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *LikeMutation) AddedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.owner != nil {
-		edges = append(edges, like.EdgeOwner)
+	if m.user != nil {
+		edges = append(edges, like.EdgeUser)
 	}
-	if m.liked_joke != nil {
-		edges = append(edges, like.EdgeLikedJoke)
+	if m.joke != nil {
+		edges = append(edges, like.EdgeJoke)
 	}
 	return edges
 }
@@ -3722,12 +1656,12 @@ func (m *LikeMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *LikeMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case like.EdgeOwner:
-		if id := m.owner; id != nil {
+	case like.EdgeUser:
+		if id := m.user; id != nil {
 			return []ent.Value{*id}
 		}
-	case like.EdgeLikedJoke:
-		if id := m.liked_joke; id != nil {
+	case like.EdgeJoke:
+		if id := m.joke; id != nil {
 			return []ent.Value{*id}
 		}
 	}
@@ -3749,11 +1683,11 @@ func (m *LikeMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *LikeMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.clearedowner {
-		edges = append(edges, like.EdgeOwner)
+	if m.cleareduser {
+		edges = append(edges, like.EdgeUser)
 	}
-	if m.clearedliked_joke {
-		edges = append(edges, like.EdgeLikedJoke)
+	if m.clearedjoke {
+		edges = append(edges, like.EdgeJoke)
 	}
 	return edges
 }
@@ -3762,10 +1696,10 @@ func (m *LikeMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *LikeMutation) EdgeCleared(name string) bool {
 	switch name {
-	case like.EdgeOwner:
-		return m.clearedowner
-	case like.EdgeLikedJoke:
-		return m.clearedliked_joke
+	case like.EdgeUser:
+		return m.cleareduser
+	case like.EdgeJoke:
+		return m.clearedjoke
 	}
 	return false
 }
@@ -3774,11 +1708,11 @@ func (m *LikeMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *LikeMutation) ClearEdge(name string) error {
 	switch name {
-	case like.EdgeOwner:
-		m.ClearOwner()
+	case like.EdgeUser:
+		m.ClearUser()
 		return nil
-	case like.EdgeLikedJoke:
-		m.ClearLikedJoke()
+	case like.EdgeJoke:
+		m.ClearJoke()
 		return nil
 	}
 	return fmt.Errorf("unknown Like unique edge %s", name)
@@ -3788,14 +1722,1594 @@ func (m *LikeMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *LikeMutation) ResetEdge(name string) error {
 	switch name {
-	case like.EdgeOwner:
-		m.ResetOwner()
+	case like.EdgeUser:
+		m.ResetUser()
 		return nil
-	case like.EdgeLikedJoke:
-		m.ResetLikedJoke()
+	case like.EdgeJoke:
+		m.ResetJoke()
 		return nil
 	}
 	return fmt.Errorf("unknown Like edge %s", name)
+}
+
+// RoomMutation represents an operation that mutates the Room nodes in the graph.
+type RoomMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *string
+	name            *string
+	description     *string
+	created_at      *time.Time
+	clearedFields   map[string]struct{}
+	members         map[int]struct{}
+	removedmembers  map[int]struct{}
+	clearedmembers  bool
+	messages        map[string]struct{}
+	removedmessages map[string]struct{}
+	clearedmessages bool
+	done            bool
+	oldValue        func(context.Context) (*Room, error)
+	predicates      []predicate.Room
+}
+
+var _ ent.Mutation = (*RoomMutation)(nil)
+
+// roomOption allows management of the mutation configuration using functional options.
+type roomOption func(*RoomMutation)
+
+// newRoomMutation creates new mutation for the Room entity.
+func newRoomMutation(c config, op Op, opts ...roomOption) *RoomMutation {
+	m := &RoomMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeRoom,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withRoomID sets the ID field of the mutation.
+func withRoomID(id string) roomOption {
+	return func(m *RoomMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Room
+		)
+		m.oldValue = func(ctx context.Context) (*Room, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Room.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withRoom sets the old Room of the mutation.
+func withRoom(node *Room) roomOption {
+	return func(m *RoomMutation) {
+		m.oldValue = func(context.Context) (*Room, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m RoomMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m RoomMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Room entities.
+func (m *RoomMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *RoomMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *RoomMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Room.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *RoomMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *RoomMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the Room entity.
+// If the Room object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RoomMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *RoomMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *RoomMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *RoomMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the Room entity.
+// If the Room object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RoomMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *RoomMutation) ResetDescription() {
+	m.description = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *RoomMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *RoomMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Room entity.
+// If the Room object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RoomMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *RoomMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// AddMemberIDs adds the "members" edge to the RoomMember entity by ids.
+func (m *RoomMutation) AddMemberIDs(ids ...int) {
+	if m.members == nil {
+		m.members = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.members[ids[i]] = struct{}{}
+	}
+}
+
+// ClearMembers clears the "members" edge to the RoomMember entity.
+func (m *RoomMutation) ClearMembers() {
+	m.clearedmembers = true
+}
+
+// MembersCleared reports if the "members" edge to the RoomMember entity was cleared.
+func (m *RoomMutation) MembersCleared() bool {
+	return m.clearedmembers
+}
+
+// RemoveMemberIDs removes the "members" edge to the RoomMember entity by IDs.
+func (m *RoomMutation) RemoveMemberIDs(ids ...int) {
+	if m.removedmembers == nil {
+		m.removedmembers = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.members, ids[i])
+		m.removedmembers[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedMembers returns the removed IDs of the "members" edge to the RoomMember entity.
+func (m *RoomMutation) RemovedMembersIDs() (ids []int) {
+	for id := range m.removedmembers {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// MembersIDs returns the "members" edge IDs in the mutation.
+func (m *RoomMutation) MembersIDs() (ids []int) {
+	for id := range m.members {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetMembers resets all changes to the "members" edge.
+func (m *RoomMutation) ResetMembers() {
+	m.members = nil
+	m.clearedmembers = false
+	m.removedmembers = nil
+}
+
+// AddMessageIDs adds the "messages" edge to the RoomMessage entity by ids.
+func (m *RoomMutation) AddMessageIDs(ids ...string) {
+	if m.messages == nil {
+		m.messages = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.messages[ids[i]] = struct{}{}
+	}
+}
+
+// ClearMessages clears the "messages" edge to the RoomMessage entity.
+func (m *RoomMutation) ClearMessages() {
+	m.clearedmessages = true
+}
+
+// MessagesCleared reports if the "messages" edge to the RoomMessage entity was cleared.
+func (m *RoomMutation) MessagesCleared() bool {
+	return m.clearedmessages
+}
+
+// RemoveMessageIDs removes the "messages" edge to the RoomMessage entity by IDs.
+func (m *RoomMutation) RemoveMessageIDs(ids ...string) {
+	if m.removedmessages == nil {
+		m.removedmessages = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.messages, ids[i])
+		m.removedmessages[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedMessages returns the removed IDs of the "messages" edge to the RoomMessage entity.
+func (m *RoomMutation) RemovedMessagesIDs() (ids []string) {
+	for id := range m.removedmessages {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// MessagesIDs returns the "messages" edge IDs in the mutation.
+func (m *RoomMutation) MessagesIDs() (ids []string) {
+	for id := range m.messages {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetMessages resets all changes to the "messages" edge.
+func (m *RoomMutation) ResetMessages() {
+	m.messages = nil
+	m.clearedmessages = false
+	m.removedmessages = nil
+}
+
+// Where appends a list predicates to the RoomMutation builder.
+func (m *RoomMutation) Where(ps ...predicate.Room) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the RoomMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *RoomMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Room, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *RoomMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *RoomMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Room).
+func (m *RoomMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *RoomMutation) Fields() []string {
+	fields := make([]string, 0, 3)
+	if m.name != nil {
+		fields = append(fields, room.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, room.FieldDescription)
+	}
+	if m.created_at != nil {
+		fields = append(fields, room.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *RoomMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case room.FieldName:
+		return m.Name()
+	case room.FieldDescription:
+		return m.Description()
+	case room.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *RoomMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case room.FieldName:
+		return m.OldName(ctx)
+	case room.FieldDescription:
+		return m.OldDescription(ctx)
+	case room.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown Room field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RoomMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case room.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case room.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case room.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Room field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *RoomMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *RoomMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RoomMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Room numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *RoomMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *RoomMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *RoomMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Room nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *RoomMutation) ResetField(name string) error {
+	switch name {
+	case room.FieldName:
+		m.ResetName()
+		return nil
+	case room.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case room.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown Room field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *RoomMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.members != nil {
+		edges = append(edges, room.EdgeMembers)
+	}
+	if m.messages != nil {
+		edges = append(edges, room.EdgeMessages)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *RoomMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case room.EdgeMembers:
+		ids := make([]ent.Value, 0, len(m.members))
+		for id := range m.members {
+			ids = append(ids, id)
+		}
+		return ids
+	case room.EdgeMessages:
+		ids := make([]ent.Value, 0, len(m.messages))
+		for id := range m.messages {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *RoomMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.removedmembers != nil {
+		edges = append(edges, room.EdgeMembers)
+	}
+	if m.removedmessages != nil {
+		edges = append(edges, room.EdgeMessages)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *RoomMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case room.EdgeMembers:
+		ids := make([]ent.Value, 0, len(m.removedmembers))
+		for id := range m.removedmembers {
+			ids = append(ids, id)
+		}
+		return ids
+	case room.EdgeMessages:
+		ids := make([]ent.Value, 0, len(m.removedmessages))
+		for id := range m.removedmessages {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *RoomMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedmembers {
+		edges = append(edges, room.EdgeMembers)
+	}
+	if m.clearedmessages {
+		edges = append(edges, room.EdgeMessages)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *RoomMutation) EdgeCleared(name string) bool {
+	switch name {
+	case room.EdgeMembers:
+		return m.clearedmembers
+	case room.EdgeMessages:
+		return m.clearedmessages
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *RoomMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Room unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *RoomMutation) ResetEdge(name string) error {
+	switch name {
+	case room.EdgeMembers:
+		m.ResetMembers()
+		return nil
+	case room.EdgeMessages:
+		m.ResetMessages()
+		return nil
+	}
+	return fmt.Errorf("unknown Room edge %s", name)
+}
+
+// RoomMemberMutation represents an operation that mutates the RoomMember nodes in the graph.
+type RoomMemberMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	created_at    *time.Time
+	clearedFields map[string]struct{}
+	room          *string
+	clearedroom   bool
+	user          *string
+	cleareduser   bool
+	done          bool
+	oldValue      func(context.Context) (*RoomMember, error)
+	predicates    []predicate.RoomMember
+}
+
+var _ ent.Mutation = (*RoomMemberMutation)(nil)
+
+// roommemberOption allows management of the mutation configuration using functional options.
+type roommemberOption func(*RoomMemberMutation)
+
+// newRoomMemberMutation creates new mutation for the RoomMember entity.
+func newRoomMemberMutation(c config, op Op, opts ...roommemberOption) *RoomMemberMutation {
+	m := &RoomMemberMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeRoomMember,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withRoomMemberID sets the ID field of the mutation.
+func withRoomMemberID(id int) roommemberOption {
+	return func(m *RoomMemberMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *RoomMember
+		)
+		m.oldValue = func(ctx context.Context) (*RoomMember, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().RoomMember.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withRoomMember sets the old RoomMember of the mutation.
+func withRoomMember(node *RoomMember) roommemberOption {
+	return func(m *RoomMemberMutation) {
+		m.oldValue = func(context.Context) (*RoomMember, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m RoomMemberMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m RoomMemberMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *RoomMemberMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *RoomMemberMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().RoomMember.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *RoomMemberMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *RoomMemberMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the RoomMember entity.
+// If the RoomMember object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RoomMemberMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *RoomMemberMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetRoomID sets the "room" edge to the Room entity by id.
+func (m *RoomMemberMutation) SetRoomID(id string) {
+	m.room = &id
+}
+
+// ClearRoom clears the "room" edge to the Room entity.
+func (m *RoomMemberMutation) ClearRoom() {
+	m.clearedroom = true
+}
+
+// RoomCleared reports if the "room" edge to the Room entity was cleared.
+func (m *RoomMemberMutation) RoomCleared() bool {
+	return m.clearedroom
+}
+
+// RoomID returns the "room" edge ID in the mutation.
+func (m *RoomMemberMutation) RoomID() (id string, exists bool) {
+	if m.room != nil {
+		return *m.room, true
+	}
+	return
+}
+
+// RoomIDs returns the "room" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// RoomID instead. It exists only for internal usage by the builders.
+func (m *RoomMemberMutation) RoomIDs() (ids []string) {
+	if id := m.room; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetRoom resets all changes to the "room" edge.
+func (m *RoomMemberMutation) ResetRoom() {
+	m.room = nil
+	m.clearedroom = false
+}
+
+// SetUserID sets the "user" edge to the User entity by id.
+func (m *RoomMemberMutation) SetUserID(id string) {
+	m.user = &id
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (m *RoomMemberMutation) ClearUser() {
+	m.cleareduser = true
+}
+
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *RoomMemberMutation) UserCleared() bool {
+	return m.cleareduser
+}
+
+// UserID returns the "user" edge ID in the mutation.
+func (m *RoomMemberMutation) UserID() (id string, exists bool) {
+	if m.user != nil {
+		return *m.user, true
+	}
+	return
+}
+
+// UserIDs returns the "user" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// UserID instead. It exists only for internal usage by the builders.
+func (m *RoomMemberMutation) UserIDs() (ids []string) {
+	if id := m.user; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetUser resets all changes to the "user" edge.
+func (m *RoomMemberMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
+}
+
+// Where appends a list predicates to the RoomMemberMutation builder.
+func (m *RoomMemberMutation) Where(ps ...predicate.RoomMember) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the RoomMemberMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *RoomMemberMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.RoomMember, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *RoomMemberMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *RoomMemberMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (RoomMember).
+func (m *RoomMemberMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *RoomMemberMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.created_at != nil {
+		fields = append(fields, roommember.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *RoomMemberMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case roommember.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *RoomMemberMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case roommember.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown RoomMember field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RoomMemberMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case roommember.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown RoomMember field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *RoomMemberMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *RoomMemberMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RoomMemberMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown RoomMember numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *RoomMemberMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *RoomMemberMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *RoomMemberMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown RoomMember nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *RoomMemberMutation) ResetField(name string) error {
+	switch name {
+	case roommember.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown RoomMember field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *RoomMemberMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.room != nil {
+		edges = append(edges, roommember.EdgeRoom)
+	}
+	if m.user != nil {
+		edges = append(edges, roommember.EdgeUser)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *RoomMemberMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case roommember.EdgeRoom:
+		if id := m.room; id != nil {
+			return []ent.Value{*id}
+		}
+	case roommember.EdgeUser:
+		if id := m.user; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *RoomMemberMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *RoomMemberMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *RoomMemberMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedroom {
+		edges = append(edges, roommember.EdgeRoom)
+	}
+	if m.cleareduser {
+		edges = append(edges, roommember.EdgeUser)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *RoomMemberMutation) EdgeCleared(name string) bool {
+	switch name {
+	case roommember.EdgeRoom:
+		return m.clearedroom
+	case roommember.EdgeUser:
+		return m.cleareduser
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *RoomMemberMutation) ClearEdge(name string) error {
+	switch name {
+	case roommember.EdgeRoom:
+		m.ClearRoom()
+		return nil
+	case roommember.EdgeUser:
+		m.ClearUser()
+		return nil
+	}
+	return fmt.Errorf("unknown RoomMember unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *RoomMemberMutation) ResetEdge(name string) error {
+	switch name {
+	case roommember.EdgeRoom:
+		m.ResetRoom()
+		return nil
+	case roommember.EdgeUser:
+		m.ResetUser()
+		return nil
+	}
+	return fmt.Errorf("unknown RoomMember edge %s", name)
+}
+
+// RoomMessageMutation represents an operation that mutates the RoomMessage nodes in the graph.
+type RoomMessageMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *string
+	text          *string
+	created_at    *time.Time
+	clearedFields map[string]struct{}
+	room          *string
+	clearedroom   bool
+	user          *string
+	cleareduser   bool
+	done          bool
+	oldValue      func(context.Context) (*RoomMessage, error)
+	predicates    []predicate.RoomMessage
+}
+
+var _ ent.Mutation = (*RoomMessageMutation)(nil)
+
+// roommessageOption allows management of the mutation configuration using functional options.
+type roommessageOption func(*RoomMessageMutation)
+
+// newRoomMessageMutation creates new mutation for the RoomMessage entity.
+func newRoomMessageMutation(c config, op Op, opts ...roommessageOption) *RoomMessageMutation {
+	m := &RoomMessageMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeRoomMessage,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withRoomMessageID sets the ID field of the mutation.
+func withRoomMessageID(id string) roommessageOption {
+	return func(m *RoomMessageMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *RoomMessage
+		)
+		m.oldValue = func(ctx context.Context) (*RoomMessage, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().RoomMessage.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withRoomMessage sets the old RoomMessage of the mutation.
+func withRoomMessage(node *RoomMessage) roommessageOption {
+	return func(m *RoomMessageMutation) {
+		m.oldValue = func(context.Context) (*RoomMessage, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m RoomMessageMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m RoomMessageMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of RoomMessage entities.
+func (m *RoomMessageMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *RoomMessageMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *RoomMessageMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().RoomMessage.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetText sets the "text" field.
+func (m *RoomMessageMutation) SetText(s string) {
+	m.text = &s
+}
+
+// Text returns the value of the "text" field in the mutation.
+func (m *RoomMessageMutation) Text() (r string, exists bool) {
+	v := m.text
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldText returns the old "text" field's value of the RoomMessage entity.
+// If the RoomMessage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RoomMessageMutation) OldText(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldText is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldText requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldText: %w", err)
+	}
+	return oldValue.Text, nil
+}
+
+// ResetText resets all changes to the "text" field.
+func (m *RoomMessageMutation) ResetText() {
+	m.text = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *RoomMessageMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *RoomMessageMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the RoomMessage entity.
+// If the RoomMessage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RoomMessageMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *RoomMessageMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetRoomID sets the "room" edge to the Room entity by id.
+func (m *RoomMessageMutation) SetRoomID(id string) {
+	m.room = &id
+}
+
+// ClearRoom clears the "room" edge to the Room entity.
+func (m *RoomMessageMutation) ClearRoom() {
+	m.clearedroom = true
+}
+
+// RoomCleared reports if the "room" edge to the Room entity was cleared.
+func (m *RoomMessageMutation) RoomCleared() bool {
+	return m.clearedroom
+}
+
+// RoomID returns the "room" edge ID in the mutation.
+func (m *RoomMessageMutation) RoomID() (id string, exists bool) {
+	if m.room != nil {
+		return *m.room, true
+	}
+	return
+}
+
+// RoomIDs returns the "room" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// RoomID instead. It exists only for internal usage by the builders.
+func (m *RoomMessageMutation) RoomIDs() (ids []string) {
+	if id := m.room; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetRoom resets all changes to the "room" edge.
+func (m *RoomMessageMutation) ResetRoom() {
+	m.room = nil
+	m.clearedroom = false
+}
+
+// SetUserID sets the "user" edge to the User entity by id.
+func (m *RoomMessageMutation) SetUserID(id string) {
+	m.user = &id
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (m *RoomMessageMutation) ClearUser() {
+	m.cleareduser = true
+}
+
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *RoomMessageMutation) UserCleared() bool {
+	return m.cleareduser
+}
+
+// UserID returns the "user" edge ID in the mutation.
+func (m *RoomMessageMutation) UserID() (id string, exists bool) {
+	if m.user != nil {
+		return *m.user, true
+	}
+	return
+}
+
+// UserIDs returns the "user" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// UserID instead. It exists only for internal usage by the builders.
+func (m *RoomMessageMutation) UserIDs() (ids []string) {
+	if id := m.user; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetUser resets all changes to the "user" edge.
+func (m *RoomMessageMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
+}
+
+// Where appends a list predicates to the RoomMessageMutation builder.
+func (m *RoomMessageMutation) Where(ps ...predicate.RoomMessage) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the RoomMessageMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *RoomMessageMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.RoomMessage, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *RoomMessageMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *RoomMessageMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (RoomMessage).
+func (m *RoomMessageMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *RoomMessageMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.text != nil {
+		fields = append(fields, roommessage.FieldText)
+	}
+	if m.created_at != nil {
+		fields = append(fields, roommessage.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *RoomMessageMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case roommessage.FieldText:
+		return m.Text()
+	case roommessage.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *RoomMessageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case roommessage.FieldText:
+		return m.OldText(ctx)
+	case roommessage.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown RoomMessage field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RoomMessageMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case roommessage.FieldText:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetText(v)
+		return nil
+	case roommessage.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown RoomMessage field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *RoomMessageMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *RoomMessageMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RoomMessageMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown RoomMessage numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *RoomMessageMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *RoomMessageMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *RoomMessageMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown RoomMessage nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *RoomMessageMutation) ResetField(name string) error {
+	switch name {
+	case roommessage.FieldText:
+		m.ResetText()
+		return nil
+	case roommessage.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown RoomMessage field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *RoomMessageMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.room != nil {
+		edges = append(edges, roommessage.EdgeRoom)
+	}
+	if m.user != nil {
+		edges = append(edges, roommessage.EdgeUser)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *RoomMessageMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case roommessage.EdgeRoom:
+		if id := m.room; id != nil {
+			return []ent.Value{*id}
+		}
+	case roommessage.EdgeUser:
+		if id := m.user; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *RoomMessageMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *RoomMessageMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *RoomMessageMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedroom {
+		edges = append(edges, roommessage.EdgeRoom)
+	}
+	if m.cleareduser {
+		edges = append(edges, roommessage.EdgeUser)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *RoomMessageMutation) EdgeCleared(name string) bool {
+	switch name {
+	case roommessage.EdgeRoom:
+		return m.clearedroom
+	case roommessage.EdgeUser:
+		return m.cleareduser
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *RoomMessageMutation) ClearEdge(name string) error {
+	switch name {
+	case roommessage.EdgeRoom:
+		m.ClearRoom()
+		return nil
+	case roommessage.EdgeUser:
+		m.ClearUser()
+		return nil
+	}
+	return fmt.Errorf("unknown RoomMessage unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *RoomMessageMutation) ResetEdge(name string) error {
+	switch name {
+	case roommessage.EdgeRoom:
+		m.ResetRoom()
+		return nil
+	case roommessage.EdgeUser:
+		m.ResetUser()
+		return nil
+	}
+	return fmt.Errorf("unknown RoomMessage edge %s", name)
 }
 
 // UserMutation represents an operation that mutates the User nodes in the graph.
@@ -3820,12 +3334,12 @@ type UserMutation struct {
 	likes                map[int]struct{}
 	removedlikes         map[int]struct{}
 	clearedlikes         bool
-	chat_rooms           map[int]struct{}
-	removedchat_rooms    map[int]struct{}
-	clearedchat_rooms    bool
-	chat_messages        map[string]struct{}
-	removedchat_messages map[string]struct{}
-	clearedchat_messages bool
+	rooms                map[int]struct{}
+	removedrooms         map[int]struct{}
+	clearedrooms         bool
+	room_messages        map[string]struct{}
+	removedroom_messages map[string]struct{}
+	clearedroom_messages bool
 	done                 bool
 	oldValue             func(context.Context) (*User, error)
 	predicates           []predicate.User
@@ -4313,112 +3827,112 @@ func (m *UserMutation) ResetLikes() {
 	m.removedlikes = nil
 }
 
-// AddChatRoomIDs adds the "chat_rooms" edge to the ChatMember entity by ids.
-func (m *UserMutation) AddChatRoomIDs(ids ...int) {
-	if m.chat_rooms == nil {
-		m.chat_rooms = make(map[int]struct{})
+// AddRoomIDs adds the "rooms" edge to the RoomMember entity by ids.
+func (m *UserMutation) AddRoomIDs(ids ...int) {
+	if m.rooms == nil {
+		m.rooms = make(map[int]struct{})
 	}
 	for i := range ids {
-		m.chat_rooms[ids[i]] = struct{}{}
+		m.rooms[ids[i]] = struct{}{}
 	}
 }
 
-// ClearChatRooms clears the "chat_rooms" edge to the ChatMember entity.
-func (m *UserMutation) ClearChatRooms() {
-	m.clearedchat_rooms = true
+// ClearRooms clears the "rooms" edge to the RoomMember entity.
+func (m *UserMutation) ClearRooms() {
+	m.clearedrooms = true
 }
 
-// ChatRoomsCleared reports if the "chat_rooms" edge to the ChatMember entity was cleared.
-func (m *UserMutation) ChatRoomsCleared() bool {
-	return m.clearedchat_rooms
+// RoomsCleared reports if the "rooms" edge to the RoomMember entity was cleared.
+func (m *UserMutation) RoomsCleared() bool {
+	return m.clearedrooms
 }
 
-// RemoveChatRoomIDs removes the "chat_rooms" edge to the ChatMember entity by IDs.
-func (m *UserMutation) RemoveChatRoomIDs(ids ...int) {
-	if m.removedchat_rooms == nil {
-		m.removedchat_rooms = make(map[int]struct{})
+// RemoveRoomIDs removes the "rooms" edge to the RoomMember entity by IDs.
+func (m *UserMutation) RemoveRoomIDs(ids ...int) {
+	if m.removedrooms == nil {
+		m.removedrooms = make(map[int]struct{})
 	}
 	for i := range ids {
-		delete(m.chat_rooms, ids[i])
-		m.removedchat_rooms[ids[i]] = struct{}{}
+		delete(m.rooms, ids[i])
+		m.removedrooms[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedChatRooms returns the removed IDs of the "chat_rooms" edge to the ChatMember entity.
-func (m *UserMutation) RemovedChatRoomsIDs() (ids []int) {
-	for id := range m.removedchat_rooms {
+// RemovedRooms returns the removed IDs of the "rooms" edge to the RoomMember entity.
+func (m *UserMutation) RemovedRoomsIDs() (ids []int) {
+	for id := range m.removedrooms {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ChatRoomsIDs returns the "chat_rooms" edge IDs in the mutation.
-func (m *UserMutation) ChatRoomsIDs() (ids []int) {
-	for id := range m.chat_rooms {
+// RoomsIDs returns the "rooms" edge IDs in the mutation.
+func (m *UserMutation) RoomsIDs() (ids []int) {
+	for id := range m.rooms {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetChatRooms resets all changes to the "chat_rooms" edge.
-func (m *UserMutation) ResetChatRooms() {
-	m.chat_rooms = nil
-	m.clearedchat_rooms = false
-	m.removedchat_rooms = nil
+// ResetRooms resets all changes to the "rooms" edge.
+func (m *UserMutation) ResetRooms() {
+	m.rooms = nil
+	m.clearedrooms = false
+	m.removedrooms = nil
 }
 
-// AddChatMessageIDs adds the "chat_messages" edge to the ChatMessage entity by ids.
-func (m *UserMutation) AddChatMessageIDs(ids ...string) {
-	if m.chat_messages == nil {
-		m.chat_messages = make(map[string]struct{})
+// AddRoomMessageIDs adds the "room_messages" edge to the RoomMessage entity by ids.
+func (m *UserMutation) AddRoomMessageIDs(ids ...string) {
+	if m.room_messages == nil {
+		m.room_messages = make(map[string]struct{})
 	}
 	for i := range ids {
-		m.chat_messages[ids[i]] = struct{}{}
+		m.room_messages[ids[i]] = struct{}{}
 	}
 }
 
-// ClearChatMessages clears the "chat_messages" edge to the ChatMessage entity.
-func (m *UserMutation) ClearChatMessages() {
-	m.clearedchat_messages = true
+// ClearRoomMessages clears the "room_messages" edge to the RoomMessage entity.
+func (m *UserMutation) ClearRoomMessages() {
+	m.clearedroom_messages = true
 }
 
-// ChatMessagesCleared reports if the "chat_messages" edge to the ChatMessage entity was cleared.
-func (m *UserMutation) ChatMessagesCleared() bool {
-	return m.clearedchat_messages
+// RoomMessagesCleared reports if the "room_messages" edge to the RoomMessage entity was cleared.
+func (m *UserMutation) RoomMessagesCleared() bool {
+	return m.clearedroom_messages
 }
 
-// RemoveChatMessageIDs removes the "chat_messages" edge to the ChatMessage entity by IDs.
-func (m *UserMutation) RemoveChatMessageIDs(ids ...string) {
-	if m.removedchat_messages == nil {
-		m.removedchat_messages = make(map[string]struct{})
+// RemoveRoomMessageIDs removes the "room_messages" edge to the RoomMessage entity by IDs.
+func (m *UserMutation) RemoveRoomMessageIDs(ids ...string) {
+	if m.removedroom_messages == nil {
+		m.removedroom_messages = make(map[string]struct{})
 	}
 	for i := range ids {
-		delete(m.chat_messages, ids[i])
-		m.removedchat_messages[ids[i]] = struct{}{}
+		delete(m.room_messages, ids[i])
+		m.removedroom_messages[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedChatMessages returns the removed IDs of the "chat_messages" edge to the ChatMessage entity.
-func (m *UserMutation) RemovedChatMessagesIDs() (ids []string) {
-	for id := range m.removedchat_messages {
+// RemovedRoomMessages returns the removed IDs of the "room_messages" edge to the RoomMessage entity.
+func (m *UserMutation) RemovedRoomMessagesIDs() (ids []string) {
+	for id := range m.removedroom_messages {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ChatMessagesIDs returns the "chat_messages" edge IDs in the mutation.
-func (m *UserMutation) ChatMessagesIDs() (ids []string) {
-	for id := range m.chat_messages {
+// RoomMessagesIDs returns the "room_messages" edge IDs in the mutation.
+func (m *UserMutation) RoomMessagesIDs() (ids []string) {
+	for id := range m.room_messages {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetChatMessages resets all changes to the "chat_messages" edge.
-func (m *UserMutation) ResetChatMessages() {
-	m.chat_messages = nil
-	m.clearedchat_messages = false
-	m.removedchat_messages = nil
+// ResetRoomMessages resets all changes to the "room_messages" edge.
+func (m *UserMutation) ResetRoomMessages() {
+	m.room_messages = nil
+	m.clearedroom_messages = false
+	m.removedroom_messages = nil
 }
 
 // Where appends a list predicates to the UserMutation builder.
@@ -4649,11 +4163,11 @@ func (m *UserMutation) AddedEdges() []string {
 	if m.likes != nil {
 		edges = append(edges, user.EdgeLikes)
 	}
-	if m.chat_rooms != nil {
-		edges = append(edges, user.EdgeChatRooms)
+	if m.rooms != nil {
+		edges = append(edges, user.EdgeRooms)
 	}
-	if m.chat_messages != nil {
-		edges = append(edges, user.EdgeChatMessages)
+	if m.room_messages != nil {
+		edges = append(edges, user.EdgeRoomMessages)
 	}
 	return edges
 }
@@ -4680,15 +4194,15 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeChatRooms:
-		ids := make([]ent.Value, 0, len(m.chat_rooms))
-		for id := range m.chat_rooms {
+	case user.EdgeRooms:
+		ids := make([]ent.Value, 0, len(m.rooms))
+		for id := range m.rooms {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeChatMessages:
-		ids := make([]ent.Value, 0, len(m.chat_messages))
-		for id := range m.chat_messages {
+	case user.EdgeRoomMessages:
+		ids := make([]ent.Value, 0, len(m.room_messages))
+		for id := range m.room_messages {
 			ids = append(ids, id)
 		}
 		return ids
@@ -4708,11 +4222,11 @@ func (m *UserMutation) RemovedEdges() []string {
 	if m.removedlikes != nil {
 		edges = append(edges, user.EdgeLikes)
 	}
-	if m.removedchat_rooms != nil {
-		edges = append(edges, user.EdgeChatRooms)
+	if m.removedrooms != nil {
+		edges = append(edges, user.EdgeRooms)
 	}
-	if m.removedchat_messages != nil {
-		edges = append(edges, user.EdgeChatMessages)
+	if m.removedroom_messages != nil {
+		edges = append(edges, user.EdgeRoomMessages)
 	}
 	return edges
 }
@@ -4739,15 +4253,15 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeChatRooms:
-		ids := make([]ent.Value, 0, len(m.removedchat_rooms))
-		for id := range m.removedchat_rooms {
+	case user.EdgeRooms:
+		ids := make([]ent.Value, 0, len(m.removedrooms))
+		for id := range m.removedrooms {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeChatMessages:
-		ids := make([]ent.Value, 0, len(m.removedchat_messages))
-		for id := range m.removedchat_messages {
+	case user.EdgeRoomMessages:
+		ids := make([]ent.Value, 0, len(m.removedroom_messages))
+		for id := range m.removedroom_messages {
 			ids = append(ids, id)
 		}
 		return ids
@@ -4767,11 +4281,11 @@ func (m *UserMutation) ClearedEdges() []string {
 	if m.clearedlikes {
 		edges = append(edges, user.EdgeLikes)
 	}
-	if m.clearedchat_rooms {
-		edges = append(edges, user.EdgeChatRooms)
+	if m.clearedrooms {
+		edges = append(edges, user.EdgeRooms)
 	}
-	if m.clearedchat_messages {
-		edges = append(edges, user.EdgeChatMessages)
+	if m.clearedroom_messages {
+		edges = append(edges, user.EdgeRoomMessages)
 	}
 	return edges
 }
@@ -4786,10 +4300,10 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedcomments
 	case user.EdgeLikes:
 		return m.clearedlikes
-	case user.EdgeChatRooms:
-		return m.clearedchat_rooms
-	case user.EdgeChatMessages:
-		return m.clearedchat_messages
+	case user.EdgeRooms:
+		return m.clearedrooms
+	case user.EdgeRoomMessages:
+		return m.clearedroom_messages
 	}
 	return false
 }
@@ -4815,11 +4329,11 @@ func (m *UserMutation) ResetEdge(name string) error {
 	case user.EdgeLikes:
 		m.ResetLikes()
 		return nil
-	case user.EdgeChatRooms:
-		m.ResetChatRooms()
+	case user.EdgeRooms:
+		m.ResetRooms()
 		return nil
-	case user.EdgeChatMessages:
-		m.ResetChatMessages()
+	case user.EdgeRoomMessages:
+		m.ResetRoomMessages()
 		return nil
 	}
 	return fmt.Errorf("unknown User edge %s", name)

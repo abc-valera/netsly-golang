@@ -65,11 +65,6 @@ func IDContainsFold(id string) predicate.Joke {
 	return predicate.Joke(sql.FieldContainsFold(FieldID, id))
 }
 
-// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldEQ(FieldUserID, v))
-}
-
 // Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
 func Title(v string) predicate.Joke {
 	return predicate.Joke(sql.FieldEQ(FieldTitle, v))
@@ -88,71 +83,6 @@ func Explanation(v string) predicate.Joke {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Joke {
 	return predicate.Joke(sql.FieldEQ(FieldCreatedAt, v))
-}
-
-// UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldEQ(FieldUserID, v))
-}
-
-// UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldNEQ(FieldUserID, v))
-}
-
-// UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...string) predicate.Joke {
-	return predicate.Joke(sql.FieldIn(FieldUserID, vs...))
-}
-
-// UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...string) predicate.Joke {
-	return predicate.Joke(sql.FieldNotIn(FieldUserID, vs...))
-}
-
-// UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldGT(FieldUserID, v))
-}
-
-// UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldGTE(FieldUserID, v))
-}
-
-// UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldLT(FieldUserID, v))
-}
-
-// UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldLTE(FieldUserID, v))
-}
-
-// UserIDContains applies the Contains predicate on the "user_id" field.
-func UserIDContains(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldContains(FieldUserID, v))
-}
-
-// UserIDHasPrefix applies the HasPrefix predicate on the "user_id" field.
-func UserIDHasPrefix(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldHasPrefix(FieldUserID, v))
-}
-
-// UserIDHasSuffix applies the HasSuffix predicate on the "user_id" field.
-func UserIDHasSuffix(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldHasSuffix(FieldUserID, v))
-}
-
-// UserIDEqualFold applies the EqualFold predicate on the "user_id" field.
-func UserIDEqualFold(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldEqualFold(FieldUserID, v))
-}
-
-// UserIDContainsFold applies the ContainsFold predicate on the "user_id" field.
-func UserIDContainsFold(v string) predicate.Joke {
-	return predicate.Joke(sql.FieldContainsFold(FieldUserID, v))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.
@@ -390,21 +320,21 @@ func CreatedAtLTE(v time.Time) predicate.Joke {
 	return predicate.Joke(sql.FieldLTE(FieldCreatedAt, v))
 }
 
-// HasOwner applies the HasEdge predicate on the "owner" edge.
-func HasOwner() predicate.Joke {
+// HasUser applies the HasEdge predicate on the "user" edge.
+func HasUser() predicate.Joke {
 	return predicate.Joke(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasOwnerWith applies the HasEdge predicate on the "owner" edge with a given conditions (other predicates).
-func HasOwnerWith(preds ...predicate.User) predicate.Joke {
+// HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
+func HasUserWith(preds ...predicate.User) predicate.Joke {
 	return predicate.Joke(func(s *sql.Selector) {
-		step := newOwnerStep()
+		step := newUserStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

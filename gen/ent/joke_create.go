@@ -23,12 +23,6 @@ type JokeCreate struct {
 	hooks    []Hook
 }
 
-// SetUserID sets the "user_id" field.
-func (jc *JokeCreate) SetUserID(s string) *JokeCreate {
-	jc.mutation.SetUserID(s)
-	return jc
-}
-
 // SetTitle sets the "title" field.
 func (jc *JokeCreate) SetTitle(s string) *JokeCreate {
 	jc.mutation.SetTitle(s)
@@ -59,23 +53,23 @@ func (jc *JokeCreate) SetID(s string) *JokeCreate {
 	return jc
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by ID.
-func (jc *JokeCreate) SetOwnerID(id string) *JokeCreate {
-	jc.mutation.SetOwnerID(id)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (jc *JokeCreate) SetUserID(id string) *JokeCreate {
+	jc.mutation.SetUserID(id)
 	return jc
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (jc *JokeCreate) SetNillableOwnerID(id *string) *JokeCreate {
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (jc *JokeCreate) SetNillableUserID(id *string) *JokeCreate {
 	if id != nil {
-		jc = jc.SetOwnerID(*id)
+		jc = jc.SetUserID(*id)
 	}
 	return jc
 }
 
-// SetOwner sets the "owner" edge to the User entity.
-func (jc *JokeCreate) SetOwner(u *User) *JokeCreate {
-	return jc.SetOwnerID(u.ID)
+// SetUser sets the "user" edge to the User entity.
+func (jc *JokeCreate) SetUser(u *User) *JokeCreate {
+	return jc.SetUserID(u.ID)
 }
 
 // AddCommentIDs adds the "comments" edge to the Comment entity by IDs.
@@ -142,14 +136,6 @@ func (jc *JokeCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (jc *JokeCreate) check() error {
-	if _, ok := jc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Joke.user_id"`)}
-	}
-	if v, ok := jc.mutation.UserID(); ok {
-		if err := joke.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "Joke.user_id": %w`, err)}
-		}
-	}
 	if _, ok := jc.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Joke.title"`)}
 	}
@@ -212,10 +198,6 @@ func (jc *JokeCreate) createSpec() (*Joke, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := jc.mutation.UserID(); ok {
-		_spec.SetField(joke.FieldUserID, field.TypeString, value)
-		_node.UserID = value
-	}
 	if value, ok := jc.mutation.Title(); ok {
 		_spec.SetField(joke.FieldTitle, field.TypeString, value)
 		_node.Title = value
@@ -232,12 +214,12 @@ func (jc *JokeCreate) createSpec() (*Joke, *sqlgraph.CreateSpec) {
 		_spec.SetField(joke.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := jc.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := jc.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   joke.OwnerTable,
-			Columns: []string{joke.OwnerColumn},
+			Table:   joke.UserTable,
+			Columns: []string{joke.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),

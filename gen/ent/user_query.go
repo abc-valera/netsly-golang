@@ -11,12 +11,12 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmember"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmessage"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/comment"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/predicate"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/roommember"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/roommessage"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 )
 
@@ -30,8 +30,8 @@ type UserQuery struct {
 	withJokes        *JokeQuery
 	withComments     *CommentQuery
 	withLikes        *LikeQuery
-	withChatRooms    *ChatMemberQuery
-	withChatMessages *ChatMessageQuery
+	withRooms        *RoomMemberQuery
+	withRoomMessages *RoomMessageQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -134,9 +134,9 @@ func (uq *UserQuery) QueryLikes() *LikeQuery {
 	return query
 }
 
-// QueryChatRooms chains the current query on the "chat_rooms" edge.
-func (uq *UserQuery) QueryChatRooms() *ChatMemberQuery {
-	query := (&ChatMemberClient{config: uq.config}).Query()
+// QueryRooms chains the current query on the "rooms" edge.
+func (uq *UserQuery) QueryRooms() *RoomMemberQuery {
+	query := (&RoomMemberClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -147,8 +147,8 @@ func (uq *UserQuery) QueryChatRooms() *ChatMemberQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(chatmember.Table, chatmember.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.ChatRoomsTable, user.ChatRoomsColumn),
+			sqlgraph.To(roommember.Table, roommember.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.RoomsTable, user.RoomsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -156,9 +156,9 @@ func (uq *UserQuery) QueryChatRooms() *ChatMemberQuery {
 	return query
 }
 
-// QueryChatMessages chains the current query on the "chat_messages" edge.
-func (uq *UserQuery) QueryChatMessages() *ChatMessageQuery {
-	query := (&ChatMessageClient{config: uq.config}).Query()
+// QueryRoomMessages chains the current query on the "room_messages" edge.
+func (uq *UserQuery) QueryRoomMessages() *RoomMessageQuery {
+	query := (&RoomMessageClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -169,8 +169,8 @@ func (uq *UserQuery) QueryChatMessages() *ChatMessageQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(chatmessage.Table, chatmessage.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.ChatMessagesTable, user.ChatMessagesColumn),
+			sqlgraph.To(roommessage.Table, roommessage.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.RoomMessagesTable, user.RoomMessagesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -373,8 +373,8 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withJokes:        uq.withJokes.Clone(),
 		withComments:     uq.withComments.Clone(),
 		withLikes:        uq.withLikes.Clone(),
-		withChatRooms:    uq.withChatRooms.Clone(),
-		withChatMessages: uq.withChatMessages.Clone(),
+		withRooms:        uq.withRooms.Clone(),
+		withRoomMessages: uq.withRoomMessages.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
@@ -414,25 +414,25 @@ func (uq *UserQuery) WithLikes(opts ...func(*LikeQuery)) *UserQuery {
 	return uq
 }
 
-// WithChatRooms tells the query-builder to eager-load the nodes that are connected to
-// the "chat_rooms" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithChatRooms(opts ...func(*ChatMemberQuery)) *UserQuery {
-	query := (&ChatMemberClient{config: uq.config}).Query()
+// WithRooms tells the query-builder to eager-load the nodes that are connected to
+// the "rooms" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithRooms(opts ...func(*RoomMemberQuery)) *UserQuery {
+	query := (&RoomMemberClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withChatRooms = query
+	uq.withRooms = query
 	return uq
 }
 
-// WithChatMessages tells the query-builder to eager-load the nodes that are connected to
-// the "chat_messages" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithChatMessages(opts ...func(*ChatMessageQuery)) *UserQuery {
-	query := (&ChatMessageClient{config: uq.config}).Query()
+// WithRoomMessages tells the query-builder to eager-load the nodes that are connected to
+// the "room_messages" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithRoomMessages(opts ...func(*RoomMessageQuery)) *UserQuery {
+	query := (&RoomMessageClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withChatMessages = query
+	uq.withRoomMessages = query
 	return uq
 }
 
@@ -518,8 +518,8 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			uq.withJokes != nil,
 			uq.withComments != nil,
 			uq.withLikes != nil,
-			uq.withChatRooms != nil,
-			uq.withChatMessages != nil,
+			uq.withRooms != nil,
+			uq.withRoomMessages != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -561,17 +561,17 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
-	if query := uq.withChatRooms; query != nil {
-		if err := uq.loadChatRooms(ctx, query, nodes,
-			func(n *User) { n.Edges.ChatRooms = []*ChatMember{} },
-			func(n *User, e *ChatMember) { n.Edges.ChatRooms = append(n.Edges.ChatRooms, e) }); err != nil {
+	if query := uq.withRooms; query != nil {
+		if err := uq.loadRooms(ctx, query, nodes,
+			func(n *User) { n.Edges.Rooms = []*RoomMember{} },
+			func(n *User, e *RoomMember) { n.Edges.Rooms = append(n.Edges.Rooms, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := uq.withChatMessages; query != nil {
-		if err := uq.loadChatMessages(ctx, query, nodes,
-			func(n *User) { n.Edges.ChatMessages = []*ChatMessage{} },
-			func(n *User, e *ChatMessage) { n.Edges.ChatMessages = append(n.Edges.ChatMessages, e) }); err != nil {
+	if query := uq.withRoomMessages; query != nil {
+		if err := uq.loadRoomMessages(ctx, query, nodes,
+			func(n *User) { n.Edges.RoomMessages = []*RoomMessage{} },
+			func(n *User, e *RoomMessage) { n.Edges.RoomMessages = append(n.Edges.RoomMessages, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -671,7 +671,7 @@ func (uq *UserQuery) loadLikes(ctx context.Context, query *LikeQuery, nodes []*U
 	}
 	return nil
 }
-func (uq *UserQuery) loadChatRooms(ctx context.Context, query *ChatMemberQuery, nodes []*User, init func(*User), assign func(*User, *ChatMember)) error {
+func (uq *UserQuery) loadRooms(ctx context.Context, query *RoomMemberQuery, nodes []*User, init func(*User), assign func(*User, *RoomMember)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[string]*User)
 	for i := range nodes {
@@ -682,27 +682,27 @@ func (uq *UserQuery) loadChatRooms(ctx context.Context, query *ChatMemberQuery, 
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.ChatMember(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.ChatRoomsColumn), fks...))
+	query.Where(predicate.RoomMember(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.RoomsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_chat_rooms
+		fk := n.user_rooms
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_chat_rooms" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "user_rooms" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_chat_rooms" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_rooms" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
 	return nil
 }
-func (uq *UserQuery) loadChatMessages(ctx context.Context, query *ChatMessageQuery, nodes []*User, init func(*User), assign func(*User, *ChatMessage)) error {
+func (uq *UserQuery) loadRoomMessages(ctx context.Context, query *RoomMessageQuery, nodes []*User, init func(*User), assign func(*User, *RoomMessage)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[string]*User)
 	for i := range nodes {
@@ -713,21 +713,21 @@ func (uq *UserQuery) loadChatMessages(ctx context.Context, query *ChatMessageQue
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.ChatMessage(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.ChatMessagesColumn), fks...))
+	query.Where(predicate.RoomMessage(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.RoomMessagesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_chat_messages
+		fk := n.user_room_messages
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_chat_messages" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "user_room_messages" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_chat_messages" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_room_messages" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

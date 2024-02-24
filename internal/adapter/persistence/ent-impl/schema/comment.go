@@ -18,12 +18,6 @@ func (Comment) Fields() []ent.Field {
 			NotEmpty().
 			Unique().
 			Immutable(),
-		field.String("user_id").
-			NotEmpty().
-			Immutable(),
-		field.String("joke_id").
-			NotEmpty().
-			Immutable(),
 		field.String("text").
 			NotEmpty(),
 		field.Time("created_at").
@@ -34,10 +28,10 @@ func (Comment) Fields() []ent.Field {
 // Edges of the Comment.
 func (Comment) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("owner", User.Type).
+		edge.From("user", User.Type).
 			Ref("comments").
 			Unique(),
-		edge.From("commented_joke", Joke.Type).
+		edge.From("joke", Joke.Type).
 			Ref("comments").
 			Unique(),
 	}

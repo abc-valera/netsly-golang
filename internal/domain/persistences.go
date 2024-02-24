@@ -10,9 +10,9 @@ type Commands struct {
 	Joke        command.IJoke
 	Like        command.ILike
 	Comment     command.IComment
-	ChatRoom    command.IChatRoom
-	ChatMember  command.IChatMember
-	ChatMessage command.IChatMessage
+	Room        command.IRoom
+	RoomMember  command.IRoomMember
+	RoomMessage command.IRoomMessage
 }
 
 func NewCommands(
@@ -20,18 +20,18 @@ func NewCommands(
 	joke command.IJoke,
 	like command.ILike,
 	comment command.IComment,
-	chatRoom command.IChatRoom,
-	chatMember command.IChatMember,
-	chatMessage command.IChatMessage,
+	room command.IRoom,
+	roomMember command.IRoomMember,
+	roomMessage command.IRoomMessage,
 ) Commands {
 	return Commands{
 		User:        user,
 		Joke:        joke,
 		Like:        like,
 		Comment:     comment,
-		ChatRoom:    chatRoom,
-		ChatMember:  chatMember,
-		ChatMessage: chatMessage,
+		Room:        room,
+		RoomMember:  roomMember,
+		RoomMessage: roomMessage,
 	}
 }
 
@@ -40,9 +40,9 @@ type Queries struct {
 	Joke        query.IJoke
 	Like        query.ILike
 	Comment     query.IComment
-	ChatRoom    query.IChatRoom
-	ChatMember  query.IChatMember
-	ChatMessage query.IChatMessage
+	Room        query.IRoom
+	RoomMember  query.IRoomMember
+	RoomMessage query.IRoomMessage
 }
 
 func NewQueries(
@@ -50,17 +50,17 @@ func NewQueries(
 	joke query.IJoke,
 	like query.ILike,
 	comment query.IComment,
-	chatRoom query.IChatRoom,
-	chatMember query.IChatMember,
-	chatMessage query.IChatMessage,
+	room query.IRoom,
+	roomMember query.IRoomMember,
+	roomMessage query.IRoomMessage,
 ) Queries {
 	return Queries{
 		User:        user,
 		Joke:        joke,
 		Like:        like,
 		Comment:     comment,
-		ChatRoom:    chatRoom,
-		ChatMember:  chatMember,
-		ChatMessage: chatMessage,
+		Room:        room,
+		RoomMember:  roomMember,
+		RoomMessage: roomMessage,
 	}
 }

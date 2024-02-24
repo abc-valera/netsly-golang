@@ -8,90 +8,9 @@ import (
 )
 
 var (
-	// ChatMembersColumns holds the columns for the "chat_members" table.
-	ChatMembersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "chat_room_id", Type: field.TypeString},
-		{Name: "user_id", Type: field.TypeString},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "chat_room_members", Type: field.TypeString},
-		{Name: "user_chat_rooms", Type: field.TypeString},
-	}
-	// ChatMembersTable holds the schema information for the "chat_members" table.
-	ChatMembersTable = &schema.Table{
-		Name:       "chat_members",
-		Columns:    ChatMembersColumns,
-		PrimaryKey: []*schema.Column{ChatMembersColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "chat_members_chat_rooms_members",
-				Columns:    []*schema.Column{ChatMembersColumns[4]},
-				RefColumns: []*schema.Column{ChatRoomsColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-			{
-				Symbol:     "chat_members_users_chat_rooms",
-				Columns:    []*schema.Column{ChatMembersColumns[5]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "chatmember_chat_room_id_user_id",
-				Unique:  true,
-				Columns: []*schema.Column{ChatMembersColumns[1], ChatMembersColumns[2]},
-			},
-		},
-	}
-	// ChatMessagesColumns holds the columns for the "chat_messages" table.
-	ChatMessagesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, Unique: true},
-		{Name: "chat_room_id", Type: field.TypeString},
-		{Name: "user_id", Type: field.TypeString},
-		{Name: "text", Type: field.TypeString},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "chat_room_messages", Type: field.TypeString},
-		{Name: "user_chat_messages", Type: field.TypeString},
-	}
-	// ChatMessagesTable holds the schema information for the "chat_messages" table.
-	ChatMessagesTable = &schema.Table{
-		Name:       "chat_messages",
-		Columns:    ChatMessagesColumns,
-		PrimaryKey: []*schema.Column{ChatMessagesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "chat_messages_chat_rooms_messages",
-				Columns:    []*schema.Column{ChatMessagesColumns[5]},
-				RefColumns: []*schema.Column{ChatRoomsColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-			{
-				Symbol:     "chat_messages_users_chat_messages",
-				Columns:    []*schema.Column{ChatMessagesColumns[6]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
-	// ChatRoomsColumns holds the columns for the "chat_rooms" table.
-	ChatRoomsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, Unique: true},
-		{Name: "name", Type: field.TypeString, Unique: true},
-		{Name: "description", Type: field.TypeString},
-		{Name: "created_at", Type: field.TypeTime},
-	}
-	// ChatRoomsTable holds the schema information for the "chat_rooms" table.
-	ChatRoomsTable = &schema.Table{
-		Name:       "chat_rooms",
-		Columns:    ChatRoomsColumns,
-		PrimaryKey: []*schema.Column{ChatRoomsColumns[0]},
-	}
 	// CommentsColumns holds the columns for the "comments" table.
 	CommentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
-		{Name: "user_id", Type: field.TypeString},
-		{Name: "joke_id", Type: field.TypeString},
 		{Name: "text", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "joke_comments", Type: field.TypeString, Nullable: true},
@@ -105,13 +24,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "comments_jokes_comments",
-				Columns:    []*schema.Column{CommentsColumns[5]},
+				Columns:    []*schema.Column{CommentsColumns[3]},
 				RefColumns: []*schema.Column{JokesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "comments_users_comments",
-				Columns:    []*schema.Column{CommentsColumns[6]},
+				Columns:    []*schema.Column{CommentsColumns[4]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -120,7 +39,6 @@ var (
 	// JokesColumns holds the columns for the "jokes" table.
 	JokesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
-		{Name: "user_id", Type: field.TypeString},
 		{Name: "title", Type: field.TypeString},
 		{Name: "text", Type: field.TypeString},
 		{Name: "explanation", Type: field.TypeString},
@@ -135,24 +53,22 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "jokes_users_jokes",
-				Columns:    []*schema.Column{JokesColumns[6]},
+				Columns:    []*schema.Column{JokesColumns[5]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "joke_user_id_title",
+				Name:    "joke_title_user_jokes",
 				Unique:  true,
-				Columns: []*schema.Column{JokesColumns[1], JokesColumns[2]},
+				Columns: []*schema.Column{JokesColumns[1], JokesColumns[5]},
 			},
 		},
 	}
 	// LikesColumns holds the columns for the "likes" table.
 	LikesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "user_id", Type: field.TypeString},
-		{Name: "joke_id", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "joke_likes", Type: field.TypeString, Nullable: true},
 		{Name: "user_likes", Type: field.TypeString, Nullable: true},
@@ -165,22 +81,97 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "likes_jokes_likes",
-				Columns:    []*schema.Column{LikesColumns[4]},
+				Columns:    []*schema.Column{LikesColumns[2]},
 				RefColumns: []*schema.Column{JokesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "likes_users_likes",
-				Columns:    []*schema.Column{LikesColumns[5]},
+				Columns:    []*schema.Column{LikesColumns[3]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "like_user_id_joke_id",
+				Name:    "like_user_likes_joke_likes",
 				Unique:  true,
-				Columns: []*schema.Column{LikesColumns[1], LikesColumns[2]},
+				Columns: []*schema.Column{LikesColumns[3], LikesColumns[2]},
+			},
+		},
+	}
+	// RoomsColumns holds the columns for the "rooms" table.
+	RoomsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "description", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// RoomsTable holds the schema information for the "rooms" table.
+	RoomsTable = &schema.Table{
+		Name:       "rooms",
+		Columns:    RoomsColumns,
+		PrimaryKey: []*schema.Column{RoomsColumns[0]},
+	}
+	// RoomMembersColumns holds the columns for the "room_members" table.
+	RoomMembersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "room_members", Type: field.TypeString},
+		{Name: "user_rooms", Type: field.TypeString},
+	}
+	// RoomMembersTable holds the schema information for the "room_members" table.
+	RoomMembersTable = &schema.Table{
+		Name:       "room_members",
+		Columns:    RoomMembersColumns,
+		PrimaryKey: []*schema.Column{RoomMembersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "room_members_rooms_members",
+				Columns:    []*schema.Column{RoomMembersColumns[2]},
+				RefColumns: []*schema.Column{RoomsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "room_members_users_rooms",
+				Columns:    []*schema.Column{RoomMembersColumns[3]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "roommember_room_members_user_rooms",
+				Unique:  true,
+				Columns: []*schema.Column{RoomMembersColumns[2], RoomMembersColumns[3]},
+			},
+		},
+	}
+	// RoomMessagesColumns holds the columns for the "room_messages" table.
+	RoomMessagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "text", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "room_messages", Type: field.TypeString},
+		{Name: "user_room_messages", Type: field.TypeString},
+	}
+	// RoomMessagesTable holds the schema information for the "room_messages" table.
+	RoomMessagesTable = &schema.Table{
+		Name:       "room_messages",
+		Columns:    RoomMessagesColumns,
+		PrimaryKey: []*schema.Column{RoomMessagesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "room_messages_rooms_messages",
+				Columns:    []*schema.Column{RoomMessagesColumns[3]},
+				RefColumns: []*schema.Column{RoomsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "room_messages_users_room_messages",
+				Columns:    []*schema.Column{RoomMessagesColumns[4]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -202,24 +193,24 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ChatMembersTable,
-		ChatMessagesTable,
-		ChatRoomsTable,
 		CommentsTable,
 		JokesTable,
 		LikesTable,
+		RoomsTable,
+		RoomMembersTable,
+		RoomMessagesTable,
 		UsersTable,
 	}
 )
 
 func init() {
-	ChatMembersTable.ForeignKeys[0].RefTable = ChatRoomsTable
-	ChatMembersTable.ForeignKeys[1].RefTable = UsersTable
-	ChatMessagesTable.ForeignKeys[0].RefTable = ChatRoomsTable
-	ChatMessagesTable.ForeignKeys[1].RefTable = UsersTable
 	CommentsTable.ForeignKeys[0].RefTable = JokesTable
 	CommentsTable.ForeignKeys[1].RefTable = UsersTable
 	JokesTable.ForeignKeys[0].RefTable = UsersTable
 	LikesTable.ForeignKeys[0].RefTable = JokesTable
 	LikesTable.ForeignKeys[1].RefTable = UsersTable
+	RoomMembersTable.ForeignKeys[0].RefTable = RoomsTable
+	RoomMembersTable.ForeignKeys[1].RefTable = UsersTable
+	RoomMessagesTable.ForeignKeys[0].RefTable = RoomsTable
+	RoomMessagesTable.ForeignKeys[1].RefTable = UsersTable
 }

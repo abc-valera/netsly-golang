@@ -43,42 +43,42 @@ func (cu *CommentUpdate) SetNillableText(s *string) *CommentUpdate {
 	return cu
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by ID.
-func (cu *CommentUpdate) SetOwnerID(id string) *CommentUpdate {
-	cu.mutation.SetOwnerID(id)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (cu *CommentUpdate) SetUserID(id string) *CommentUpdate {
+	cu.mutation.SetUserID(id)
 	return cu
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (cu *CommentUpdate) SetNillableOwnerID(id *string) *CommentUpdate {
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (cu *CommentUpdate) SetNillableUserID(id *string) *CommentUpdate {
 	if id != nil {
-		cu = cu.SetOwnerID(*id)
+		cu = cu.SetUserID(*id)
 	}
 	return cu
 }
 
-// SetOwner sets the "owner" edge to the User entity.
-func (cu *CommentUpdate) SetOwner(u *User) *CommentUpdate {
-	return cu.SetOwnerID(u.ID)
+// SetUser sets the "user" edge to the User entity.
+func (cu *CommentUpdate) SetUser(u *User) *CommentUpdate {
+	return cu.SetUserID(u.ID)
 }
 
-// SetCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID.
-func (cu *CommentUpdate) SetCommentedJokeID(id string) *CommentUpdate {
-	cu.mutation.SetCommentedJokeID(id)
+// SetJokeID sets the "joke" edge to the Joke entity by ID.
+func (cu *CommentUpdate) SetJokeID(id string) *CommentUpdate {
+	cu.mutation.SetJokeID(id)
 	return cu
 }
 
-// SetNillableCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID if the given value is not nil.
-func (cu *CommentUpdate) SetNillableCommentedJokeID(id *string) *CommentUpdate {
+// SetNillableJokeID sets the "joke" edge to the Joke entity by ID if the given value is not nil.
+func (cu *CommentUpdate) SetNillableJokeID(id *string) *CommentUpdate {
 	if id != nil {
-		cu = cu.SetCommentedJokeID(*id)
+		cu = cu.SetJokeID(*id)
 	}
 	return cu
 }
 
-// SetCommentedJoke sets the "commented_joke" edge to the Joke entity.
-func (cu *CommentUpdate) SetCommentedJoke(j *Joke) *CommentUpdate {
-	return cu.SetCommentedJokeID(j.ID)
+// SetJoke sets the "joke" edge to the Joke entity.
+func (cu *CommentUpdate) SetJoke(j *Joke) *CommentUpdate {
+	return cu.SetJokeID(j.ID)
 }
 
 // Mutation returns the CommentMutation object of the builder.
@@ -86,15 +86,15 @@ func (cu *CommentUpdate) Mutation() *CommentMutation {
 	return cu.mutation
 }
 
-// ClearOwner clears the "owner" edge to the User entity.
-func (cu *CommentUpdate) ClearOwner() *CommentUpdate {
-	cu.mutation.ClearOwner()
+// ClearUser clears the "user" edge to the User entity.
+func (cu *CommentUpdate) ClearUser() *CommentUpdate {
+	cu.mutation.ClearUser()
 	return cu
 }
 
-// ClearCommentedJoke clears the "commented_joke" edge to the Joke entity.
-func (cu *CommentUpdate) ClearCommentedJoke() *CommentUpdate {
-	cu.mutation.ClearCommentedJoke()
+// ClearJoke clears the "joke" edge to the Joke entity.
+func (cu *CommentUpdate) ClearJoke() *CommentUpdate {
+	cu.mutation.ClearJoke()
 	return cu
 }
 
@@ -150,12 +150,12 @@ func (cu *CommentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.Text(); ok {
 		_spec.SetField(comment.FieldText, field.TypeString, value)
 	}
-	if cu.mutation.OwnerCleared() {
+	if cu.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   comment.OwnerTable,
-			Columns: []string{comment.OwnerColumn},
+			Table:   comment.UserTable,
+			Columns: []string{comment.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -163,12 +163,12 @@ func (cu *CommentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := cu.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   comment.OwnerTable,
-			Columns: []string{comment.OwnerColumn},
+			Table:   comment.UserTable,
+			Columns: []string{comment.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -179,12 +179,12 @@ func (cu *CommentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if cu.mutation.CommentedJokeCleared() {
+	if cu.mutation.JokeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   comment.CommentedJokeTable,
-			Columns: []string{comment.CommentedJokeColumn},
+			Table:   comment.JokeTable,
+			Columns: []string{comment.JokeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
@@ -192,12 +192,12 @@ func (cu *CommentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.CommentedJokeIDs(); len(nodes) > 0 {
+	if nodes := cu.mutation.JokeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   comment.CommentedJokeTable,
-			Columns: []string{comment.CommentedJokeColumn},
+			Table:   comment.JokeTable,
+			Columns: []string{comment.JokeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
@@ -242,42 +242,42 @@ func (cuo *CommentUpdateOne) SetNillableText(s *string) *CommentUpdateOne {
 	return cuo
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by ID.
-func (cuo *CommentUpdateOne) SetOwnerID(id string) *CommentUpdateOne {
-	cuo.mutation.SetOwnerID(id)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (cuo *CommentUpdateOne) SetUserID(id string) *CommentUpdateOne {
+	cuo.mutation.SetUserID(id)
 	return cuo
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (cuo *CommentUpdateOne) SetNillableOwnerID(id *string) *CommentUpdateOne {
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (cuo *CommentUpdateOne) SetNillableUserID(id *string) *CommentUpdateOne {
 	if id != nil {
-		cuo = cuo.SetOwnerID(*id)
+		cuo = cuo.SetUserID(*id)
 	}
 	return cuo
 }
 
-// SetOwner sets the "owner" edge to the User entity.
-func (cuo *CommentUpdateOne) SetOwner(u *User) *CommentUpdateOne {
-	return cuo.SetOwnerID(u.ID)
+// SetUser sets the "user" edge to the User entity.
+func (cuo *CommentUpdateOne) SetUser(u *User) *CommentUpdateOne {
+	return cuo.SetUserID(u.ID)
 }
 
-// SetCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID.
-func (cuo *CommentUpdateOne) SetCommentedJokeID(id string) *CommentUpdateOne {
-	cuo.mutation.SetCommentedJokeID(id)
+// SetJokeID sets the "joke" edge to the Joke entity by ID.
+func (cuo *CommentUpdateOne) SetJokeID(id string) *CommentUpdateOne {
+	cuo.mutation.SetJokeID(id)
 	return cuo
 }
 
-// SetNillableCommentedJokeID sets the "commented_joke" edge to the Joke entity by ID if the given value is not nil.
-func (cuo *CommentUpdateOne) SetNillableCommentedJokeID(id *string) *CommentUpdateOne {
+// SetNillableJokeID sets the "joke" edge to the Joke entity by ID if the given value is not nil.
+func (cuo *CommentUpdateOne) SetNillableJokeID(id *string) *CommentUpdateOne {
 	if id != nil {
-		cuo = cuo.SetCommentedJokeID(*id)
+		cuo = cuo.SetJokeID(*id)
 	}
 	return cuo
 }
 
-// SetCommentedJoke sets the "commented_joke" edge to the Joke entity.
-func (cuo *CommentUpdateOne) SetCommentedJoke(j *Joke) *CommentUpdateOne {
-	return cuo.SetCommentedJokeID(j.ID)
+// SetJoke sets the "joke" edge to the Joke entity.
+func (cuo *CommentUpdateOne) SetJoke(j *Joke) *CommentUpdateOne {
+	return cuo.SetJokeID(j.ID)
 }
 
 // Mutation returns the CommentMutation object of the builder.
@@ -285,15 +285,15 @@ func (cuo *CommentUpdateOne) Mutation() *CommentMutation {
 	return cuo.mutation
 }
 
-// ClearOwner clears the "owner" edge to the User entity.
-func (cuo *CommentUpdateOne) ClearOwner() *CommentUpdateOne {
-	cuo.mutation.ClearOwner()
+// ClearUser clears the "user" edge to the User entity.
+func (cuo *CommentUpdateOne) ClearUser() *CommentUpdateOne {
+	cuo.mutation.ClearUser()
 	return cuo
 }
 
-// ClearCommentedJoke clears the "commented_joke" edge to the Joke entity.
-func (cuo *CommentUpdateOne) ClearCommentedJoke() *CommentUpdateOne {
-	cuo.mutation.ClearCommentedJoke()
+// ClearJoke clears the "joke" edge to the Joke entity.
+func (cuo *CommentUpdateOne) ClearJoke() *CommentUpdateOne {
+	cuo.mutation.ClearJoke()
 	return cuo
 }
 
@@ -379,12 +379,12 @@ func (cuo *CommentUpdateOne) sqlSave(ctx context.Context) (_node *Comment, err e
 	if value, ok := cuo.mutation.Text(); ok {
 		_spec.SetField(comment.FieldText, field.TypeString, value)
 	}
-	if cuo.mutation.OwnerCleared() {
+	if cuo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   comment.OwnerTable,
-			Columns: []string{comment.OwnerColumn},
+			Table:   comment.UserTable,
+			Columns: []string{comment.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -392,12 +392,12 @@ func (cuo *CommentUpdateOne) sqlSave(ctx context.Context) (_node *Comment, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := cuo.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   comment.OwnerTable,
-			Columns: []string{comment.OwnerColumn},
+			Table:   comment.UserTable,
+			Columns: []string{comment.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -408,12 +408,12 @@ func (cuo *CommentUpdateOne) sqlSave(ctx context.Context) (_node *Comment, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if cuo.mutation.CommentedJokeCleared() {
+	if cuo.mutation.JokeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   comment.CommentedJokeTable,
-			Columns: []string{comment.CommentedJokeColumn},
+			Table:   comment.JokeTable,
+			Columns: []string{comment.JokeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),
@@ -421,12 +421,12 @@ func (cuo *CommentUpdateOne) sqlSave(ctx context.Context) (_node *Comment, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.CommentedJokeIDs(); len(nodes) > 0 {
+	if nodes := cuo.mutation.JokeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   comment.CommentedJokeTable,
-			Columns: []string{comment.CommentedJokeColumn},
+			Table:   comment.JokeTable,
+			Columns: []string{comment.JokeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),

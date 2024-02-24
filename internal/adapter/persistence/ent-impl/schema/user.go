@@ -39,7 +39,7 @@ func (User) Edges() []ent.Edge {
 		edge.To("jokes", Joke.Type),
 		edge.To("comments", Comment.Type),
 		edge.To("likes", Like.Type),
-		edge.To("chat_rooms", ChatMember.Type),
-		edge.To("chat_messages", ChatMessage.Type),
+		edge.To("rooms", RoomMember.Type),
+		edge.To("room_messages", RoomMessage.Type),
 	}
 }

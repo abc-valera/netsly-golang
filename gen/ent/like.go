@@ -19,10 +19,6 @@ type Like struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// UserID holds the value of the "user_id" field.
-	UserID string `json:"user_id,omitempty"`
-	// JokeID holds the value of the "joke_id" field.
-	JokeID string `json:"joke_id,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -35,39 +31,39 @@ type Like struct {
 
 // LikeEdges holds the relations/edges for other nodes in the graph.
 type LikeEdges struct {
-	// Owner holds the value of the owner edge.
-	Owner *User `json:"owner,omitempty"`
-	// LikedJoke holds the value of the liked_joke edge.
-	LikedJoke *Joke `json:"liked_joke,omitempty"`
+	// User holds the value of the user edge.
+	User *User `json:"user,omitempty"`
+	// Joke holds the value of the joke edge.
+	Joke *Joke `json:"joke,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
 }
 
-// OwnerOrErr returns the Owner value or an error if the edge
+// UserOrErr returns the User value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e LikeEdges) OwnerOrErr() (*User, error) {
+func (e LikeEdges) UserOrErr() (*User, error) {
 	if e.loadedTypes[0] {
-		if e.Owner == nil {
+		if e.User == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: user.Label}
 		}
-		return e.Owner, nil
+		return e.User, nil
 	}
-	return nil, &NotLoadedError{edge: "owner"}
+	return nil, &NotLoadedError{edge: "user"}
 }
 
-// LikedJokeOrErr returns the LikedJoke value or an error if the edge
+// JokeOrErr returns the Joke value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e LikeEdges) LikedJokeOrErr() (*Joke, error) {
+func (e LikeEdges) JokeOrErr() (*Joke, error) {
 	if e.loadedTypes[1] {
-		if e.LikedJoke == nil {
+		if e.Joke == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: joke.Label}
 		}
-		return e.LikedJoke, nil
+		return e.Joke, nil
 	}
-	return nil, &NotLoadedError{edge: "liked_joke"}
+	return nil, &NotLoadedError{edge: "joke"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -77,8 +73,6 @@ func (*Like) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case like.FieldID:
 			values[i] = new(sql.NullInt64)
-		case like.FieldUserID, like.FieldJokeID:
-			values[i] = new(sql.NullString)
 		case like.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		case like.ForeignKeys[0]: // joke_likes
@@ -106,18 +100,6 @@ func (l *Like) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			l.ID = int(value.Int64)
-		case like.FieldUserID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user_id", values[i])
-			} else if value.Valid {
-				l.UserID = value.String
-			}
-		case like.FieldJokeID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field joke_id", values[i])
-			} else if value.Valid {
-				l.JokeID = value.String
-			}
 		case like.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -151,14 +133,14 @@ func (l *Like) Value(name string) (ent.Value, error) {
 	return l.selectValues.Get(name)
 }
 
-// QueryOwner queries the "owner" edge of the Like entity.
-func (l *Like) QueryOwner() *UserQuery {
-	return NewLikeClient(l.config).QueryOwner(l)
+// QueryUser queries the "user" edge of the Like entity.
+func (l *Like) QueryUser() *UserQuery {
+	return NewLikeClient(l.config).QueryUser(l)
 }
 
-// QueryLikedJoke queries the "liked_joke" edge of the Like entity.
-func (l *Like) QueryLikedJoke() *JokeQuery {
-	return NewLikeClient(l.config).QueryLikedJoke(l)
+// QueryJoke queries the "joke" edge of the Like entity.
+func (l *Like) QueryJoke() *JokeQuery {
+	return NewLikeClient(l.config).QueryJoke(l)
 }
 
 // Update returns a builder for updating this Like.
@@ -184,12 +166,6 @@ func (l *Like) String() string {
 	var builder strings.Builder
 	builder.WriteString("Like(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", l.ID))
-	builder.WriteString("user_id=")
-	builder.WriteString(l.UserID)
-	builder.WriteString(", ")
-	builder.WriteString("joke_id=")
-	builder.WriteString(l.JokeID)
-	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(l.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')

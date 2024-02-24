@@ -89,9 +89,9 @@ func main() {
 		entcommand.NewJokeCommand(client),
 		entcommand.NewLikeCommand(client),
 		entcommand.NewCommentCommand(client),
-		entcommand.NewChatRoomCommand(client),
-		entcommand.NewChatMemberCommand(client),
-		entcommand.NewChatMessageCommand(client),
+		entcommand.NewRoomCommand(client),
+		entcommand.NewRoomMemberCommand(client),
+		entcommand.NewRoomMessageCommand(client),
 	)
 
 	// Init queries
@@ -100,9 +100,9 @@ func main() {
 		entquery.NewJokeQuery(client),
 		entquery.NewLikeQuery(client),
 		entquery.NewCommentQuery(client),
-		entquery.NewChatRoomQuery(client),
-		entquery.NewChatMemberQuery(client),
-		entquery.NewChatMessageQuery(client),
+		entquery.NewRoomQuery(client),
+		entquery.NewRoomMemberQuery(client),
+		entquery.NewRoomMessageQuery(client),
 	)
 
 	// Init transactioneer

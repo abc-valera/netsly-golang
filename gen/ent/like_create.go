@@ -22,60 +22,48 @@ type LikeCreate struct {
 	hooks    []Hook
 }
 
-// SetUserID sets the "user_id" field.
-func (lc *LikeCreate) SetUserID(s string) *LikeCreate {
-	lc.mutation.SetUserID(s)
-	return lc
-}
-
-// SetJokeID sets the "joke_id" field.
-func (lc *LikeCreate) SetJokeID(s string) *LikeCreate {
-	lc.mutation.SetJokeID(s)
-	return lc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (lc *LikeCreate) SetCreatedAt(t time.Time) *LikeCreate {
 	lc.mutation.SetCreatedAt(t)
 	return lc
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by ID.
-func (lc *LikeCreate) SetOwnerID(id string) *LikeCreate {
-	lc.mutation.SetOwnerID(id)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (lc *LikeCreate) SetUserID(id string) *LikeCreate {
+	lc.mutation.SetUserID(id)
 	return lc
 }
 
-// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (lc *LikeCreate) SetNillableOwnerID(id *string) *LikeCreate {
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (lc *LikeCreate) SetNillableUserID(id *string) *LikeCreate {
 	if id != nil {
-		lc = lc.SetOwnerID(*id)
+		lc = lc.SetUserID(*id)
 	}
 	return lc
 }
 
-// SetOwner sets the "owner" edge to the User entity.
-func (lc *LikeCreate) SetOwner(u *User) *LikeCreate {
-	return lc.SetOwnerID(u.ID)
+// SetUser sets the "user" edge to the User entity.
+func (lc *LikeCreate) SetUser(u *User) *LikeCreate {
+	return lc.SetUserID(u.ID)
 }
 
-// SetLikedJokeID sets the "liked_joke" edge to the Joke entity by ID.
-func (lc *LikeCreate) SetLikedJokeID(id string) *LikeCreate {
-	lc.mutation.SetLikedJokeID(id)
+// SetJokeID sets the "joke" edge to the Joke entity by ID.
+func (lc *LikeCreate) SetJokeID(id string) *LikeCreate {
+	lc.mutation.SetJokeID(id)
 	return lc
 }
 
-// SetNillableLikedJokeID sets the "liked_joke" edge to the Joke entity by ID if the given value is not nil.
-func (lc *LikeCreate) SetNillableLikedJokeID(id *string) *LikeCreate {
+// SetNillableJokeID sets the "joke" edge to the Joke entity by ID if the given value is not nil.
+func (lc *LikeCreate) SetNillableJokeID(id *string) *LikeCreate {
 	if id != nil {
-		lc = lc.SetLikedJokeID(*id)
+		lc = lc.SetJokeID(*id)
 	}
 	return lc
 }
 
-// SetLikedJoke sets the "liked_joke" edge to the Joke entity.
-func (lc *LikeCreate) SetLikedJoke(j *Joke) *LikeCreate {
-	return lc.SetLikedJokeID(j.ID)
+// SetJoke sets the "joke" edge to the Joke entity.
+func (lc *LikeCreate) SetJoke(j *Joke) *LikeCreate {
+	return lc.SetJokeID(j.ID)
 }
 
 // Mutation returns the LikeMutation object of the builder.
@@ -112,22 +100,6 @@ func (lc *LikeCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (lc *LikeCreate) check() error {
-	if _, ok := lc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Like.user_id"`)}
-	}
-	if v, ok := lc.mutation.UserID(); ok {
-		if err := like.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "Like.user_id": %w`, err)}
-		}
-	}
-	if _, ok := lc.mutation.JokeID(); !ok {
-		return &ValidationError{Name: "joke_id", err: errors.New(`ent: missing required field "Like.joke_id"`)}
-	}
-	if v, ok := lc.mutation.JokeID(); ok {
-		if err := like.JokeIDValidator(v); err != nil {
-			return &ValidationError{Name: "joke_id", err: fmt.Errorf(`ent: validator failed for field "Like.joke_id": %w`, err)}
-		}
-	}
 	if _, ok := lc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Like.created_at"`)}
 	}
@@ -157,24 +129,16 @@ func (lc *LikeCreate) createSpec() (*Like, *sqlgraph.CreateSpec) {
 		_node = &Like{config: lc.config}
 		_spec = sqlgraph.NewCreateSpec(like.Table, sqlgraph.NewFieldSpec(like.FieldID, field.TypeInt))
 	)
-	if value, ok := lc.mutation.UserID(); ok {
-		_spec.SetField(like.FieldUserID, field.TypeString, value)
-		_node.UserID = value
-	}
-	if value, ok := lc.mutation.JokeID(); ok {
-		_spec.SetField(like.FieldJokeID, field.TypeString, value)
-		_node.JokeID = value
-	}
 	if value, ok := lc.mutation.CreatedAt(); ok {
 		_spec.SetField(like.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := lc.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := lc.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   like.OwnerTable,
-			Columns: []string{like.OwnerColumn},
+			Table:   like.UserTable,
+			Columns: []string{like.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
@@ -186,12 +150,12 @@ func (lc *LikeCreate) createSpec() (*Like, *sqlgraph.CreateSpec) {
 		_node.user_likes = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := lc.mutation.LikedJokeIDs(); len(nodes) > 0 {
+	if nodes := lc.mutation.JokeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   like.LikedJokeTable,
-			Columns: []string{like.LikedJokeColumn},
+			Table:   like.JokeTable,
+			Columns: []string{like.JokeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(joke.FieldID, field.TypeString),

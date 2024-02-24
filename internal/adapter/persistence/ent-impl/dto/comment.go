@@ -16,8 +16,8 @@ func FromEntComment(entComment *ent.Comment) model.Comment {
 			ID:        entComment.ID,
 			CreatedAt: entComment.CreatedAt,
 		},
-		UserID: entComment.UserID,
-		JokeID: entComment.JokeID,
+		UserID: entComment.Edges.User.ID,
+		JokeID: entComment.Edges.Joke.ID,
 		Text:   entComment.Text,
 	}
 }

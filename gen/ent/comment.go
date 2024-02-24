@@ -19,10 +19,6 @@ type Comment struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
-	// UserID holds the value of the "user_id" field.
-	UserID string `json:"user_id,omitempty"`
-	// JokeID holds the value of the "joke_id" field.
-	JokeID string `json:"joke_id,omitempty"`
 	// Text holds the value of the "text" field.
 	Text string `json:"text,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -37,39 +33,39 @@ type Comment struct {
 
 // CommentEdges holds the relations/edges for other nodes in the graph.
 type CommentEdges struct {
-	// Owner holds the value of the owner edge.
-	Owner *User `json:"owner,omitempty"`
-	// CommentedJoke holds the value of the commented_joke edge.
-	CommentedJoke *Joke `json:"commented_joke,omitempty"`
+	// User holds the value of the user edge.
+	User *User `json:"user,omitempty"`
+	// Joke holds the value of the joke edge.
+	Joke *Joke `json:"joke,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
 }
 
-// OwnerOrErr returns the Owner value or an error if the edge
+// UserOrErr returns the User value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e CommentEdges) OwnerOrErr() (*User, error) {
+func (e CommentEdges) UserOrErr() (*User, error) {
 	if e.loadedTypes[0] {
-		if e.Owner == nil {
+		if e.User == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: user.Label}
 		}
-		return e.Owner, nil
+		return e.User, nil
 	}
-	return nil, &NotLoadedError{edge: "owner"}
+	return nil, &NotLoadedError{edge: "user"}
 }
 
-// CommentedJokeOrErr returns the CommentedJoke value or an error if the edge
+// JokeOrErr returns the Joke value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e CommentEdges) CommentedJokeOrErr() (*Joke, error) {
+func (e CommentEdges) JokeOrErr() (*Joke, error) {
 	if e.loadedTypes[1] {
-		if e.CommentedJoke == nil {
+		if e.Joke == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: joke.Label}
 		}
-		return e.CommentedJoke, nil
+		return e.Joke, nil
 	}
-	return nil, &NotLoadedError{edge: "commented_joke"}
+	return nil, &NotLoadedError{edge: "joke"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -77,7 +73,7 @@ func (*Comment) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case comment.FieldID, comment.FieldUserID, comment.FieldJokeID, comment.FieldText:
+		case comment.FieldID, comment.FieldText:
 			values[i] = new(sql.NullString)
 		case comment.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -105,18 +101,6 @@ func (c *Comment) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				c.ID = value.String
-			}
-		case comment.FieldUserID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user_id", values[i])
-			} else if value.Valid {
-				c.UserID = value.String
-			}
-		case comment.FieldJokeID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field joke_id", values[i])
-			} else if value.Valid {
-				c.JokeID = value.String
 			}
 		case comment.FieldText:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -157,14 +141,14 @@ func (c *Comment) Value(name string) (ent.Value, error) {
 	return c.selectValues.Get(name)
 }
 
-// QueryOwner queries the "owner" edge of the Comment entity.
-func (c *Comment) QueryOwner() *UserQuery {
-	return NewCommentClient(c.config).QueryOwner(c)
+// QueryUser queries the "user" edge of the Comment entity.
+func (c *Comment) QueryUser() *UserQuery {
+	return NewCommentClient(c.config).QueryUser(c)
 }
 
-// QueryCommentedJoke queries the "commented_joke" edge of the Comment entity.
-func (c *Comment) QueryCommentedJoke() *JokeQuery {
-	return NewCommentClient(c.config).QueryCommentedJoke(c)
+// QueryJoke queries the "joke" edge of the Comment entity.
+func (c *Comment) QueryJoke() *JokeQuery {
+	return NewCommentClient(c.config).QueryJoke(c)
 }
 
 // Update returns a builder for updating this Comment.
@@ -190,12 +174,6 @@ func (c *Comment) String() string {
 	var builder strings.Builder
 	builder.WriteString("Comment(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
-	builder.WriteString("user_id=")
-	builder.WriteString(c.UserID)
-	builder.WriteString(", ")
-	builder.WriteString("joke_id=")
-	builder.WriteString(c.JokeID)
-	builder.WriteString(", ")
 	builder.WriteString("text=")
 	builder.WriteString(c.Text)
 	builder.WriteString(", ")

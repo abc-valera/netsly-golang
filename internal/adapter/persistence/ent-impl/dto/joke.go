@@ -16,7 +16,7 @@ func FromEntJoke(entJoke *ent.Joke) model.Joke {
 			ID:        entJoke.ID,
 			CreatedAt: entJoke.CreatedAt,
 		},
-		UserID:      entJoke.UserID,
+		UserID:      entJoke.Edges.User.ID,
 		Title:       entJoke.Title,
 		Text:        entJoke.Text,
 		Explanation: entJoke.Explanation,

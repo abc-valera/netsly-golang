@@ -25,7 +25,7 @@ type JokeQuery struct {
 	order        []joke.OrderOption
 	inters       []Interceptor
 	predicates   []predicate.Joke
-	withOwner    *UserQuery
+	withUser     *UserQuery
 	withComments *CommentQuery
 	withLikes    *LikeQuery
 	withFKs      bool
@@ -65,8 +65,8 @@ func (jq *JokeQuery) Order(o ...joke.OrderOption) *JokeQuery {
 	return jq
 }
 
-// QueryOwner chains the current query on the "owner" edge.
-func (jq *JokeQuery) QueryOwner() *UserQuery {
+// QueryUser chains the current query on the "user" edge.
+func (jq *JokeQuery) QueryUser() *UserQuery {
 	query := (&UserClient{config: jq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := jq.prepareQuery(ctx); err != nil {
@@ -79,7 +79,7 @@ func (jq *JokeQuery) QueryOwner() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(joke.Table, joke.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, joke.OwnerTable, joke.OwnerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, joke.UserTable, joke.UserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(jq.driver.Dialect(), step)
 		return fromU, nil
@@ -323,7 +323,7 @@ func (jq *JokeQuery) Clone() *JokeQuery {
 		order:        append([]joke.OrderOption{}, jq.order...),
 		inters:       append([]Interceptor{}, jq.inters...),
 		predicates:   append([]predicate.Joke{}, jq.predicates...),
-		withOwner:    jq.withOwner.Clone(),
+		withUser:     jq.withUser.Clone(),
 		withComments: jq.withComments.Clone(),
 		withLikes:    jq.withLikes.Clone(),
 		// clone intermediate query.
@@ -332,14 +332,14 @@ func (jq *JokeQuery) Clone() *JokeQuery {
 	}
 }
 
-// WithOwner tells the query-builder to eager-load the nodes that are connected to
-// the "owner" edge. The optional arguments are used to configure the query builder of the edge.
-func (jq *JokeQuery) WithOwner(opts ...func(*UserQuery)) *JokeQuery {
+// WithUser tells the query-builder to eager-load the nodes that are connected to
+// the "user" edge. The optional arguments are used to configure the query builder of the edge.
+func (jq *JokeQuery) WithUser(opts ...func(*UserQuery)) *JokeQuery {
 	query := (&UserClient{config: jq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	jq.withOwner = query
+	jq.withUser = query
 	return jq
 }
 
@@ -371,12 +371,12 @@ func (jq *JokeQuery) WithLikes(opts ...func(*LikeQuery)) *JokeQuery {
 // Example:
 //
 //	var v []struct {
-//		UserID string `json:"user_id,omitempty"`
+//		Title string `json:"title,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Joke.Query().
-//		GroupBy(joke.FieldUserID).
+//		GroupBy(joke.FieldTitle).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (jq *JokeQuery) GroupBy(field string, fields ...string) *JokeGroupBy {
@@ -394,11 +394,11 @@ func (jq *JokeQuery) GroupBy(field string, fields ...string) *JokeGroupBy {
 // Example:
 //
 //	var v []struct {
-//		UserID string `json:"user_id,omitempty"`
+//		Title string `json:"title,omitempty"`
 //	}
 //
 //	client.Joke.Query().
-//		Select(joke.FieldUserID).
+//		Select(joke.FieldTitle).
 //		Scan(ctx, &v)
 func (jq *JokeQuery) Select(fields ...string) *JokeSelect {
 	jq.ctx.Fields = append(jq.ctx.Fields, fields...)
@@ -445,12 +445,12 @@ func (jq *JokeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Joke, e
 		withFKs     = jq.withFKs
 		_spec       = jq.querySpec()
 		loadedTypes = [3]bool{
-			jq.withOwner != nil,
+			jq.withUser != nil,
 			jq.withComments != nil,
 			jq.withLikes != nil,
 		}
 	)
-	if jq.withOwner != nil {
+	if jq.withUser != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -474,9 +474,9 @@ func (jq *JokeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Joke, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := jq.withOwner; query != nil {
-		if err := jq.loadOwner(ctx, query, nodes, nil,
-			func(n *Joke, e *User) { n.Edges.Owner = e }); err != nil {
+	if query := jq.withUser; query != nil {
+		if err := jq.loadUser(ctx, query, nodes, nil,
+			func(n *Joke, e *User) { n.Edges.User = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -497,7 +497,7 @@ func (jq *JokeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Joke, e
 	return nodes, nil
 }
 
-func (jq *JokeQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Joke, init func(*Joke), assign func(*Joke, *User)) error {
+func (jq *JokeQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Joke, init func(*Joke), assign func(*Joke, *User)) error {
 	ids := make([]string, 0, len(nodes))
 	nodeids := make(map[string][]*Joke)
 	for i := range nodes {

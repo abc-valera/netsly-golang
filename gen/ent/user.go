@@ -43,10 +43,10 @@ type UserEdges struct {
 	Comments []*Comment `json:"comments,omitempty"`
 	// Likes holds the value of the likes edge.
 	Likes []*Like `json:"likes,omitempty"`
-	// ChatRooms holds the value of the chat_rooms edge.
-	ChatRooms []*ChatMember `json:"chat_rooms,omitempty"`
-	// ChatMessages holds the value of the chat_messages edge.
-	ChatMessages []*ChatMessage `json:"chat_messages,omitempty"`
+	// Rooms holds the value of the rooms edge.
+	Rooms []*RoomMember `json:"rooms,omitempty"`
+	// RoomMessages holds the value of the room_messages edge.
+	RoomMessages []*RoomMessage `json:"room_messages,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [5]bool
@@ -79,22 +79,22 @@ func (e UserEdges) LikesOrErr() ([]*Like, error) {
 	return nil, &NotLoadedError{edge: "likes"}
 }
 
-// ChatRoomsOrErr returns the ChatRooms value or an error if the edge
+// RoomsOrErr returns the Rooms value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) ChatRoomsOrErr() ([]*ChatMember, error) {
+func (e UserEdges) RoomsOrErr() ([]*RoomMember, error) {
 	if e.loadedTypes[3] {
-		return e.ChatRooms, nil
+		return e.Rooms, nil
 	}
-	return nil, &NotLoadedError{edge: "chat_rooms"}
+	return nil, &NotLoadedError{edge: "rooms"}
 }
 
-// ChatMessagesOrErr returns the ChatMessages value or an error if the edge
+// RoomMessagesOrErr returns the RoomMessages value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) ChatMessagesOrErr() ([]*ChatMessage, error) {
+func (e UserEdges) RoomMessagesOrErr() ([]*RoomMessage, error) {
 	if e.loadedTypes[4] {
-		return e.ChatMessages, nil
+		return e.RoomMessages, nil
 	}
-	return nil, &NotLoadedError{edge: "chat_messages"}
+	return nil, &NotLoadedError{edge: "room_messages"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -191,14 +191,14 @@ func (u *User) QueryLikes() *LikeQuery {
 	return NewUserClient(u.config).QueryLikes(u)
 }
 
-// QueryChatRooms queries the "chat_rooms" edge of the User entity.
-func (u *User) QueryChatRooms() *ChatMemberQuery {
-	return NewUserClient(u.config).QueryChatRooms(u)
+// QueryRooms queries the "rooms" edge of the User entity.
+func (u *User) QueryRooms() *RoomMemberQuery {
+	return NewUserClient(u.config).QueryRooms(u)
 }
 
-// QueryChatMessages queries the "chat_messages" edge of the User entity.
-func (u *User) QueryChatMessages() *ChatMessageQuery {
-	return NewUserClient(u.config).QueryChatMessages(u)
+// QueryRoomMessages queries the "room_messages" edge of the User entity.
+func (u *User) QueryRoomMessages() *RoomMessageQuery {
+	return NewUserClient(u.config).QueryRoomMessages(u)
 }
 
 // Update returns a builder for updating this User.

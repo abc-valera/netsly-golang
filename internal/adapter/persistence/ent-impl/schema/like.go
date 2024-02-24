@@ -15,12 +15,6 @@ type Like struct {
 // Fields of the Like.
 func (Like) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("user_id").
-			NotEmpty().
-			Immutable(),
-		field.String("joke_id").
-			NotEmpty().
-			Immutable(),
 		field.Time("created_at").
 			Immutable(),
 	}
@@ -29,10 +23,10 @@ func (Like) Fields() []ent.Field {
 // Edges of the Like.
 func (Like) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("owner", User.Type).
+		edge.From("user", User.Type).
 			Ref("likes").
 			Unique(),
-		edge.From("liked_joke", Joke.Type).
+		edge.From("joke", Joke.Type).
 			Ref("likes").
 			Unique(),
 	}
@@ -41,7 +35,7 @@ func (Like) Edges() []ent.Edge {
 // Indexes of the Like.
 func (Like) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("user_id", "joke_id").
+		index.Edges("user", "joke").
 			Unique(),
 	}
 

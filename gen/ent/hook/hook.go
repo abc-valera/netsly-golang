@@ -9,42 +9,6 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 )
 
-// The ChatMemberFunc type is an adapter to allow the use of ordinary
-// function as ChatMember mutator.
-type ChatMemberFunc func(context.Context, *ent.ChatMemberMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f ChatMemberFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.ChatMemberMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ChatMemberMutation", m)
-}
-
-// The ChatMessageFunc type is an adapter to allow the use of ordinary
-// function as ChatMessage mutator.
-type ChatMessageFunc func(context.Context, *ent.ChatMessageMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f ChatMessageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.ChatMessageMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ChatMessageMutation", m)
-}
-
-// The ChatRoomFunc type is an adapter to allow the use of ordinary
-// function as ChatRoom mutator.
-type ChatRoomFunc func(context.Context, *ent.ChatRoomMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f ChatRoomFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.ChatRoomMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ChatRoomMutation", m)
-}
-
 // The CommentFunc type is an adapter to allow the use of ordinary
 // function as Comment mutator.
 type CommentFunc func(context.Context, *ent.CommentMutation) (ent.Value, error)
@@ -79,6 +43,42 @@ func (f LikeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LikeMutation", m)
+}
+
+// The RoomFunc type is an adapter to allow the use of ordinary
+// function as Room mutator.
+type RoomFunc func(context.Context, *ent.RoomMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RoomFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.RoomMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RoomMutation", m)
+}
+
+// The RoomMemberFunc type is an adapter to allow the use of ordinary
+// function as RoomMember mutator.
+type RoomMemberFunc func(context.Context, *ent.RoomMemberMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RoomMemberFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.RoomMemberMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RoomMemberMutation", m)
+}
+
+// The RoomMessageFunc type is an adapter to allow the use of ordinary
+// function as RoomMessage mutator.
+type RoomMessageFunc func(context.Context, *ent.RoomMessageMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RoomMessageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.RoomMessageMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RoomMessageMutation", m)
 }
 
 // The UserFunc type is an adapter to allow the use of ordinary

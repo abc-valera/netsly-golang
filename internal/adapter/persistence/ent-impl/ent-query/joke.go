@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/dto"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
@@ -29,7 +30,7 @@ func (jq *jokeQuery) GetByID(ctx context.Context, id string) (model.Joke, error)
 func (jq *jokeQuery) GetAllByUserID(ctx context.Context, userID string, params spec.SelectParams) (model.Jokes, error) {
 	query := jq.Joke.
 		Query().
-		Where(joke.UserID(userID))
+		Where(joke.HasUserWith(user.ID(userID)))
 
 	if params.Order == "asc" {
 		query = query.Order(ent.Asc("created_at"))

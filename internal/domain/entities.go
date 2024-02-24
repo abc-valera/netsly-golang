@@ -7,9 +7,9 @@ type Entities struct {
 	Joke        entity.Joke
 	Like        entity.Like
 	Comment     entity.Comment
-	ChatRoom    entity.ChatRoom
-	ChatMember  entity.ChatMember
-	ChatMessage entity.ChatMessage
+	Room        entity.Room
+	RoomMember  entity.RoomMember
+	RoomMessage entity.RoomMessage
 }
 
 func NewEntities(
@@ -22,8 +22,8 @@ func NewEntities(
 		Joke:        entity.NewJoke(commands.Joke),
 		Like:        entity.NewLike(commands.Like),
 		Comment:     entity.NewComment(commands.Comment),
-		ChatRoom:    entity.NewChatRoom(commands.ChatRoom),
-		ChatMember:  entity.NewChatMember(commands.ChatMember),
-		ChatMessage: entity.NewChatMessage(commands.ChatMessage),
+		Room:        entity.NewRoom(commands.Room),
+		RoomMember:  entity.NewRoomMember(commands.RoomMember),
+		RoomMessage: entity.NewRoomMessage(commands.RoomMessage),
 	}
 }

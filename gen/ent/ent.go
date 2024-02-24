@@ -12,12 +12,12 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmember"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatmessage"
-	"github.com/abc-valera/netsly-api-golang/gen/ent/chatroom"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/comment"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/room"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/roommember"
+	"github.com/abc-valera/netsly-api-golang/gen/ent/roommessage"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
 )
 
@@ -79,12 +79,12 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			chatmember.Table:  chatmember.ValidColumn,
-			chatmessage.Table: chatmessage.ValidColumn,
-			chatroom.Table:    chatroom.ValidColumn,
 			comment.Table:     comment.ValidColumn,
 			joke.Table:        joke.ValidColumn,
 			like.Table:        like.ValidColumn,
+			room.Table:        room.ValidColumn,
+			roommember.Table:  roommember.ValidColumn,
+			roommessage.Table: roommessage.ValidColumn,
 			user.Table:        user.ValidColumn,
 		})
 	})
