@@ -341,6 +341,23 @@ func (s *Jokes) SetJokes(val []Joke) {
 	s.Jokes = val
 }
 
+// MeChatRoomsJoinPostCreated is response for MeChatRoomsJoinPost operation.
+type MeChatRoomsJoinPostCreated struct{}
+
+type MeChatRoomsJoinPostReq struct {
+	ID string `json:"id"`
+}
+
+// GetID returns the value of ID.
+func (s *MeChatRoomsJoinPostReq) GetID() string {
+	return s.ID
+}
+
+// SetID sets the value of ID.
+func (s *MeChatRoomsJoinPostReq) SetID(val string) {
+	s.ID = val
+}
+
 // MeCommentsDelNoContent is response for MeCommentsDel operation.
 type MeCommentsDelNoContent struct{}
 
@@ -631,6 +648,156 @@ func (s *MePutReq) SetStatus(val OptString) {
 	s.Status = val
 }
 
+// MeRoomsDeleteNoContent is response for MeRoomsDelete operation.
+type MeRoomsDeleteNoContent struct{}
+
+type MeRoomsDeleteReq struct {
+	ID string `json:"id"`
+}
+
+// GetID returns the value of ID.
+func (s *MeRoomsDeleteReq) GetID() string {
+	return s.ID
+}
+
+// SetID sets the value of ID.
+func (s *MeRoomsDeleteReq) SetID(val string) {
+	s.ID = val
+}
+
+type MeRoomsGetSelectParams struct {
+	Order  OptOrder `json:"order"`
+	Limit  OptInt   `json:"limit"`
+	Offset OptInt   `json:"offset"`
+}
+
+// GetOrder returns the value of Order.
+func (s *MeRoomsGetSelectParams) GetOrder() OptOrder {
+	return s.Order
+}
+
+// GetLimit returns the value of Limit.
+func (s *MeRoomsGetSelectParams) GetLimit() OptInt {
+	return s.Limit
+}
+
+// GetOffset returns the value of Offset.
+func (s *MeRoomsGetSelectParams) GetOffset() OptInt {
+	return s.Offset
+}
+
+// SetOrder sets the value of Order.
+func (s *MeRoomsGetSelectParams) SetOrder(val OptOrder) {
+	s.Order = val
+}
+
+// SetLimit sets the value of Limit.
+func (s *MeRoomsGetSelectParams) SetLimit(val OptInt) {
+	s.Limit = val
+}
+
+// SetOffset sets the value of Offset.
+func (s *MeRoomsGetSelectParams) SetOffset(val OptInt) {
+	s.Offset = val
+}
+
+type MeRoomsIdMessagesGetSelectParams struct {
+	Order  OptOrder `json:"order"`
+	Limit  OptInt   `json:"limit"`
+	Offset OptInt   `json:"offset"`
+}
+
+// GetOrder returns the value of Order.
+func (s *MeRoomsIdMessagesGetSelectParams) GetOrder() OptOrder {
+	return s.Order
+}
+
+// GetLimit returns the value of Limit.
+func (s *MeRoomsIdMessagesGetSelectParams) GetLimit() OptInt {
+	return s.Limit
+}
+
+// GetOffset returns the value of Offset.
+func (s *MeRoomsIdMessagesGetSelectParams) GetOffset() OptInt {
+	return s.Offset
+}
+
+// SetOrder sets the value of Order.
+func (s *MeRoomsIdMessagesGetSelectParams) SetOrder(val OptOrder) {
+	s.Order = val
+}
+
+// SetLimit sets the value of Limit.
+func (s *MeRoomsIdMessagesGetSelectParams) SetLimit(val OptInt) {
+	s.Limit = val
+}
+
+// SetOffset sets the value of Offset.
+func (s *MeRoomsIdMessagesGetSelectParams) SetOffset(val OptInt) {
+	s.Offset = val
+}
+
+type MeRoomsPostReq struct {
+	Name        string    `json:"name"`
+	Description OptString `json:"description"`
+}
+
+// GetName returns the value of Name.
+func (s *MeRoomsPostReq) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *MeRoomsPostReq) GetDescription() OptString {
+	return s.Description
+}
+
+// SetName sets the value of Name.
+func (s *MeRoomsPostReq) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *MeRoomsPostReq) SetDescription(val OptString) {
+	s.Description = val
+}
+
+type MeRoomsPutReq struct {
+	ID          string    `json:"id"`
+	Name        OptString `json:"name"`
+	Description OptString `json:"description"`
+}
+
+// GetID returns the value of ID.
+func (s *MeRoomsPutReq) GetID() string {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *MeRoomsPutReq) GetName() OptString {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *MeRoomsPutReq) GetDescription() OptString {
+	return s.Description
+}
+
+// SetID sets the value of ID.
+func (s *MeRoomsPutReq) SetID(val string) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *MeRoomsPutReq) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *MeRoomsPutReq) SetDescription(val OptString) {
+	s.Description = val
+}
+
 // NewOptInt returns new OptInt with value set to v.
 func NewOptInt(v int) OptInt {
 	return OptInt{
@@ -809,6 +976,152 @@ func (s *Order) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// Ref: #/components/schemas/room
+type Room struct {
+	ID          string    `json:"id"`
+	CreatorID   string    `json:"creator_id"`
+	Name        string    `json:"name"`
+	Description OptString `json:"description"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+// GetID returns the value of ID.
+func (s *Room) GetID() string {
+	return s.ID
+}
+
+// GetCreatorID returns the value of CreatorID.
+func (s *Room) GetCreatorID() string {
+	return s.CreatorID
+}
+
+// GetName returns the value of Name.
+func (s *Room) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *Room) GetDescription() OptString {
+	return s.Description
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Room) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *Room) SetID(val string) {
+	s.ID = val
+}
+
+// SetCreatorID sets the value of CreatorID.
+func (s *Room) SetCreatorID(val string) {
+	s.CreatorID = val
+}
+
+// SetName sets the value of Name.
+func (s *Room) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *Room) SetDescription(val OptString) {
+	s.Description = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Room) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// Ref: #/components/schemas/room_message
+type RoomMessage struct {
+	ID        string    `json:"id"`
+	RoomID    string    `json:"room_id"`
+	UserID    string    `json:"user_id"`
+	Text      string    `json:"text"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+// GetID returns the value of ID.
+func (s *RoomMessage) GetID() string {
+	return s.ID
+}
+
+// GetRoomID returns the value of RoomID.
+func (s *RoomMessage) GetRoomID() string {
+	return s.RoomID
+}
+
+// GetUserID returns the value of UserID.
+func (s *RoomMessage) GetUserID() string {
+	return s.UserID
+}
+
+// GetText returns the value of Text.
+func (s *RoomMessage) GetText() string {
+	return s.Text
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *RoomMessage) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *RoomMessage) SetID(val string) {
+	s.ID = val
+}
+
+// SetRoomID sets the value of RoomID.
+func (s *RoomMessage) SetRoomID(val string) {
+	s.RoomID = val
+}
+
+// SetUserID sets the value of UserID.
+func (s *RoomMessage) SetUserID(val string) {
+	s.UserID = val
+}
+
+// SetText sets the value of Text.
+func (s *RoomMessage) SetText(val string) {
+	s.Text = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *RoomMessage) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+type RoomMessages struct {
+	RoomMessages []RoomMessage `json:"room_messages"`
+}
+
+// GetRoomMessages returns the value of RoomMessages.
+func (s *RoomMessages) GetRoomMessages() []RoomMessage {
+	return s.RoomMessages
+}
+
+// SetRoomMessages sets the value of RoomMessages.
+func (s *RoomMessages) SetRoomMessages(val []RoomMessage) {
+	s.RoomMessages = val
+}
+
+type Rooms struct {
+	Rooms []Room `json:"rooms"`
+}
+
+// GetRooms returns the value of Rooms.
+func (s *Rooms) GetRooms() []Room {
+	return s.Rooms
+}
+
+// SetRooms sets the value of Rooms.
+func (s *Rooms) SetRooms(val []Room) {
+	s.Rooms = val
 }
 
 type SignInPostOK struct {

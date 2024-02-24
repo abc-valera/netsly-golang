@@ -31,6 +31,15 @@ func (UnimplementedHandler) LikesByJokeIDGet(ctx context.Context, params LikesBy
 	return r, ht.ErrNotImplemented
 }
 
+// MeChatRoomsJoinPost implements MeChatRoomsJoinPost operation.
+//
+// Join room.
+//
+// POST /me/rooms/join
+func (UnimplementedHandler) MeChatRoomsJoinPost(ctx context.Context, req *MeChatRoomsJoinPostReq) error {
+	return ht.ErrNotImplemented
+}
+
 // MeCommentsDel implements MeCommentsDel operation.
 //
 // Deletes a comment of the current user.
@@ -136,6 +145,51 @@ func (UnimplementedHandler) MeLikesPost(ctx context.Context, req *MeLikesPostReq
 //
 // PUT /me
 func (UnimplementedHandler) MePut(ctx context.Context, req *MePutReq) (r *User, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// MeRoomsDelete implements MeRoomsDelete operation.
+//
+// Deletes room.
+//
+// DELETE /me/rooms
+func (UnimplementedHandler) MeRoomsDelete(ctx context.Context, req *MeRoomsDeleteReq) error {
+	return ht.ErrNotImplemented
+}
+
+// MeRoomsGet implements MeRoomsGet operation.
+//
+// Returns rooms current user is a member of.
+//
+// GET /me/rooms
+func (UnimplementedHandler) MeRoomsGet(ctx context.Context, params MeRoomsGetParams) (r *Rooms, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// MeRoomsIdMessagesGet implements MeRoomsIdMessagesGet operation.
+//
+// Retrieve messages from a room.
+//
+// GET /rooms/{room_id}/messages
+func (UnimplementedHandler) MeRoomsIdMessagesGet(ctx context.Context, params MeRoomsIdMessagesGetParams) (r *RoomMessages, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// MeRoomsPost implements MeRoomsPost operation.
+//
+// Creates a new room.
+//
+// POST /me/rooms
+func (UnimplementedHandler) MeRoomsPost(ctx context.Context, req *MeRoomsPostReq) (r *Room, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// MeRoomsPut implements MeRoomsPut operation.
+//
+// Updates room.
+//
+// PUT /me/rooms
+func (UnimplementedHandler) MeRoomsPut(ctx context.Context, req *MeRoomsPutReq) (r *Room, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

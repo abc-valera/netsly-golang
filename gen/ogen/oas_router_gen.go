@@ -227,6 +227,102 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						}
 
 						elem = origElem
+					case 'r': // Prefix: "rooms"
+						origElem := elem
+						if l := len("rooms"); len(elem) >= l && elem[0:l] == "rooms" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "DELETE":
+								s.handleMeRoomsDeleteRequest([0]string{}, elemIsEscaped, w, r)
+							case "GET":
+								s.handleMeRoomsGetRequest([0]string{}, elemIsEscaped, w, r)
+							case "POST":
+								s.handleMeRoomsPostRequest([0]string{}, elemIsEscaped, w, r)
+							case "PUT":
+								s.handleMeRoomsPutRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "DELETE,GET,POST,PUT")
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/join"
+							origElem := elem
+							if l := len("/join"); len(elem) >= l && elem[0:l] == "/join" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleMeChatRoomsJoinPostRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "POST")
+								}
+
+								return
+							}
+
+							elem = origElem
+						}
+
+						elem = origElem
+					}
+
+					elem = origElem
+				}
+
+				elem = origElem
+			case 'r': // Prefix: "rooms/"
+				origElem := elem
+				if l := len("rooms/"); len(elem) >= l && elem[0:l] == "rooms/" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				// Param: "room_id"
+				// Match until "/"
+				idx := strings.IndexByte(elem, '/')
+				if idx < 0 {
+					idx = len(elem)
+				}
+				args[0] = elem[:idx]
+				elem = elem[idx:]
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/messages"
+					origElem := elem
+					if l := len("/messages"); len(elem) >= l && elem[0:l] == "/messages" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleMeRoomsIdMessagesGetRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
 					}
 
 					elem = origElem
@@ -646,6 +742,130 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 
 						elem = origElem
+					case 'r': // Prefix: "rooms"
+						origElem := elem
+						if l := len("rooms"); len(elem) >= l && elem[0:l] == "rooms" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "DELETE":
+								r.name = "MeRoomsDelete"
+								r.summary = "Deletes room"
+								r.operationID = "MeRoomsDelete"
+								r.pathPattern = "/me/rooms"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "GET":
+								r.name = "MeRoomsGet"
+								r.summary = "Returns rooms current user is a member of"
+								r.operationID = "MeRoomsGet"
+								r.pathPattern = "/me/rooms"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "POST":
+								r.name = "MeRoomsPost"
+								r.summary = "Creates a new room"
+								r.operationID = "MeRoomsPost"
+								r.pathPattern = "/me/rooms"
+								r.args = args
+								r.count = 0
+								return r, true
+							case "PUT":
+								r.name = "MeRoomsPut"
+								r.summary = "Updates room"
+								r.operationID = "MeRoomsPut"
+								r.pathPattern = "/me/rooms"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/join"
+							origElem := elem
+							if l := len("/join"); len(elem) >= l && elem[0:l] == "/join" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								switch method {
+								case "POST":
+									// Leaf: MeChatRoomsJoinPost
+									r.name = "MeChatRoomsJoinPost"
+									r.summary = "Join room"
+									r.operationID = "MeChatRoomsJoinPost"
+									r.pathPattern = "/me/rooms/join"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+							elem = origElem
+						}
+
+						elem = origElem
+					}
+
+					elem = origElem
+				}
+
+				elem = origElem
+			case 'r': // Prefix: "rooms/"
+				origElem := elem
+				if l := len("rooms/"); len(elem) >= l && elem[0:l] == "rooms/" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				// Param: "room_id"
+				// Match until "/"
+				idx := strings.IndexByte(elem, '/')
+				if idx < 0 {
+					idx = len(elem)
+				}
+				args[0] = elem[:idx]
+				elem = elem[idx:]
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/messages"
+					origElem := elem
+					if l := len("/messages"); len(elem) >= l && elem[0:l] == "/messages" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							// Leaf: MeRoomsIdMessagesGet
+							r.name = "MeRoomsIdMessagesGet"
+							r.summary = "Retrieve messages from a room"
+							r.operationID = "MeRoomsIdMessagesGet"
+							r.pathPattern = "/rooms/{room_id}/messages"
+							r.args = args
+							r.count = 1
+							return r, true
+						default:
+							return
+						}
 					}
 
 					elem = origElem

@@ -12,6 +12,8 @@ const (
 	Label = "room"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldCreatorID holds the string denoting the creator_id field in the database.
+	FieldCreatorID = "creator_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
@@ -43,6 +45,7 @@ const (
 // Columns holds all SQL columns for room fields.
 var Columns = []string{
 	FieldID,
+	FieldCreatorID,
 	FieldName,
 	FieldDescription,
 	FieldCreatedAt,
@@ -59,6 +62,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// CreatorIDValidator is a validator for the "creator_id" field. It is called by the builders before save.
+	CreatorIDValidator func(string) error
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -71,6 +76,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreatorID orders the results by the creator_id field.
+func ByCreatorID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatorID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.

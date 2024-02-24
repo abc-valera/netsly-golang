@@ -41,8 +41,12 @@ func init() {
 	joke.IDValidator = jokeDescID.Validators[0].(func(string) error)
 	roomFields := schema.Room{}.Fields()
 	_ = roomFields
+	// roomDescCreatorID is the schema descriptor for creator_id field.
+	roomDescCreatorID := roomFields[1].Descriptor()
+	// room.CreatorIDValidator is a validator for the "creator_id" field. It is called by the builders before save.
+	room.CreatorIDValidator = roomDescCreatorID.Validators[0].(func(string) error)
 	// roomDescName is the schema descriptor for name field.
-	roomDescName := roomFields[1].Descriptor()
+	roomDescName := roomFields[2].Descriptor()
 	// room.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	room.NameValidator = roomDescName.Validators[0].(func(string) error)
 	// roomDescID is the schema descriptor for id field.

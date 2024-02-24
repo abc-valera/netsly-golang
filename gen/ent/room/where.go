@@ -65,6 +65,11 @@ func IDContainsFold(id string) predicate.Room {
 	return predicate.Room(sql.FieldContainsFold(FieldID, id))
 }
 
+// CreatorID applies equality check predicate on the "creator_id" field. It's identical to CreatorIDEQ.
+func CreatorID(v string) predicate.Room {
+	return predicate.Room(sql.FieldEQ(FieldCreatorID, v))
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Room {
 	return predicate.Room(sql.FieldEQ(FieldName, v))
@@ -78,6 +83,71 @@ func Description(v string) predicate.Room {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Room {
 	return predicate.Room(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// CreatorIDEQ applies the EQ predicate on the "creator_id" field.
+func CreatorIDEQ(v string) predicate.Room {
+	return predicate.Room(sql.FieldEQ(FieldCreatorID, v))
+}
+
+// CreatorIDNEQ applies the NEQ predicate on the "creator_id" field.
+func CreatorIDNEQ(v string) predicate.Room {
+	return predicate.Room(sql.FieldNEQ(FieldCreatorID, v))
+}
+
+// CreatorIDIn applies the In predicate on the "creator_id" field.
+func CreatorIDIn(vs ...string) predicate.Room {
+	return predicate.Room(sql.FieldIn(FieldCreatorID, vs...))
+}
+
+// CreatorIDNotIn applies the NotIn predicate on the "creator_id" field.
+func CreatorIDNotIn(vs ...string) predicate.Room {
+	return predicate.Room(sql.FieldNotIn(FieldCreatorID, vs...))
+}
+
+// CreatorIDGT applies the GT predicate on the "creator_id" field.
+func CreatorIDGT(v string) predicate.Room {
+	return predicate.Room(sql.FieldGT(FieldCreatorID, v))
+}
+
+// CreatorIDGTE applies the GTE predicate on the "creator_id" field.
+func CreatorIDGTE(v string) predicate.Room {
+	return predicate.Room(sql.FieldGTE(FieldCreatorID, v))
+}
+
+// CreatorIDLT applies the LT predicate on the "creator_id" field.
+func CreatorIDLT(v string) predicate.Room {
+	return predicate.Room(sql.FieldLT(FieldCreatorID, v))
+}
+
+// CreatorIDLTE applies the LTE predicate on the "creator_id" field.
+func CreatorIDLTE(v string) predicate.Room {
+	return predicate.Room(sql.FieldLTE(FieldCreatorID, v))
+}
+
+// CreatorIDContains applies the Contains predicate on the "creator_id" field.
+func CreatorIDContains(v string) predicate.Room {
+	return predicate.Room(sql.FieldContains(FieldCreatorID, v))
+}
+
+// CreatorIDHasPrefix applies the HasPrefix predicate on the "creator_id" field.
+func CreatorIDHasPrefix(v string) predicate.Room {
+	return predicate.Room(sql.FieldHasPrefix(FieldCreatorID, v))
+}
+
+// CreatorIDHasSuffix applies the HasSuffix predicate on the "creator_id" field.
+func CreatorIDHasSuffix(v string) predicate.Room {
+	return predicate.Room(sql.FieldHasSuffix(FieldCreatorID, v))
+}
+
+// CreatorIDEqualFold applies the EqualFold predicate on the "creator_id" field.
+func CreatorIDEqualFold(v string) predicate.Room {
+	return predicate.Room(sql.FieldEqualFold(FieldCreatorID, v))
+}
+
+// CreatorIDContainsFold applies the ContainsFold predicate on the "creator_id" field.
+func CreatorIDContainsFold(v string) predicate.Room {
+	return predicate.Room(sql.FieldContainsFold(FieldCreatorID, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.

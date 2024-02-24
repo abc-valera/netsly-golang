@@ -24,6 +24,7 @@ func (cm roomCommand) Create(ctx context.Context, req model.Room) (model.Room, e
 	room, err := cm.Room.Create().
 		SetID(req.ID).
 		SetName(req.Name).
+		SetCreatorID(req.CreatorID).
 		SetDescription(req.Description).
 		SetCreatedAt(req.CreatedAt).
 		Save(ctx)

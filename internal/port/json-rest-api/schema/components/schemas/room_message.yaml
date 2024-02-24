@@ -1,0 +1,24 @@
+type: object
+properties:
+  id:
+    type: string
+    example: "48690945-c3f9-45b4-9045-c6bcfb898f20"
+  room_id:
+    type: string
+    example: "48690945-c3f9-45b4-9045-c6bcfb898f20"
+  user_id:
+    type: string
+    example: "48690945-c3f9-45b4-9045-c6bcfb898f20"
+  text:
+    type: string
+    example: "Hello, world!"
+  created_at:
+    type: string
+    format: date-time
+    example: "2021-08-01T00:00:00Z"
+required:
+  - id
+  - room_id
+  - user_id
+  - text
+  - created_at

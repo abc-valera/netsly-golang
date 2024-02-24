@@ -20,6 +20,12 @@ type Handler interface {
 	//
 	// GET /likes/{joke_id}
 	LikesByJokeIDGet(ctx context.Context, params LikesByJokeIDGetParams) (int, error)
+	// MeChatRoomsJoinPost implements MeChatRoomsJoinPost operation.
+	//
+	// Join room.
+	//
+	// POST /me/rooms/join
+	MeChatRoomsJoinPost(ctx context.Context, req *MeChatRoomsJoinPostReq) error
 	// MeCommentsDel implements MeCommentsDel operation.
 	//
 	// Deletes a comment of the current user.
@@ -92,6 +98,36 @@ type Handler interface {
 	//
 	// PUT /me
 	MePut(ctx context.Context, req *MePutReq) (*User, error)
+	// MeRoomsDelete implements MeRoomsDelete operation.
+	//
+	// Deletes room.
+	//
+	// DELETE /me/rooms
+	MeRoomsDelete(ctx context.Context, req *MeRoomsDeleteReq) error
+	// MeRoomsGet implements MeRoomsGet operation.
+	//
+	// Returns rooms current user is a member of.
+	//
+	// GET /me/rooms
+	MeRoomsGet(ctx context.Context, params MeRoomsGetParams) (*Rooms, error)
+	// MeRoomsIdMessagesGet implements MeRoomsIdMessagesGet operation.
+	//
+	// Retrieve messages from a room.
+	//
+	// GET /rooms/{room_id}/messages
+	MeRoomsIdMessagesGet(ctx context.Context, params MeRoomsIdMessagesGetParams) (*RoomMessages, error)
+	// MeRoomsPost implements MeRoomsPost operation.
+	//
+	// Creates a new room.
+	//
+	// POST /me/rooms
+	MeRoomsPost(ctx context.Context, req *MeRoomsPostReq) (*Room, error)
+	// MeRoomsPut implements MeRoomsPut operation.
+	//
+	// Updates room.
+	//
+	// PUT /me/rooms
+	MeRoomsPut(ctx context.Context, req *MeRoomsPutReq) (*Room, error)
 	// SignInPost implements SignInPost operation.
 	//
 	// Performs user authentication.

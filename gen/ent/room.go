@@ -17,6 +17,8 @@ type Room struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
+	// CreatorID holds the value of the "creator_id" field.
+	CreatorID string `json:"creator_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
@@ -63,7 +65,7 @@ func (*Room) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case room.FieldID, room.FieldName, room.FieldDescription:
+		case room.FieldID, room.FieldCreatorID, room.FieldName, room.FieldDescription:
 			values[i] = new(sql.NullString)
 		case room.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -87,6 +89,12 @@ func (r *Room) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				r.ID = value.String
+			}
+		case room.FieldCreatorID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field creator_id", values[i])
+			} else if value.Valid {
+				r.CreatorID = value.String
 			}
 		case room.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -152,6 +160,9 @@ func (r *Room) String() string {
 	var builder strings.Builder
 	builder.WriteString("Room(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
+	builder.WriteString("creator_id=")
+	builder.WriteString(r.CreatorID)
+	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(r.Name)
 	builder.WriteString(", ")

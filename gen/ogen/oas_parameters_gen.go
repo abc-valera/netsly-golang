@@ -246,3 +246,169 @@ func decodeMeJokesGetParams(args [0]string, argsEscaped bool, r *http.Request) (
 	}
 	return params, nil
 }
+
+// MeRoomsGetParams is parameters of MeRoomsGet operation.
+type MeRoomsGetParams struct {
+	// Fields to specify select parameters.
+	SelectParams MeRoomsGetSelectParams
+}
+
+func unpackMeRoomsGetParams(packed middleware.Parameters) (params MeRoomsGetParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "selectParams",
+			In:   "query",
+		}
+		params.SelectParams = packed[key].(MeRoomsGetSelectParams)
+	}
+	return params
+}
+
+func decodeMeRoomsGetParams(args [0]string, argsEscaped bool, r *http.Request) (params MeRoomsGetParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: selectParams.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "selectParams",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+			Fields:  []uri.QueryParameterObjectField{{"order", false}, {"limit", false}, {"offset", false}},
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				return params.SelectParams.DecodeURI(d)
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.SelectParams.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "selectParams",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// MeRoomsIdMessagesGetParams is parameters of MeRoomsIdMessagesGet operation.
+type MeRoomsIdMessagesGetParams struct {
+	// ID of the room.
+	RoomID string
+	// Fields to specify select parameters.
+	SelectParams MeRoomsIdMessagesGetSelectParams
+}
+
+func unpackMeRoomsIdMessagesGetParams(packed middleware.Parameters) (params MeRoomsIdMessagesGetParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "room_id",
+			In:   "path",
+		}
+		params.RoomID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "selectParams",
+			In:   "query",
+		}
+		params.SelectParams = packed[key].(MeRoomsIdMessagesGetSelectParams)
+	}
+	return params
+}
+
+func decodeMeRoomsIdMessagesGetParams(args [1]string, argsEscaped bool, r *http.Request) (params MeRoomsIdMessagesGetParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode path: room_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "room_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.RoomID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "room_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode query: selectParams.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "selectParams",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+			Fields:  []uri.QueryParameterObjectField{{"order", false}, {"limit", false}, {"offset", false}},
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				return params.SelectParams.DecodeURI(d)
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.SelectParams.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "selectParams",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}

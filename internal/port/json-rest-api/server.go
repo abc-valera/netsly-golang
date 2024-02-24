@@ -39,6 +39,8 @@ func NewServer(
 		handler.MeLikesHandler
 		handler.CommentsHandler
 		handler.LikesHandler
+		handler.MeRooms
+		handler.Rooms
 	}{
 		ErrorHandler:      handler.NewErrorHandler(),
 		SignHandler:       handler.NewSignHandler(usecases.SignUseCase),
@@ -46,8 +48,10 @@ func NewServer(
 		MeJokesHandler:    handler.NewMeJokesHandler(queries.Joke, entities.Joke),
 		MeCommentsHandler: handler.NewMeCommentsHandler(queries.Comment, entities.Comment),
 		MeLikesHandler:    handler.NewMeLikesHandler(queries.Like, entities.Like),
+		MeRooms:           handler.NewMeRooms(queries.Room, entities.Room, entities.RoomMember),
 		CommentsHandler:   handler.NewCommentsHandler(queries.Comment, entities.Comment),
 		LikesHandler:      handler.NewLikesHandler(queries.Like),
+		Rooms:             handler.NewRooms(queries.RoomMessage),
 	}
 	// Init security handler
 	securityHandler := handler.NewSecurityHandler(services.TokenMaker)

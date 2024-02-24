@@ -22,6 +22,12 @@ type RoomCreate struct {
 	hooks    []Hook
 }
 
+// SetCreatorID sets the "creator_id" field.
+func (rc *RoomCreate) SetCreatorID(s string) *RoomCreate {
+	rc.mutation.SetCreatorID(s)
+	return rc
+}
+
 // SetName sets the "name" field.
 func (rc *RoomCreate) SetName(s string) *RoomCreate {
 	rc.mutation.SetName(s)
@@ -110,6 +116,14 @@ func (rc *RoomCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (rc *RoomCreate) check() error {
+	if _, ok := rc.mutation.CreatorID(); !ok {
+		return &ValidationError{Name: "creator_id", err: errors.New(`ent: missing required field "Room.creator_id"`)}
+	}
+	if v, ok := rc.mutation.CreatorID(); ok {
+		if err := room.CreatorIDValidator(v); err != nil {
+			return &ValidationError{Name: "creator_id", err: fmt.Errorf(`ent: validator failed for field "Room.creator_id": %w`, err)}
+		}
+	}
 	if _, ok := rc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Room.name"`)}
 	}
@@ -163,6 +177,10 @@ func (rc *RoomCreate) createSpec() (*Room, *sqlgraph.CreateSpec) {
 	if id, ok := rc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := rc.mutation.CreatorID(); ok {
+		_spec.SetField(room.FieldCreatorID, field.TypeString, value)
+		_node.CreatorID = value
 	}
 	if value, ok := rc.mutation.Name(); ok {
 		_spec.SetField(room.FieldName, field.TypeString, value)

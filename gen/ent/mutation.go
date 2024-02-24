@@ -1738,6 +1738,7 @@ type RoomMutation struct {
 	op              Op
 	typ             string
 	id              *string
+	creator_id      *string
 	name            *string
 	description     *string
 	created_at      *time.Time
@@ -1855,6 +1856,42 @@ func (m *RoomMutation) IDs(ctx context.Context) ([]string, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatorID sets the "creator_id" field.
+func (m *RoomMutation) SetCreatorID(s string) {
+	m.creator_id = &s
+}
+
+// CreatorID returns the value of the "creator_id" field in the mutation.
+func (m *RoomMutation) CreatorID() (r string, exists bool) {
+	v := m.creator_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatorID returns the old "creator_id" field's value of the Room entity.
+// If the Room object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RoomMutation) OldCreatorID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatorID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatorID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatorID: %w", err)
+	}
+	return oldValue.CreatorID, nil
+}
+
+// ResetCreatorID resets all changes to the "creator_id" field.
+func (m *RoomMutation) ResetCreatorID() {
+	m.creator_id = nil
 }
 
 // SetName sets the "name" field.
@@ -2107,7 +2144,10 @@ func (m *RoomMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RoomMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
+	if m.creator_id != nil {
+		fields = append(fields, room.FieldCreatorID)
+	}
 	if m.name != nil {
 		fields = append(fields, room.FieldName)
 	}
@@ -2125,6 +2165,8 @@ func (m *RoomMutation) Fields() []string {
 // schema.
 func (m *RoomMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case room.FieldCreatorID:
+		return m.CreatorID()
 	case room.FieldName:
 		return m.Name()
 	case room.FieldDescription:
@@ -2140,6 +2182,8 @@ func (m *RoomMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *RoomMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case room.FieldCreatorID:
+		return m.OldCreatorID(ctx)
 	case room.FieldName:
 		return m.OldName(ctx)
 	case room.FieldDescription:
@@ -2155,6 +2199,13 @@ func (m *RoomMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *RoomMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case room.FieldCreatorID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatorID(v)
+		return nil
 	case room.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -2225,6 +2276,9 @@ func (m *RoomMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *RoomMutation) ResetField(name string) error {
 	switch name {
+	case room.FieldCreatorID:
+		m.ResetCreatorID()
+		return nil
 	case room.FieldName:
 		m.ResetName()
 		return nil

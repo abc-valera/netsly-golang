@@ -6,8 +6,6 @@ info:
   contact:
     email: zoocity14@gmail.com
     url: "https://github.com/abc-valera/netsly-golang"
-  # x-logo:
-  #   url: "https://apis.guru/openapi-template/logo.png"
   description: API for Netsly social network
 externalDocs:
   description: Learn more about the project.
@@ -17,6 +15,8 @@ tags:
     description: Everything about managing user sessions
   - name: me
     description: Everything about managing current user profile
+  - name: rooms
+    description: Everything about managing rooms
   - name: users
     description: Everything about searching users
   - name: jokes
@@ -40,6 +40,12 @@ paths:
     $ref: paths/me/comments.yaml
   /me/likes:
     $ref: paths/me/likes.yaml
+  /me/rooms:
+    $ref: paths/me/rooms/_.yaml
+  /me/rooms/join:
+    $ref: paths/me/rooms/join.yaml
+  /rooms/{room_id}/messages:
+    $ref: paths/rooms/{room_id}_messages.yaml
   /comments/{joke_id}:
     $ref: paths/comments/{joke_id}.yaml
   /likes/{joke_id}:

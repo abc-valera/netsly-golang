@@ -16,6 +16,7 @@ func FromEntRoom(entRoom *ent.Room) model.Room {
 			CreatedAt: entRoom.CreatedAt,
 		},
 		Name:        entRoom.Name,
+		CreatorID:   entRoom.CreatorID,
 		Description: entRoom.Description,
 	}
 }

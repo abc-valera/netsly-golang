@@ -16,6 +16,9 @@ func (Room) Fields() []ent.Field {
 			NotEmpty().
 			Unique().
 			Immutable(),
+		field.String("creator_id").
+			NotEmpty().
+			Immutable(),
 		field.String("name").
 			NotEmpty().
 			Unique(),

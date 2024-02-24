@@ -12,6 +12,7 @@ var (
 type Room struct {
 	common.BaseEntity
 	Name        string
+	CreatorID   string
 	Description string
 }
 
