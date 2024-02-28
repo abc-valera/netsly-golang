@@ -11,6 +11,7 @@ require (
 	github.com/go-stack/stack v1.8.1
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/google/uuid v1.5.0
+	github.com/gorilla/websocket v1.5.1
 	github.com/lib/pq v1.10.9
 	github.com/ogen-go/ogen v0.80.1
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.47.0

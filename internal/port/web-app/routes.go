@@ -66,29 +66,22 @@ func newHandlerFunc(h handlerWithError) http.HandlerFunc {
 type handlerWithError func(w http.ResponseWriter, r *http.Request) error
 
 func (h handlerWithError) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	err := h(w, r)
-	if err != nil {
-		code := coderr.ErrorCode(err)
-
-		// These codes should be handled in handlers
-		if code == coderr.CodeInvalidArgument || code == coderr.CodeNotFound || code == coderr.CodeAlreadyExists {
+	if err := h(w, r); err != nil {
+		switch coderr.ErrorCode(err) {
+		case coderr.CodeInvalidArgument, coderr.CodeNotFound, coderr.CodeAlreadyExists:
 			return
-		}
-
-		if code == coderr.CodeUnauthenticated {
+		case coderr.CodeUnauthenticated:
 			w.WriteHeader(401)
 			w.Header().Set("HX-Redirect", "/error/401")
 			return
-		}
-
-		if code == coderr.CodePermissionDenied {
+		case coderr.CodePermissionDenied:
 			w.WriteHeader(403)
 			w.Header().Set("HX-Redirect", "/error/403")
 			return
+		default:
+			global.Log().Error("REQUEST_ERROR", "err", err.Error())
+			w.WriteHeader(500)
+			w.Header().Set("HX-Redirect", "/error/500")
 		}
-
-		global.Log().Error("REQUEST_ERROR", "err", err.Error())
-		w.WriteHeader(500)
-		w.Header().Set("HX-Redirect", "/error/500")
 	}
 }
