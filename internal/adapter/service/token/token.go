@@ -34,9 +34,9 @@ func NewTokenMaker(
 }
 
 func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Duration) (string, service.AuthPayload, error) {
-	payload, err := service.NewAuthPayload(userID, isRefresh, duration)
-	if err != nil {
-		return "", service.AuthPayload{}, err
+	payload := service.AuthPayload{
+		UserID:    userID,
+		IsRefresh: isRefresh,
 	}
 
 	token := jwt.New(s.signMethod)
@@ -44,8 +44,8 @@ func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Durat
 	claims := jwt.MapClaims{
 		"user_id":    payload.UserID,
 		"is_refresh": payload.IsRefresh,
-		"issued_at":  payload.IssuedAt.Format(time.RFC3339),
-		"expired_at": payload.ExpiredAt.Format(time.RFC3339),
+		"issued_at":  time.Now().Format(time.RFC3339),
+		"expired_at": time.Now().Add(duration).Format(time.RFC3339),
 	}
 	token.Claims = claims
 
@@ -74,24 +74,17 @@ func (s *jwtToken) VerifyToken(token string) (service.AuthPayload, error) {
 		return service.AuthPayload{}, service.ErrInvalidToken
 	}
 
-	issuedAt, err := time.Parse(time.RFC3339, claims["issued_at"].(string))
-	if err != nil {
-		return service.AuthPayload{}, coderr.NewInternal(err)
-	}
 	expiredAt, err := time.Parse(time.RFC3339, claims["expired_at"].(string))
 	if err != nil {
 		return service.AuthPayload{}, coderr.NewInternal(err)
 	}
 
-	var payload service.AuthPayload
-	payload.UserID = claims["user_id"].(string)
-	payload.IsRefresh = claims["is_refresh"].(bool)
-	payload.IssuedAt = issuedAt
-	payload.ExpiredAt = expiredAt
-
-	if ok := payload.Valid(); !ok {
+	if time.Now().After(expiredAt) {
 		return service.AuthPayload{}, service.ErrExpiredToken
 	}
 
-	return payload, nil
+	return service.AuthPayload{
+		UserID:    claims["user_id"].(string),
+		IsRefresh: claims["is_refresh"].(bool),
+	}, nil
 }

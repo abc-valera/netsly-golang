@@ -3,8 +3,8 @@ package global
 import (
 	"sync"
 
+	"github.com/abc-valera/netsly-api-golang/internal/domain/logger"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mode"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/validation"
 )
 
@@ -12,17 +12,17 @@ import (
 // Init() function must be called at the application startup.
 
 var (
-	log     service.ILogger
+	log     logger.ILogger
 	logOnce sync.Once
 )
 
-func InitLog(logger service.ILogger) {
+func InitLog(logger logger.ILogger) {
 	logOnce.Do(func() {
 		log = logger
 	})
 }
 
-func Log() service.ILogger {
+func Log() logger.ILogger {
 	return log
 }
 

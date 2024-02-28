@@ -42,10 +42,11 @@ func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	jokes, err := h.jokeQuery.GetAllByUserID(r.Context(), userID, spec.SelectParams{
-		Order: "desc",
-		Limit: 5,
-	})
+	jokes, err := h.jokeQuery.GetAllByUserID(
+		r.Context(),
+		userID,
+		spec.NewSelectParams("desc", 5, 0),
+	)
 	if err != nil {
 		return err
 	}
@@ -57,10 +58,11 @@ func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h Home) HomePartialJokesGet(w http.ResponseWriter, r *http.Request) error {
-	jokes, err := h.jokeQuery.GetAllByUserID(context.Background(), session.GetUserID(r), spec.SelectParams{
-		Order: "desc",
-		Limit: 5,
-	})
+	jokes, err := h.jokeQuery.GetAllByUserID(
+		context.Background(),
+		session.GetUserID(r),
+		spec.NewSelectParams("desc", 5, 0),
+	)
 	if err != nil {
 		return err
 	}

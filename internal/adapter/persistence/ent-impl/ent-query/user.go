@@ -47,14 +47,14 @@ func (uq userQuery) SearchAllByUsername(ctx context.Context, keyword string, par
 		Query().
 		Where(user.UsernameContains(keyword))
 
-	if params.Order == "asc" {
+	if params.Order() == "asc" {
 		query = query.Order(ent.Asc("created_at"))
 	} else {
 		query = query.Order(ent.Desc("created_at"))
 	}
 
-	query.Limit(params.Limit)
-	query.Offset(params.Offset)
+	query.Limit(params.Limit())
+	query.Offset(params.Offset())
 
 	return dto.FromEntUsersWithErrHandle(query.All(ctx))
 }

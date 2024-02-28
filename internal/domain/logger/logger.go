@@ -1,4 +1,4 @@
-package service
+package logger
 
 type ILogger interface {
 	Trace(message string, vals ...interface{})

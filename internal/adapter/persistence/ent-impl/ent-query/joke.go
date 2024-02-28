@@ -32,14 +32,14 @@ func (jq *jokeQuery) GetAllByUserID(ctx context.Context, userID string, params s
 		Query().
 		Where(joke.HasUserWith(user.ID(userID)))
 
-	if params.Order == "asc" {
+	if params.Order() == "asc" {
 		query = query.Order(ent.Asc("created_at"))
 	} else {
 		query = query.Order(ent.Desc("created_at"))
 	}
 
-	query.Limit(params.Limit)
-	query.Offset(params.Offset)
+	query.Limit(params.Limit())
+	query.Offset(params.Offset())
 
 	return dto.FromEntJokesToJokesWithErrHandle(query.All(ctx))
 }
@@ -49,14 +49,14 @@ func (jq *jokeQuery) SearchByTitle(ctx context.Context, keyword string, params s
 		Query().
 		Where(func(s *sql.Selector) { s.Where(sql.Like("title", "%"+keyword+"%")) })
 
-	if params.Order == "asc" {
+	if params.Order() == "asc" {
 		query = query.Order(ent.Asc("created_at"))
 	} else {
 		query = query.Order(ent.Desc("created_at"))
 	}
 
-	query.Limit(params.Limit)
-	query.Offset(params.Offset)
+	query.Limit(params.Limit())
+	query.Offset(params.Offset())
 
 	return dto.FromEntJokesToJokesWithErrHandle(query.All(ctx))
 }

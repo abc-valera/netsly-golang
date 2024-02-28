@@ -25,10 +25,10 @@ func NewCommentsHandler(
 }
 
 func (h CommentsHandler) CommentsByJokeIDGet(ctx context.Context, params ogen.CommentsByJokeIDGetParams) (*ogen.Comments, error) {
-	slectParams, err := dto.NewDomainSelectParams(&params.SelectParams)
-	if err != nil {
-		return nil, err
-	}
-	comments, err := h.commentQuery.GetAllByJokeID(ctx, params.JokeID, slectParams)
+	comments, err := h.commentQuery.GetAllByJokeID(
+		ctx,
+		params.JokeID,
+		dto.NewDomainSelectParams(&params.SelectParams),
+	)
 	return dto.NewCommentsResponse(comments), err
 }

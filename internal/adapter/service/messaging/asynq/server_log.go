@@ -1,11 +1,9 @@
 package asynq
 
-import (
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
-)
+import "github.com/abc-valera/netsly-api-golang/internal/domain/logger"
 
 type customAsynqLogger struct {
-	service.ILogger
+	logger.ILogger
 }
 
 func (l customAsynqLogger) Debug(args ...interface{}) {

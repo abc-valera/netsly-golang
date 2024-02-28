@@ -11,22 +11,10 @@ type ISelectParamsHelper interface {
 	GetOffset() ogen.OptInt
 }
 
-func NewDomainSelectParams(params ISelectParamsHelper) (spec.SelectParams, error) {
-	order := string(params.GetOrder().Value)
-	if !params.GetOrder().IsSet() {
-		order = "desc"
-	}
-	limit := params.GetLimit().Value
-	if !params.GetLimit().IsSet() {
-		limit = 10
-	}
-	offset := params.GetOffset().Value
-	if !params.GetOffset().IsSet() {
-		offset = 0
-	}
+func NewDomainSelectParams(params ISelectParamsHelper) spec.SelectParams {
 	return spec.NewSelectParams(
-		order,
-		limit,
-		offset,
+		string(params.GetOrder().Value),
+		params.GetLimit().Value,
+		params.GetOffset().Value,
 	)
 }

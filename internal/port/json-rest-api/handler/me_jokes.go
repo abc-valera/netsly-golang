@@ -25,12 +25,11 @@ func NewMeJokesHandler(
 }
 
 func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesGetParams) (*ogen.Jokes, error) {
-	userID := payloadUserID(ctx)
-	params, err := dto.NewDomainSelectParams(&ogenParams.SelectParams)
-	if err != nil {
-		return nil, err
-	}
-	domainJokes, err := h.jokeQuery.GetAllByUserID(ctx, userID, params)
+	domainJokes, err := h.jokeQuery.GetAllByUserID(
+		ctx,
+		payloadUserID(ctx),
+		dto.NewDomainSelectParams(&ogenParams.SelectParams),
+	)
 	return dto.NewJokesResponse(domainJokes), err
 }
 

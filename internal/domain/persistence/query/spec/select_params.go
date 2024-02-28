@@ -1,38 +1,48 @@
 package spec
 
-import "github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
-
-var (
-	ErrInvalidOrder  = coderr.NewMessage(coderr.CodeInvalidArgument, "Order must be 'asc' or 'desc'")
-	ErrInvalidLimit  = coderr.NewMessage(coderr.CodeInvalidArgument, "Limit must be greater than 0")
-	ErrInvalidOffset = coderr.NewMessage(coderr.CodeInvalidArgument, "Offset must be greater than 0")
-)
-
 // SelectParams represents query data for specifying select details.
-type SelectParams struct {
-	Order  string // Order is order of sorting ('asc' or 'desc')
-	Limit  int    // Limit limits number of returned units
-	Offset int    // Offset sets an offset for returned units
+type SelectParams interface {
+	Order() string
+	Limit() int
+	Offset() int
 }
 
-// NewSelectParams validates input and creates new SelectParams instance.
-func NewSelectParams(
-	order string,
-	limit int,
-	offset int,
-) (SelectParams, error) {
+// NewSelectParams creates a new SelectParams instance.
+//
+//   - If the order is not "asc" or "desc", it will be set to "desc".
+//   - If the limit is less than 0, it will be set to 5.
+//   - If the offset is less than 0, it will be set to 0.
+func NewSelectParams(order string, limit, offset int) SelectParams {
 	if order != "asc" && order != "desc" {
-		return SelectParams{}, ErrInvalidOrder
+		order = "desc"
 	}
 	if limit < 0 {
-		return SelectParams{}, ErrInvalidLimit
+		limit = 5
 	}
 	if offset < 0 {
-		return SelectParams{}, ErrInvalidOffset
+		offset = 0
 	}
-	return SelectParams{
-		Order:  order,
-		Limit:  limit,
-		Offset: offset,
-	}, nil
+	return &selectParams{
+		order:  order,
+		limit:  limit,
+		offset: offset,
+	}
+}
+
+type selectParams struct {
+	order  string
+	limit  int
+	offset int
+}
+
+func (s selectParams) Order() string {
+	return s.order
+}
+
+func (s selectParams) Limit() int {
+	return s.limit
+}
+
+func (s selectParams) Offset() int {
+	return s.offset
 }

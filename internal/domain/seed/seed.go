@@ -13,7 +13,7 @@ import (
 // Seed is used to populate the database with initial data.
 // Stops the program execution if an error occurs.
 func Seed(queries domain.Queries, entities domain.Entities) {
-	params := coderr.MustWithVal(spec.NewSelectParams("asc", 100, 0))
+	params := spec.NewSelectParams("asc", 100, 0)
 
 	// Users
 	userRequests := []entity.UserCreateRequest{

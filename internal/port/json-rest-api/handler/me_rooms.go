@@ -29,14 +29,11 @@ func NewMeRooms(
 }
 
 func (h MeRooms) MeRoomsGet(ctx context.Context, ogenParams ogen.MeRoomsGetParams) (*ogen.Rooms, error) {
-	userID := payloadUserID(ctx)
-
-	params, err := dto.NewDomainSelectParams(&ogenParams.SelectParams)
-	if err != nil {
-		return nil, err
-	}
-
-	domainRooms, err := h.roomQuery.GetAllByUserID(ctx, userID, params)
+	domainRooms, err := h.roomQuery.GetAllByUserID(
+		ctx,
+		payloadUserID(ctx),
+		dto.NewDomainSelectParams(&ogenParams.SelectParams),
+	)
 	return dto.NewRoomsResponse(domainRooms), err
 }
 
