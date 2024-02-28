@@ -13,32 +13,32 @@ var (
 
 type ITokenMaker interface {
 	// CreateAccessToken creates access token with given userID
-	CreateAccessToken(userID string) (string, Payload, error)
+	CreateAccessToken(userID string) (string, AuthPayload, error)
 
 	// CreateRefreshToken creates refresh token with given userID
-	CreateRefreshToken(userID string) (string, Payload, error)
+	CreateRefreshToken(userID string) (string, AuthPayload, error)
 
 	// VerifyToken verifies given token and, if it's correct, returns its payload
-	VerifyToken(token string) (Payload, error)
+	VerifyToken(token string) (AuthPayload, error)
 }
 
-// Payload is data which will be stored inside the token
-type Payload struct {
+// AuthPayload is data which will be stored inside the token
+type AuthPayload struct {
 	UserID    string
 	IsRefresh bool
 	IssuedAt  time.Time
 	ExpiredAt time.Time
 }
 
-func NewPayload(userID string, isRefresh bool, duration time.Duration) (Payload, error) {
+func NewAuthPayload(userID string, isRefresh bool, duration time.Duration) (AuthPayload, error) {
 	if userID == "" {
-		return Payload{}, coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID for the token")
+		return AuthPayload{}, coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid user ID for the token")
 	}
 	if duration == 0 {
-		return Payload{}, coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid token duration")
+		return AuthPayload{}, coderr.NewMessage(coderr.CodeInvalidArgument, "Provided invalid token duration")
 	}
 
-	return Payload{
+	return AuthPayload{
 		UserID:    userID,
 		IsRefresh: isRefresh,
 		IssuedAt:  time.Now(),
@@ -46,6 +46,6 @@ func NewPayload(userID string, isRefresh bool, duration time.Duration) (Payload,
 	}, nil
 }
 
-func (p Payload) Valid() bool {
+func (p AuthPayload) Valid() bool {
 	return p.ExpiredAt.After(time.Now())
 }

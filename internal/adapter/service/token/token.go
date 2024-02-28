@@ -33,10 +33,10 @@ func NewTokenMaker(
 	}
 }
 
-func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Duration) (string, service.Payload, error) {
-	payload, err := service.NewPayload(userID, isRefresh, duration)
+func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Duration) (string, service.AuthPayload, error) {
+	payload, err := service.NewAuthPayload(userID, isRefresh, duration)
 	if err != nil {
-		return "", service.Payload{}, err
+		return "", service.AuthPayload{}, err
 	}
 
 	token := jwt.New(s.signMethod)
@@ -51,46 +51,46 @@ func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Durat
 
 	tokenString, err := token.SignedString([]byte(s.signKey))
 	if err != nil {
-		return "", service.Payload{}, coderr.NewInternal(err)
+		return "", service.AuthPayload{}, coderr.NewInternal(err)
 	}
 
 	return tokenString, payload, nil
 }
 
-func (s jwtToken) CreateAccessToken(userID string) (string, service.Payload, error) {
+func (s jwtToken) CreateAccessToken(userID string) (string, service.AuthPayload, error) {
 	return s.createToken(userID, false, s.accessDuration)
 }
 
-func (s jwtToken) CreateRefreshToken(userID string) (string, service.Payload, error) {
+func (s jwtToken) CreateRefreshToken(userID string) (string, service.AuthPayload, error) {
 	return s.createToken(userID, true, s.refreshDuration)
 }
 
-func (s *jwtToken) VerifyToken(token string) (service.Payload, error) {
+func (s *jwtToken) VerifyToken(token string) (service.AuthPayload, error) {
 	var claims jwt.MapClaims
 	_, err := jwt.ParseWithClaims(token, &claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(s.signKey), nil
 	})
 	if err != nil {
-		return service.Payload{}, service.ErrInvalidToken
+		return service.AuthPayload{}, service.ErrInvalidToken
 	}
 
 	issuedAt, err := time.Parse(time.RFC3339, claims["issued_at"].(string))
 	if err != nil {
-		return service.Payload{}, coderr.NewInternal(err)
+		return service.AuthPayload{}, coderr.NewInternal(err)
 	}
 	expiredAt, err := time.Parse(time.RFC3339, claims["expired_at"].(string))
 	if err != nil {
-		return service.Payload{}, coderr.NewInternal(err)
+		return service.AuthPayload{}, coderr.NewInternal(err)
 	}
 
-	var payload service.Payload
+	var payload service.AuthPayload
 	payload.UserID = claims["user_id"].(string)
 	payload.IsRefresh = claims["is_refresh"].(bool)
 	payload.IssuedAt = issuedAt
 	payload.ExpiredAt = expiredAt
 
 	if ok := payload.Valid(); !ok {
-		return service.Payload{}, service.ErrExpiredToken
+		return service.AuthPayload{}, service.ErrExpiredToken
 	}
 
 	return payload, nil
