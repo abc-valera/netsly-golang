@@ -8,4 +8,5 @@ import (
 
 type IRoomMember interface {
 	GetByIDs(ctx context.Context, userID, roomID string) (model.RoomMember, error)
+	GetByRoomID(ctx context.Context, roomID string) (model.RoomMembers, error)
 }

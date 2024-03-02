@@ -1,0 +1,19 @@
+asyncapi: 3.0.0
+info:
+  title: Netsly JSON API
+  version: "0.1.0"
+components:
+  messages:
+    RoomMessage:
+      payload:
+        type: object
+        properties:
+          fromID:
+            type: string
+          roomID:
+            type: string
+          content:
+            type: string
+          sent_at:
+            type: string
+            format: date-time

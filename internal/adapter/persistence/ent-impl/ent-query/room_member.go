@@ -28,3 +28,11 @@ func (cq roomMemberQuery) GetByIDs(ctx context.Context, userID string, roomID st
 		roommember.HasRoomWith(room.ID(roomID)),
 	).Only(ctx))
 }
+
+func (cq roomMemberQuery) GetByRoomID(ctx context.Context, roomID string) (model.RoomMembers, error) {
+	ents, err := cq.RoomMember.Query().Where(roommember.HasRoomWith(room.ID(roomID))).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return dto.FromEntRoomMembers(ents), nil
+}
