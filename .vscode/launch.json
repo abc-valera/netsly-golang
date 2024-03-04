@@ -22,8 +22,8 @@
       "args": ["-entrypoint", "web-app"],
       "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
-        "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/internal/port/web-app/template",
-        "WEB_APP_STATIC_PATH": "${workspaceFolder}/internal/port/web-app/static"
+        "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/internal/presentation/web-app/template",
+        "WEB_APP_STATIC_PATH": "${workspaceFolder}/internal/presentation/web-app/static"
       }
     }
   ]

@@ -31,7 +31,7 @@ tasks:
       - ./build/netsly -entrypoint seed
 
   generate:json-rest-api:main:
-    desc: Generate docs and code for the HTTP port from the OpenAPI spec directory
+    desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
     cmds:
       - task: generate:json-rest-api:single_openapi_config_file
       - task: generate:json-rest-api:docs
@@ -42,14 +42,14 @@ tasks:
       - podman run --rm -v ${PWD}:/spec:Z
         redocly/cli bundle
         -o /spec/gen/openapi/openapi.yaml
-        /spec/internal/port/json-rest-api/schema/openapi.yaml
+        /spec/internal/presentation/json-rest-api/schema/openapi.yaml
 
   generate:json-rest-api:docs:
     cmds:
       - podman run --rm -v ${PWD}:/spec:Z
         redocly/cli build-docs
-        -o /spec/internal/port/json-rest-api/static/docs/index.html
-        /spec/internal/port/json-rest-api/schema/openapi.yaml
+        -o /spec/internal/presentation/json-rest-api/static/docs/index.html
+        /spec/internal/presentation/json-rest-api/schema/openapi.yaml
 
   generate:json-rest-api:code:
     cmds:
@@ -58,18 +58,18 @@ tasks:
   generate:web-app:tailwindcss:
     cmds:
       - npx tailwindcss
-        -c internal/port/web-app/tailwind.config.js
-        -i internal/port/web-app/static/style/input.css
-        -o internal/port/web-app/static/style/style.css
+        -c internal/presentation/web-app/tailwind.config.js
+        -i internal/presentation/web-app/static/style/input.css
+        -o internal/presentation/web-app/static/style/style.css
 
   generate:grpc-api:code:
     cmds:
-      - protoc internal/port/grpc-api/proto/*.proto
+      - protoc internal/presentation/grpc-api/proto/*.proto
         --go_out=gen/pb
         --go_opt=paths=source_relative
         --go-grpc_out=gen/pb
         --go-grpc_opt=paths=source_relative
-        --proto_path=internal/port/grpc-api/proto
+        --proto_path=internal/presentation/grpc-api/proto
 
   generate:persistence:code:
     cmds:

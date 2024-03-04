@@ -12,7 +12,7 @@ RUN go build -o build/netsly cmd/main.go
 FROM library/alpine
 WORKDIR /src
 
-COPY --from=builder /src/internal/port/json-rest-api/static static/
+COPY --from=builder /src/internal/presentation/json-rest-api/static static/
 COPY --from=builder /src/build/netsly build/
 
 # Environmental variables

@@ -21,9 +21,9 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mode"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/seed"
-	grpcapi "github.com/abc-valera/netsly-api-golang/internal/port/grpc-api"
-	jsonrestapi "github.com/abc-valera/netsly-api-golang/internal/port/json-rest-api"
-	webapp "github.com/abc-valera/netsly-api-golang/internal/port/web-app"
+	grpcapi "github.com/abc-valera/netsly-api-golang/internal/presentation/grpc-api"
+	jsonrestapi "github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api"
+	webapp "github.com/abc-valera/netsly-api-golang/internal/presentation/web-app"
 )
 
 var (
@@ -115,7 +115,7 @@ func main() {
 	usecases := application.NewUseCases(queries, tx, entities, services)
 
 	// Get cli flags
-	entrypoint := flag.String("entrypoint", "web-app", "Port flag specifies the application port to be run: web-app, json-rest-api, grpc-api")
+	entrypoint := flag.String("entrypoint", "web-app", "Port flag specifies the application presentation to be run: web-app, json-rest-api, grpc-api")
 	flag.Parse()
 
 	// Init server functions
