@@ -7,10 +7,10 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
-	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/dto"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/spec"
+	"github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/dto"
 )
 
 type jokeQuery struct {

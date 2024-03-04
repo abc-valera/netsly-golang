@@ -6,10 +6,10 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/room"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/roommessage"
-	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/dto"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/spec"
+	"github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/dto"
 )
 
 type roomMessageQuery struct {

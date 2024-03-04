@@ -5,8 +5,8 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 
-	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/transactioneer"
+	errhandler "github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/errors"
 )
 
 type transactioneerImpl struct {

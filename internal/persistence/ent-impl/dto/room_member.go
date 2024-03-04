@@ -2,8 +2,8 @@ package dto
 
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
-	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
+	errhandler "github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/errors"
 )
 
 func FromEntRoomMember(entRoomMember *ent.RoomMember) model.RoomMember {

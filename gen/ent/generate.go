@@ -1,3 +1,3 @@
 package ent
 
-//go:generate go run -mod=mod entgo.io/ent/cmd/ent generate --target . ../../internal/adapter/persistence/ent-impl/schema
+//go:generate go run -mod=mod entgo.io/ent/cmd/ent generate --target . ../../internal/persistence/ent-impl/schema

@@ -6,8 +6,8 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/joke"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/like"
-	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
+	errhandler "github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/errors"
 )
 
 type likeQuery struct {

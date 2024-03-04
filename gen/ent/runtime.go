@@ -8,7 +8,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/ent/room"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/roommessage"
 	"github.com/abc-valera/netsly-api-golang/gen/ent/user"
-	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/schema"
+	"github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

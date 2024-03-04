@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ent"
-	"github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/dto"
-	errhandler "github.com/abc-valera/netsly-api-golang/internal/adapter/persistence/ent-impl/errors"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/dto"
+	errhandler "github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/errors"
 )
 
 type jokeCommand struct {
