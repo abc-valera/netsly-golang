@@ -112,7 +112,7 @@ func NewClient(w http.ResponseWriter, r *http.Request, tokenMaker service.IToken
 
 			var e event.Event
 			if err := json.Unmarshal(msg, &e); err != nil {
-				client.errChan <- coderr.NewMessage(coderr.CodeInvalidArgument, "json input syntax error")
+				client.errChan <- coderr.NewCodeMessage(coderr.CodeInvalidArgument, "json input syntax error")
 				return
 			}
 

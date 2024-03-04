@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	ErrJokeNotFound = coderr.NewMessage(coderr.CodeNotFound, "Joke not found")
+	ErrJokeNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Joke not found")
 )
 
 type Joke struct {

@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrJokeOwnerTitleAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "Joke with such title already exists by such user")
+	ErrJokeOwnerTitleAlreadyExists = coderr.NewCodeMessage(coderr.CodeAlreadyExists, "Joke with such title already exists by such user")
 )
 
 type IJoke interface {

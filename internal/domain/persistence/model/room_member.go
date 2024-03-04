@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrRoomMemberNotFound = coderr.NewMessage(coderr.CodeNotFound, "RoomMember not found")
+	ErrRoomMemberNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "RoomMember not found")
 )
 
 // RoomMember is a struct that represents a chat member entity.

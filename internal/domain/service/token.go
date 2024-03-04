@@ -5,8 +5,8 @@ import (
 )
 
 var (
-	ErrInvalidToken = coderr.NewMessage(coderr.CodeUnauthenticated, "Provided invalid token")
-	ErrExpiredToken = coderr.NewMessage(coderr.CodeUnauthenticated, "Provided expired token")
+	ErrInvalidToken = coderr.NewCodeMessage(coderr.CodeUnauthenticated, "Provided invalid token")
+	ErrExpiredToken = coderr.NewCodeMessage(coderr.CodeUnauthenticated, "Provided expired token")
 )
 
 type ITokenMaker interface {

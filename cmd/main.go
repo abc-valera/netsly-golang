@@ -58,7 +58,7 @@ func main() {
 	case "prod":
 		appMode = mode.Production
 	default:
-		coderr.Panic("'MODE' environmental variable is invalid")
+		coderr.Fatal("'MODE' environmental variable is invalid")
 	}
 	global.InitMode(appMode)
 
@@ -154,7 +154,7 @@ func main() {
 		)
 		return
 	default:
-		coderr.Panic("Provided invalid entrypoint flag")
+		coderr.Fatal("Provided invalid entrypoint flag")
 		return
 	}
 

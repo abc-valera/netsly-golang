@@ -3,7 +3,7 @@ package service
 import "github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 
 var (
-	ErrInvalidPassword = coderr.NewMessage(coderr.CodeInvalidArgument, "Provided password is invalid")
+	ErrInvalidPassword = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Provided password is invalid")
 )
 
 type IPasswordMaker interface {

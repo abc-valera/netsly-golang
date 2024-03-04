@@ -22,7 +22,7 @@ func NewTokenMaker(
 	signKey string,
 ) service.ITokenMaker {
 	if len(signKey) < 32 {
-		coderr.Panic("JWT_SIGN_KEY environmental variable is invalid")
+		coderr.Fatal("JWT_SIGN_KEY environmental variable is invalid")
 	}
 
 	return &jwtToken{
@@ -51,7 +51,7 @@ func (s jwtToken) createToken(userID string, isRefresh bool, duration time.Durat
 
 	tokenString, err := token.SignedString([]byte(s.signKey))
 	if err != nil {
-		return "", service.AuthPayload{}, coderr.NewInternal(err)
+		return "", service.AuthPayload{}, coderr.NewInternalErr(err)
 	}
 
 	return tokenString, payload, nil
@@ -76,7 +76,7 @@ func (s *jwtToken) VerifyToken(token string) (service.AuthPayload, error) {
 
 	expiredAt, err := time.Parse(time.RFC3339, claims["expired_at"].(string))
 	if err != nil {
-		return service.AuthPayload{}, coderr.NewInternal(err)
+		return service.AuthPayload{}, coderr.NewInternalErr(err)
 	}
 
 	if time.Now().After(expiredAt) {

@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	ErrProvidedAccessToken = coderr.NewMessage(coderr.CodeInvalidArgument, "Access token provided")
+	ErrProvidedAccessToken = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Access token provided")
 )
 
 type SignUseCase struct {

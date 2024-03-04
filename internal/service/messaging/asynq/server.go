@@ -17,13 +17,12 @@ func newAsynqServer(
 	// Custom error handler
 	errHandler := asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {
 		code := coderr.ErrorCode(err)
-		msg := coderr.ErrorMessage(err)
-		if code == "" {
-			code = coderr.CodeInternal
+		if code == "" || code == coderr.CodeInternal {
+			// TODO: DO SOMETHING
 		}
 		global.Log().Error("PROCESS TASK",
 			"code", code,
-			"msg", msg,
+			"msg", err.Error(),
 			"error", err,
 			"task", task.Type(),
 			"payload:", string(task.Payload()))

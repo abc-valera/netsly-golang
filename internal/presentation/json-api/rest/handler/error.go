@@ -16,9 +16,17 @@ func NewErrorHandler() ErrorHandler {
 }
 
 func (h ErrorHandler) NewError(ctx context.Context, err error) *ogen.CodeErrorStatusCode {
-	codeError := ogen.CodeError{
-		Code:         ogen.CodeErrorCode(coderr.ErrorCode(err)),
-		ErrorMessage: coderr.ErrorMessage(err),
+	var codeError ogen.CodeError
+	if coderr.ErrorCode(err) == coderr.CodeInternal {
+		codeError = ogen.CodeError{
+			Code:         "internal",
+			ErrorMessage: "Internal error",
+		}
+	} else {
+		codeError = ogen.CodeError{
+			Code:         ogen.CodeErrorCode(coderr.ErrorCode(err)),
+			ErrorMessage: err.Error(),
+		}
 	}
 
 	switch coderr.ErrorCode(err) {

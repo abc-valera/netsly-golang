@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	ErrRoomMessageNotFound = coderr.NewMessage(coderr.CodeNotFound, "RoomMessage not found")
+	ErrRoomMessageNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "RoomMessage not found")
 )
 
 type RoomMessage struct {

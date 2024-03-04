@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrLikeNotFound = coderr.NewMessage(coderr.CodeNotFound, "Like not found")
+	ErrLikeNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Like not found")
 )
 
 // Like represents a like entity.

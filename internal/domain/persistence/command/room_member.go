@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrRoomMemberAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "RoomMember already exists")
+	ErrRoomMemberAlreadyExists = coderr.NewCodeMessage(coderr.CodeAlreadyExists, "RoomMember already exists")
 )
 
 type IRoomMember interface {

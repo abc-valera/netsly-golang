@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrLikeAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "Like already exists")
+	ErrLikeAlreadyExists = coderr.NewCodeMessage(coderr.CodeAlreadyExists, "Like already exists")
 )
 
 type ILike interface {

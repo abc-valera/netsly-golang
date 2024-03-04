@@ -16,12 +16,12 @@ func InitEntClient(postgresUrl string) (*ent.Client, error) {
 		postgresUrl,
 	)
 	if err != nil {
-		return nil, coderr.NewInternal(err)
+		return nil, coderr.NewInternalErr(err)
 	}
 
 	// Run the auto migration tool
 	if err := client.Schema.Create(context.Background()); err != nil {
-		return nil, coderr.NewInternal(err)
+		return nil, coderr.NewInternalErr(err)
 	}
 
 	return client, nil

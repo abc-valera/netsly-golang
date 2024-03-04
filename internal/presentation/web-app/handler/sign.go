@@ -33,7 +33,7 @@ func (h Sign) SignGet(w http.ResponseWriter, r *http.Request) error {
 func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {
-		return coderr.NewInternal(err)
+		return coderr.NewInternalErr(err)
 	}
 
 	if err := h.SignUseCase.SignUp(r.Context(), application.SignUpRequest{
@@ -77,7 +77,7 @@ func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 func (h Sign) SignInPost(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {
-		return coderr.NewInternal(err)
+		return coderr.NewInternalErr(err)
 	}
 
 	resp, err := h.SignUseCase.SignIn(r.Context(), application.SignInRequest{

@@ -52,7 +52,7 @@ func HandleErr(err error) error {
 			return model.ErrRoomMessageNotFound
 		}
 
-		return coderr.NewMessage(coderr.CodeNotFound, "")
+		return coderr.NewCodeMessage(coderr.CodeNotFound, "")
 	}
 
 	// Unique constraint errors
@@ -89,8 +89,8 @@ func HandleErr(err error) error {
 			return command.ErrRoomMemberAlreadyExists
 		}
 
-		return coderr.NewMessage(coderr.CodeAlreadyExists, "")
+		return coderr.NewCodeMessage(coderr.CodeAlreadyExists, "")
 	}
 
-	return coderr.NewInternal(err)
+	return coderr.NewInternalErr(err)
 }

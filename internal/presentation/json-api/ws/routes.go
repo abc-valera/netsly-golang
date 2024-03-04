@@ -17,6 +17,6 @@ func routeEvent(
 	case handler.EventTypeRoomMessage:
 		return roomHandler.SendRoomMessageHandler(e)
 	default:
-		return coderr.NewMessage(coderr.CodeInvalidArgument, "Invalid event type")
+		return coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Invalid event type")
 	}
 }

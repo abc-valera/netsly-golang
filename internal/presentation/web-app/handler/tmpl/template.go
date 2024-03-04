@@ -30,7 +30,7 @@ type prodTemplate struct {
 func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	// Check if filenames is empty
 	if len(filenames) == 0 {
-		return prodTemplate{}, coderr.NewInternal(fmt.Errorf("no filenames provided"))
+		return prodTemplate{}, coderr.NewInternalErr(fmt.Errorf("no filenames provided"))
 	}
 	// Add .html extension if not present (this allows to pass filenames without extension)
 	for i, filename := range filenames {
@@ -42,7 +42,7 @@ func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	// Parse template
 	t, err := template.ParseFS(fs, filenames...)
 	if err != nil {
-		return prodTemplate{}, coderr.NewInternal(err)
+		return prodTemplate{}, coderr.NewInternalErr(err)
 	}
 
 	// Get executeName
@@ -57,7 +57,7 @@ func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 // Render executes the template with the given data.
 func (t prodTemplate) Render(wr http.ResponseWriter, data interface{}) error {
 	if t.tmpl == nil {
-		return coderr.NewInternal(fmt.Errorf("template is nil"))
+		return coderr.NewInternalErr(fmt.Errorf("template is nil"))
 	}
 
 	return t.tmpl.ExecuteTemplate(wr, t.executeName, data)
@@ -76,7 +76,7 @@ type devTemplate struct {
 func newDevTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	// Check if filenames is empty
 	if len(filenames) == 0 {
-		return prodTemplate{}, coderr.NewInternal(fmt.Errorf("no filenames provided"))
+		return prodTemplate{}, coderr.NewInternalErr(fmt.Errorf("no filenames provided"))
 	}
 	// Add .html extension if not present (this allows to pass filenames without extension)
 	for i, filename := range filenames {
@@ -93,7 +93,7 @@ func newDevTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 func (t devTemplate) Render(wr http.ResponseWriter, data interface{}) error {
 	tmpl, err := template.ParseFS(t.fs, t.filenames...)
 	if err != nil {
-		return coderr.NewInternal(err)
+		return coderr.NewInternalErr(err)
 	}
 
 	// Get executeName

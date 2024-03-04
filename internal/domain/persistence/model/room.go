@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	ErrRoomNotFound = coderr.NewMessage(coderr.CodeNotFound, "Room not found")
+	ErrRoomNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Room not found")
 )
 
 type Room struct {

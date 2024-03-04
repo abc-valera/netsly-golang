@@ -45,7 +45,7 @@ type sendRoomMessagePayload struct {
 func (h Room) SendRoomMessageHandler(e event.Event) error {
 	var payload sendRoomMessagePayload
 	if err := json.Unmarshal(e.Payload, &payload); err != nil {
-		return coderr.NewInternal(err)
+		return coderr.NewInternalErr(err)
 	}
 	payload.FromID = h.userID
 

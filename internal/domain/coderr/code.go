@@ -36,20 +36,18 @@ type Code string
 
 // ErrorCode returns the code of the root error, if available, otherwise returns Internal.
 func ErrorCode(err error) Code {
-	var messageErrTarget *Message
-	var internalErrTarget *Internal
+	var messageErrTarget *codeMessage
+	var internalErrTarget *internal
 	if err == nil {
 		return ""
-	} else if e, ok := err.(*Message); ok && e.Code != "" {
+	} else if e, ok := err.(*codeMessage); ok && e.Code != "" {
 		return e.Code
-	} else if e, ok := err.(*Internal); ok && e.Code != "" {
-		return e.Code
+	} else if _, ok := err.(*internal); ok {
+		return CodeInternal
 	} else if errors.As(err, &messageErrTarget) {
 		return messageErrTarget.Code
 	} else if errors.As(err, &internalErrTarget) {
-		return internalErrTarget.Code
-	} else if ok && e.Err != nil {
-		return ErrorCode(e.Err)
+		return CodeInternal
 	}
 	return CodeInternal
 }

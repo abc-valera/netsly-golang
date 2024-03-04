@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrRoomNameAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "Room already exists")
+	ErrRoomNameAlreadyExists = coderr.NewCodeMessage(coderr.CodeAlreadyExists, "Room already exists")
 )
 
 type IRoom interface {

@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	ErrCommentNotFound = coderr.NewMessage(coderr.CodeNotFound, "Comment not found")
+	ErrCommentNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Comment not found")
 )
 
 type Comment struct {

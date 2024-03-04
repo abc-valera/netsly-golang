@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	ErrUserNotFound = coderr.NewMessage(coderr.CodeNotFound, "User not found")
+	ErrUserNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "User not found")
 )
 
 type User struct {

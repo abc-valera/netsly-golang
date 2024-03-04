@@ -19,8 +19,8 @@ const (
 var secretKey = []byte("9aa5e83710a7ddf90aa2b426e82ccfb5ccf5890c771a590e0d47dcb5119f034b")
 
 var (
-	ErrNoCookie     = coderr.NewInternal(errors.New("no cookie"))
-	ErrInvalidValue = coderr.NewInternal(errors.New("invalid cookie value"))
+	ErrNoCookie     = coderr.NewInternalErr(errors.New("no cookie"))
+	ErrInvalidValue = coderr.NewInternalErr(errors.New("invalid cookie value"))
 )
 
 // Get returns the value associated with the key

@@ -53,7 +53,7 @@ func (pm passwordMaker) CheckPassword(password, encodedHash string) error {
 	// Extract the parameters, salt and derived key from the encoded password hash.
 	salt, hash, err := decodeHash(encodedHash)
 	if err != nil {
-		return coderr.NewInternal(err)
+		return coderr.NewInternalErr(err)
 	}
 
 	// Derive the key from the other password using the same parameters.

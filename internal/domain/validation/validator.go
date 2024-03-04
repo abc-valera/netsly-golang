@@ -53,14 +53,14 @@ func (v Validator) Var(field interface{}, tag string) error {
 }
 
 func (v Validator) createFormattedError(field, tag string) error {
-	return coderr.NewMessage(
+	return coderr.NewCodeMessage(
 		coderr.CodeInvalidArgument,
 		fmt.Sprintf("%s '%s validation rule' violated", field, tag),
 	)
 }
 
 func (v Validator) createFormattedErrorWithParam(field, tag, param string) error {
-	return coderr.NewMessage(
+	return coderr.NewCodeMessage(
 		coderr.CodeInvalidArgument,
 		fmt.Sprintf("%s '%s %s validation rule' violated", field, tag, param),
 	)

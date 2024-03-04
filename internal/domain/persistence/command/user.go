@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	ErrUserWithUsernameAlreadyExists = coderr.NewMessage(coderr.CodeAlreadyExists, "User with such username already exists")
-	ErrUserWithEmailAlreadyExists    = coderr.NewMessage(coderr.CodeAlreadyExists, "User with such email already exists")
+	ErrUserWithUsernameAlreadyExists = coderr.NewCodeMessage(coderr.CodeAlreadyExists, "User with such username already exists")
+	ErrUserWithEmailAlreadyExists    = coderr.NewCodeMessage(coderr.CodeAlreadyExists, "User with such email already exists")
 )
 
 type IUser interface {
