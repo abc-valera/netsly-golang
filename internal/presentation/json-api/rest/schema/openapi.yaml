@@ -10,6 +10,9 @@ info:
 externalDocs:
   description: Learn more about the project.
   url: "https://github.com/abc-valera/netsly-golang"
+servers:
+  - url: "http://localhost:3010/api/v1"
+    description: Development server
 tags:
   - name: sign
     description: Everything about managing user sessions

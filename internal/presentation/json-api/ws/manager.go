@@ -8,8 +8,8 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/ws/client"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/ws/handler"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/client"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/handler"
 	"github.com/gorilla/websocket"
 )
 

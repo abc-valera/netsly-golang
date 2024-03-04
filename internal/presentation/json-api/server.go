@@ -1,4 +1,4 @@
-package jsonrestapi
+package jsonapi
 
 import (
 	"context"
@@ -11,9 +11,9 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/handler"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/middleware"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/ws"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/rest/handler"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/rest/middleware"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -34,13 +34,13 @@ func NewServer(
 	r := chi.NewRouter()
 
 	// Static files
-	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir(staticPath))))
+	r.Handle("/*", http.FileServer(http.Dir(staticPath)))
 
 	// Ogen routes
-	r.Route("/", func(r chi.Router) {
+	r.Route("/api/v1", func(r chi.Router) {
 		// Regiter middlewares
-		r.Use(middleware.Logger)
 		r.Use(middleware.Recoverer)
+		r.Use(middleware.Logger)
 
 		// Init handlers (ogenHandler implements ogen.Server interface)
 		ogenHandler := &struct {
@@ -71,11 +71,11 @@ func NewServer(
 		// Init ogen server
 		ogenServer := coderr.MustWithVal(ogen.NewServer(ogenHandler, securityHandler))
 		// Register ogen routes
-		r.Mount("/", ogenServer)
+		r.Mount("/", http.StripPrefix("/api/v1", ogenServer))
 	})
 
 	// WS routes
-	r.Route("/ws", func(r chi.Router) {
+	r.Route("/ws/v1", func(r chi.Router) {
 		// Init ws manager
 		wsManager := ws.NewManager(
 			services,
@@ -91,9 +91,9 @@ func NewServer(
 	}
 
 	return func() {
-			global.Log().Info("json-rest-api is running", "presentation", presentation)
+			global.Log().Info("json-api is running", "presentation", presentation)
 			if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-				global.Log().Fatal("json-rest-api server error: ", err)
+				global.Log().Fatal("json-api server error: ", err)
 			}
 		}, func() {
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

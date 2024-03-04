@@ -7,7 +7,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/ws/event"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/event"
 	"github.com/gorilla/websocket"
 )
 

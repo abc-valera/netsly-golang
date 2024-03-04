@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/ws/client"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/ws/event"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/client"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/event"
 )
 
 const (

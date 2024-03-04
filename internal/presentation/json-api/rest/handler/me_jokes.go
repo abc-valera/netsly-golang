@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/dto"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/rest/dto"
 )
 
 type MeJokesHandler struct {

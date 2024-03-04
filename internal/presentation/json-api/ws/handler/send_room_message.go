@@ -6,8 +6,8 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/ws/client"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/ws/event"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/client"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/event"
 )
 
 const (

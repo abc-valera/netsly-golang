@@ -5,7 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api/dto"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/rest/dto"
 )
 
 type SignHandler struct {

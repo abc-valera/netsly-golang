@@ -17,7 +17,7 @@ import (
 	entquery "github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/ent-query"
 	enttransactioneer "github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/ent-transactioneer"
 	grpcapi "github.com/abc-valera/netsly-api-golang/internal/presentation/grpc-api"
-	jsonrestapi "github.com/abc-valera/netsly-api-golang/internal/presentation/json-rest-api"
+	jsonapi "github.com/abc-valera/netsly-api-golang/internal/presentation/json-api"
 	webapp "github.com/abc-valera/netsly-api-golang/internal/presentation/web-app"
 	"github.com/abc-valera/netsly-api-golang/internal/service/email"
 	"github.com/abc-valera/netsly-api-golang/internal/service/logger"
@@ -39,8 +39,8 @@ var (
 	webApptemplatePathEnv = os.Getenv("WEB_APP_TEMPLATE_PATH")
 	webAppStaticPathEnv   = os.Getenv("WEB_APP_STATIC_PATH")
 
-	jsonRestApiPortEnv       = os.Getenv("JSON_REST_API_PORT")
-	jsonRestApiStaticPathEnv = os.Getenv("JSON_REST_API_STATIC_PATH")
+	jsonApiPortEnv       = os.Getenv("JSON_API_PORT")
+	jsonApiStaticPathEnv = os.Getenv("JSON_API_STATIC_PATH")
 
 	grpcApiPortEnv       = os.Getenv("GRPC_API_PORT")
 	grpcApiStaticPathEnv = os.Getenv("GRPC_API_STATIC_PATH")
@@ -115,7 +115,7 @@ func main() {
 	usecases := application.NewUseCases(queries, tx, entities, services)
 
 	// Get cli flags
-	entrypoint := flag.String("entrypoint", "web-app", "Port flag specifies the application presentation to be run: web-app, json-rest-api, grpc-api")
+	entrypoint := flag.String("entrypoint", "web-app", "Port flag specifies the application presentation to be run: web-app, json-api, grpc-api")
 	flag.Parse()
 
 	// Init server functions
@@ -131,10 +131,10 @@ func main() {
 			services,
 			usecases,
 		)
-	case "json-rest-api":
-		serverStart, serverGracefulStop = jsonrestapi.NewServer(
-			jsonRestApiPortEnv,
-			jsonRestApiStaticPathEnv,
+	case "json-api":
+		serverStart, serverGracefulStop = jsonapi.NewServer(
+			jsonApiPortEnv,
+			jsonApiStaticPathEnv,
 			queries,
 			entities,
 			services,

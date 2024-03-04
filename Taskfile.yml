@@ -6,11 +6,11 @@ vars:
   ENV_FILE_PATH: "env/dev.env"
 
 tasks:
-  entrypoint:json-rest-api:
+  entrypoint:json-api:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/netsly cmd/main.go
-      - ./build/netsly -entrypoint json-rest-api
+      - ./build/netsly -entrypoint json-api
 
   entrypoint:web-app:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
@@ -30,28 +30,28 @@ tasks:
       - go build -o build/netsly cmd/main.go
       - ./build/netsly -entrypoint seed
 
-  generate:json-rest-api:main:
+  generate:json-api:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
     cmds:
-      - task: generate:json-rest-api:single_openapi_config_file
-      - task: generate:json-rest-api:docs
-      - task: generate:json-rest-api:code
+      - task: generate:json-api:single_openapi_config_file
+      - task: generate:json-api:docs
+      - task: generate:json-api:code
 
-  generate:json-rest-api:single_openapi_config_file:
+  generate:json-api:single_openapi_config_file:
     cmds:
       - podman run --rm -v ${PWD}:/spec:Z
         redocly/cli bundle
         -o /spec/gen/openapi/openapi.yaml
-        /spec/internal/presentation/json-rest-api/schema/openapi.yaml
+        /spec/internal/presentation/json-api/rest/schema/openapi.yaml
 
-  generate:json-rest-api:docs:
+  generate:json-api:docs:
     cmds:
       - podman run --rm -v ${PWD}:/spec:Z
         redocly/cli build-docs
-        -o /spec/internal/presentation/json-rest-api/static/docs/index.html
-        /spec/internal/presentation/json-rest-api/schema/openapi.yaml
+        -o /spec/internal/presentation/json-api/static/docs/rest.html
+        /spec/internal/presentation/json-api/rest/schema/openapi.yaml
 
-  generate:json-rest-api:code:
+  generate:json-api:code:
     cmds:
       - go generate gen/ogen/generate.go
 
@@ -114,14 +114,14 @@ tasks:
         -p 6379:6379
         -d redis/redis-stack:latest
 
-  image:json-rest-api:build:
+  image:json-api:build:
     cmds:
-      - podman build -t netsly/json-rest-api:latest -f docker/json-rest-api.Dockerfile .
+      - podman build -t netsly/json-api:latest -f docker/json-api.Dockerfile .
 
-  image:json-rest-api:up:
+  image:json-api:up:
     cmds:
       - podman run
-        --name netsly_json-rest-api
+        --name netsly_json-api
         --network netsly-network
         -p 3010:3010
         -e POSTGRES_URL=postgres://netsly:netsly@netsly-postgres:5432/netsly?sslmode=disable
@@ -129,11 +129,11 @@ tasks:
         -e REDIS_USER=netsly-redis
         -e REDIS_PASS=
         --env-file env/deploy.env
-        localhost/netsly/json-rest-api:latest
+        localhost/netsly/json-api:latest
 
-  image:json-rest-api:down:
+  image:json-api:down:
     cmds:
-      - podman rm netsly_json-rest-api
+      - podman rm netsly_json-api
 
   compose:up:
     cmds:

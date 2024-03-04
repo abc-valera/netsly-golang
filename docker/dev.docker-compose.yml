@@ -1,7 +1,7 @@
 version: "3.9"
 services:
-  json-rest-api:
-    image: localhost/netsly/json-rest-api:latest
+  json-api:
+    image: localhost/netsly/json-api:latest
     ports:
       - "3010:3010"
     env_file:

@@ -12,14 +12,14 @@ RUN go build -o build/netsly cmd/main.go
 FROM library/alpine
 WORKDIR /src
 
-COPY --from=builder /src/internal/presentation/json-rest-api/static static/
+COPY --from=builder /src/internal/presentation/json-api/reststatic static/
 COPY --from=builder /src/build/netsly build/
 
 # Environmental variables
 ENV MODE=dev
-ENV JSON_REST_API_PORT=:3010
-ENV JSON_REST_API_STATIC_PATH=static
+ENV JSON_API_PORT=:3010
+ENV JSON_API_STATIC_PATH=static
 
 EXPOSE 3010
 
-CMD /src/build/netsly -entrypoint json-rest-api
+CMD /src/build/netsly -entrypoint json-api

@@ -7,6 +7,9 @@ info:
     email: zoocity14@gmail.com
     url: https://github.com/abc-valera/netsly-golang
   description: API for Netsly social network
+servers:
+  - url: http://localhost:3010/api/v1
+    description: Development server
 tags:
   - name: sign
     description: Everything about managing user sessions

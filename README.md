@@ -4,15 +4,15 @@ _Work in progress_
 
 ## Description
 
-Netsly is a social network based on the idea of sharing and discussing jokes. It can be used through multiple entrypoints, such as a traditional REST API, SSR (server side rendering) web application, and as a gRPC API.
+Netsly is a social network based on the idea of sharing and discussing jokes. It can be used through multiple entrypoints, such as a traditional REST/WebSocket API, SSR (server side rendering) web application, and as a gRPC API.
 
 ## Architecture
 
-The project is built based on the Clean Architecture with use of some Domain Driven Design patterns.
+The project is built based on the Clean Architecture with the use of Domain Driven Design patterns.
 
 Layers of the application can be shown as follows:
 
-![architecture diagram](meta/architecture_circle_diagram.svg)
+![architecture diagram](meta/architecture_circle_diagram.png)
 
 All the code is located in the `internal` directory. The `cmd` directory contains the entry point of the application.
 
@@ -25,16 +25,19 @@ The following list describes technologies used in the project:
 - For configuration `.env` files are used.
 - The project is containerized and can be run with Docker or Podman.
 
-- Adapter layer:
+- Persistence layer:
 
   - [Ent](https://github.com/ent/ent) is used as an ORM.
   - PostgreSQL is used as a database.
   - Redis is used as a cache.
+
+- Service layer:
+
   - ElasticMail is used as an email api.
   - [Asynq](https://github.com/hibiken/asynq) library with Redis database is used as a task queue.
   - JWT tokens are used for authentication.
 
-- Port layer:
+- Presentation layer:
 
   - For the REST API, the OpenAPI specification is used for generating code and documentation ([ogen](https://github.com/ogen-go/ogen) library is user as the code generator).
   - For the SSR web application, golang html/template library is used with the use of HTMX and Tailwind.

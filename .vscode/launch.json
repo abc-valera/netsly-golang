@@ -5,12 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "json-rest-api Debug",
+      "name": "json-api Debug",
       "type": "go",
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/cmd",
-      "args": ["-entrypoint", "json-rest-api"],
+      "args": ["-entrypoint", "json-api"],
       "envFile": "${workspaceFolder}/env/dev.env"
     },
     {
