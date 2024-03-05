@@ -8,14 +8,11 @@ import (
 
 func routeEvent(
 	e event.Event,
-	errorHandler handler.Error,
-	roomHandler handler.Room,
+	roomHandler handler.RoomMessage,
 ) error {
 	switch e.Type {
-	case handler.EventTypeInvalidArgument:
-		return errorHandler.InvalidArgumentHandler(e)
 	case handler.EventTypeRoomMessage:
-		return roomHandler.SendRoomMessageHandler(e)
+		return roomHandler.RoomMessageHandler(e)
 	default:
 		return coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Invalid event type")
 	}

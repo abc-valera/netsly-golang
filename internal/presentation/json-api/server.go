@@ -19,7 +19,7 @@ import (
 
 // NewServer returns HTTP server
 func NewServer(
-	presentation string,
+	port string,
 	staticPath string,
 
 	queries domain.Queries,
@@ -81,17 +81,17 @@ func NewServer(
 			services,
 		)
 		// Register ws routes
-		r.HandleFunc("/", wsManager.ServeWS)
+		r.HandleFunc("/chat", wsManager.ServeWS)
 	})
 
 	// Init server
 	server := http.Server{
-		Addr:    presentation,
+		Addr:    port,
 		Handler: r,
 	}
 
 	return func() {
-			global.Log().Info("json-api is running", "presentation", presentation)
+			global.Log().Info("json-api is running", "port", port)
 			if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 				global.Log().Fatal("json-api server error: ", err)
 			}

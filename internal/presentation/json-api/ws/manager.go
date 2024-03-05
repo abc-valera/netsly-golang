@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
@@ -10,7 +11,6 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/client"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/handler"
-	"github.com/gorilla/websocket"
 )
 
 // Manager is used to hold references to all Clients
@@ -50,40 +50,39 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
 
 	global.Log().Info("WS_CLIENT_CONNECTED")
 
+	errorHandler := handler.NewError(client.GetID(), m.clients)
 	for {
 		select {
 		case e := <-client.Read():
 			if err := routeEvent(e,
-				handler.NewError(client.GetID(), m.clients),
-				handler.NewRoom(client.GetID(), m.clients, m.roomMemberQuery),
+				handler.NewRoomMessage(client.GetID(), m.clients, m.roomMemberQuery),
 			); err != nil {
 				switch coderr.ErrorCode(err) {
 				case coderr.CodeInvalidArgument:
 					global.Log().Error("WS_CLIENT_401_ERROR", "err", err)
-					http.Error(w, err.Error(), http.StatusBadRequest)
 				default:
 					global.Log().Error("WS_CLIENT_ERROR", "err", err)
-					http.Error(w, err.Error(), http.StatusInternalServerError)
 				}
 				global.Log().Error("WS_HANDLER_ERROR", "err", err)
 			}
 		case err := <-client.Err():
-			if e, ok := err.(*websocket.CloseError); ok {
-				// Handle WS close errors here
-				switch e.Code {
-				}
-				global.Log().Error("WS_CLIENT_CLOSE_ERROR", "code", e.Code, "text", e.Text)
-				continue
-			}
+			fmt.Println("HERE")
+			errorHandler.HandleError(err, client)
+			// TODO: error handling
+			// if e, ok := err.(*websocket.CloseError); ok {
+			// 	// Handle WS close errors here
+			// 	switch e.Code {
+			// 	}
+			// 	global.Log().Error("WS_CLIENT_CLOSE_ERROR", "code", e.Code, "text", e.Text)
+			// 	continue
+			// }
 
-			switch coderr.ErrorCode(err) {
-			case coderr.CodeInvalidArgument:
-				global.Log().Error("WS_CLIENT_401_ERROR", "err", err)
-				http.Error(w, err.Error(), http.StatusBadRequest)
-			default:
-				global.Log().Error("WS_CLIENT_ERROR", "err", err)
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
+			// switch coderr.ErrorCode(err) {
+			// case coderr.CodeInvalidArgument:
+			// 	global.Log().Error("WS_CLIENT_401_ERROR", "err", err)
+			// default:
+			// 	global.Log().Error("WS_CLIENT_ERROR", "err", err)
+			// }
 		}
 	}
 }

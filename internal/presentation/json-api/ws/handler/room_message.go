@@ -11,23 +11,23 @@ import (
 )
 
 const (
-	EventTypeRoomMessage event.Type = "send_room_message"
+	EventTypeRoomMessage event.Type = "room_message"
 )
 
-type Room struct {
+type RoomMessage struct {
 	userID  string
 	clients *client.Clients
 
 	roomMemberQuery query.IRoomMember
 }
 
-func NewRoom(
+func NewRoomMessage(
 	userID string,
 	clients *client.Clients,
 
 	roomMemberQuery query.IRoomMember,
-) Room {
-	return Room{
+) RoomMessage {
+	return RoomMessage{
 		userID:  userID,
 		clients: clients,
 
@@ -35,6 +35,13 @@ func NewRoom(
 	}
 }
 
+// ReceiveRoomMessage is the payload which will be received from the client
+type receiveRoomMessagePayload struct {
+	RoomID  string `json:"room_id"`
+	Content string `json:"content"`
+}
+
+// SendRoomMessage is the payload which will be sent to the client
 type sendRoomMessagePayload struct {
 	FromID  string    `json:"from_id"`
 	RoomID  string    `json:"room_id"`
@@ -42,34 +49,28 @@ type sendRoomMessagePayload struct {
 	SentAt  time.Time `json:"sent_at"`
 }
 
-func (h Room) SendRoomMessageHandler(e event.Event) error {
-	var payload sendRoomMessagePayload
-	if err := json.Unmarshal(e.Payload, &payload); err != nil {
+func (h RoomMessage) RoomMessageHandler(e event.Event) error {
+	var receive receiveRoomMessagePayload
+	if err := json.Unmarshal(e.Payload, &receive); err != nil {
+		return coderr.NewCodeError(coderr.CodeInvalidArgument, err)
+	}
+
+	send, err := json.Marshal(sendRoomMessagePayload{
+		FromID:  h.userID,
+		RoomID:  receive.RoomID,
+		Content: receive.Content,
+		SentAt:  time.Now(),
+	})
+	if err != nil {
 		return coderr.NewInternalErr(err)
 	}
-	payload.FromID = h.userID
 
-	// Send message to all clients in the clients map
-	for _, client := range h.clients.GetAllByUserID(payload.FromID) {
+	for _, client := range h.clients.GetAll() {
 		client.Write() <- event.Event{
 			Type:    EventTypeRoomMessage,
-			Payload: json.RawMessage(e.Payload),
+			Payload: send,
 		}
 	}
-
-	// roomMembers, err := h.roomMemberQuery.GetByRoomID(context.Background(), payload.RoomID)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// for _, member := range roomMembers {
-	// 	for _, client := range h.clients.GetAllByUserID(member.UserID) {
-	// 		client.Write() <- event.Event{
-	// 			Type:    EventTypeSendRoomMessage,
-	// 			Payload: json.RawMessage(e.Payload),
-	// 		}
-	// 	}
-	// }
 
 	return nil
 }

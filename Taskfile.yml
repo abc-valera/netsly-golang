@@ -33,25 +33,25 @@ tasks:
   generate:json-api:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
     cmds:
-      - task: generate:json-api:single_openapi_config_file
-      - task: generate:json-api:docs
-      - task: generate:json-api:code
+      - task: generate:json-api:rest:single_openapi_config_file
+      - task: generate:json-api:rest:docs
+      - task: generate:json-api:rest:code
 
-  generate:json-api:single_openapi_config_file:
+  generate:json-api:rest:single_openapi_config_file:
     cmds:
       - podman run --rm -v ${PWD}:/spec:Z
         redocly/cli bundle
         -o /spec/gen/openapi/openapi.yaml
         /spec/internal/presentation/json-api/rest/schema/openapi.yaml
 
-  generate:json-api:docs:
+  generate:json-api:rest:docs:
     cmds:
       - podman run --rm -v ${PWD}:/spec:Z
         redocly/cli build-docs
         -o /spec/internal/presentation/json-api/static/docs/rest.html
         /spec/internal/presentation/json-api/rest/schema/openapi.yaml
 
-  generate:json-api:code:
+  generate:json-api:rest:code:
     cmds:
       - go generate gen/ogen/generate.go
 

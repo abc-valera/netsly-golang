@@ -107,13 +107,11 @@ func NewClient(w http.ResponseWriter, r *http.Request, tokenMaker service.IToken
 			_, msg, err := client.connection.ReadMessage()
 			if err != nil {
 				client.errChan <- err
-				return
 			}
 
 			var e event.Event
 			if err := json.Unmarshal(msg, &e); err != nil {
 				client.errChan <- coderr.NewCodeMessage(coderr.CodeInvalidArgument, "json input syntax error")
-				return
 			}
 
 			client.readChan <- e
@@ -128,17 +126,14 @@ func NewClient(w http.ResponseWriter, r *http.Request, tokenMaker service.IToken
 				msg, err := json.Marshal(e)
 				if err != nil {
 					client.errChan <- err
-					return
 				}
 
 				if err := conn.WriteMessage(websocket.TextMessage, msg); err != nil {
 					client.errChan <- err
-					return
 				}
 			case <-client.pingChan:
 				if err := conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 					client.errChan <- err
-					return
 				}
 			}
 		}

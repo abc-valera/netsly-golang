@@ -14,7 +14,7 @@ import (
 )
 
 func RunServer(
-	presentation string,
+	port string,
 	staicPath string,
 
 	services domain.Services,
@@ -33,10 +33,10 @@ func RunServer(
 	// ! Register reflection service on gRPC server (for development only)
 	reflection.Register(server)
 
-	lis := coderr.MustWithVal(net.Listen("tcp", presentation))
+	lis := coderr.MustWithVal(net.Listen("tcp", port))
 
 	return func() {
-			global.Log().Info("grpc-api is running", "presentation", presentation)
+			global.Log().Info("grpc-api is running", "port", port)
 			if err := server.Serve(lis); err != nil {
 				global.Log().Fatal("grpc-api server error: ", err)
 			}

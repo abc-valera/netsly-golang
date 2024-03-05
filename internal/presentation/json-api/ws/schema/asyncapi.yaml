@@ -2,18 +2,93 @@ asyncapi: 3.0.0
 info:
   title: Netsly JSON API
   version: "0.1.0"
+  description: JSON WebSocket API for Netsly.
+servers:
+  development:
+    host: localhost:3010/ws/v1
+    description: Development WebSocket server.
+    protocol: ws
+    security:
+      - $ref: "#/components/securitySchemes/access_token"
+channels:
+  chatReceive:
+    address: /chat
+    messages:
+      roomMessageReceive:
+        $ref: "#/components/messages/roomMessageReceive"
+  chatSend:
+    address: /chat
+    messages:
+      roomMessageSend:
+        $ref: "#/components/messages/roomMessageSend"
+operations:
+  roomMessageListener:
+    action: receive
+    channel:
+      $ref: "#/channels/chatReceive"
+  roomMessageSender:
+    action: send
+    channel:
+      $ref: "#/channels/chatSend"
 components:
   messages:
-    RoomMessage:
+    roomMessageReceive:
       payload:
-        type: object
-        properties:
-          fromID:
-            type: string
-          roomID:
-            type: string
-          content:
-            type: string
-          sent_at:
-            type: string
-            format: date-time
+        $ref: "#/components/schemas/roomMessageReceive"
+    roomMessageSend:
+      payload:
+        $ref: "#/components/schemas/roomMessageSend"
+  schemas:
+    roomMessageReceive:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - room_message
+        payload:
+          type: object
+          properties:
+            from_id:
+              type: string
+              format: uuid
+            room_id:
+              type: string
+              format: uuid
+            content:
+              type: string
+              examples:
+                - "Hello, World!"
+            sent_at:
+              type: string
+              format: date-time
+      required:
+        - from_id
+        - room_id
+        - content
+        - sent_at
+    roomMessageSend:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - room_message
+        payload:
+          type: object
+          properties:
+            room_id:
+              type: string
+              format: uuid
+            content:
+              type: string
+              examples:
+                - "Hello, World!"
+      required:
+        - room_id
+        - content
+  securitySchemes:
+    access_token:
+      type: httpApiKey
+      name: access_token
+      in: query
