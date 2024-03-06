@@ -52,7 +52,7 @@ type sendRoomMessagePayload struct {
 func (h RoomMessage) RoomMessageHandler(e event.Event) error {
 	var receive receiveRoomMessagePayload
 	if err := json.Unmarshal(e.Payload, &receive); err != nil {
-		return coderr.NewCodeError(coderr.CodeInvalidArgument, err)
+		return coderr.NewCodeMessageError(coderr.CodeInvalidArgument, "Json input error:", err)
 	}
 
 	send, err := json.Marshal(sendRoomMessagePayload{

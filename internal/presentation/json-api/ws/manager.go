@@ -1,7 +1,7 @@
 package ws
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
@@ -11,6 +11,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/client"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/json-api/ws/handler"
+	"github.com/gorilla/websocket"
 )
 
 // Manager is used to hold references to all Clients
@@ -46,43 +47,43 @@ func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	m.clients.Add(client)
-	defer m.clients.Remove(client) // Defer removal of the client
+	defer m.clients.Remove(client)
 
 	global.Log().Info("WS_CLIENT_CONNECTED")
 
 	errorHandler := handler.NewError(client.GetID(), m.clients)
 	for {
+		var e error
+
 		select {
-		case e := <-client.Read():
-			if err := routeEvent(e,
+		case event := <-client.Read():
+			if err := routeEvent(event,
 				handler.NewRoomMessage(client.GetID(), m.clients, m.roomMemberQuery),
 			); err != nil {
-				switch coderr.ErrorCode(err) {
-				case coderr.CodeInvalidArgument:
-					global.Log().Error("WS_CLIENT_401_ERROR", "err", err)
-				default:
-					global.Log().Error("WS_CLIENT_ERROR", "err", err)
-				}
-				global.Log().Error("WS_HANDLER_ERROR", "err", err)
+				e = err
 			}
 		case err := <-client.Err():
-			fmt.Println("HERE")
-			errorHandler.HandleError(err, client)
-			// TODO: error handling
-			// if e, ok := err.(*websocket.CloseError); ok {
-			// 	// Handle WS close errors here
-			// 	switch e.Code {
-			// 	}
-			// 	global.Log().Error("WS_CLIENT_CLOSE_ERROR", "code", e.Code, "text", e.Text)
-			// 	continue
-			// }
+			e = err
+		}
 
-			// switch coderr.ErrorCode(err) {
-			// case coderr.CodeInvalidArgument:
-			// 	global.Log().Error("WS_CLIENT_401_ERROR", "err", err)
-			// default:
-			// 	global.Log().Error("WS_CLIENT_ERROR", "err", err)
-			// }
+		if e != nil {
+			if e, ok := err.(*websocket.CloseError); ok {
+				switch e.Code {
+				case websocket.CloseNormalClosure:
+					global.Log().Info("WS_CLIENT_CLOSE_NORMAL")
+				default:
+					global.Log().Error("WS_CLIENT_CLOSE_ERROR", "code", e.Code, "text", e.Text)
+				}
+				continue
+			}
+
+			switch coderr.ErrorCode(e) {
+			case coderr.CodeInternal:
+				errorHandler.HandleError(errors.New("internal error"), client)
+				global.Log().Error("WS_INTERNAL_ERROR", "err", e)
+			default:
+				errorHandler.HandleError(e, client)
+			}
 		}
 	}
 }

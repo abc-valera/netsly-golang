@@ -63,7 +63,7 @@ func NewClient(w http.ResponseWriter, r *http.Request, tokenMaker service.IToken
 	// Upgrade the HTTP connection to a websocket connection
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
-		return nil, err
+		return nil, coderr.NewCodeError(coderr.CodeInvalidArgument, err)
 	}
 
 	client := &client{
@@ -82,7 +82,7 @@ func NewClient(w http.ResponseWriter, r *http.Request, tokenMaker service.IToken
 
 	// Set initial connection read deadline
 	if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-		return nil, err
+		client.errChan <- err
 	}
 
 	// Send pings asynchronously to the pingChan
@@ -125,7 +125,7 @@ func NewClient(w http.ResponseWriter, r *http.Request, tokenMaker service.IToken
 			case e := <-client.writeChan:
 				msg, err := json.Marshal(e)
 				if err != nil {
-					client.errChan <- err
+					client.errChan <- coderr.NewInternalErr(err)
 				}
 
 				if err := conn.WriteMessage(websocket.TextMessage, msg); err != nil {

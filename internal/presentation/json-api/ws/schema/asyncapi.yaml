@@ -90,5 +90,5 @@ components:
   securitySchemes:
     access_token:
       type: httpApiKey
-      name: access_token
+      name: token
       in: query

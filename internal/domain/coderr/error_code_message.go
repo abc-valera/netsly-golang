@@ -24,6 +24,13 @@ func NewCodeError(code Code, message error) error {
 	}
 }
 
+func NewCodeMessageError(code Code, message string, err error) error {
+	return &codeMessage{
+		Code:    code,
+		Message: fmt.Sprintf("%s: %s", message, err.Error()),
+	}
+}
+
 // Error returns the string representation of the Error
 func (e codeMessage) Error() string {
 	var buf bytes.Buffer
