@@ -22,8 +22,8 @@ func NewRoomMember(
 }
 
 type RoomMemberCreateRequest struct {
-	RoomID string `validate:"required,uuid"`
 	UserID string `validate:"required,uuid"`
+	RoomID string `validate:"required,uuid"`
 }
 
 func (c RoomMember) Create(ctx context.Context, req RoomMemberCreateRequest) (model.RoomMember, error) {
@@ -34,9 +34,9 @@ func (c RoomMember) Create(ctx context.Context, req RoomMemberCreateRequest) (mo
 	createdAt := time.Now()
 
 	return c.command.Create(ctx, model.RoomMember{
-		RoomID:    req.RoomID,
-		UserID:    req.UserID,
 		CreatedAt: createdAt,
+		UserID:    req.UserID,
+		RoomID:    req.RoomID,
 	})
 }
 

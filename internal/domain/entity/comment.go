@@ -22,9 +22,9 @@ func NewComment(
 }
 
 type CommentCreateRequest struct {
+	Text   string `validate:"required,min=4,max=256"`
 	UserID string `validate:"required,uuid"`
 	JokeID string `validate:"required,uuid"`
-	Text   string `validate:"required,min=4,max=256"`
 }
 
 func (c Comment) Create(ctx context.Context, req CommentCreateRequest) (model.Comment, error) {
@@ -36,9 +36,9 @@ func (c Comment) Create(ctx context.Context, req CommentCreateRequest) (model.Co
 
 	return c.command.Create(ctx, model.Comment{
 		BaseEntity: baseModel,
+		Text:       req.Text,
 		UserID:     req.UserID,
 		JokeID:     req.JokeID,
-		Text:       req.Text,
 	})
 }
 

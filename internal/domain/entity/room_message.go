@@ -22,9 +22,9 @@ func NewRoomMessage(
 }
 
 type RoomMessageCreateRequest struct {
-	ChatID string `validate:"required,uuid"`
-	UserID string `validate:"required,uuid"`
 	Text   string `validate:"required,min=1,max=2048"`
+	UserID string `validate:"required,uuid"`
+	RoomID string `validate:"required,uuid"`
 }
 
 func (c RoomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (model.RoomMessage, error) {
@@ -36,9 +36,9 @@ func (c RoomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (
 
 	return c.command.Create(ctx, model.RoomMessage{
 		BaseEntity: baseModel,
-		RoomID:     req.ChatID,
-		UserID:     req.UserID,
 		Text:       req.Text,
+		UserID:     req.UserID,
+		RoomID:     req.RoomID,
 	})
 }
 

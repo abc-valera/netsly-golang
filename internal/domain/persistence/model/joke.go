@@ -11,10 +11,11 @@ var (
 
 type Joke struct {
 	common.BaseEntity
-	UserID      string
 	Title       string
 	Text        string
 	Explanation string
+
+	UserID string
 }
 
 type Jokes []Joke

@@ -27,7 +27,8 @@ The following list describes technologies used in the project:
 
 - Persistence layer:
 
-  - [Ent](https://github.com/ent/ent) is used as an ORM.
+  - [Goose](https://github.com/pressly/goose) is used as a database migration tool.
+  - [SQLBoiler](https://github.com/volatiletech/sqlboiler) is used as an ORM.
   - PostgreSQL is used as a database.
   - Redis is used as a cache.
 

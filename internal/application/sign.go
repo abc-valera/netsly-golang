@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
@@ -56,7 +57,7 @@ type SignUpRequest struct {
 // creates hash of the password provided by user,
 // then it sends welcome email to the users's email address,
 func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
-	txFunc := func(ctx context.Context) error {
+	txFunc := func(ctx context.Context, commands domain.Commands) error {
 		if _, err := uc.userDomain.Create(ctx, entity.UserCreateRequest{
 			Username: req.Username,
 			Email:    req.Email,

@@ -12,10 +12,10 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mode"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/seed"
-	entimpl "github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl"
-	entcommand "github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/ent-command"
-	entquery "github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/ent-query"
-	enttransactioneer "github.com/abc-valera/netsly-api-golang/internal/persistence/ent-impl/ent-transactioneer"
+	sqlboilerimpl "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboiler-impl"
+	sqlboilercommand "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboiler-impl/sqlboiler-command"
+	sqlboilerquery "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboiler-impl/sqlboiler-query"
+	sqlboilertransactioneer "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboiler-impl/sqlboiler-transactioneer"
 	grpcapi "github.com/abc-valera/netsly-api-golang/internal/presentation/grpc-api"
 	jsonapi "github.com/abc-valera/netsly-api-golang/internal/presentation/json-api"
 	webapp "github.com/abc-valera/netsly-api-golang/internal/presentation/web-app"
@@ -81,32 +81,11 @@ func main() {
 	)
 
 	// Init persistence dependencies
-	client := coderr.MustWithVal(entimpl.InitEntClient(postgresUrlEnv))
+	conn := coderr.MustWithVal(sqlboilerimpl.Init(postgresUrlEnv))
 
-	// Init commands
-	commands := domain.NewCommands(
-		entcommand.NewUserCommand(client),
-		entcommand.NewJokeCommand(client),
-		entcommand.NewLikeCommand(client),
-		entcommand.NewCommentCommand(client),
-		entcommand.NewRoomCommand(client),
-		entcommand.NewRoomMemberCommand(client),
-		entcommand.NewRoomMessageCommand(client),
-	)
-
-	// Init queries
-	queries := domain.NewQueries(
-		entquery.NewUserQuery(client),
-		entquery.NewJokeQuery(client),
-		entquery.NewLikeQuery(client),
-		entquery.NewCommentQuery(client),
-		entquery.NewRoomQuery(client),
-		entquery.NewRoomMemberQuery(client),
-		entquery.NewRoomMessageQuery(client),
-	)
-
-	// Init transactioneer
-	tx := enttransactioneer.NewTransactioneer(client)
+	commands := sqlboilercommand.NewCommands(conn)
+	queries := sqlboilerquery.NewQueries(conn)
+	tx := sqlboilertransactioneer.NewTransactioneer(conn)
 
 	// Init entities
 	entities := domain.NewEntities(commands, queries, services)
@@ -151,6 +130,7 @@ func main() {
 		seed.Seed(
 			queries,
 			entities,
+			tx,
 		)
 		return
 	default:

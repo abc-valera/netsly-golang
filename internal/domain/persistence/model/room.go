@@ -12,8 +12,9 @@ var (
 type Room struct {
 	common.BaseEntity
 	Name        string
-	CreatorID   string
 	Description string
+
+	CreatorID string
 }
 
 type Rooms []Room

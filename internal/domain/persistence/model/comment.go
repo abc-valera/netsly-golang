@@ -11,9 +11,10 @@ var (
 
 type Comment struct {
 	common.BaseEntity
+	Text string
+
 	UserID string
 	JokeID string
-	Text   string
 }
 
 type Comments []Comment

@@ -13,9 +13,10 @@ var (
 // RoomMember is a struct that represents a chat member entity.
 // Technically, it's a many-to-many relationship between Room and User entities.
 type RoomMember struct {
-	RoomID    string
-	UserID    string
 	CreatedAt time.Time
+
+	UserID string
+	RoomID string
 }
 
 type RoomMembers []RoomMember

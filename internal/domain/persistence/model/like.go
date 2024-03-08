@@ -13,9 +13,10 @@ var (
 // Like represents a like entity.
 // Technically, it's a many-to-many relationship between users and jokes.
 type Like struct {
-	UserID    string
-	JokeID    string
 	CreatedAt time.Time
+
+	UserID string
+	JokeID string
 }
 
 type Likes []Like

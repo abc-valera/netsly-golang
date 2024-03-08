@@ -2,6 +2,11 @@
 
 version: "3"
 
+env:
+  GOOSE_MIGRATION_DIR: "internal/persistence/sqlboiler-impl/migration"
+  GOOSE_DRIVER: "postgres"
+  GOOSE_DBSTRING: "postgres://netsly:netsly@localhost:5432/netsly?sslmode=disable"
+
 vars:
   ENV_FILE_PATH: "env/dev.env"
 
@@ -71,9 +76,13 @@ tasks:
         --go-grpc_opt=paths=source_relative
         --proto_path=internal/presentation/grpc-api/proto
 
+  generate:persistence:migration:
+    cmds:
+      - goose -s create main sql
+
   generate:persistence:code:
     cmds:
-      - go generate gen/ent/generate.go
+      - sqlboiler psql -c internal/persistence/sqlboiler-impl/sqlboiler.toml
 
   infrastructure:up:
     cmds:
@@ -94,6 +103,10 @@ tasks:
     cmds:
       - podman stop netsly-postgres
       - podman stop netsly-redis
+
+  infrastructure:migrate:
+    cmds:
+      - goose up
 
   infrastructure:run_postgres:
     cmds:

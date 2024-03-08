@@ -23,8 +23,8 @@ func NewRoom(
 
 type RoomCreateRequest struct {
 	Name        string `validate:"required,min=4,max=64"`
-	CreatorID   string `validate:"required,uuid"`
 	Description string `validate:"max=256"`
+	CreatorID   string `validate:"required,uuid"`
 }
 
 func (c Room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, error) {
@@ -37,8 +37,8 @@ func (c Room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 	return c.command.Create(ctx, model.Room{
 		BaseEntity:  baseModel,
 		Name:        req.Name,
-		CreatorID:   req.CreatorID,
 		Description: req.Description,
+		CreatorID:   req.CreatorID,
 	})
 }
 

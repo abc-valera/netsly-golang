@@ -12,8 +12,12 @@ type ISelectParamsHelper interface {
 }
 
 func NewDomainSelectParams(params ISelectParamsHelper) spec.SelectParams {
+	order := spec.OrderDesc
+	if params.GetOrder().Value == ogen.Order(spec.OrderAsc) {
+		order = spec.OrderAsc
+	}
 	return spec.NewSelectParams(
-		string(params.GetOrder().Value),
+		order,
 		params.GetLimit().Value,
 		params.GetOffset().Value,
 	)

@@ -11,9 +11,10 @@ var (
 
 type RoomMessage struct {
 	common.BaseEntity
-	RoomID string
+	Text string
+
 	UserID string
-	Text   string
+	RoomID string
 }
 
 type RoomMessages []RoomMessage
