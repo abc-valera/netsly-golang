@@ -1,0 +1,16 @@
+quiet: False
+
+all: True
+inpackage: True
+dir: "{{ trimPrefix .PackagePath `github.com/abc-valera/netsly-api-golang/` }}"
+mockname: "{{ .Mock }}{{ trimPrefix ( .InterfaceName | camelcase ) `I` }}"
+filename: "{{ trimPrefix ( .InterfaceName | snakecase ) `i_` }}_mock.go"
+
+with-expecter: True
+disable-version-string: True
+
+packages:
+  github.com/abc-valera/netsly-api-golang/internal/domain/service: ~
+  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command: ~
+  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query: ~
+  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/transactioneer: ~

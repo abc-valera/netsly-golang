@@ -11,13 +11,13 @@ type broker struct {
 	emailSender service.IEmailSender
 }
 
-func NewMessagingBroker(emailSender service.IEmailSender) service.IMessageBroker {
+func NewMessagingBroker(emailSender service.IEmailSender) service.ITaskQueuer {
 	return &broker{
 		emailSender: emailSender,
 	}
 }
 
-func (b broker) SendEmailTask(ctx context.Context, priority service.Priority, email service.Email) error {
+func (b broker) SendEmailTask(ctx context.Context, priority service.TaskPriority, email service.Email) error {
 	go func() {
 		b.emailSender.SendEmail(email)
 		global.Log().Info("SENT EMAIL",

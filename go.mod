@@ -16,6 +16,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/ogen-go/ogen v0.80.1
 	github.com/spf13/viper v1.12.0
+	github.com/stretchr/testify v1.9.0
 	github.com/volatiletech/null/v8 v8.1.2
 	github.com/volatiletech/randomize v0.0.1
 	github.com/volatiletech/sqlboiler/v4 v4.16.2
@@ -58,6 +59,7 @@ require (
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
 	github.com/volatiletech/inflect v0.0.1 // indirect
 	go.uber.org/zap v1.26.0 // indirect

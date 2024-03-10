@@ -10,7 +10,7 @@ type Services struct {
 	EmailSender   service.IEmailSender
 	PasswordMaker service.IPasswordMaker
 	TokenMaker    service.ITokenMaker
-	MessageBroker service.IMessageBroker
+	TaskQueuer    service.ITaskQueuer
 }
 
 func NewServices(
@@ -18,13 +18,13 @@ func NewServices(
 	emailSender service.IEmailSender,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
-	messageBroker service.IMessageBroker,
+	messageBroker service.ITaskQueuer,
 ) Services {
 	return Services{
 		Logger:        logger,
 		EmailSender:   emailSender,
 		PasswordMaker: passwordMaker,
 		TokenMaker:    tokenMaker,
-		MessageBroker: messageBroker,
+		TaskQueuer:    messageBroker,
 	}
 }

@@ -23,7 +23,7 @@ type SignUseCase struct {
 	userDomain    entity.User
 	passwordMaker service.IPasswordMaker
 	tokenMaker    service.ITokenMaker
-	messageBroker service.IMessageBroker
+	messageBroker service.ITaskQueuer
 }
 
 func NewSignUseCase(
@@ -32,7 +32,7 @@ func NewSignUseCase(
 	userDomain entity.User,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
-	messageBroker service.IMessageBroker,
+	messageBroker service.ITaskQueuer,
 ) SignUseCase {
 	return SignUseCase{
 		userQuery:     userQuery,

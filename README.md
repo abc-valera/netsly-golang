@@ -21,9 +21,14 @@ All the code is located in the `internal` directory. The `cmd` directory contain
 The following list describes technologies used in the project:
 
 - All the main code is written in Golang.
-- The project is not using Makefiles, but instead, it uses [Task](https://taskfile.dev/) as a task runner.
 - For configuration `.env` files are used.
 - The project is containerized and can be run with Docker or Podman.
+- The project is not using Makefiles, but instead, it uses [Task](https://taskfile.dev/) as a task runner.
+
+- Domain layer:
+
+  - [Mockery](https://github.com/vektra/mockery) is used for mock generation.
+  - [Playground-Validator](https://github.com/go-playground/validator) is used for validation.
 
 - Persistence layer:
 
@@ -34,15 +39,15 @@ The following list describes technologies used in the project:
 
 - Service layer:
 
-  - ElasticMail is used as an email api.
+  - [ElasticMail](https://elasticemail.com/) is used as an email api.
   - [Asynq](https://github.com/hibiken/asynq) library with Redis database is used as a task queue.
   - JWT tokens are used for authentication.
 
 - Presentation layer:
 
-  - For the REST API, the OpenAPI specification is used for generating code and documentation ([ogen](https://github.com/ogen-go/ogen) library is user as the code generator).
-  - For the SSR web application, golang html/template library is used with the use of HTMX and Tailwind.
-  - For the gRPC API, the gRPC framework is used with additional tools by [Buf](https://buf.build/).
+  - For the REST API, the [OpenAPI](https://learn.openapis.org/) and [AsycAPI](https://www.asyncapi.com/en) specifications are use for documentation. [Ogen](https://github.com/ogen-go/ogen) library is user as the code generator for the REST API.
+  - For the SSR web application, golang html/template library is used with the use of [HTMX](https://htmx.org/) and [Tailwind CSS](https://tailwindcss.com/).
+  - For the gRPC API, the [gRPC framework](https://grpc.io/) is used with additional tools by [Buf](https://buf.build/).
 
 ## Initial setup
 

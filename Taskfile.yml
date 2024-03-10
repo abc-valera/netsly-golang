@@ -35,6 +35,10 @@ tasks:
       - go build -o build/netsly cmd/main.go
       - ./build/netsly -entrypoint seed
 
+  generate:domain:mocks:
+    cmds:
+      - mockery --config internal/domain/mockery/.mockery.yaml
+
   generate:json-api:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
     cmds:

@@ -22,7 +22,7 @@ func NewUseCases(
 			entities.User,
 			services.PasswordMaker,
 			services.TokenMaker,
-			services.MessageBroker,
+			services.TaskQueuer,
 		),
 	}
 }

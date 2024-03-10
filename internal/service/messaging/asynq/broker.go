@@ -17,7 +17,7 @@ type broker struct {
 func NewMessagingBroker(
 	redisUrl, redisUser, redisPass string,
 	emailSender service.IEmailSender,
-) service.IMessageBroker {
+) service.ITaskQueuer {
 	// Redis connection options
 	redisOpts := asynq.RedisClientOpt{
 		Addr:     redisUrl,
@@ -31,7 +31,7 @@ func NewMessagingBroker(
 	}
 }
 
-func (b broker) SendEmailTask(ctx context.Context, priority service.Priority, email service.Email) error {
+func (b broker) SendEmailTask(ctx context.Context, priority service.TaskPriority, email service.Email) error {
 	task, err := NewSendEmailTask("email")
 	if err != nil {
 		return err
