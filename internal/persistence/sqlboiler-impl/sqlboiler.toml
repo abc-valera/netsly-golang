@@ -1,5 +1,7 @@
 wipe = true
 
+no-tests = true
+
 output = "gen/sqlboiler" 
 pkgname = "sqlboiler"
 
