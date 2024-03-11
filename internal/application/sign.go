@@ -20,10 +20,10 @@ var (
 type SignUseCase struct {
 	tx            transactioneer.ITransactioneer
 	userQuery     query.IUser
-	userDomain    entity.User
+	userEntity    entity.User
 	passwordMaker service.IPasswordMaker
 	tokenMaker    service.ITokenMaker
-	messageBroker service.ITaskQueuer
+	taskQueue     service.ITaskQueuer
 }
 
 func NewSignUseCase(
@@ -32,15 +32,15 @@ func NewSignUseCase(
 	userDomain entity.User,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
-	messageBroker service.ITaskQueuer,
+	taskQueue service.ITaskQueuer,
 ) SignUseCase {
 	return SignUseCase{
 		userQuery:     userQuery,
 		tx:            tx,
-		userDomain:    userDomain,
+		userEntity:    userDomain,
 		passwordMaker: passwordMaker,
 		tokenMaker:    tokenMaker,
-		messageBroker: messageBroker,
+		taskQueue:     taskQueue,
 	}
 }
 
@@ -58,7 +58,7 @@ type SignUpRequest struct {
 // then it sends welcome email to the users's email address,
 func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 	txFunc := func(ctx context.Context, commands domain.Commands) error {
-		if _, err := uc.userDomain.Create(ctx, entity.UserCreateRequest{
+		if _, err := uc.userEntity.Create(ctx, entity.UserCreateRequest{
 			Username: req.Username,
 			Email:    req.Email,
 			Password: req.Password,
@@ -74,7 +74,7 @@ func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 			To:      []string{req.Email},
 		}
 
-		return uc.messageBroker.SendEmailTask(ctx, service.Critical, welcomeEmail)
+		return uc.taskQueue.SendEmailTask(ctx, service.Critical, welcomeEmail)
 	}
 
 	return uc.tx.PerformTX(ctx, txFunc)

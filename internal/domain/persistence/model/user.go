@@ -10,7 +10,7 @@ var (
 )
 
 type User struct {
-	common.BaseEntity
+	common.BaseModel
 	Username       string
 	Email          string
 	HashedPassword string

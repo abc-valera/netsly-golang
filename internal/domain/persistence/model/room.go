@@ -10,7 +10,7 @@ var (
 )
 
 type Room struct {
-	common.BaseEntity
+	common.BaseModel
 	Name        string
 	Description string
 

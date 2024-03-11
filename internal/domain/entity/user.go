@@ -2,22 +2,24 @@ package entity
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entity/common"
+	newbasemodel "github.com/abc-valera/netsly-api-golang/internal/domain/entity/new-base-model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/google/uuid"
 )
 
-// User is responsible for validation and handling user domain logic
 type User struct {
-	// Data layer access
+	newUUID func() string
+	timeNow func() time.Time
+
 	query   query.IUser
 	command command.IUser
 
-	// Service layer access
 	passMaker service.IPasswordMaker
 }
 
@@ -27,6 +29,9 @@ func NewUser(
 	passMaker service.IPasswordMaker,
 ) User {
 	return User{
+		newUUID: uuid.New().String,
+		timeNow: time.Now,
+
 		query:     query,
 		command:   command,
 		passMaker: passMaker,
@@ -46,7 +51,7 @@ func (u User) Create(ctx context.Context, req UserCreateRequest) (model.User, er
 		return model.User{}, err
 	}
 
-	baseModel := common.NewBaseEntity()
+	baseModel := newbasemodel.NewBaseModel(u.newUUID(), u.timeNow())
 
 	hashedPassword, err := u.passMaker.HashPassword(req.Password)
 	if err != nil {
@@ -54,7 +59,7 @@ func (u User) Create(ctx context.Context, req UserCreateRequest) (model.User, er
 	}
 
 	return u.command.Create(ctx, model.User{
-		BaseEntity:     baseModel,
+		BaseModel:      baseModel,
 		Username:       req.Username,
 		Email:          req.Email,
 		HashedPassword: hashedPassword,
@@ -74,13 +79,11 @@ func (u User) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 		return model.User{}, err
 	}
 
-	// Domain logic
 	hashedPassword, err := u.passMaker.HashPassword(*req.Password)
 	if err != nil {
 		return model.User{}, err
 	}
 
-	// Edit in data source
 	return u.command.Update(ctx, userID, command.UserUpdate{
 		HashedPassword: &hashedPassword,
 		Fullname:       req.Fullname,
@@ -97,7 +100,6 @@ func (u User) Delete(ctx context.Context, userID string, req UserDeleteRequest) 
 		return err
 	}
 
-	// Domain logic
 	user, err := u.query.GetByID(ctx, userID)
 	if err != nil {
 		return err
@@ -107,6 +109,5 @@ func (u User) Delete(ctx context.Context, userID string, req UserDeleteRequest) 
 		return err
 	}
 
-	// Delete from data source
 	return u.command.Delete(ctx, userID)
 }

@@ -10,7 +10,7 @@ var (
 )
 
 type Joke struct {
-	common.BaseEntity
+	common.BaseModel
 	Title       string
 	Text        string
 	Explanation string

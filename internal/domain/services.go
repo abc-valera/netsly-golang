@@ -18,13 +18,13 @@ func NewServices(
 	emailSender service.IEmailSender,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
-	messageBroker service.ITaskQueuer,
+	taskQueue service.ITaskQueuer,
 ) Services {
 	return Services{
 		Logger:        logger,
 		EmailSender:   emailSender,
 		PasswordMaker: passwordMaker,
 		TokenMaker:    tokenMaker,
-		TaskQueuer:    messageBroker,
+		TaskQueuer:    taskQueue,
 	}
 }

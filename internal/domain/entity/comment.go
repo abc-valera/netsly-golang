@@ -2,14 +2,19 @@ package entity
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entity/common"
+	newbasemodel "github.com/abc-valera/netsly-api-golang/internal/domain/entity/new-base-model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
+	"github.com/google/uuid"
 )
 
 type Comment struct {
+	newUUID func() string
+	timeNow func() time.Time
+
 	command command.IComment
 }
 
@@ -17,6 +22,9 @@ func NewComment(
 	command command.IComment,
 ) Comment {
 	return Comment{
+		newUUID: uuid.New().String,
+		timeNow: time.Now,
+
 		command: command,
 	}
 }
@@ -32,13 +40,13 @@ func (c Comment) Create(ctx context.Context, req CommentCreateRequest) (model.Co
 		return model.Comment{}, err
 	}
 
-	baseModel := common.NewBaseEntity()
+	baseModel := newbasemodel.NewBaseModel(c.newUUID(), c.timeNow())
 
 	return c.command.Create(ctx, model.Comment{
-		BaseEntity: baseModel,
-		Text:       req.Text,
-		UserID:     req.UserID,
-		JokeID:     req.JokeID,
+		BaseModel: baseModel,
+		Text:      req.Text,
+		UserID:    req.UserID,
+		JokeID:    req.JokeID,
 	})
 }
 

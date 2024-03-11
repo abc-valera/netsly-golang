@@ -10,7 +10,7 @@ var (
 )
 
 type RoomMessage struct {
-	common.BaseEntity
+	common.BaseModel
 	Text string
 
 	UserID string

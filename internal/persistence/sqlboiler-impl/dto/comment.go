@@ -13,7 +13,7 @@ func ToDomainComment(comment *sqlboiler.Comment) model.Comment {
 	}
 
 	return model.Comment{
-		BaseEntity: common.BaseEntity{
+		BaseModel: common.BaseModel{
 			ID:        comment.ID,
 			CreatedAt: comment.CreatedAt,
 		},

@@ -13,7 +13,7 @@ func ToDomainJoke(joke *sqlboiler.Joke) model.Joke {
 	}
 
 	return model.Joke{
-		BaseEntity: common.BaseEntity{
+		BaseModel: common.BaseModel{
 			ID:        joke.ID,
 			CreatedAt: joke.CreatedAt,
 		},

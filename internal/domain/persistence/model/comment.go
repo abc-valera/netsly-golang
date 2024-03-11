@@ -10,7 +10,7 @@ var (
 )
 
 type Comment struct {
-	common.BaseEntity
+	common.BaseModel
 	Text string
 
 	UserID string

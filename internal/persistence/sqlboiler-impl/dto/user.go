@@ -13,7 +13,7 @@ func ToDomainUser(user *sqlboiler.User) model.User {
 	}
 
 	return model.User{
-		BaseEntity: common.BaseEntity{
+		BaseModel: common.BaseModel{
 			ID:        user.ID,
 			CreatedAt: user.CreatedAt,
 		},

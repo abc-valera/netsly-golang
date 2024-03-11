@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type BaseEntity struct {
+type BaseModel struct {
 	ID        string
 	CreatedAt time.Time
 }

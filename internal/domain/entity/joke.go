@@ -2,14 +2,19 @@ package entity
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entity/common"
+	newbasemodel "github.com/abc-valera/netsly-api-golang/internal/domain/entity/new-base-model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
+	"github.com/google/uuid"
 )
 
 type Joke struct {
+	newUUID func() string
+	timeNow func() time.Time
+
 	command command.IJoke
 }
 
@@ -17,6 +22,9 @@ func NewJoke(
 	command command.IJoke,
 ) Joke {
 	return Joke{
+		newUUID: uuid.New().String,
+		timeNow: time.Now,
+
 		command: command,
 	}
 }
@@ -33,10 +41,10 @@ func (j Joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, er
 		return model.Joke{}, err
 	}
 
-	baseModel := common.NewBaseEntity()
+	baseModel := newbasemodel.NewBaseModel(j.newUUID(), j.timeNow())
 
 	return j.command.Create(ctx, model.Joke{
-		BaseEntity:  baseModel,
+		BaseModel:   baseModel,
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation,

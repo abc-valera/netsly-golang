@@ -13,7 +13,7 @@ func ToDomainRoom(room *sqlboiler.Room) model.Room {
 	}
 
 	return model.Room{
-		BaseEntity: common.BaseEntity{
+		BaseModel: common.BaseModel{
 			ID:        room.ID,
 			CreatedAt: room.CreatedAt,
 		},

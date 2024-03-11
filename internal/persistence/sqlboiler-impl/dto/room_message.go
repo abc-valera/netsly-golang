@@ -13,7 +13,7 @@ func ToDomainRoomMessage(roomMessage *sqlboiler.RoomMessage) model.RoomMessage {
 	}
 
 	return model.RoomMessage{
-		BaseEntity: common.BaseEntity{
+		BaseModel: common.BaseModel{
 			ID:        roomMessage.ID,
 			CreatedAt: roomMessage.CreatedAt,
 		},
