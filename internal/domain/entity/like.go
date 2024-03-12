@@ -2,22 +2,26 @@ package entity
 
 import (
 	"context"
-	"time"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 
 type Like struct {
 	command command.ILike
+
+	timeMaker service.ITimeMaker
 }
 
 func NewLike(
 	command command.ILike,
+	timer service.ITimeMaker,
 ) Like {
 	return Like{
-		command: command,
+		command:   command,
+		timeMaker: timer,
 	}
 }
 
@@ -31,14 +35,11 @@ func (l Like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, er
 		return model.Like{}, err
 	}
 
-	// Domain logic
-	createdAt := time.Now()
-
 	// Save in the data source
 	return l.command.Create(ctx, model.Like{
 		UserID:    req.UserID,
 		JokeID:    req.JokeID,
-		CreatedAt: createdAt,
+		CreatedAt: l.timeMaker.Now(),
 	})
 }
 

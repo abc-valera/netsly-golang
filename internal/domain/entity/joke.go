@@ -2,30 +2,29 @@ package entity
 
 import (
 	"context"
-	"time"
 
-	newbasemodel "github.com/abc-valera/netsly-api-golang/internal/domain/entity/new-base-model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-	"github.com/google/uuid"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 
 type Joke struct {
-	newUUID func() string
-	timeNow func() time.Time
-
 	command command.IJoke
+
+	uuidMaker service.IUuidMaker
+	timeMaker service.ITimeMaker
 }
 
 func NewJoke(
 	command command.IJoke,
+	uuidMaker service.IUuidMaker,
+	timeMaker service.ITimeMaker,
 ) Joke {
 	return Joke{
-		newUUID: uuid.New().String,
-		timeNow: time.Now,
-
-		command: command,
+		command:   command,
+		uuidMaker: uuidMaker,
+		timeMaker: timeMaker,
 	}
 }
 
@@ -41,13 +40,12 @@ func (j Joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, er
 		return model.Joke{}, err
 	}
 
-	baseModel := newbasemodel.NewBaseModel(j.newUUID(), j.timeNow())
-
 	return j.command.Create(ctx, model.Joke{
-		BaseModel:   baseModel,
+		ID:          j.uuidMaker.NewUUID(),
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation,
+		CreatedAt:   j.timeMaker.Now(),
 		UserID:      req.UserID,
 	})
 }

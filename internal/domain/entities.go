@@ -18,12 +18,12 @@ func NewEntities(
 	services Services,
 ) Entities {
 	return Entities{
-		User:        entity.NewUser(commands.User, queries.User, services.PasswordMaker),
-		Joke:        entity.NewJoke(commands.Joke),
-		Like:        entity.NewLike(commands.Like),
-		Comment:     entity.NewComment(commands.Comment),
-		Room:        entity.NewRoom(commands.Room),
-		RoomMember:  entity.NewRoomMember(commands.RoomMember),
-		RoomMessage: entity.NewRoomMessage(commands.RoomMessage),
+		User:        entity.NewUser(commands.User, queries.User, services.UUUIDMaker, services.Time, services.PasswordMaker),
+		Joke:        entity.NewJoke(commands.Joke, services.UUUIDMaker, services.Time),
+		Like:        entity.NewLike(commands.Like, services.Time),
+		Comment:     entity.NewComment(commands.Comment, services.UUUIDMaker, services.Time),
+		Room:        entity.NewRoom(commands.Room, services.UUUIDMaker, services.Time),
+		RoomMember:  entity.NewRoomMember(commands.RoomMember, services.Time),
+		RoomMessage: entity.NewRoomMessage(commands.RoomMessage, services.UUUIDMaker, services.Time),
 	}
 }

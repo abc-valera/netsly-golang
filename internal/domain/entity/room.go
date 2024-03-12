@@ -2,30 +2,29 @@ package entity
 
 import (
 	"context"
-	"time"
 
-	newbasemodel "github.com/abc-valera/netsly-api-golang/internal/domain/entity/new-base-model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-	"github.com/google/uuid"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 
 type Room struct {
-	newUUID func() string
-	timeNow func() time.Time
-
 	command command.IRoom
+
+	uuidMaker service.IUuidMaker
+	timeMaker service.ITimeMaker
 }
 
 func NewRoom(
 	command command.IRoom,
+	uuidMaker service.IUuidMaker,
+	timeMaker service.ITimeMaker,
 ) Room {
 	return Room{
-		newUUID: uuid.New().String,
-		timeNow: time.Now,
-
-		command: command,
+		command:   command,
+		uuidMaker: uuidMaker,
+		timeMaker: timeMaker,
 	}
 }
 
@@ -40,12 +39,11 @@ func (r Room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 		return model.Room{}, err
 	}
 
-	baseModel := newbasemodel.NewBaseModel(r.newUUID(), r.timeNow())
-
 	return r.command.Create(ctx, model.Room{
-		BaseModel:   baseModel,
+		ID:          r.uuidMaker.NewUUID(),
 		Name:        req.Name,
 		Description: req.Description,
+		CreatedAt:   r.timeMaker.Now(),
 		CreatorID:   req.CreatorID,
 	})
 }

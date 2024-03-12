@@ -1,8 +1,9 @@
 package model
 
 import (
+	"time"
+
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model/common"
 )
 
 var (
@@ -10,8 +11,9 @@ var (
 )
 
 type RoomMessage struct {
-	common.BaseModel
-	Text string
+	ID        string
+	Text      string
+	CreatedAt time.Time
 
 	UserID string
 	RoomID string

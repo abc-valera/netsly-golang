@@ -7,6 +7,8 @@ import (
 
 type Services struct {
 	Logger        logger.ILogger
+	UUUIDMaker    service.IUuidMaker
+	Time          service.ITimeMaker
 	EmailSender   service.IEmailSender
 	PasswordMaker service.IPasswordMaker
 	TokenMaker    service.ITokenMaker
@@ -15,6 +17,8 @@ type Services struct {
 
 func NewServices(
 	logger logger.ILogger,
+	uuidMaker service.IUuidMaker,
+	timer service.ITimeMaker,
 	emailSender service.IEmailSender,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
@@ -22,6 +26,8 @@ func NewServices(
 ) Services {
 	return Services{
 		Logger:        logger,
+		UUUIDMaker:    uuidMaker,
+		Time:          timer,
 		EmailSender:   emailSender,
 		PasswordMaker: passwordMaker,
 		TokenMaker:    tokenMaker,

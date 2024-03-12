@@ -2,38 +2,35 @@ package entity
 
 import (
 	"context"
-	"time"
 
-	newbasemodel "github.com/abc-valera/netsly-api-golang/internal/domain/entity/new-base-model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
-	"github.com/google/uuid"
 )
 
 type User struct {
-	newUUID func() string
-	timeNow func() time.Time
-
 	query   query.IUser
 	command command.IUser
 
+	uuidMaker service.IUuidMaker
+	timeMaker service.ITimeMaker
 	passMaker service.IPasswordMaker
 }
 
 func NewUser(
 	command command.IUser,
 	query query.IUser,
+	uuidMaker service.IUuidMaker,
+	timeMaker service.ITimeMaker,
 	passMaker service.IPasswordMaker,
 ) User {
 	return User{
-		newUUID: uuid.New().String,
-		timeNow: time.Now,
-
 		query:     query,
 		command:   command,
+		uuidMaker: uuidMaker,
+		timeMaker: timeMaker,
 		passMaker: passMaker,
 	}
 }
@@ -51,20 +48,19 @@ func (u User) Create(ctx context.Context, req UserCreateRequest) (model.User, er
 		return model.User{}, err
 	}
 
-	baseModel := newbasemodel.NewBaseModel(u.newUUID(), u.timeNow())
-
 	hashedPassword, err := u.passMaker.HashPassword(req.Password)
 	if err != nil {
 		return model.User{}, err
 	}
 
 	return u.command.Create(ctx, model.User{
-		BaseModel:      baseModel,
+		ID:             u.uuidMaker.NewUUID(),
 		Username:       req.Username,
 		Email:          req.Email,
 		HashedPassword: hashedPassword,
 		Fullname:       req.Fullname,
 		Status:         req.Status,
+		CreatedAt:      u.timeMaker.Now(),
 	})
 }
 

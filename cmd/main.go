@@ -12,18 +12,20 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mode"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/seed"
-	sqlboilerimpl "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboiler-impl"
-	sqlboilercommand "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboiler-impl/sqlboiler-command"
-	sqlboilerquery "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboiler-impl/sqlboiler-query"
-	sqlboilertransactioneer "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboiler-impl/sqlboiler-transactioneer"
+	sqlboilerimpl "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl"
+	sqlboilercommand "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerCommand"
+	sqlboilerquery "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerQuery"
+	sqlboilertransactioneer "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerTransactioneer"
 	grpcapi "github.com/abc-valera/netsly-api-golang/internal/presentation/grpc-api"
 	jsonapi "github.com/abc-valera/netsly-api-golang/internal/presentation/json-api"
 	webapp "github.com/abc-valera/netsly-api-golang/internal/presentation/web-app"
-	"github.com/abc-valera/netsly-api-golang/internal/service/email"
+	"github.com/abc-valera/netsly-api-golang/internal/service/emailSender"
 	"github.com/abc-valera/netsly-api-golang/internal/service/logger"
-	"github.com/abc-valera/netsly-api-golang/internal/service/messaging/dummy"
-	"github.com/abc-valera/netsly-api-golang/internal/service/password"
-	"github.com/abc-valera/netsly-api-golang/internal/service/token"
+	"github.com/abc-valera/netsly-api-golang/internal/service/passwordMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/service/taskQueuer/dummy"
+	"github.com/abc-valera/netsly-api-golang/internal/service/timeMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/service/tokenMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/service/uuidMaker"
 )
 
 var (
@@ -63,17 +65,21 @@ func main() {
 	global.InitMode(appMode)
 
 	// Init services
-	passwordMaker := password.NewPasswordMaker()
-	tokenMaker := token.NewTokenMaker(
+	timeMaker := timeMaker.NewTimeMaker()
+	uuidMaker := uuidMaker.NewUUID()
+	passwordMaker := passwordMaker.NewPasswordMaker()
+	tokenMaker := tokenMaker.NewTokenMaker(
 		coderr.MustWithVal(time.ParseDuration(accessTokenDurationEnv)),
 		coderr.MustWithVal(time.ParseDuration(refreshTokenDurationEnv)),
 		signKeyEnv,
 	)
-	emailSender := email.NewDummyEmailSender()
+	emailSender := emailSender.NewDummyEmailSender()
 	broker := dummy.NewMessagingBroker(emailSender)
 
 	services := domain.NewServices(
 		logger,
+		uuidMaker,
+		timeMaker,
 		emailSender,
 		passwordMaker,
 		tokenMaker,

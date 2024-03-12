@@ -2,30 +2,29 @@ package entity
 
 import (
 	"context"
-	"time"
 
-	newbasemodel "github.com/abc-valera/netsly-api-golang/internal/domain/entity/new-base-model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-	"github.com/google/uuid"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 
 type RoomMessage struct {
-	newUUID func() string
-	timeNow func() time.Time
-
 	command command.IRoomMessage
+
+	uuidMaker service.IUuidMaker
+	timeMaker service.ITimeMaker
 }
 
 func NewRoomMessage(
 	command command.IRoomMessage,
+	uuidMaker service.IUuidMaker,
+	timeMaker service.ITimeMaker,
 ) RoomMessage {
 	return RoomMessage{
-		newUUID: uuid.New().String,
-		timeNow: time.Now,
-
-		command: command,
+		command:   command,
+		uuidMaker: uuidMaker,
+		timeMaker: timeMaker,
 	}
 }
 
@@ -40,11 +39,10 @@ func (rm RoomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) 
 		return model.RoomMessage{}, err
 	}
 
-	baseModel := newbasemodel.NewBaseModel(rm.newUUID(), rm.timeNow())
-
 	return rm.command.Create(ctx, model.RoomMessage{
-		BaseModel: baseModel,
+		ID:        rm.uuidMaker.NewUUID(),
 		Text:      req.Text,
+		CreatedAt: rm.timeMaker.Now(),
 		UserID:    req.UserID,
 		RoomID:    req.RoomID,
 	})

@@ -1,8 +1,9 @@
 package model
 
 import (
+	"time"
+
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model/common"
 )
 
 var (
@@ -10,12 +11,13 @@ var (
 )
 
 type User struct {
-	common.BaseModel
+	ID             string
 	Username       string
 	Email          string
 	HashedPassword string
 	Fullname       string
 	Status         string
+	CreatedAt      time.Time
 }
 
 type Users []User

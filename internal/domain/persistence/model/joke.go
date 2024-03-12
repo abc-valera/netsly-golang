@@ -1,8 +1,9 @@
 package model
 
 import (
+	"time"
+
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model/common"
 )
 
 var (
@@ -10,10 +11,11 @@ var (
 )
 
 type Joke struct {
-	common.BaseModel
+	ID          string
 	Title       string
 	Text        string
 	Explanation string
+	CreatedAt   time.Time
 
 	UserID string
 }
