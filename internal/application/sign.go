@@ -18,26 +18,26 @@ var (
 )
 
 type SignUseCase struct {
-	tx            transactioneer.ITransactioneer
-	userQuery     query.IUser
 	userEntity    entity.User
+	userQuery     query.IUser
+	tx            transactioneer.ITransactioneer
 	passwordMaker service.IPasswordMaker
 	tokenMaker    service.ITokenMaker
 	taskQueue     service.ITaskQueuer
 }
 
 func NewSignUseCase(
+	userDomain entity.User,
 	userQuery query.IUser,
 	tx transactioneer.ITransactioneer,
-	userDomain entity.User,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
 	taskQueue service.ITaskQueuer,
 ) SignUseCase {
 	return SignUseCase{
+		userEntity:    userDomain,
 		userQuery:     userQuery,
 		tx:            tx,
-		userEntity:    userDomain,
 		passwordMaker: passwordMaker,
 		tokenMaker:    tokenMaker,
 		taskQueue:     taskQueue,
@@ -57,8 +57,8 @@ type SignUpRequest struct {
 // creates hash of the password provided by user,
 // then it sends welcome email to the users's email address,
 func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
-	txFunc := func(ctx context.Context, commands domain.Commands) error {
-		if _, err := uc.userEntity.Create(ctx, entity.UserCreateRequest{
+	txFunc := func(ctx context.Context, txEntities domain.Entities) error {
+		if _, err := txEntities.User.Create(ctx, entity.UserCreateRequest{
 			Username: req.Username,
 			Email:    req.Email,
 			Password: req.Password,

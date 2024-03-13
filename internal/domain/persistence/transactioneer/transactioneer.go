@@ -8,5 +8,5 @@ import (
 
 // ITransactioneer is an interface that defines a method to perform a transaction
 type ITransactioneer interface {
-	PerformTX(ctx context.Context, txFunc func(ctx context.Context, commands domain.Commands) error) error
+	PerformTX(ctx context.Context, txFunc func(ctx context.Context, txEntities domain.Entities) error) error
 }

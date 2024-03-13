@@ -23,7 +23,7 @@ func (_m *Transactioneer) EXPECT() *Transactioneer_Expecter {
 }
 
 // PerformTX provides a mock function with given fields: ctx, txFunc
-func (_m *Transactioneer) PerformTX(ctx context.Context, txFunc func(context.Context, domain.Commands) error) error {
+func (_m *Transactioneer) PerformTX(ctx context.Context, txFunc func(context.Context, domain.Entities) error) error {
 	ret := _m.Called(ctx, txFunc)
 
 	if len(ret) == 0 {
@@ -31,7 +31,7 @@ func (_m *Transactioneer) PerformTX(ctx context.Context, txFunc func(context.Con
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, func(context.Context, domain.Commands) error) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, func(context.Context, domain.Entities) error) error); ok {
 		r0 = rf(ctx, txFunc)
 	} else {
 		r0 = ret.Error(0)
@@ -47,14 +47,14 @@ type Transactioneer_PerformTX_Call struct {
 
 // PerformTX is a helper method to define mock.On call
 //   - ctx context.Context
-//   - txFunc func(context.Context , domain.Commands) error
+//   - txFunc func(context.Context , domain.Entities) error
 func (_e *Transactioneer_Expecter) PerformTX(ctx interface{}, txFunc interface{}) *Transactioneer_PerformTX_Call {
 	return &Transactioneer_PerformTX_Call{Call: _e.mock.On("PerformTX", ctx, txFunc)}
 }
 
-func (_c *Transactioneer_PerformTX_Call) Run(run func(ctx context.Context, txFunc func(context.Context, domain.Commands) error)) *Transactioneer_PerformTX_Call {
+func (_c *Transactioneer_PerformTX_Call) Run(run func(ctx context.Context, txFunc func(context.Context, domain.Entities) error)) *Transactioneer_PerformTX_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(func(context.Context, domain.Commands) error))
+		run(args[0].(context.Context), args[1].(func(context.Context, domain.Entities) error))
 	})
 	return _c
 }
@@ -64,7 +64,7 @@ func (_c *Transactioneer_PerformTX_Call) Return(_a0 error) *Transactioneer_Perfo
 	return _c
 }
 
-func (_c *Transactioneer_PerformTX_Call) RunAndReturn(run func(context.Context, func(context.Context, domain.Commands) error) error) *Transactioneer_PerformTX_Call {
+func (_c *Transactioneer_PerformTX_Call) RunAndReturn(run func(context.Context, func(context.Context, domain.Entities) error) error) *Transactioneer_PerformTX_Call {
 	_c.Call.Return(run)
 	return _c
 }

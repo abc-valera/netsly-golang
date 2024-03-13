@@ -91,7 +91,7 @@ func main() {
 
 	commands := sqlboilercommand.NewCommands(conn)
 	queries := sqlboilerquery.NewQueries(conn)
-	tx := sqlboilertransactioneer.NewTransactioneer(conn)
+	tx := sqlboilertransactioneer.NewTransactioneer(conn, services)
 
 	// Init entities
 	entities := domain.NewEntities(commands, queries, services)

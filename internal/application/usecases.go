@@ -17,9 +17,9 @@ func NewUseCases(
 ) UseCases {
 	return UseCases{
 		SignUseCase: NewSignUseCase(
+			entities.User,
 			queries.User,
 			tx,
-			entities.User,
 			services.PasswordMaker,
 			services.TokenMaker,
 			services.TaskQueuer,

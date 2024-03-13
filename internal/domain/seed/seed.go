@@ -16,7 +16,7 @@ import (
 func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.ITransactioneer) {
 	params := spec.NewSelectParams("asc", 100, 0)
 
-	txFunc := func(ctx context.Context, commands domain.Commands) error {
+	txFunc := func(ctx context.Context, txEntities domain.Entities) error {
 		// Users
 		userRequests := []entity.UserCreateRequest{
 			{
