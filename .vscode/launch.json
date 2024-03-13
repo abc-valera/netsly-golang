@@ -2,28 +2,28 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "json-api Debug",
+      "name": "jsonApi Debug",
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "args": ["-entrypoint", "json-api"],
+      "args": ["-entrypoint", "jsonApi"],
       "program": "${workspaceFolder}/cmd",
       "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
-        "JSON-API_STATIC_PATH": "${workspaceFolder}/internal/presentation/json-api/static"
+        "JSON-API_STATIC_PATH": "${workspaceFolder}/internal/presentation/jsonApi/static"
       }
     },
     {
-      "name": "web-app Debug",
+      "name": "webApp Debug",
       "type": "go",
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/cmd",
-      "args": ["-entrypoint", "web-app"],
+      "args": ["-entrypoint", "webApp"],
       "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
-        "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/internal/presentation/web-app/template",
-        "WEB_APP_STATIC_PATH": "${workspaceFolder}/internal/presentation/web-app/static"
+        "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/internal/presentation/webApp/template",
+        "WEB_APP_STATIC_PATH": "${workspaceFolder}/internal/presentation/webApp/static"
       }
     }
   ]

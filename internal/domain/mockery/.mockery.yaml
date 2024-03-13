@@ -1,16 +1,29 @@
 quiet: False
 
-all: True
-inpackage: True
-dir: "{{ trimPrefix .PackagePath `github.com/abc-valera/netsly-api-golang/` }}"
-mockname: "{{ .Mock }}{{ trimPrefix ( .InterfaceName | camelcase ) `I` }}"
-filename: "{{ trimPrefix ( .InterfaceName | snakecase ) `i_` }}_mock.go"
+mockname: "{{ trimPrefix .InterfaceName `I` }}"
+filename: "{{ trimPrefix .InterfaceName `I` | firstLower }}.go"
 
 with-expecter: True
 disable-version-string: True
 
 packages:
-  github.com/abc-valera/netsly-api-golang/internal/domain/service: ~
-  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command: ~
-  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query: ~
-  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/transactioneer: ~
+  github.com/abc-valera/netsly-api-golang/internal/domain/service:
+    config:
+      all: True
+      outpkg: "mock{{ trimPrefix .InterfaceName `I` }}"
+      dir: "internal/service/{{ trimPrefix .InterfaceName `I` | firstLower }}/mock{{ trimPrefix .InterfaceName `I` }}"
+  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command:
+    config:
+      all: True
+      dir: "internal/persistence/mock/mockCommand"
+      outpkg: "mockCommand"
+  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query:
+    config:
+      all: True
+      dir: "internal/persistence/mock/mockQuery"
+      outpkg: "mockQuery"
+  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/transactioneer:
+    config:
+      all: True
+      dir: "internal/persistence/mock/mockTransactioneer"
+      outpkg: "mockTransactioneer"

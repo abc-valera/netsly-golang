@@ -12,7 +12,7 @@ RUN go build -o build/netsly cmd/main.go
 FROM library/alpine
 WORKDIR /src
 
-COPY --from=builder /src/internal/presentation/web-app/static static/
+COPY --from=builder /src/internal/presentation/webApp/static static/
 COPY --from=builder /src/build/netsly build/
 
 # Environmental variables
@@ -22,4 +22,4 @@ ENV WEB_APP_STATIC_PATH=static
 
 EXPOSE 3000
 
-CMD [ "/src/build/netsly -web-app" ]
+CMD [ "/src/build/netsly -webApp" ]

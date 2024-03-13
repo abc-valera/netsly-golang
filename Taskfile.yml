@@ -3,7 +3,7 @@
 version: "3"
 
 env:
-  GOOSE_MIGRATION_DIR: "internal/persistence/sqlboiler-impl/migration"
+  GOOSE_MIGRATION_DIR: "internal/persistence/sqlboilerImpl/migration"
   GOOSE_DRIVER: "postgres"
   GOOSE_DBSTRING: "postgres://netsly:netsly@localhost:5432/netsly?sslmode=disable"
 
@@ -11,23 +11,23 @@ vars:
   ENV_FILE_PATH: "env/dev.env"
 
 tasks:
-  entrypoint:json-api:
+  entrypoint:jsonApi:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/netsly cmd/main.go
-      - ./build/netsly -entrypoint json-api
+      - ./build/netsly -entrypoint jsonApi
 
-  entrypoint:web-app:
+  entrypoint:webApp:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/netsly cmd/main.go
-      - ./build/netsly -entrypoint web-app
+      - ./build/netsly -entrypoint webApp
 
-  entrypoint:grpc-api:
+  entrypoint:grpcApi:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/netsly cmd/main.go
-      - ./build/netsly -entrypoint grpc-api
+      - ./build/netsly -entrypoint grpcApi
 
   entrypoint:seed:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
@@ -39,46 +39,46 @@ tasks:
     cmds:
       - mockery --config internal/domain/mockery/.mockery.yaml
 
-  generate:json-api:main:
+  generate:jsonApi:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
     cmds:
-      - task: generate:json-api:rest:single_openapi_config_file
-      - task: generate:json-api:rest:docs
-      - task: generate:json-api:rest:code
+      - task: generate:jsonApi:rest:single_openapi_config_file
+      - task: generate:jsonApi:rest:docs
+      - task: generate:jsonApi:rest:code
 
-  generate:json-api:rest:single_openapi_config_file:
+  generate:jsonApi:rest:single_openapi_config_file:
     cmds:
       - podman run --rm -v ${PWD}:/spec:Z
         redocly/cli bundle
         -o /spec/gen/openapi/openapi.yaml
-        /spec/internal/presentation/json-api/rest/schema/openapi.yaml
+        /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
 
-  generate:json-api:rest:docs:
+  generate:jsonApi:rest:docs:
     cmds:
       - podman run --rm -v ${PWD}:/spec:Z
         redocly/cli build-docs
-        -o /spec/internal/presentation/json-api/static/docs/rest.html
-        /spec/internal/presentation/json-api/rest/schema/openapi.yaml
+        -o /spec/internal/presentation/jsonApi/static/docs/rest.html
+        /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
 
-  generate:json-api:rest:code:
+  generate:jsonApi:rest:code:
     cmds:
       - go generate gen/ogen/generate.go
 
-  generate:web-app:tailwindcss:
+  generate:webApp:tailwindcss:
     cmds:
       - npx tailwindcss
-        -c internal/presentation/web-app/tailwind.config.js
-        -i internal/presentation/web-app/static/style/input.css
-        -o internal/presentation/web-app/static/style/style.css
+        -c internal/presentation/webApp/tailwind.config.js
+        -i internal/presentation/webApp/static/style/input.css
+        -o internal/presentation/webApp/static/style/style.css
 
-  generate:grpc-api:code:
+  generate:grpcApi:code:
     cmds:
-      - protoc internal/presentation/grpc-api/proto/*.proto
+      - protoc internal/presentation/grpcApi/proto/*.proto
         --go_out=gen/pb
         --go_opt=paths=source_relative
         --go-grpc_out=gen/pb
         --go-grpc_opt=paths=source_relative
-        --proto_path=internal/presentation/grpc-api/proto
+        --proto_path=internal/presentation/grpcApi/proto
 
   generate:persistence:migration:
     cmds:
@@ -86,7 +86,7 @@ tasks:
 
   generate:persistence:code:
     cmds:
-      - sqlboiler psql -c internal/persistence/sqlboiler-impl/sqlboiler.toml
+      - sqlboiler psql -c internal/persistence/sqlboilerImpl/sqlboiler.toml
 
   infrastructure:up:
     cmds:
@@ -131,11 +131,11 @@ tasks:
         -p 6379:6379
         -d redis/redis-stack:latest
 
-  image:json-api:build:
+  image:jsonApi:build:
     cmds:
-      - podman build -t netsly/json-api:latest -f docker/json-api.Dockerfile .
+      - podman build -t netsly/jsonApi:latest -f docker/jsonApi.Dockerfile .
 
-  image:json-api:up:
+  image:jsonApi:up:
     cmds:
       - podman run
         --name netsly_json-api
@@ -146,9 +146,9 @@ tasks:
         -e REDIS_USER=netsly-redis
         -e REDIS_PASS=
         --env-file env/deploy.env
-        localhost/netsly/json-api:latest
+        localhost/netsly/jsonApi:latest
 
-  image:json-api:down:
+  image:jsonApi:down:
     cmds:
       - podman rm netsly_json-api
 

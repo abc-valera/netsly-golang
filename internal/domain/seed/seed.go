@@ -2,7 +2,6 @@ package seed
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
@@ -414,7 +413,6 @@ func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.IT
 		// 	},
 		// }
 
-		fmt.Println(users)
 		return nil
 	}
 

@@ -21,4 +21,4 @@ ENV GRPC_API_STATIC_PATH=static
 
 EXPOSE 3020
 
-CMD [ "/src/build/netsly -grpc-api" ]
+CMD [ "/src/build/netsly -grpcApi" ]

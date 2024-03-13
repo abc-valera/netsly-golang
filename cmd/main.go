@@ -16,16 +16,16 @@ import (
 	sqlboilercommand "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerCommand"
 	sqlboilerquery "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerQuery"
 	sqlboilertransactioneer "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerTransactioneer"
-	grpcapi "github.com/abc-valera/netsly-api-golang/internal/presentation/grpc-api"
-	jsonapi "github.com/abc-valera/netsly-api-golang/internal/presentation/json-api"
-	webapp "github.com/abc-valera/netsly-api-golang/internal/presentation/web-app"
-	"github.com/abc-valera/netsly-api-golang/internal/service/emailSender"
-	"github.com/abc-valera/netsly-api-golang/internal/service/logger"
-	"github.com/abc-valera/netsly-api-golang/internal/service/passwordMaker"
-	"github.com/abc-valera/netsly-api-golang/internal/service/taskQueuer/dummy"
-	"github.com/abc-valera/netsly-api-golang/internal/service/timeMaker"
-	"github.com/abc-valera/netsly-api-golang/internal/service/tokenMaker"
-	"github.com/abc-valera/netsly-api-golang/internal/service/uuidMaker"
+	grpcApi "github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi"
+	jsonApi "github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi"
+	webApp "github.com/abc-valera/netsly-api-golang/internal/presentation/webApp"
+	"github.com/abc-valera/netsly-api-golang/internal/service/emailSender/dummyEmailSender"
+	"github.com/abc-valera/netsly-api-golang/internal/service/logger/slogLogger"
+	"github.com/abc-valera/netsly-api-golang/internal/service/passwordMaker/argonPasswordMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/service/taskQueuer/dummyTaskQueuer"
+	"github.com/abc-valera/netsly-api-golang/internal/service/timeMaker/baseTimeMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/service/tokenMaker/jwtTokenMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/service/uuidMaker/googleUuidMaker"
 )
 
 var (
@@ -50,7 +50,7 @@ var (
 
 func main() {
 	// Init global variables
-	logger := logger.NewSlogLogger()
+	logger := slogLogger.New()
 	global.InitLog(logger)
 
 	var appMode mode.Mode
@@ -65,16 +65,16 @@ func main() {
 	global.InitMode(appMode)
 
 	// Init services
-	timeMaker := timeMaker.NewTimeMaker()
-	uuidMaker := uuidMaker.NewUUID()
-	passwordMaker := passwordMaker.NewPasswordMaker()
-	tokenMaker := tokenMaker.NewTokenMaker(
+	timeMaker := baseTimeMaker.New()
+	uuidMaker := googleUuidMaker.New()
+	passwordMaker := argonPasswordMaker.New()
+	tokenMaker := jwtTokenMaker.NewJWT(
 		coderr.MustWithVal(time.ParseDuration(accessTokenDurationEnv)),
 		coderr.MustWithVal(time.ParseDuration(refreshTokenDurationEnv)),
 		signKeyEnv,
 	)
-	emailSender := emailSender.NewDummyEmailSender()
-	broker := dummy.NewMessagingBroker(emailSender)
+	emailSender := dummyEmailSender.New()
+	broker := dummyTaskQueuer.New(emailSender)
 
 	services := domain.NewServices(
 		logger,
@@ -100,14 +100,14 @@ func main() {
 	usecases := application.NewUseCases(queries, tx, entities, services)
 
 	// Get cli flags
-	entrypoint := flag.String("entrypoint", "web-app", "Port flag specifies the application presentation to be run: web-app, json-api, grpc-api")
+	entrypoint := flag.String("entrypoint", "webApp", "Port flag specifies the application presentation to be run: webApp, jsonApi, grpcApi")
 	flag.Parse()
 
 	// Init server functions
 	var serverStart, serverGracefulStop func()
 	switch *entrypoint {
-	case "web-app":
-		serverStart, serverGracefulStop = webapp.NewServer(
+	case "webApp":
+		serverStart, serverGracefulStop = webApp.NewServer(
 			webAppPortEnv,
 			webApptemplatePathEnv,
 			webAppStaticPathEnv,
@@ -116,8 +116,8 @@ func main() {
 			services,
 			usecases,
 		)
-	case "json-api":
-		serverStart, serverGracefulStop = jsonapi.NewServer(
+	case "jsonApi":
+		serverStart, serverGracefulStop = jsonApi.NewServer(
 			jsonApiPortEnv,
 			jsonApiStaticPathEnv,
 			queries,
@@ -125,8 +125,8 @@ func main() {
 			services,
 			usecases,
 		)
-	case "grpc-api":
-		serverStart, serverGracefulStop = grpcapi.RunServer(
+	case "grpcApi":
+		serverStart, serverGracefulStop = grpcApi.RunServer(
 			grpcApiPortEnv,
 			grpcApiStaticPathEnv,
 			services,
