@@ -12,7 +12,7 @@ The project is built based on the Clean Architecture with the use of Domain Driv
 
 Layers of the application can be shown as follows:
 
-![architecture diagram](meta/architecture_circle_diagram.png)
+![architecture diagram](images/architecture_circle_diagram.png)
 
 All the code is located in the `internal` directory. The `cmd` directory contains the entry point of the application.
 
