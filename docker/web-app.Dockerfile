@@ -1,5 +1,5 @@
 # Build stage
-FROM library/golang:1.21-alpine AS builder
+FROM golang:1.21-alpine AS builder
 WORKDIR /src
 
 COPY go.* .
@@ -9,7 +9,7 @@ COPY . .
 RUN go build -o build/netsly cmd/main.go
 
 # Run stage
-FROM library/alpine
+FROM alpine
 WORKDIR /src
 
 COPY --from=builder /src/internal/presentation/webApp/static static/

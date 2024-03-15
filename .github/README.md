@@ -22,7 +22,7 @@ The following list describes technologies used in the project:
 
 - All the main code is written in Golang.
 - For configuration `.env` files are used.
-- The project is containerized and can be run with Docker or Podman.
+- The project is containerized and can be run with Docker.
 - The project is not using Makefiles, but instead, it uses [Task](https://taskfile.dev/) as a task runner.
 
 - Domain layer:
@@ -52,7 +52,7 @@ The following list describes technologies used in the project:
 ## Initial setup
 
 1. Make sure the correct version of go is installed on your machine
-2. Install Podman
+2. Install Docker
 3. Install Task
 4. Clone the repo
 5. Run `git config --local core.hooksPath .githooks` in the root of the project

@@ -48,14 +48,14 @@ tasks:
 
   generate:jsonApi:rest:single_openapi_config_file:
     cmds:
-      - podman run --rm -v ${PWD}:/spec:Z
+      - docker run --rm -v ${PWD}:/spec:Z
         redocly/cli bundle
         -o /spec/gen/openapi/openapi.yaml
         /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
 
   generate:jsonApi:rest:docs:
     cmds:
-      - podman run --rm -v ${PWD}:/spec:Z
+      - docker run --rm -v ${PWD}:/spec:Z
         redocly/cli build-docs
         -o /spec/internal/presentation/jsonApi/static/docs/rest.html
         /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
@@ -95,18 +95,18 @@ tasks:
 
   infrastructure:down:
     cmds:
-      - podman rm -f netsly-postgres
-      - podman rm -f netsly-redis
+      - docker rm -f netsly-postgres
+      - docker rm -f netsly-redis
 
   infrastructure:start:
     cmds:
-      - podman start netsly-postgres
-      - podman start netsly-redis
+      - docker start netsly-postgres
+      - docker start netsly-redis
 
   infrastructure:stop:
     cmds:
-      - podman stop netsly-postgres
-      - podman stop netsly-redis
+      - docker stop netsly-postgres
+      - docker stop netsly-redis
 
   infrastructure:migrate:
     cmds:
@@ -114,18 +114,18 @@ tasks:
 
   infrastructure:run_postgres:
     cmds:
-      - podman run
+      - docker run
         --name netsly-postgres
         --network netsly-network
         -p 5432:5432
         -e POSTGRES_USER=netsly
         -e POSTGRES_PASSWORD=netsly
         -e POSTGRES_DB=netsly
-        -d library/postgres:15-alpine
+        -d postgres:15-alpine
 
   infrastructure:run_redis:
     cmds:
-      - podman run
+      - docker run
         --name netsly-redis
         --network netsly-network
         -p 6379:6379
@@ -133,11 +133,11 @@ tasks:
 
   image:jsonApi:build:
     cmds:
-      - podman build -t netsly/jsonApi:latest -f docker/jsonApi.Dockerfile .
+      - docker build -t netsly/jsonApi:latest -f docker/jsonApi.Dockerfile .
 
   image:jsonApi:up:
     cmds:
-      - podman run
+      - docker run
         --name netsly_json-api
         --network netsly-network
         -p 3010:3010
@@ -150,15 +150,15 @@ tasks:
 
   image:jsonApi:down:
     cmds:
-      - podman rm netsly_json-api
+      - docker rm netsly_json-api
 
   compose:up:
     cmds:
-      - podman-compose -f docker/dev.docker-compose.yml --env-file env/deploy.env up -d
+      - docker-compose -f docker/dev.docker-compose.yml --env-file env/deploy.env up -d
 
   compose:down:
     cmds:
-      - podman-compose -f docker/dev.docker-compose.yml down
+      - docker-compose -f docker/dev.docker-compose.yml down
 
   other:run_evans:
     cmds:
