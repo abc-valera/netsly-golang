@@ -3,9 +3,9 @@ package global
 import (
 	"sync"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/logger"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/mode"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/validation"
+	"github.com/abc-valera/netsly-api-golang/internal/core/logger"
+	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
+	"github.com/abc-valera/netsly-api-golang/internal/core/validation"
 )
 
 // global is a package that contains global variables that are used across the application.

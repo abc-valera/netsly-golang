@@ -8,9 +8,9 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/handler"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/middleware"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/ws"
@@ -30,6 +30,35 @@ func NewServer(
 	serverStart func(),
 	serverGracefulStop func(),
 ) {
+	// Init server
+	server := http.Server{
+		Addr:    port,
+		Handler: NewHandler(staticPath, queries, entities, services, usecases),
+	}
+
+	return func() {
+			global.Log().Info("jsonApi is running", "port", port)
+			if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+				global.Log().Fatal("jsonApi server error: ", err)
+			}
+		}, func() {
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+
+			if err := server.Shutdown(ctx); err != nil {
+				global.Log().Fatal("Shutdown server error: ", err)
+			}
+		}
+}
+
+func NewHandler(
+	staticPath string,
+
+	queries domain.Queries,
+	entities domain.Entities,
+	services domain.Services,
+	usecases application.UseCases,
+) http.Handler {
 	// Init chi router
 	r := chi.NewRouter()
 
@@ -69,7 +98,7 @@ func NewServer(
 		// Init security handler
 		securityHandler := handler.NewSecurityHandler(services.TokenMaker)
 		// Init ogen server
-		ogenServer := coderr.MustWithVal(ogen.NewServer(ogenHandler, securityHandler))
+		ogenServer := coderr.Must(ogen.NewServer(ogenHandler, securityHandler))
 		// Register ogen routes
 		r.Mount("/", http.StripPrefix("/api/v1", ogenServer))
 	})
@@ -84,23 +113,5 @@ func NewServer(
 		r.HandleFunc("/chat", wsManager.ServeWS)
 	})
 
-	// Init server
-	server := http.Server{
-		Addr:    port,
-		Handler: r,
-	}
-
-	return func() {
-			global.Log().Info("jsonApi is running", "port", port)
-			if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-				global.Log().Fatal("jsonApi server error: ", err)
-			}
-		}, func() {
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-			defer cancel()
-
-			if err := server.Shutdown(ctx); err != nil {
-				global.Log().Fatal("Shutdown server error: ", err)
-			}
-		}
+	return r
 }

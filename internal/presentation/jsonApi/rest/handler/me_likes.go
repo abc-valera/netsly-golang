@@ -10,21 +10,21 @@ import (
 
 type MeLikesHandler struct {
 	likeQuery  query.ILike
-	likeDomain entity.Like
+	likeEntity entity.ILike
 }
 
 func NewMeLikesHandler(
 	likeQuery query.ILike,
-	likeDomain entity.Like,
+	likeEntity entity.ILike,
 ) MeLikesHandler {
 	return MeLikesHandler{
 		likeQuery:  likeQuery,
-		likeDomain: likeDomain,
+		likeEntity: likeEntity,
 	}
 }
 
 func (h MeLikesHandler) MeLikesPost(ctx context.Context, req *ogen.MeLikesPostReq) error {
-	_, err := h.likeDomain.Create(ctx, entity.LikeCreateRequest{
+	_, err := h.likeEntity.Create(ctx, entity.LikeCreateRequest{
 		UserID: payloadUserID(ctx),
 		JokeID: req.JokeID,
 	})
@@ -32,7 +32,7 @@ func (h MeLikesHandler) MeLikesPost(ctx context.Context, req *ogen.MeLikesPostRe
 }
 
 func (h MeLikesHandler) MeLikesDel(ctx context.Context, req *ogen.MeLikesDelReq) error {
-	return h.likeDomain.Delete(ctx, entity.DeleteLikeRequest{
+	return h.likeEntity.Delete(ctx, entity.DeleteLikeRequest{
 		UserID: payloadUserID(ctx),
 		JokeID: req.JokeID,
 	})

@@ -11,12 +11,12 @@ import (
 
 type MeCommentsHandler struct {
 	commentQuery  query.IComment
-	commentDomain entity.Comment
+	commentDomain entity.IComment
 }
 
 func NewMeCommentsHandler(
 	commentQuery query.IComment,
-	commentDomain entity.Comment,
+	commentDomain entity.IComment,
 ) MeCommentsHandler {
 	return MeCommentsHandler{
 		commentQuery:  commentQuery,

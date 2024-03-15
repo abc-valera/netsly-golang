@@ -7,25 +7,23 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-api-golang/internal/application"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
+	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/mode"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/seed"
-	sqlboilerimpl "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl"
-	sqlboilercommand "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerCommand"
-	sqlboilerquery "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerQuery"
-	sqlboilertransactioneer "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerTransactioneer"
-	grpcApi "github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi"
-	jsonApi "github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi"
-	webApp "github.com/abc-valera/netsly-api-golang/internal/presentation/webApp"
+	"github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl"
+	"github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerCommand"
+	"github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerQuery"
+	"github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerTransactioneer"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/seed"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp"
 	"github.com/abc-valera/netsly-api-golang/internal/service/emailSender/dummyEmailSender"
 	"github.com/abc-valera/netsly-api-golang/internal/service/logger/slogLogger"
-	"github.com/abc-valera/netsly-api-golang/internal/service/passwordMaker/argonPasswordMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/service/passwordMaker"
 	"github.com/abc-valera/netsly-api-golang/internal/service/taskQueuer/dummyTaskQueuer"
-	"github.com/abc-valera/netsly-api-golang/internal/service/timeMaker/baseTimeMaker"
-	"github.com/abc-valera/netsly-api-golang/internal/service/tokenMaker/jwtTokenMaker"
-	"github.com/abc-valera/netsly-api-golang/internal/service/uuidMaker/googleUuidMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/service/tokenMaker"
 )
 
 var (
@@ -50,8 +48,8 @@ var (
 
 func main() {
 	// Init global variables
-	logger := slogLogger.New()
-	global.InitLog(logger)
+
+	global.InitLog(slogLogger.New())
 
 	var appMode mode.Mode
 	switch modeEnv {
@@ -65,33 +63,28 @@ func main() {
 	global.InitMode(appMode)
 
 	// Init services
-	timeMaker := baseTimeMaker.New()
-	uuidMaker := googleUuidMaker.New()
-	passwordMaker := argonPasswordMaker.New()
-	tokenMaker := jwtTokenMaker.NewJWT(
-		coderr.MustWithVal(time.ParseDuration(accessTokenDurationEnv)),
-		coderr.MustWithVal(time.ParseDuration(refreshTokenDurationEnv)),
+	passwordMaker := passwordMaker.New()
+	tokenMaker := tokenMaker.NewJWT(
+		coderr.Must(time.ParseDuration(accessTokenDurationEnv)),
+		coderr.Must(time.ParseDuration(refreshTokenDurationEnv)),
 		signKeyEnv,
 	)
 	emailSender := dummyEmailSender.New()
-	broker := dummyTaskQueuer.New(emailSender)
+	taskQueuer := dummyTaskQueuer.New(emailSender)
 
 	services := domain.NewServices(
-		logger,
-		uuidMaker,
-		timeMaker,
 		emailSender,
 		passwordMaker,
 		tokenMaker,
-		broker,
+		taskQueuer,
 	)
 
 	// Init persistence dependencies
-	conn := coderr.MustWithVal(sqlboilerimpl.Init(postgresUrlEnv))
+	conn := coderr.Must(sqlboilerImpl.Init(postgresUrlEnv))
 
-	commands := sqlboilercommand.NewCommands(conn)
-	queries := sqlboilerquery.NewQueries(conn)
-	tx := sqlboilertransactioneer.NewTransactioneer(conn, services)
+	commands := sqlboilerCommand.NewCommands(conn)
+	queries := sqlboilerQuery.NewQueries(conn)
+	tx := sqlboilerTransactioneer.NewTransactioneer(conn, services)
 
 	// Init entities
 	entities := domain.NewEntities(commands, queries, services)

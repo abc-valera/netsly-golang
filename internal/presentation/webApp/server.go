@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-api-golang/internal/application"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler"
 	"github.com/go-chi/chi/v5"
 )
@@ -28,22 +28,10 @@ func NewServer(
 	serverStart func(),
 	serverGracefulStop func(),
 ) {
-	// Init handlers
-	handlers := handler.NewHandlers(
-		os.DirFS(templatePath),
-		queries,
-		entities,
-		usecases,
-	)
-
-	// Init router
-	r := chi.NewRouter()
-	initRoutes(r, staticPath, services, handlers)
-
 	// Init server
 	server := http.Server{
 		Addr:    port,
-		Handler: r,
+		Handler: NewHandler(templatePath, staticPath, queries, entities, services, usecases),
 	}
 
 	return func() {
@@ -59,4 +47,28 @@ func NewServer(
 				global.Log().Fatal("Shutdown server error: ", err)
 			}
 		}
+}
+
+func NewHandler(
+	templatePath string,
+	staticPath string,
+
+	queries domain.Queries,
+	entities domain.Entities,
+	services domain.Services,
+	usecases application.UseCases,
+) http.Handler {
+	// Init handlers
+	handlers := handler.NewHandlers(
+		os.DirFS(templatePath),
+		queries,
+		entities,
+		usecases,
+	)
+
+	// Init router
+	r := chi.NewRouter()
+	initRoutes(r, staticPath, services, handlers)
+
+	return r
 }

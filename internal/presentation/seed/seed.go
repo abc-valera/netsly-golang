@@ -3,10 +3,10 @@ package seed
 import (
 	"context"
 
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/spec"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/transactioneer"
 )
@@ -91,10 +91,10 @@ func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.IT
 			},
 		}
 		for _, user := range userRequests {
-			coderr.MustWithVal(entities.User.Create(context.Background(), user))
+			coderr.Must(entities.User.Create(context.Background(), user))
 		}
 		// Generated users
-		users := coderr.MustWithVal(queries.User.SearchAllByUsername(context.Background(), "", params))
+		users := coderr.Must(queries.User.SearchAllByUsername(context.Background(), "", params))
 
 		// Jokes
 		jokeRequests := []entity.JokeCreateRequest{
@@ -190,10 +190,10 @@ func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.IT
 			},
 		}
 		for _, joke := range jokeRequests {
-			coderr.MustWithVal(entities.Joke.Create(context.Background(), joke))
+			coderr.Must(entities.Joke.Create(context.Background(), joke))
 		}
 		// Generated jokes
-		jokes := coderr.MustWithVal(queries.Joke.SearchByTitle(context.Background(), "", params))
+		jokes := coderr.Must(queries.Joke.SearchByTitle(context.Background(), "", params))
 
 		// Likes
 		likes := []entity.LikeCreateRequest{
@@ -279,7 +279,7 @@ func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.IT
 			},
 		}
 		for _, like := range likes {
-			coderr.MustWithVal(entities.Like.Create(context.Background(), like))
+			coderr.Must(entities.Like.Create(context.Background(), like))
 		}
 
 		// Comments
@@ -396,7 +396,7 @@ func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.IT
 			},
 		}
 		for _, comment := range comments {
-			coderr.MustWithVal(entities.Comment.Create(context.Background(), comment))
+			coderr.Must(entities.Comment.Create(context.Background(), comment))
 		}
 
 		// Rooms
@@ -416,7 +416,7 @@ func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.IT
 		return nil
 	}
 
-	coderr.Must(tx.PerformTX(context.Background(), txFunc))
+	coderr.NoErr(tx.PerformTX(context.Background(), txFunc))
 
 	global.Log().Info("Database has been seeded")
 }

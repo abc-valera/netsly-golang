@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 )
 
 var (
@@ -11,10 +11,10 @@ var (
 
 type ITokenMaker interface {
 	// CreateAccessToken creates access token with given userID
-	CreateAccessToken(userID string) (string, AuthPayload, error)
+	CreateAccessToken(userID string) (string, error)
 
 	// CreateRefreshToken creates refresh token with given userID
-	CreateRefreshToken(userID string) (string, AuthPayload, error)
+	CreateRefreshToken(userID string) (string, error)
 
 	// VerifyToken verifies given token and, if it's correct, returns its payload
 	VerifyToken(token string) (AuthPayload, error)

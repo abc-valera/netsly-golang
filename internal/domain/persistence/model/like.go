@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 )
 
 var (

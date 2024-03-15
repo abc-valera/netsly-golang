@@ -4,8 +4,8 @@ import (
 	"io/fs"
 	"net/http"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler/tmpl"
 )
 
@@ -18,10 +18,10 @@ type Error struct {
 
 func NewErrorHandler(templateFS fs.FS) Error {
 	return Error{
-		error401: coderr.MustWithVal(tmpl.NewTemplate(templateFS, "error/401", "layout")),
-		error403: coderr.MustWithVal(tmpl.NewTemplate(templateFS, "error/403", "layout")),
-		error404: coderr.MustWithVal(tmpl.NewTemplate(templateFS, "error/404", "layout")),
-		error500: coderr.MustWithVal(tmpl.NewTemplate(templateFS, "error/500", "layout")),
+		error401: coderr.Must(tmpl.NewTemplate(templateFS, "error/401", "layout")),
+		error403: coderr.Must(tmpl.NewTemplate(templateFS, "error/403", "layout")),
+		error404: coderr.Must(tmpl.NewTemplate(templateFS, "error/404", "layout")),
+		error500: coderr.Must(tmpl.NewTemplate(templateFS, "error/500", "layout")),
 	}
 }
 

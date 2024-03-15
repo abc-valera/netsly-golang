@@ -2,29 +2,29 @@ package entity
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/google/uuid"
 )
 
-type Joke struct {
-	command command.IJoke
+type IJoke interface {
+	Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error)
+	Update(ctx context.Context, jokeID string, req JokeUpdateRequest) (model.Joke, error)
+	Delete(ctx context.Context, jokeID string) error
+}
 
-	uuidMaker service.IUuidMaker
-	timeMaker service.ITimeMaker
+type joke struct {
+	command command.IJoke
 }
 
 func NewJoke(
 	command command.IJoke,
-	uuidMaker service.IUuidMaker,
-	timeMaker service.ITimeMaker,
-) Joke {
-	return Joke{
-		command:   command,
-		uuidMaker: uuidMaker,
-		timeMaker: timeMaker,
+) IJoke {
+	return joke{
+		command: command,
 	}
 }
 
@@ -35,17 +35,17 @@ type JokeCreateRequest struct {
 	UserID      string `validate:"required,uuid"`
 }
 
-func (j Joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error) {
+func (j joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.Joke{}, err
 	}
 
 	return j.command.Create(ctx, model.Joke{
-		ID:          j.uuidMaker.NewUUID(),
+		ID:          uuid.New().String(),
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation,
-		CreatedAt:   j.timeMaker.Now(),
+		CreatedAt:   time.Now(),
 		UserID:      req.UserID,
 	})
 }
@@ -56,7 +56,7 @@ type JokeUpdateRequest struct {
 	Explanation *string `validate:"max=4096"`
 }
 
-func (j Joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) (model.Joke, error) {
+func (j joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) (model.Joke, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.Joke{}, err
 	}
@@ -68,7 +68,7 @@ func (j Joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) 
 	})
 }
 
-func (j Joke) Delete(ctx context.Context, jokeID string) error {
+func (j joke) Delete(ctx context.Context, jokeID string) error {
 	if err := global.Validator().Var(jokeID, "uuid"); err != nil {
 		return err
 	}

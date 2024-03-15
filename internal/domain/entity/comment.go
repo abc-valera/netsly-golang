@@ -2,29 +2,29 @@ package entity
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/google/uuid"
 )
 
-type Comment struct {
-	command command.IComment
+type IComment interface {
+	Create(ctx context.Context, req CommentCreateRequest) (model.Comment, error)
+	Update(ctx context.Context, commentID string, req CommentUpdateRequest) (model.Comment, error)
+	Delete(ctx context.Context, commentID string) error
+}
 
-	uuidMaker service.IUuidMaker
-	timeMaker service.ITimeMaker
+type comment struct {
+	command command.IComment
 }
 
 func NewComment(
 	command command.IComment,
-	uuidMaker service.IUuidMaker,
-	timeMaker service.ITimeMaker,
-) Comment {
-	return Comment{
-		command:   command,
-		uuidMaker: uuidMaker,
-		timeMaker: timeMaker,
+) IComment {
+	return comment{
+		command: command,
 	}
 }
 
@@ -34,15 +34,15 @@ type CommentCreateRequest struct {
 	JokeID string `validate:"required,uuid"`
 }
 
-func (c Comment) Create(ctx context.Context, req CommentCreateRequest) (model.Comment, error) {
+func (c comment) Create(ctx context.Context, req CommentCreateRequest) (model.Comment, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.Comment{}, err
 	}
 
 	return c.command.Create(ctx, model.Comment{
-		ID:        c.uuidMaker.NewUUID(),
+		ID:        uuid.New().String(),
 		Text:      req.Text,
-		CreatedAt: c.timeMaker.Now(),
+		CreatedAt: time.Now(),
 		UserID:    req.UserID,
 		JokeID:    req.JokeID,
 	})
@@ -52,7 +52,7 @@ type CommentUpdateRequest struct {
 	Text *string `validate:"min=4,max=256"`
 }
 
-func (c Comment) Update(ctx context.Context, commentID string, req CommentUpdateRequest) (model.Comment, error) {
+func (c comment) Update(ctx context.Context, commentID string, req CommentUpdateRequest) (model.Comment, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.Comment{}, err
 	}
@@ -62,7 +62,7 @@ func (c Comment) Update(ctx context.Context, commentID string, req CommentUpdate
 	})
 }
 
-func (c Comment) Delete(ctx context.Context, commentID string) error {
+func (c comment) Delete(ctx context.Context, commentID string) error {
 	if err := global.Validator().Var(commentID, "uuid"); err != nil {
 		return err
 	}

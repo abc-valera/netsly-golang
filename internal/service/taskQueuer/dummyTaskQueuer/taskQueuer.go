@@ -3,7 +3,7 @@ package dummyTaskQueuer
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 

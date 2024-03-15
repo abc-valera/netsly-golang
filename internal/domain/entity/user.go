@@ -2,35 +2,37 @@ package entity
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/google/uuid"
 )
 
-type User struct {
-	query   query.IUser
-	command command.IUser
+type IUser interface {
+	Create(ctx context.Context, req UserCreateRequest) (model.User, error)
+	Update(ctx context.Context, userID string, req UserUpdateRequest) (model.User, error)
+	Delete(ctx context.Context, userID string, req UserDeleteRequest) error
+}
 
-	uuidMaker service.IUuidMaker
-	timeMaker service.ITimeMaker
+type user struct {
+	command command.IUser
+	query   query.IUser
+
 	passMaker service.IPasswordMaker
 }
 
 func NewUser(
 	command command.IUser,
 	query query.IUser,
-	uuidMaker service.IUuidMaker,
-	timeMaker service.ITimeMaker,
 	passMaker service.IPasswordMaker,
-) User {
-	return User{
-		query:     query,
+) IUser {
+	return user{
 		command:   command,
-		uuidMaker: uuidMaker,
-		timeMaker: timeMaker,
+		query:     query,
 		passMaker: passMaker,
 	}
 }
@@ -43,7 +45,7 @@ type UserCreateRequest struct {
 	Status   string `validate:"max=128"`
 }
 
-func (u User) Create(ctx context.Context, req UserCreateRequest) (model.User, error) {
+func (u user) Create(ctx context.Context, req UserCreateRequest) (model.User, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.User{}, err
 	}
@@ -54,13 +56,13 @@ func (u User) Create(ctx context.Context, req UserCreateRequest) (model.User, er
 	}
 
 	return u.command.Create(ctx, model.User{
-		ID:             u.uuidMaker.NewUUID(),
+		ID:             uuid.New().String(),
 		Username:       req.Username,
 		Email:          req.Email,
 		HashedPassword: hashedPassword,
 		Fullname:       req.Fullname,
 		Status:         req.Status,
-		CreatedAt:      u.timeMaker.Now(),
+		CreatedAt:      time.Now(),
 	})
 }
 
@@ -70,7 +72,7 @@ type UserUpdateRequest struct {
 	Status   *string `validate:"max=128"`
 }
 
-func (u User) Update(ctx context.Context, userID string, req UserUpdateRequest) (model.User, error) {
+func (u user) Update(ctx context.Context, userID string, req UserUpdateRequest) (model.User, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.User{}, err
 	}
@@ -91,7 +93,7 @@ type UserDeleteRequest struct {
 	Password string `validate:"required,min=2,max=32"`
 }
 
-func (u User) Delete(ctx context.Context, userID string, req UserDeleteRequest) error {
+func (u user) Delete(ctx context.Context, userID string, req UserDeleteRequest) error {
 	if err := global.Validator().Struct(req); err != nil {
 		return err
 	}

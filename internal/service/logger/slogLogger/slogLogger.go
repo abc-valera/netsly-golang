@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/logger"
+	"github.com/abc-valera/netsly-api-golang/internal/core/logger"
 )
 
 var (

@@ -11,15 +11,15 @@ import (
 
 type MeRooms struct {
 	roomQuery  query.IRoom
-	roomEntity entity.Room
+	roomEntity entity.IRoom
 
-	roomMemberEntity entity.RoomMember
+	roomMemberEntity entity.IRoomMember
 }
 
 func NewMeRooms(
 	roomQuery query.IRoom,
-	roomEntity entity.Room,
-	roomMemberEntity entity.RoomMember,
+	roomEntity entity.IRoom,
+	roomMemberEntity entity.IRoomMember,
 ) MeRooms {
 	return MeRooms{
 		roomQuery:        roomQuery,

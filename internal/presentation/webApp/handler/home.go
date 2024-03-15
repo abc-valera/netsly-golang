@@ -5,7 +5,7 @@ import (
 	"io/fs"
 	"net/http"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/spec"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler/session"
@@ -26,8 +26,8 @@ func NewHome(
 	jokeQuery query.IJoke,
 ) Home {
 	return Home{
-		homeIndex:    coderr.MustWithVal(tmpl.NewTemplate(templateFS, "home/index/index", "home/layout", "layout")),
-		partialJokes: coderr.MustWithVal(tmpl.NewTemplate(templateFS, "home/index/partial_jokes.html")),
+		homeIndex:    coderr.Must(tmpl.NewTemplate(templateFS, "home/index/index", "home/layout", "layout")),
+		partialJokes: coderr.Must(tmpl.NewTemplate(templateFS, "home/index/partial_jokes.html")),
 
 		userQuery: userQuery,
 		jokeQuery: jokeQuery,

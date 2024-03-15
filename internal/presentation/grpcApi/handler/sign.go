@@ -9,12 +9,12 @@ import (
 )
 
 type SignHandler struct {
-	signUseCase application.SignUseCase
+	signUseCase application.ISignUseCase
 	pb.UnimplementedSignServiceServer
 }
 
 func NewSignHandler(
-	signUseCase application.SignUseCase,
+	signUseCase application.ISignUseCase,
 ) pb.SignServiceServer {
 	return SignHandler{
 		signUseCase: signUseCase,

@@ -5,9 +5,9 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/pb"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi/handler"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -33,7 +33,7 @@ func RunServer(
 	// ! Register reflection service on gRPC server (for development only)
 	reflection.Register(server)
 
-	lis := coderr.MustWithVal(net.Listen("tcp", port))
+	lis := coderr.Must(net.Listen("tcp", port))
 
 	return func() {
 			global.Log().Info("grpcApi is running", "port", port)

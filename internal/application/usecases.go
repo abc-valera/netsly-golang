@@ -6,7 +6,7 @@ import (
 )
 
 type UseCases struct {
-	SignUseCase SignUseCase
+	SignUseCase ISignUseCase
 }
 
 func NewUseCases(

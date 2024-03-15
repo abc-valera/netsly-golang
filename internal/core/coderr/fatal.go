@@ -11,19 +11,28 @@ func Fatal(data interface{}) {
 	os.Exit(1)
 }
 
-// Must stops program execution if err is not nil
-func Must(err error) {
+// NoErr stops program execution if err is not nil
+func NoErr(err error) {
 	if err != nil {
 		fmt.Println(caller(2), "fatal:", err.Error())
 		os.Exit(1)
 	}
 }
 
-// MustWithVal stops program execution if err is not nil
-func MustWithVal[T any](val T, err error) T {
+// Must stops program execution if err is not nil
+func Must[T any](val T, err error) T {
 	if err != nil {
 		fmt.Println(caller(2), "fatal:", err.Error())
 		os.Exit(1)
 	}
 	return val
+}
+
+func NotNil(val ...interface{}) {
+	for _, v := range val {
+		if v == nil {
+			fmt.Println(caller(2), "fatal: nil value")
+			os.Exit(1)
+		}
+	}
 }

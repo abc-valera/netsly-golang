@@ -4,168 +4,162 @@ import (
 	"context"
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockEntity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockPasswordMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockQuery"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockTaskQueuer"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockTokenMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockTransactioneer"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
-	"github.com/abc-valera/netsly-api-golang/internal/persistence/mock/mockCommand"
-	"github.com/abc-valera/netsly-api-golang/internal/persistence/mock/mockQuery"
-	"github.com/abc-valera/netsly-api-golang/internal/persistence/mock/mockTransactioneer"
-	"github.com/abc-valera/netsly-api-golang/internal/service/passwordMaker/mockPasswordMaker"
-	"github.com/abc-valera/netsly-api-golang/internal/service/taskQueuer/mockTaskQueuer"
-	"github.com/abc-valera/netsly-api-golang/internal/service/timeMaker/mockTimeMaker"
-	"github.com/abc-valera/netsly-api-golang/internal/service/tokenMaker/mockTokenMaker"
-	"github.com/abc-valera/netsly-api-golang/internal/service/uuidMaker/mockUuidMaker"
 	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/require"
 )
 
-type SignUseCaseSuite struct {
-	suite.Suite
-
-	tx            *mockTransactioneer.Transactioneer
-	userQuery     *mockQuery.User
-	passwordMaker *mockPasswordMaker.PasswordMaker
-	tokenMaker    *mockTokenMaker.TokenMaker
-	taskQueue     *mockTaskQueuer.TaskQueuer
-
-	userCommand *mockCommand.User
-	uuidMaker   *mockUuidMaker.UuidMaker
-	timeMaker   *mockTimeMaker.TimeMaker
-	userEntity  entity.User
-
-	sign application.SignUseCase
-}
-
-func (suite *SignUseCaseSuite) SetupTest() {
-	// Make sure to run the test in parallel
-	suite.T().Parallel()
-
-	suite.tx = mockTransactioneer.NewTransactioneer(suite.T())
-	suite.userQuery = mockQuery.NewUser(suite.T())
-	suite.passwordMaker = mockPasswordMaker.NewPasswordMaker(suite.T())
-	suite.tokenMaker = mockTokenMaker.NewTokenMaker(suite.T())
-	suite.taskQueue = mockTaskQueuer.NewTaskQueuer(suite.T())
-
-	suite.userCommand = mockCommand.NewUser(suite.T())
-	suite.uuidMaker = mockUuidMaker.NewUuidMaker(suite.T())
-	suite.timeMaker = mockTimeMaker.NewTimeMaker(suite.T())
-	suite.userEntity = entity.NewUser(
-		suite.userCommand,
-		suite.userQuery,
-		suite.uuidMaker,
-		suite.timeMaker,
-		suite.passwordMaker,
-	)
-
-	suite.sign = application.NewSignUseCase(
-		suite.userEntity,
-		suite.userQuery,
-		suite.tx,
-		suite.passwordMaker,
-		suite.tokenMaker,
-		suite.taskQueue,
-	)
-}
-
-func (suite *SignUseCaseSuite) TestSignUp() {
-	// Prepare the begging request
-	req := application.SignUpRequest{
-		Username: "test",
-		Email:    "test@gmail.com",
-		Password: "test",
-		Fullname: "test",
-		Status:   "test",
+func TestSignUseCase(t *testing.T) {
+	type Mocks struct {
+		userEntity    *mockEntity.User
+		userQuery     *mockQuery.User
+		tx            *mockTransactioneer.Transactioneer
+		passwordMaker *mockPasswordMaker.PasswordMaker
+		tokenMaker    *mockTokenMaker.TokenMaker
+		taskQueue     *mockTaskQueuer.TaskQueuer
 	}
 
-	// Expectations for transactioneer
-	suite.tx.EXPECT().
-		PerformTX(context.Background(), mock.Anything).
-		RunAndReturn(func(ctx context.Context, f func(context.Context, domain.Entities) error) error {
-			return f(ctx, domain.Entities{
-				User: suite.userEntity,
-			})
+	setupTest := func(t *testing.T) (*require.Assertions, Mocks, application.ISignUseCase) {
+		mocks := Mocks{
+			userEntity:    mockEntity.NewUser(t),
+			userQuery:     mockQuery.NewUser(t),
+			tx:            mockTransactioneer.NewTransactioneer(t),
+			passwordMaker: mockPasswordMaker.NewPasswordMaker(t),
+			tokenMaker:    mockTokenMaker.NewTokenMaker(t),
+			taskQueue:     mockTaskQueuer.NewTaskQueuer(t),
+		}
+		return require.New(t), mocks, application.NewSignUseCase(
+			mocks.userEntity,
+			mocks.userQuery,
+			mocks.tx,
+			mocks.passwordMaker,
+			mocks.tokenMaker,
+			mocks.taskQueue,
+		)
+	}
+
+	t.Run("SignUseCase", func(t *testing.T) {
+		t.Run("SignUp", func(t *testing.T) {
+			r, mocks, signUseCase := setupTest(t)
+
+			ctx := context.Background()
+			req := application.SignUpRequest{
+				Username: "test",
+				Email:    "test@gmail.com",
+				Password: "test",
+				Fullname: "test",
+				Status:   "test",
+			}
+
+			mocks.tx.EXPECT().
+				PerformTX(ctx, mock.Anything).
+				RunAndReturn(
+					func(ctx context.Context, fn func(context.Context, domain.Entities) error) error {
+						return fn(ctx, domain.Entities{
+							User: mocks.userEntity,
+						})
+					},
+				)
+
+			userCreateReq := entity.UserCreateRequest{
+				Username: req.Username,
+				Email:    req.Email,
+				Password: req.Password,
+				Fullname: req.Fullname,
+				Status:   req.Status,
+			}
+			mocks.userEntity.EXPECT().Create(ctx, userCreateReq).Return(model.User{}, nil)
+
+			sendEmail := service.Email{
+				Subject: "Verification Email for Netsly!",
+				Content: fmt.Sprintf("%s, congrats with joining the Netsly community!", req.Username),
+				To:      []string{req.Email},
+			}
+			mocks.taskQueue.EXPECT().SendEmailTask(ctx, service.Critical, sendEmail).Return(nil)
+
+			err := signUseCase.SignUp(ctx, req)
+			r.NoError(err)
 		})
 
-	// Prepare the user command request
-	userCommandReq := model.User{
-		ID:             "a5ed4a29-8160-465e-b46c-75038c43f4f3",
-		Username:       "test",
-		Email:          "test@gmail.com",
-		HashedPassword: "test_hashed",
-		Fullname:       "test",
-		Status:         "test",
-		CreatedAt:      time.Now(),
-	}
+		t.Run("SignIn", func(t *testing.T) {
+			r, mocks, signUseCase := setupTest(t)
 
-	// Expectations for user entity
-	suite.passwordMaker.EXPECT().HashPassword(req.Password).Return(userCommandReq.HashedPassword, nil)
-	suite.uuidMaker.EXPECT().NewUUID().Return(userCommandReq.ID)
-	suite.timeMaker.EXPECT().Now().Return(userCommandReq.CreatedAt)
-	suite.userCommand.EXPECT().Create(context.Background(), userCommandReq).Return(userCommandReq, nil)
+			ctx := context.Background()
+			req := application.SignInRequest{
+				Email:    "test@gmail.com",
+				Password: "test-test",
+			}
+			expected := application.SignInResponse{
+				User: model.User{
+					ID:             "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+					HashedPassword: "test-test_hashed",
+				},
+				AccessToken:  "access_token",
+				RefreshToken: "refresh_token",
+			}
 
-	// Prepare the email for task queue
-	email := service.Email{
-		Subject: "Verification Email for Netsly!",
-		Content: fmt.Sprintf("%s, congrats with joining the Netsly community!", req.Username),
-		To:      []string{req.Email},
-	}
+			mocks.userQuery.EXPECT().GetByEmail(ctx, req.Email).Return(expected.User, nil)
 
-	// Expectations for task queue
-	suite.taskQueue.EXPECT().SendEmailTask(context.Background(), service.Critical, email).Return(nil)
+			mocks.passwordMaker.EXPECT().CheckPassword(req.Password, expected.User.HashedPassword).Return(nil)
 
-	// Run the test
-	err := suite.sign.SignUp(context.Background(), req)
-	suite.NoError(err)
-}
+			mocks.tokenMaker.EXPECT().CreateAccessToken(expected.User.ID).Return(expected.AccessToken, nil)
+			mocks.tokenMaker.EXPECT().CreateRefreshToken(expected.User.ID).Return(expected.RefreshToken, nil)
 
-func (suite *SignUseCaseSuite) TestSignIn() {
-	// Prepare the begging request
-	req := application.SignInRequest{
-		Email:    "test@gmail.com",
-		Password: "test",
-	}
+			actual, err := signUseCase.SignIn(ctx, req)
+			r.NoError(err)
+			r.Equal(expected, actual)
+		})
 
-	userQueryReturn := model.User{
-		ID:             "a5ed4a29-8160-465e-b46c-75038c43f4f3",
-		HashedPassword: "test_hashed",
-	}
-	suite.userQuery.EXPECT().GetByEmail(context.Background(), req.Email).Return(userQueryReturn, nil)
+		t.Run("SignRefresh", func(t *testing.T) {
+			t.Run("Ok", func(t *testing.T) {
+				r, mocks, signUseCase := setupTest(t)
 
-	suite.passwordMaker.EXPECT().CheckPassword(req.Password, userQueryReturn.HashedPassword).Return(nil)
+				ctx := context.Background()
+				req := "refresh_token"
+				expected := "access_token"
 
-	accessToken := "access_token"
-	suite.tokenMaker.EXPECT().CreateAccessToken(userQueryReturn.ID).Return(accessToken, service.AuthPayload{}, nil)
-	refreshToken := "refresh_token"
-	suite.tokenMaker.EXPECT().CreateRefreshToken(userQueryReturn.ID).Return(refreshToken, service.AuthPayload{}, nil)
+				payloadUserID := "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+				mocks.tokenMaker.EXPECT().VerifyToken(req).Return(service.AuthPayload{
+					UserID:    payloadUserID,
+					IsRefresh: true,
+				}, nil)
 
-	res, err := suite.sign.SignIn(context.Background(), req)
-	suite.NoError(err)
-	suite.Equal(userQueryReturn, res.User)
-	suite.Equal(accessToken, res.AccessToken)
-	suite.Equal(refreshToken, res.RefreshToken)
-}
+				mocks.tokenMaker.EXPECT().CreateAccessToken(payloadUserID).Return(expected, nil)
 
-func (suite *SignUseCaseSuite) TestSignRefresh() {
-	reqRefreshToken := "refresh_token"
+				actual, err := signUseCase.SignRefresh(ctx, req)
+				r.NoError(err)
+				r.Equal(expected, actual)
+			})
 
-	payload := service.AuthPayload{
-		UserID:    "a5ed4a29-8160-465e-b46c-75038c43f4f3",
-		IsRefresh: true,
-	}
-	suite.tokenMaker.EXPECT().VerifyToken(reqRefreshToken).Return(payload, nil)
+			t.Run("ErrProvidedAccessToken", func(t *testing.T) {
+				r, mocks, signUseCase := setupTest(t)
 
-	accessToken := "access_token"
-	suite.tokenMaker.EXPECT().CreateAccessToken(payload.UserID).Return(accessToken, service.AuthPayload{}, nil)
+				ctx := context.Background()
+				req := "refresh_token"
+				expectedErr := application.ErrProvidedAccessToken
 
-	res, err := suite.sign.SignRefresh(context.Background(), reqRefreshToken)
-	suite.NoError(err)
-	suite.Equal(accessToken, res)
-}
+				payloadUserID := "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+				mocks.tokenMaker.EXPECT().VerifyToken(req).Return(service.AuthPayload{
+					UserID:    payloadUserID,
+					IsRefresh: false,
+				}, nil)
 
-func TestSignUseCaseSuite(t *testing.T) {
-	suite.Run(t, new(SignUseCaseSuite))
+				actual, actualErr := signUseCase.SignRefresh(ctx, req)
+				r.Error(actualErr)
+				r.Empty(actual)
+				r.Equal(expectedErr, actualErr)
+			})
+		})
+	})
 }

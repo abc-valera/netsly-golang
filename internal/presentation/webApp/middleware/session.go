@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/cookie"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler/session"
@@ -41,7 +41,7 @@ func NewSessionMiddleware(tokenMaker service.ITokenMaker) func(http.Handler) htt
 				if refreshToken != "" {
 					payload, err := tokenMaker.VerifyToken(refreshToken)
 					if err == nil {
-						access, _, err := tokenMaker.CreateAccessToken(payload.UserID)
+						access, err := tokenMaker.CreateAccessToken(payload.UserID)
 						if err != nil {
 							global.Log().Error("failed to create access token", "err", err)
 						}

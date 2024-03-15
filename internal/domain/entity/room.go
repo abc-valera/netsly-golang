@@ -2,29 +2,29 @@ package entity
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/google/uuid"
 )
 
-type Room struct {
-	command command.IRoom
+type IRoom interface {
+	Create(ctx context.Context, req RoomCreateRequest) (model.Room, error)
+	Update(ctx context.Context, roomID string, req RoomUpdateRequest) (model.Room, error)
+	Delete(ctx context.Context, roomID string) error
+}
 
-	uuidMaker service.IUuidMaker
-	timeMaker service.ITimeMaker
+type room struct {
+	command command.IRoom
 }
 
 func NewRoom(
 	command command.IRoom,
-	uuidMaker service.IUuidMaker,
-	timeMaker service.ITimeMaker,
-) Room {
-	return Room{
-		command:   command,
-		uuidMaker: uuidMaker,
-		timeMaker: timeMaker,
+) IRoom {
+	return room{
+		command: command,
 	}
 }
 
@@ -34,16 +34,16 @@ type RoomCreateRequest struct {
 	CreatorID   string `validate:"required,uuid"`
 }
 
-func (r Room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, error) {
+func (r room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.Room{}, err
 	}
 
 	return r.command.Create(ctx, model.Room{
-		ID:          r.uuidMaker.NewUUID(),
+		ID:          uuid.New().String(),
 		Name:        req.Name,
 		Description: req.Description,
-		CreatedAt:   r.timeMaker.Now(),
+		CreatedAt:   time.Now(),
 		CreatorID:   req.CreatorID,
 	})
 }
@@ -53,7 +53,7 @@ type RoomUpdateRequest struct {
 	Description *string `validate:"max=256"`
 }
 
-func (r Room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) (model.Room, error) {
+func (r room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) (model.Room, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.Room{}, err
 	}
@@ -63,7 +63,7 @@ func (r Room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) 
 	})
 }
 
-func (r Room) Delete(ctx context.Context, roomID string) error {
+func (r room) Delete(ctx context.Context, roomID string) error {
 	if err := global.Validator().Var(roomID, "uuid"); err != nil {
 		return err
 	}

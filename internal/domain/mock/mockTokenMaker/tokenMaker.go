@@ -21,7 +21,7 @@ func (_m *TokenMaker) EXPECT() *TokenMaker_Expecter {
 }
 
 // CreateAccessToken provides a mock function with given fields: userID
-func (_m *TokenMaker) CreateAccessToken(userID string) (string, service.AuthPayload, error) {
+func (_m *TokenMaker) CreateAccessToken(userID string) (string, error) {
 	ret := _m.Called(userID)
 
 	if len(ret) == 0 {
@@ -29,9 +29,8 @@ func (_m *TokenMaker) CreateAccessToken(userID string) (string, service.AuthPayl
 	}
 
 	var r0 string
-	var r1 service.AuthPayload
-	var r2 error
-	if rf, ok := ret.Get(0).(func(string) (string, service.AuthPayload, error)); ok {
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (string, error)); ok {
 		return rf(userID)
 	}
 	if rf, ok := ret.Get(0).(func(string) string); ok {
@@ -40,19 +39,13 @@ func (_m *TokenMaker) CreateAccessToken(userID string) (string, service.AuthPayl
 		r0 = ret.Get(0).(string)
 	}
 
-	if rf, ok := ret.Get(1).(func(string) service.AuthPayload); ok {
+	if rf, ok := ret.Get(1).(func(string) error); ok {
 		r1 = rf(userID)
 	} else {
-		r1 = ret.Get(1).(service.AuthPayload)
+		r1 = ret.Error(1)
 	}
 
-	if rf, ok := ret.Get(2).(func(string) error); ok {
-		r2 = rf(userID)
-	} else {
-		r2 = ret.Error(2)
-	}
-
-	return r0, r1, r2
+	return r0, r1
 }
 
 // TokenMaker_CreateAccessToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateAccessToken'
@@ -73,18 +66,18 @@ func (_c *TokenMaker_CreateAccessToken_Call) Run(run func(userID string)) *Token
 	return _c
 }
 
-func (_c *TokenMaker_CreateAccessToken_Call) Return(_a0 string, _a1 service.AuthPayload, _a2 error) *TokenMaker_CreateAccessToken_Call {
-	_c.Call.Return(_a0, _a1, _a2)
+func (_c *TokenMaker_CreateAccessToken_Call) Return(_a0 string, _a1 error) *TokenMaker_CreateAccessToken_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *TokenMaker_CreateAccessToken_Call) RunAndReturn(run func(string) (string, service.AuthPayload, error)) *TokenMaker_CreateAccessToken_Call {
+func (_c *TokenMaker_CreateAccessToken_Call) RunAndReturn(run func(string) (string, error)) *TokenMaker_CreateAccessToken_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // CreateRefreshToken provides a mock function with given fields: userID
-func (_m *TokenMaker) CreateRefreshToken(userID string) (string, service.AuthPayload, error) {
+func (_m *TokenMaker) CreateRefreshToken(userID string) (string, error) {
 	ret := _m.Called(userID)
 
 	if len(ret) == 0 {
@@ -92,9 +85,8 @@ func (_m *TokenMaker) CreateRefreshToken(userID string) (string, service.AuthPay
 	}
 
 	var r0 string
-	var r1 service.AuthPayload
-	var r2 error
-	if rf, ok := ret.Get(0).(func(string) (string, service.AuthPayload, error)); ok {
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (string, error)); ok {
 		return rf(userID)
 	}
 	if rf, ok := ret.Get(0).(func(string) string); ok {
@@ -103,19 +95,13 @@ func (_m *TokenMaker) CreateRefreshToken(userID string) (string, service.AuthPay
 		r0 = ret.Get(0).(string)
 	}
 
-	if rf, ok := ret.Get(1).(func(string) service.AuthPayload); ok {
+	if rf, ok := ret.Get(1).(func(string) error); ok {
 		r1 = rf(userID)
 	} else {
-		r1 = ret.Get(1).(service.AuthPayload)
+		r1 = ret.Error(1)
 	}
 
-	if rf, ok := ret.Get(2).(func(string) error); ok {
-		r2 = rf(userID)
-	} else {
-		r2 = ret.Error(2)
-	}
-
-	return r0, r1, r2
+	return r0, r1
 }
 
 // TokenMaker_CreateRefreshToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateRefreshToken'
@@ -136,12 +122,12 @@ func (_c *TokenMaker_CreateRefreshToken_Call) Run(run func(userID string)) *Toke
 	return _c
 }
 
-func (_c *TokenMaker_CreateRefreshToken_Call) Return(_a0 string, _a1 service.AuthPayload, _a2 error) *TokenMaker_CreateRefreshToken_Call {
-	_c.Call.Return(_a0, _a1, _a2)
+func (_c *TokenMaker_CreateRefreshToken_Call) Return(_a0 string, _a1 error) *TokenMaker_CreateRefreshToken_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *TokenMaker_CreateRefreshToken_Call) RunAndReturn(run func(string) (string, service.AuthPayload, error)) *TokenMaker_CreateRefreshToken_Call {
+func (_c *TokenMaker_CreateRefreshToken_Call) RunAndReturn(run func(string) (string, error)) *TokenMaker_CreateRefreshToken_Call {
 	_c.Call.Return(run)
 	return _c
 }

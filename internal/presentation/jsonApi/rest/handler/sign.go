@@ -9,11 +9,11 @@ import (
 )
 
 type SignHandler struct {
-	signUsecase application.SignUseCase
+	signUsecase application.ISignUseCase
 }
 
 func NewSignHandler(
-	signUsecase application.SignUseCase,
+	signUsecase application.ISignUseCase,
 ) SignHandler {
 	return SignHandler{
 		signUsecase: signUsecase,

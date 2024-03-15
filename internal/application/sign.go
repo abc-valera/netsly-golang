@@ -2,10 +2,11 @@ package application
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
@@ -17,8 +18,14 @@ var (
 	ErrProvidedAccessToken = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Access token provided")
 )
 
-type SignUseCase struct {
-	userEntity    entity.User
+type ISignUseCase interface {
+	SignUp(ctx context.Context, req SignUpRequest) error
+	SignIn(ctx context.Context, req SignInRequest) (SignInResponse, error)
+	SignRefresh(ctx context.Context, refreshToken string) (string, error)
+}
+
+type signUseCase struct {
+	userEntity    entity.IUser
 	userQuery     query.IUser
 	tx            transactioneer.ITransactioneer
 	passwordMaker service.IPasswordMaker
@@ -27,15 +34,15 @@ type SignUseCase struct {
 }
 
 func NewSignUseCase(
-	userDomain entity.User,
+	userEntity entity.IUser,
 	userQuery query.IUser,
 	tx transactioneer.ITransactioneer,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
 	taskQueue service.ITaskQueuer,
-) SignUseCase {
-	return SignUseCase{
-		userEntity:    userDomain,
+) ISignUseCase {
+	return signUseCase{
+		userEntity:    userEntity,
 		userQuery:     userQuery,
 		tx:            tx,
 		passwordMaker: passwordMaker,
@@ -56,7 +63,7 @@ type SignUpRequest struct {
 // it creates new user entity with unique username and email,
 // creates hash of the password provided by user,
 // then it sends welcome email to the users's email address,
-func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
+func (uc signUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 	txFunc := func(ctx context.Context, txEntities domain.Entities) error {
 		if _, err := txEntities.User.Create(ctx, entity.UserCreateRequest{
 			Username: req.Username,
@@ -73,6 +80,8 @@ func (uc SignUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 			Content: fmt.Sprintf("%s, congrats with joining the Netsly community!", req.Username),
 			To:      []string{req.Email},
 		}
+
+		return errors.New("test error")
 
 		return uc.taskQueue.SendEmailTask(ctx, service.Critical, welcomeEmail)
 	}
@@ -94,7 +103,7 @@ type SignInResponse struct {
 // SignIn performs user sign-in: it checks if user with provided email exists,
 // then creates hash of the provided password and compares it to the hash stored in database.
 // The SignIn returns user, accessToken and refreshToken.
-func (s SignUseCase) SignIn(ctx context.Context, req SignInRequest) (SignInResponse, error) {
+func (s signUseCase) SignIn(ctx context.Context, req SignInRequest) (SignInResponse, error) {
 	user, err := s.userQuery.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return SignInResponse{}, err
@@ -104,11 +113,11 @@ func (s SignUseCase) SignIn(ctx context.Context, req SignInRequest) (SignInRespo
 		return SignInResponse{}, err
 	}
 
-	access, _, err := s.tokenMaker.CreateAccessToken(user.ID)
+	access, err := s.tokenMaker.CreateAccessToken(user.ID)
 	if err != nil {
 		return SignInResponse{}, err
 	}
-	refresh, _, err := s.tokenMaker.CreateRefreshToken(user.ID)
+	refresh, err := s.tokenMaker.CreateRefreshToken(user.ID)
 	if err != nil {
 		return SignInResponse{}, err
 	}
@@ -121,7 +130,7 @@ func (s SignUseCase) SignIn(ctx context.Context, req SignInRequest) (SignInRespo
 }
 
 // SignRefresh exchages given refresh token for the access token for the same user.
-func (s SignUseCase) SignRefresh(c context.Context, refreshToken string) (string, error) {
+func (s signUseCase) SignRefresh(c context.Context, refreshToken string) (string, error) {
 	payload, err := s.tokenMaker.VerifyToken(refreshToken)
 	if err != nil {
 		return "", err
@@ -131,7 +140,7 @@ func (s SignUseCase) SignRefresh(c context.Context, refreshToken string) (string
 		return "", ErrProvidedAccessToken
 	}
 
-	access, _, err := s.tokenMaker.CreateAccessToken(payload.UserID)
+	access, err := s.tokenMaker.CreateAccessToken(payload.UserID)
 	if err != nil {
 		return "", err
 	}

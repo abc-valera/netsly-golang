@@ -1,9 +1,9 @@
-package jwtTokenMaker
+package tokenMaker
 
 import (
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -33,7 +33,7 @@ func NewJWT(
 	}
 }
 
-func (s jwtTokenMaker) createToken(userID string, isRefresh bool, duration time.Duration) (string, service.AuthPayload, error) {
+func (s jwtTokenMaker) createToken(userID string, isRefresh bool, duration time.Duration) (string, error) {
 	payload := service.AuthPayload{
 		UserID:    userID,
 		IsRefresh: isRefresh,
@@ -51,17 +51,17 @@ func (s jwtTokenMaker) createToken(userID string, isRefresh bool, duration time.
 
 	tokenString, err := token.SignedString([]byte(s.signKey))
 	if err != nil {
-		return "", service.AuthPayload{}, coderr.NewInternalErr(err)
+		return "", coderr.NewInternalErr(err)
 	}
 
-	return tokenString, payload, nil
+	return tokenString, nil
 }
 
-func (s jwtTokenMaker) CreateAccessToken(userID string) (string, service.AuthPayload, error) {
+func (s jwtTokenMaker) CreateAccessToken(userID string) (string, error) {
 	return s.createToken(userID, false, s.accessDuration)
 }
 
-func (s jwtTokenMaker) CreateRefreshToken(userID string) (string, service.AuthPayload, error) {
+func (s jwtTokenMaker) CreateRefreshToken(userID string) (string, error) {
 	return s.createToken(userID, true, s.refreshDuration)
 }
 

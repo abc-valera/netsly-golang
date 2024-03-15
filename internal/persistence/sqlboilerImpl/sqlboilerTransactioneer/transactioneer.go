@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/transactioneer"
 	"github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/errors"
 	sqlboilercommand "github.com/abc-valera/netsly-api-golang/internal/persistence/sqlboilerImpl/sqlboilerCommand"
@@ -21,7 +21,8 @@ type transactioneerImpl struct {
 
 func NewTransactioneer(db *sql.DB, services domain.Services) transactioneer.ITransactioneer {
 	return &transactioneerImpl{
-		db: db,
+		db:       db,
+		services: services,
 	}
 }
 

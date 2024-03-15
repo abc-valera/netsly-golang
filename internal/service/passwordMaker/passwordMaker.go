@@ -1,4 +1,4 @@
-package argonPasswordMaker
+package passwordMaker
 
 import (
 	"crypto/rand"
@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"golang.org/x/crypto/argon2"
 )
@@ -35,8 +35,7 @@ func (pm argonPasswordMaker) HashPassword(password string) (string, error) {
 	}
 
 	// Pass the plaintext password, salt and parameters to the argon2.IDKey
-	// function. This will generate a hash of the password using the Argon2id
-	// variant.
+	// function. This will generate a hash of the password using the Argon2id variant.
 	hash := argon2.IDKey([]byte(password), salt, iterations, memory, parallelism, keyLength)
 
 	// Base64 encode the salt and hashed password.
@@ -65,7 +64,7 @@ func (pm argonPasswordMaker) CheckPassword(password, encodedHash string) error {
 	if subtle.ConstantTimeCompare(hash, otherHash) == 1 {
 		return nil
 	}
-	return service.ErrInvalidPassword
+	return service.ErrPasswordDontMatch
 }
 
 func generateRandomBytes(n uint32) ([]byte, error) {
@@ -81,7 +80,7 @@ func generateRandomBytes(n uint32) ([]byte, error) {
 func decodeHash(encodedHash string) (salt, hash []byte, err error) {
 	vals := strings.Split(encodedHash, "$")
 	if len(vals) != 6 {
-		return nil, nil, service.ErrInvalidPassword
+		return nil, nil, service.ErrPasswordDontMatch
 	}
 
 	var version int
@@ -90,7 +89,7 @@ func decodeHash(encodedHash string) (salt, hash []byte, err error) {
 		return nil, nil, err
 	}
 	if version != argon2.Version {
-		return nil, nil, service.ErrInvalidPassword
+		return nil, nil, service.ErrPasswordDontMatch
 	}
 
 	salt, err = base64.RawStdEncoding.Strict().DecodeString(vals[4])

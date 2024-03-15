@@ -3,13 +3,13 @@ package domain
 import "github.com/abc-valera/netsly-api-golang/internal/domain/entity"
 
 type Entities struct {
-	User        entity.User
-	Joke        entity.Joke
-	Like        entity.Like
-	Comment     entity.Comment
-	Room        entity.Room
-	RoomMember  entity.RoomMember
-	RoomMessage entity.RoomMessage
+	User        entity.IUser
+	Joke        entity.IJoke
+	Like        entity.ILike
+	Comment     entity.IComment
+	Room        entity.IRoom
+	RoomMember  entity.IRoomMember
+	RoomMessage entity.IRoomMessage
 }
 
 func NewEntities(
@@ -18,12 +18,12 @@ func NewEntities(
 	services Services,
 ) Entities {
 	return Entities{
-		User:        entity.NewUser(commands.User, queries.User, services.UUUIDMaker, services.Time, services.PasswordMaker),
-		Joke:        entity.NewJoke(commands.Joke, services.UUUIDMaker, services.Time),
-		Like:        entity.NewLike(commands.Like, services.Time),
-		Comment:     entity.NewComment(commands.Comment, services.UUUIDMaker, services.Time),
-		Room:        entity.NewRoom(commands.Room, services.UUUIDMaker, services.Time),
-		RoomMember:  entity.NewRoomMember(commands.RoomMember, services.Time),
-		RoomMessage: entity.NewRoomMessage(commands.RoomMessage, services.UUUIDMaker, services.Time),
+		User:        entity.NewUser(commands.User, queries.User, services.PasswordMaker),
+		Joke:        entity.NewJoke(commands.Joke),
+		Like:        entity.NewLike(commands.Like),
+		Comment:     entity.NewComment(commands.Comment),
+		Room:        entity.NewRoom(commands.Room),
+		RoomMember:  entity.NewRoomMember(commands.RoomMember),
+		RoomMessage: entity.NewRoomMessage(commands.RoomMessage),
 	}
 }

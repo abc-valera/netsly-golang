@@ -11,16 +11,16 @@ import (
 
 type MeJokesHandler struct {
 	jokeQuery  query.IJoke
-	jokeDomain entity.Joke
+	jokeEntity entity.IJoke
 }
 
 func NewMeJokesHandler(
 	jokeQuery query.IJoke,
-	jokeDomain entity.Joke,
+	jokeEntity entity.IJoke,
 ) MeJokesHandler {
 	return MeJokesHandler{
 		jokeQuery:  jokeQuery,
-		jokeDomain: jokeDomain,
+		jokeEntity: jokeEntity,
 	}
 }
 
@@ -34,7 +34,7 @@ func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesG
 }
 
 func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostReq) (*ogen.Joke, error) {
-	joke, err := h.jokeDomain.Create(ctx, entity.JokeCreateRequest{
+	joke, err := h.jokeEntity.Create(ctx, entity.JokeCreateRequest{
 		UserID:      payloadUserID(ctx),
 		Title:       req.Title,
 		Text:        req.Text,
@@ -47,7 +47,7 @@ func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostRe
 }
 
 func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq) (*ogen.Joke, error) {
-	joke, err := h.jokeDomain.Update(ctx, req.JokeID, entity.JokeUpdateRequest{
+	joke, err := h.jokeEntity.Update(ctx, req.JokeID, entity.JokeUpdateRequest{
 		Title:       dto.NewPointerString(req.Title),
 		Text:        dto.NewPointerString(req.Text),
 		Explanation: dto.NewPointerString(req.Explanation),
@@ -59,5 +59,5 @@ func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq)
 }
 
 func (h MeJokesHandler) MeJokesDel(ctx context.Context, req *ogen.MeJokesDelReq) error {
-	return h.jokeDomain.Delete(ctx, req.JokeID)
+	return h.jokeEntity.Delete(ctx, req.JokeID)
 }

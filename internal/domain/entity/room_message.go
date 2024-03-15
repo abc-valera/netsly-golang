@@ -2,29 +2,29 @@ package entity
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/google/uuid"
 )
 
-type RoomMessage struct {
-	command command.IRoomMessage
+type IRoomMessage interface {
+	Create(ctx context.Context, req RoomMessageCreateRequest) (model.RoomMessage, error)
+	Update(ctx context.Context, id string, req RoomMessageUpdateRequest) (model.RoomMessage, error)
+	Delete(ctx context.Context, id string) error
+}
 
-	uuidMaker service.IUuidMaker
-	timeMaker service.ITimeMaker
+type roomMessage struct {
+	command command.IRoomMessage
 }
 
 func NewRoomMessage(
 	command command.IRoomMessage,
-	uuidMaker service.IUuidMaker,
-	timeMaker service.ITimeMaker,
-) RoomMessage {
-	return RoomMessage{
-		command:   command,
-		uuidMaker: uuidMaker,
-		timeMaker: timeMaker,
+) IRoomMessage {
+	return roomMessage{
+		command: command,
 	}
 }
 
@@ -34,15 +34,15 @@ type RoomMessageCreateRequest struct {
 	RoomID string `validate:"required,uuid"`
 }
 
-func (rm RoomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (model.RoomMessage, error) {
+func (rm roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (model.RoomMessage, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.RoomMessage{}, err
 	}
 
 	return rm.command.Create(ctx, model.RoomMessage{
-		ID:        rm.uuidMaker.NewUUID(),
+		ID:        uuid.New().String(),
 		Text:      req.Text,
-		CreatedAt: rm.timeMaker.Now(),
+		CreatedAt: time.Now(),
 		UserID:    req.UserID,
 		RoomID:    req.RoomID,
 	})
@@ -52,7 +52,7 @@ type RoomMessageUpdateRequest struct {
 	Text *string `validate:"min=1,max=2048"`
 }
 
-func (rm RoomMessage) Update(ctx context.Context, id string, req RoomMessageUpdateRequest) (model.RoomMessage, error) {
+func (rm roomMessage) Update(ctx context.Context, id string, req RoomMessageUpdateRequest) (model.RoomMessage, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.RoomMessage{}, err
 	}
@@ -62,7 +62,7 @@ func (rm RoomMessage) Update(ctx context.Context, id string, req RoomMessageUpda
 	})
 }
 
-func (rm RoomMessage) Delete(ctx context.Context, id string) error {
+func (rm roomMessage) Delete(ctx context.Context, id string) error {
 	if err := global.Validator().Var(id, "uuid"); err != nil {
 		return err
 	}

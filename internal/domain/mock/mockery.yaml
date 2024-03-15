@@ -7,23 +7,28 @@ with-expecter: True
 disable-version-string: True
 
 packages:
+  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command:
+    config:
+      all: True
+      outpkg: "mockCommand"
+      dir: "internal/domain/mock/mockCommand"
+  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query:
+    config:
+      all: True
+      outpkg: "mockQuery"
+      dir: "internal/domain/mock/mockQuery"
+  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/transactioneer:
+    config:
+      all: True
+      outpkg: "mockTransactioneer"
+      dir: "internal/domain/mock/mockTransactioneer"
   github.com/abc-valera/netsly-api-golang/internal/domain/service:
     config:
       all: True
       outpkg: "mock{{ trimPrefix .InterfaceName `I` }}"
-      dir: "internal/service/{{ trimPrefix .InterfaceName `I` | firstLower }}/mock{{ trimPrefix .InterfaceName `I` }}"
-  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command:
+      dir: "internal/domain/mock/mock{{ trimPrefix .InterfaceName `I` }}"
+  github.com/abc-valera/netsly-api-golang/internal/domain/entity:
     config:
       all: True
-      dir: "internal/persistence/mock/mockCommand"
-      outpkg: "mockCommand"
-  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query:
-    config:
-      all: True
-      dir: "internal/persistence/mock/mockQuery"
-      outpkg: "mockQuery"
-  github.com/abc-valera/netsly-api-golang/internal/domain/persistence/transactioneer:
-    config:
-      all: True
-      dir: "internal/persistence/mock/mockTransactioneer"
-      outpkg: "mockTransactioneer"
+      outpkg: "mockEntity"
+      dir: "internal/domain/mock/mockEntity"

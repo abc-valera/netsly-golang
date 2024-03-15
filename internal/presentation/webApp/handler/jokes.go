@@ -9,10 +9,10 @@ import (
 )
 
 type Joke struct {
-	jokeEntity entity.Joke
+	jokeEntity entity.IJoke
 }
 
-func NewJoke(jokeEntity entity.Joke) Joke {
+func NewJoke(jokeEntity entity.IJoke) Joke {
 	return Joke{
 		jokeEntity: jokeEntity,
 	}

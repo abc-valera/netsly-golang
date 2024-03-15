@@ -2,26 +2,27 @@ package entity
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/model"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 
-type Like struct {
-	command command.ILike
+type ILike interface {
+	Create(ctx context.Context, req LikeCreateRequest) (model.Like, error)
+	Delete(ctx context.Context, req DeleteLikeRequest) error
+}
 
-	timeMaker service.ITimeMaker
+type like struct {
+	command command.ILike
 }
 
 func NewLike(
 	command command.ILike,
-	timer service.ITimeMaker,
-) Like {
-	return Like{
-		command:   command,
-		timeMaker: timer,
+) ILike {
+	return like{
+		command: command,
 	}
 }
 
@@ -30,7 +31,7 @@ type LikeCreateRequest struct {
 	JokeID string `validate:"required,uuid"`
 }
 
-func (l Like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, error) {
+func (l like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, error) {
 	if err := global.Validator().Struct(req); err != nil {
 		return model.Like{}, err
 	}
@@ -39,7 +40,7 @@ func (l Like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, er
 	return l.command.Create(ctx, model.Like{
 		UserID:    req.UserID,
 		JokeID:    req.JokeID,
-		CreatedAt: l.timeMaker.Now(),
+		CreatedAt: time.Now(),
 	})
 }
 
@@ -48,7 +49,7 @@ type DeleteLikeRequest struct {
 	JokeID string `validate:"required,uuid"`
 }
 
-func (l Like) Delete(ctx context.Context, req DeleteLikeRequest) error {
+func (l like) Delete(ctx context.Context, req DeleteLikeRequest) error {
 	if err := global.Validator().Struct(req); err != nil {
 		return err
 	}

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/coderr"
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/go-playground/validator/v10"
 )
 
