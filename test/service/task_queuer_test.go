@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
-	"github.com/abc-valera/netsly-api-golang/internal/service/emailSender/dummyEmailSender"
-	"github.com/abc-valera/netsly-api-golang/internal/service/taskQueuer/dummyTaskQueuer"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
+	"github.com/abc-valera/netsly-api-golang/pkg/service/emailSender/dummyEmailSender"
+	"github.com/abc-valera/netsly-api-golang/pkg/service/taskQueuer/dummyTaskQueuer"
 )
 
 func TestSendEmailTask(t *testing.T) {

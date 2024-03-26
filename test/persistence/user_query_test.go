@@ -3,7 +3,7 @@ package persistence_test
 import (
 	"testing"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/spec"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/spec"
 	"github.com/stretchr/testify/require"
 )
 

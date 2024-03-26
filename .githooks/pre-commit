@@ -6,7 +6,7 @@ PASS=true
 # TODO: ADD PATTERNS FOR COMMIT MESSAGES AND BRANCH NAMES
 
 
-# STAGED_GO_FILES="$(git diff --cached --name-only | grep "^internal/" | grep ".go$")"
+# STAGED_GO_FILES="$(git diff --cached --name-only | grep "^pkg/" | grep ".go$")"
 
 # for FILE in $STAGED_GO_FILES; do   
     # NOTE: here checks can be added
