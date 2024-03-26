@@ -8,9 +8,9 @@
       "mode": "auto",
       "args": ["-entrypoint", "jsonApi"],
       "program": "${workspaceFolder}/cmd",
-      "envFile": "${workspaceFolder}/env/dev.env",
+      "envFile": "${workspaceFolder}/env/.env.dev",
       "env": {
-        "JSON-API_STATIC_PATH": "${workspaceFolder}/internal/presentation/jsonApi/static"
+        "JSON-API_STATIC_PATH": "${workspaceFolder}/pkg/presentation/jsonApi/static"
       }
     },
     {
@@ -20,10 +20,10 @@
       "mode": "auto",
       "program": "${workspaceFolder}/cmd",
       "args": ["-entrypoint", "webApp"],
-      "envFile": "${workspaceFolder}/env/dev.env",
+      "envFile": "${workspaceFolder}/env/.env.dev",
       "env": {
-        "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/internal/presentation/webApp/template",
-        "WEB_APP_STATIC_PATH": "${workspaceFolder}/internal/presentation/webApp/static"
+        "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/pkg/presentation/webApp/template",
+        "WEB_APP_STATIC_PATH": "${workspaceFolder}/pkg/presentation/webApp/static"
       }
     }
   ]

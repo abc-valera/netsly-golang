@@ -14,7 +14,7 @@ Layers of the application can be shown as follows:
 
 ![architecture diagram](images/architecture_circle_diagram.png)
 
-All the code is located in the `internal` directory. The `cmd` directory contains the entry point of the application.
+All the code is located in the `pkg` directory. The `cmd` directory contains the entry point of the application.
 
 ## Key technologies
 
@@ -56,7 +56,7 @@ The following list describes technologies used in the project:
 3. Install Task
 4. Clone the repo
 5. Run `git config --local core.hooksPath .githooks` in the root of the project
-6. Create .env (or dev.env) file. Project should be launched with the correct environment set.
+6. Create .env (or .env.dev) file. Project should be launched with the correct environment set.
 
 ### Formatters setup
 

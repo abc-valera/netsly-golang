@@ -3,12 +3,12 @@
 version: "3"
 
 env:
-  GOOSE_MIGRATION_DIR: "internal/persistence/sqlboilerImpl/migration"
+  GOOSE_MIGRATION_DIR: "pkg/persistence/sqlboilerImpl/migration"
   GOOSE_DRIVER: "postgres"
   GOOSE_DBSTRING: "postgres://netsly:netsly@localhost:5432/netsly?sslmode=disable"
 
 vars:
-  ENV_FILE_PATH: "env/dev.env"
+  ENV_FILE_PATH: "env/.env.dev"
 
 tasks:
   entrypoint:jsonApi:
@@ -37,7 +37,7 @@ tasks:
 
   test:unit:
     cmds:
-      - go test ./internal/application/ -count=1
+      - go test ./pkg/application/ -count=1
 
   test:integration:
     cmds:
@@ -54,7 +54,7 @@ tasks:
 
   generate:domain:mocks:
     cmds:
-      - mockery --config internal/domain/mock/mockery.yaml
+      - mockery --config pkg/domain/mock/mockery.yaml
 
   generate:jsonApi:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
@@ -68,14 +68,14 @@ tasks:
       - docker run --rm -v ${PWD}:/spec:Z
         redocly/cli bundle
         -o /spec/gen/openapi/openapi.yaml
-        /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
+        /spec/pkg/presentation/jsonApi/rest/schema/openapi.yaml
 
   generate:jsonApi:rest:docs:
     cmds:
       - docker run --rm -v ${PWD}:/spec:Z
         redocly/cli build-docs
-        -o /spec/internal/presentation/jsonApi/static/docs/rest.html
-        /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
+        -o /spec/pkg/presentation/jsonApi/static/docs/rest.html
+        /spec/pkg/presentation/jsonApi/rest/schema/openapi.yaml
 
   generate:jsonApi:rest:code:
     cmds:
@@ -84,18 +84,18 @@ tasks:
   generate:webApp:tailwindcss:
     cmds:
       - npx tailwindcss
-        -c internal/presentation/webApp/tailwind.config.js
-        -i internal/presentation/webApp/static/style/input.css
-        -o internal/presentation/webApp/static/style/style.css
+        -c pkg/presentation/webApp/tailwind.config.js
+        -i pkg/presentation/webApp/static/style/input.css
+        -o pkg/presentation/webApp/static/style/style.css
 
   generate:grpcApi:code:
     cmds:
-      - protoc internal/presentation/grpcApi/proto/*.proto
+      - protoc pkg/presentation/grpcApi/proto/*.proto
         --go_out=gen/pb
         --go_opt=paths=source_relative
         --go-grpc_out=gen/pb
         --go-grpc_opt=paths=source_relative
-        --proto_path=internal/presentation/grpcApi/proto
+        --proto_path=pkg/presentation/grpcApi/proto
 
   generate:persistence:migration:
     cmds:
@@ -103,7 +103,7 @@ tasks:
 
   generate:persistence:code:
     cmds:
-      - sqlboiler psql -c internal/persistence/sqlboilerImpl/sqlboiler.toml
+      - sqlboiler psql -c pkg/persistence/sqlboilerImpl/sqlboiler.toml
 
   infrastructure:up:
     cmds:
@@ -162,7 +162,7 @@ tasks:
         -e REDIS_PORT=netsly-redis:6379
         -e REDIS_USER=netsly-redis
         -e REDIS_PASS=
-        --env-file env/deploy.env
+        --env-file env/.env.staging
         localhost/netsly/jsonApi:latest
 
   image:jsonApi:down:
@@ -171,7 +171,7 @@ tasks:
 
   compose:up:
     cmds:
-      - docker-compose -f docker/docker-compose.dev.yml --env-file env/deploy.env up -d
+      - docker-compose -f docker/docker-compose.dev.yml --env-file env/.env.staging up -d
 
   compose:down:
     cmds:
