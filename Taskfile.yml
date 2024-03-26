@@ -35,9 +35,26 @@ tasks:
       - go build -o build/netsly cmd/main.go
       - ./build/netsly -entrypoint seed
 
+  test:unit:
+    cmds:
+      - go test ./internal/application/ -count=1
+
+  test:integration:
+    cmds:
+      - task: test:integration:persistence
+      - task: test:integration:service
+
+  test:integration:persistence:
+    cmds:
+      - go test ./test/persistence -count=1
+
+  test:integration:service:
+    cmds:
+      - go test ./test/service -count=1
+
   generate:domain:mocks:
     cmds:
-      - mockery --config internal/domain/mockery/.mockery.yaml
+      - mockery --config internal/domain/mock/mockery.yaml
 
   generate:jsonApi:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
@@ -133,7 +150,7 @@ tasks:
 
   image:jsonApi:build:
     cmds:
-      - docker build -t netsly/jsonApi:latest -f docker/jsonApi.Dockerfile .
+      - docker build -t netsly/jsonApi:latest -f docker/Dockerfile.jsonApi .
 
   image:jsonApi:up:
     cmds:
@@ -154,11 +171,11 @@ tasks:
 
   compose:up:
     cmds:
-      - docker-compose -f docker/dev.docker-compose.yml --env-file env/deploy.env up -d
+      - docker-compose -f docker/docker-compose.dev.yml --env-file env/deploy.env up -d
 
   compose:down:
     cmds:
-      - docker-compose -f docker/dev.docker-compose.yml down
+      - docker-compose -f docker/docker-compose.dev.yml down
 
   other:run_evans:
     cmds:
