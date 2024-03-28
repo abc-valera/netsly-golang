@@ -51,12 +51,10 @@ The following list describes technologies used in the project:
 
 ## Initial setup
 
-1. Make sure the correct version of go is installed on your machine
-2. Install Docker
-3. Install Task
-4. Clone the repo
-5. Run `git config --local core.hooksPath .githooks` in the root of the project
-6. Create .env (or .env.dev) file. Project should be launched with the correct environment set.
+1. Make sure the Go, Docker, Task and npm are installed on your machine.
+2. Clone the repo
+3. Run the `./workspace-init.sh` script
+4. Create required `.env` files.
 
 ### Formatters setup
 
