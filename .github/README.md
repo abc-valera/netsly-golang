@@ -51,7 +51,7 @@ The following list describes technologies used in the project:
 
 ## Initial setup
 
-1. Make sure the Go, Docker, Task and npm are installed on your machine.
+1. Make sure the `go`, `docker`, `task` and `npm` are installed on your machine.
 2. Clone the repo
 3. Run the `./workspace-init.sh` script
 4. Create required `.env` files.

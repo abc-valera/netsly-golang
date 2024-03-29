@@ -28,7 +28,7 @@ type Room struct {
 	Name        string      `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Description null.String `boil:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty"`
 	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	CreatorID   string      `boil:"creator_id" json:"creator_id" toml:"creator_id" yaml:"creator_id"`
+	CreatorUserID   string      `boil:"creator_user_id" json:"creator_user_id" toml:"creator_user_id" yaml:"creator_user_id"`
 
 	R *roomR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L roomL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -39,13 +39,13 @@ var RoomColumns = struct {
 	Name        string
 	Description string
 	CreatedAt   string
-	CreatorID   string
+	CreatorUserID   string
 }{
 	ID:          "id",
 	Name:        "name",
 	Description: "description",
 	CreatedAt:   "created_at",
-	CreatorID:   "creator_id",
+	CreatorUserID:   "creator_user_id",
 }
 
 var RoomTableColumns = struct {
@@ -53,13 +53,13 @@ var RoomTableColumns = struct {
 	Name        string
 	Description string
 	CreatedAt   string
-	CreatorID   string
+	CreatorUserID   string
 }{
 	ID:          "Room.id",
 	Name:        "Room.name",
 	Description: "Room.description",
 	CreatedAt:   "Room.created_at",
-	CreatorID:   "Room.creator_id",
+	CreatorUserID:   "Room.creator_user_id",
 }
 
 // Generated where
@@ -69,13 +69,13 @@ var RoomWhere = struct {
 	Name        whereHelperstring
 	Description whereHelpernull_String
 	CreatedAt   whereHelpertime_Time
-	CreatorID   whereHelperstring
+	CreatorUserID   whereHelperstring
 }{
 	ID:          whereHelperstring{field: "\"Room\".\"id\""},
 	Name:        whereHelperstring{field: "\"Room\".\"name\""},
 	Description: whereHelpernull_String{field: "\"Room\".\"description\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"Room\".\"created_at\""},
-	CreatorID:   whereHelperstring{field: "\"Room\".\"creator_id\""},
+	CreatorUserID:   whereHelperstring{field: "\"Room\".\"creator_user_id\""},
 }
 
 // RoomRels is where relationship names are stored.
@@ -126,8 +126,8 @@ func (r *roomR) GetRoomRoomMessages() RoomMessageSlice {
 type roomL struct{}
 
 var (
-	roomAllColumns            = []string{"id", "name", "description", "created_at", "creator_id"}
-	roomColumnsWithoutDefault = []string{"id", "name", "created_at", "creator_id"}
+	roomAllColumns            = []string{"id", "name", "description", "created_at", "creator_user_id"}
+	roomColumnsWithoutDefault = []string{"id", "name", "created_at", "creator_user_id"}
 	roomColumnsWithDefault    = []string{"description"}
 	roomPrimaryKeyColumns     = []string{"id"}
 	roomGeneratedColumns      = []string{}
@@ -461,7 +461,7 @@ func (q roomQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool,
 // Creator pointed to by the foreign key.
 func (o *Room) Creator(mods ...qm.QueryMod) userQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("\"id\" = ?", o.CreatorID),
+		qm.Where("\"id\" = ?", o.CreatorUserID),
 	}
 
 	queryMods = append(queryMods, mods...)
@@ -530,7 +530,7 @@ func (roomL) LoadCreator(ctx context.Context, e boil.ContextExecutor, singular b
 		if object.R == nil {
 			object.R = &roomR{}
 		}
-		args[object.CreatorID] = struct{}{}
+		args[object.CreatorUserID] = struct{}{}
 
 	} else {
 		for _, obj := range slice {
@@ -538,7 +538,7 @@ func (roomL) LoadCreator(ctx context.Context, e boil.ContextExecutor, singular b
 				obj.R = &roomR{}
 			}
 
-			args[obj.CreatorID] = struct{}{}
+			args[obj.CreatorUserID] = struct{}{}
 
 		}
 	}
@@ -603,7 +603,7 @@ func (roomL) LoadCreator(ctx context.Context, e boil.ContextExecutor, singular b
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.CreatorID == foreign.ID {
+			if local.CreatorUserID == foreign.ID {
 				local.R.Creator = foreign
 				if foreign.R == nil {
 					foreign.R = &userR{}
@@ -864,7 +864,7 @@ func (o *Room) SetCreator(ctx context.Context, exec boil.ContextExecutor, insert
 
 	updateQuery := fmt.Sprintf(
 		"UPDATE \"Room\" SET %s WHERE %s",
-		strmangle.SetParamNames("\"", "\"", 1, []string{"creator_id"}),
+		strmangle.SetParamNames("\"", "\"", 1, []string{"creator_user_id"}),
 		strmangle.WhereClause("\"", "\"", 2, roomPrimaryKeyColumns),
 	)
 	values := []interface{}{related.ID, o.ID}
@@ -878,7 +878,7 @@ func (o *Room) SetCreator(ctx context.Context, exec boil.ContextExecutor, insert
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.CreatorID = related.ID
+	o.CreatorUserID = related.ID
 	if o.R == nil {
 		o.R = &roomR{
 			Creator: related,

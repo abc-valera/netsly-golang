@@ -5,7 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/restDto"
 )
 
 type Rooms struct {
@@ -21,6 +21,6 @@ func NewRooms(
 }
 
 func (h Rooms) MeRoomsIdMessagesGet(ctx context.Context, ogenParams ogen.MeRoomsIdMessagesGetParams) (*ogen.RoomMessages, error) {
-	domainMessages, err := h.roomMessageQuery.GetAllByRoomID(ctx, ogenParams.RoomID, dto.NewDomainSelectParams(&ogenParams.SelectParams))
-	return dto.NewRoomMessagesResponse(domainMessages), err
+	domainMessages, err := h.roomMessageQuery.GetAllByRoomID(ctx, ogenParams.RoomID, restDto.NewDomainSelectParams(&ogenParams.SelectParams))
+	return restDto.NewRoomMessagesResponse(domainMessages), err
 }

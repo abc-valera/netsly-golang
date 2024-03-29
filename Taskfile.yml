@@ -3,12 +3,12 @@
 version: "3"
 
 env:
-  GOOSE_MIGRATION_DIR: "pkg/persistence/sqlboilerImpl/migration"
+  GOOSE_MIGRATION_DIR: "pkg/infrastructure/persistence/sqlboilerImpl/migration"
   GOOSE_DRIVER: "postgres"
   GOOSE_DBSTRING: "postgres://netsly:netsly@localhost:5432/netsly?sslmode=disable"
 
 vars:
-  ENV_FILE_PATH: "env/.env.dev"
+  ENV_FILE_PATH: "env/dev.env"
 
 tasks:
   entrypoint:jsonApi:
@@ -28,6 +28,12 @@ tasks:
     cmds:
       - go build -o build/netsly cmd/main.go
       - ./build/netsly -entrypoint grpcApi
+
+  entrypoint:gqlApi:
+    dotenv: ["{{ .ENV_FILE_PATH }}"]
+    cmds:
+      - go build -o build/netsly cmd/main.go
+      - ./build/netsly -entrypoint gqlApi
 
   entrypoint:seed:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
@@ -99,7 +105,7 @@ tasks:
 
   generate:graphqlApi:code:
     cmds:
-      - ./bin/gqlgen generate
+      - ./bin/gqlgen generate --config pkg/presentation/gqlApi/config/gqlgen.yml
 
   generate:persistence:migration:
     cmds:
@@ -107,7 +113,7 @@ tasks:
 
   generate:persistence:code:
     cmds:
-      - ./bin/sqlboiler psql -c pkg/persistence/sqlboilerImpl/sqlboiler.toml
+      - ./bin/sqlboiler psql -c pkg/infrastructure/persistence/sqlboilerImpl/sqlboiler.toml
 
   infrastructure:up:
     cmds:
@@ -166,7 +172,7 @@ tasks:
         -e REDIS_PORT=netsly-redis:6379
         -e REDIS_USER=netsly-redis
         -e REDIS_PASS=
-        --env-file env/.env.staging
+        --env-file env/staging.env
         localhost/netsly/jsonApi:latest
 
   image:jsonApi:down:
@@ -175,7 +181,7 @@ tasks:
 
   compose:up:
     cmds:
-      - docker-compose -f docker/docker-compose.dev.yml --env-file env/.env.staging up -d
+      - docker-compose -f docker/docker-compose.dev.yml --env-file env/staging.env up -d
 
   compose:down:
     cmds:

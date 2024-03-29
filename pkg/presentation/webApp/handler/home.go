@@ -7,7 +7,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/spec"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selectParams"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/webApp/handler/session"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/webApp/handler/tmpl"
 )
@@ -45,7 +45,7 @@ func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
 	jokes, err := h.jokeQuery.GetAllByUserID(
 		r.Context(),
 		userID,
-		spec.NewSelectParams("desc", 5, 0),
+		selectParams.NewSelectParams("desc", 5, 0),
 	)
 	if err != nil {
 		return err
@@ -61,7 +61,7 @@ func (h Home) HomePartialJokesGet(w http.ResponseWriter, r *http.Request) error 
 	jokes, err := h.jokeQuery.GetAllByUserID(
 		context.Background(),
 		session.GetUserID(r),
-		spec.NewSelectParams("desc", 5, 0),
+		selectParams.NewSelectParams("desc", 5, 0),
 	)
 	if err != nil {
 		return err

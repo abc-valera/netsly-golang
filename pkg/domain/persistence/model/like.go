@@ -6,9 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
 )
 
-var (
-	ErrLikeNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Like not found")
-)
+var ErrLikeNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Like not found")
 
 // Like represents a like entity.
 // Technically, it's a many-to-many relationship between users and jokes.

@@ -980,11 +980,11 @@ func (s *Order) UnmarshalText(data []byte) error {
 
 // Ref: #/components/schemas/room
 type Room struct {
-	ID          string    `json:"id"`
-	CreatorID   string    `json:"creator_id"`
-	Name        string    `json:"name"`
-	Description OptString `json:"description"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID            string    `json:"id"`
+	CreatorUserID string    `json:"creator_user_id"`
+	Name          string    `json:"name"`
+	Description   OptString `json:"description"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 // GetID returns the value of ID.
@@ -992,9 +992,9 @@ func (s *Room) GetID() string {
 	return s.ID
 }
 
-// GetCreatorID returns the value of CreatorID.
-func (s *Room) GetCreatorID() string {
-	return s.CreatorID
+// GetCreatorUserID returns the value of CreatorUserID.
+func (s *Room) GetCreatorUserID() string {
+	return s.CreatorUserID
 }
 
 // GetName returns the value of Name.
@@ -1017,9 +1017,9 @@ func (s *Room) SetID(val string) {
 	s.ID = val
 }
 
-// SetCreatorID sets the value of CreatorID.
-func (s *Room) SetCreatorID(val string) {
-	s.CreatorID = val
+// SetCreatorUserID sets the value of CreatorUserID.
+func (s *Room) SetCreatorUserID(val string) {
+	s.CreatorUserID = val
 }
 
 // SetName sets the value of Name.

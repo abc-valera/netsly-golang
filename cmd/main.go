@@ -4,36 +4,25 @@ import (
 	"flag"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/abc-valera/netsly-api-golang/pkg/application"
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/pkg/core/global"
 	"github.com/abc-valera/netsly-api-golang/pkg/core/mode"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain"
-	"github.com/abc-valera/netsly-api-golang/pkg/persistence/sqlboilerImpl"
-	"github.com/abc-valera/netsly-api-golang/pkg/persistence/sqlboilerImpl/sqlboilerCommand"
-	"github.com/abc-valera/netsly-api-golang/pkg/persistence/sqlboilerImpl/sqlboilerQuery"
-	"github.com/abc-valera/netsly-api-golang/pkg/persistence/sqlboilerImpl/sqlboilerTransactioneer"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service/logger/slogLogger"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/transactioneer"
+	"github.com/abc-valera/netsly-api-golang/pkg/presentation/gqlApi"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/grpcApi"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/seed"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/webApp"
-	"github.com/abc-valera/netsly-api-golang/pkg/service/emailSender/dummyEmailSender"
-	"github.com/abc-valera/netsly-api-golang/pkg/service/logger/slogLogger"
-	"github.com/abc-valera/netsly-api-golang/pkg/service/passwordMaker"
-	"github.com/abc-valera/netsly-api-golang/pkg/service/taskQueuer/dummyTaskQueuer"
-	"github.com/abc-valera/netsly-api-golang/pkg/service/tokenMaker"
 )
 
 var (
 	modeEnv = os.Getenv("MODE")
-
-	postgresUrlEnv = os.Getenv("POSTGRES_URL")
-
-	accessTokenDurationEnv  = os.Getenv("ACCESS_TOKEN_DURATION")
-	refreshTokenDurationEnv = os.Getenv("REFRESH_TOKEN_DURATION")
-	signKeyEnv              = os.Getenv("JWT_SIGN_KEY")
 
 	webAppPortEnv         = os.Getenv("WEB_APP_PORT")
 	webApptemplatePathEnv = os.Getenv("WEB_APP_TEMPLATE_PATH")
@@ -63,31 +52,19 @@ func main() {
 	global.InitMode(appMode)
 
 	// Init services
-	passwordMaker := passwordMaker.New()
-	tokenMaker := tokenMaker.NewJWT(
-		coderr.Must(time.ParseDuration(accessTokenDurationEnv)),
-		coderr.Must(time.ParseDuration(refreshTokenDurationEnv)),
-		signKeyEnv,
-	)
-	emailSender := dummyEmailSender.New()
-	taskQueuer := dummyTaskQueuer.New(emailSender)
-
-	services := domain.NewServices(
-		emailSender,
-		passwordMaker,
-		tokenMaker,
-		taskQueuer,
-	)
+	services := service.Init()
 
 	// Init persistence dependencies
-	conn := coderr.Must(sqlboilerImpl.Init(postgresUrlEnv))
+	db := persistence.InitDB()
 
-	commands := sqlboilerCommand.NewCommands(conn)
-	queries := sqlboilerQuery.NewQueries(conn)
-	tx := sqlboilerTransactioneer.NewTransactioneer(conn, services)
+	// Init persistence
+	commands, queries := persistence.InitCommands(db), persistence.InitQueries(db)
 
 	// Init entities
 	entities := domain.NewEntities(commands, queries, services)
+
+	// Init transaction
+	tx := transactioneer.NewTransactioneer(db, services)
 
 	// Init usecases
 	usecases := application.NewUseCases(queries, tx, entities, services)
@@ -125,6 +102,8 @@ func main() {
 			services,
 			usecases,
 		)
+	case "gqlApi":
+		serverStart, serverGracefulStop = gqlApi.NewServer()
 	case "seed":
 		seed.Seed(
 			queries,

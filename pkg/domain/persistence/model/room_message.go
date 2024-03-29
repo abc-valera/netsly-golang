@@ -6,9 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
 )
 
-var (
-	ErrRoomMessageNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "RoomMessage not found")
-)
+var ErrRoomMessageNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "RoomMessage not found")
 
 type RoomMessage struct {
 	ID        string

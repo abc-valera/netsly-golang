@@ -2,7 +2,7 @@ package application
 
 import (
 	"github.com/abc-valera/netsly-api-golang/pkg/domain"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/transactioneer"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/transactioneer"
 )
 
 type UseCases struct {

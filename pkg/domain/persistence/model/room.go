@@ -6,9 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
 )
 
-var (
-	ErrRoomNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Room not found")
-)
+var ErrRoomNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Room not found")
 
 type Room struct {
 	ID          string
@@ -16,7 +14,7 @@ type Room struct {
 	Description string
 	CreatedAt   time.Time
 
-	CreatorID string
+	CreatorUserID string
 }
 
 type Rooms []Room

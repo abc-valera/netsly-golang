@@ -5,7 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/pb"
 	"github.com/abc-valera/netsly-api-golang/pkg/application"
-	"github.com/abc-valera/netsly-api-golang/pkg/presentation/grpcApi/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/presentation/grpcApi/grpcApiDto"
 )
 
 type SignHandler struct {
@@ -39,7 +39,7 @@ func (h SignHandler) SignIn(ctx context.Context, req *pb.SignInRequest) (*pb.Sig
 		return nil, handleErr(err)
 	}
 	return &pb.SignInResponse{
-		UserResponse: dto.NewUserResponse(resp.User),
+		UserResponse: grpcApiDto.NewUserResponse(resp.User),
 		AccessToken:  resp.AccessToken,
 		RefreshToken: resp.RefreshToken,
 	}, nil

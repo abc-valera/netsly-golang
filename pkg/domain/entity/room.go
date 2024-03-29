@@ -29,9 +29,9 @@ func NewRoom(
 }
 
 type RoomCreateRequest struct {
-	Name        string `validate:"required,min=4,max=64"`
-	Description string `validate:"max=256"`
-	CreatorID   string `validate:"required,uuid"`
+	Name          string `validate:"required,min=4,max=64"`
+	Description   string `validate:"max=256"`
+	CreatorUserID string `validate:"required,uuid"`
 }
 
 func (r room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, error) {
@@ -40,11 +40,11 @@ func (r room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 	}
 
 	return r.command.Create(ctx, model.Room{
-		ID:          uuid.New().String(),
-		Name:        req.Name,
-		Description: req.Description,
-		CreatedAt:   time.Now(),
-		CreatorID:   req.CreatorID,
+		ID:            uuid.New().String(),
+		Name:          req.Name,
+		Description:   req.Description,
+		CreatedAt:     time.Now(),
+		CreatorUserID: req.CreatorUserID,
 	})
 }
 

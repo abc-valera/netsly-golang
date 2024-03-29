@@ -8,7 +8,7 @@
       "mode": "auto",
       "args": ["-entrypoint", "jsonApi"],
       "program": "${workspaceFolder}/cmd",
-      "envFile": "${workspaceFolder}/env/.env.dev",
+      "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
         "JSON-API_STATIC_PATH": "${workspaceFolder}/pkg/presentation/jsonApi/static"
       }
@@ -20,7 +20,7 @@
       "mode": "auto",
       "program": "${workspaceFolder}/cmd",
       "args": ["-entrypoint", "webApp"],
-      "envFile": "${workspaceFolder}/env/.env.dev",
+      "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
         "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/pkg/presentation/webApp/template",
         "WEB_APP_STATIC_PATH": "${workspaceFolder}/pkg/presentation/webApp/static"

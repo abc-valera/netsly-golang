@@ -7,14 +7,14 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/core/global"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/spec"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/transactioneer"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selectParams"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/transactioneer"
 )
 
 // Seed is used to populate the database with initial data.
 // Stops the program execution if an error occurs.
 func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.ITransactioneer) {
-	params := spec.NewSelectParams("asc", 100, 0)
+	params := selectParams.NewSelectParams("asc", 100, 0)
 
 	txFunc := func(ctx context.Context, txEntities domain.Entities) error {
 		// Users

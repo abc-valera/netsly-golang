@@ -5,7 +5,7 @@ services:
     ports:
       - "3010:3010"
     env_file:
-      - ../env/.env.staging
+      - ../env/staging.env
     environment:
       - POSTGRES_URL=postgres://netsly:netsly@netsly-postgres:5432/netsly?sslmode=disable
       - REDIS_PORT=netsly-redis:6379

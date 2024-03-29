@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/restDto"
 )
 
 type MeRooms struct {
@@ -32,28 +32,28 @@ func (h MeRooms) MeRoomsGet(ctx context.Context, ogenParams ogen.MeRoomsGetParam
 	domainRooms, err := h.roomQuery.GetAllByUserID(
 		ctx,
 		payloadUserID(ctx),
-		dto.NewDomainSelectParams(&ogenParams.SelectParams),
+		restDto.NewDomainSelectParams(&ogenParams.SelectParams),
 	)
-	return dto.NewRoomsResponse(domainRooms), err
+	return restDto.NewRoomsResponse(domainRooms), err
 }
 
 func (h MeRooms) MeRoomsPost(ctx context.Context, req *ogen.MeRoomsPostReq) (*ogen.Room, error) {
 	userID := payloadUserID(ctx)
 
 	domainRoom, err := h.roomEntity.Create(ctx, entity.RoomCreateRequest{
-		Name:        req.Name,
-		CreatorID:   userID,
-		Description: *dto.NewPointerString(req.Description),
+		Name:          req.Name,
+		CreatorUserID: userID,
+		Description:   *restDto.NewPointerString(req.Description),
 	})
-	return dto.NewRoomResponse(domainRoom), err
+	return restDto.NewRoomResponse(domainRoom), err
 }
 
 func (h MeRooms) MeRoomsPut(ctx context.Context, req *ogen.MeRoomsPutReq) (*ogen.Room, error) {
 	domainRoom, err := h.roomEntity.Update(ctx, req.ID, entity.RoomUpdateRequest{
-		Name:        dto.NewPointerString(req.Name),
-		Description: dto.NewPointerString(req.Description),
+		Name:        restDto.NewPointerString(req.Name),
+		Description: restDto.NewPointerString(req.Description),
 	})
-	return dto.NewRoomResponse(domainRoom), err
+	return restDto.NewRoomResponse(domainRoom), err
 }
 
 func (h MeRooms) MeRoomsDelete(ctx context.Context, req *ogen.MeRoomsDeleteReq) error {

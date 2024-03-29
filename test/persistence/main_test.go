@@ -9,9 +9,8 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-api-golang/pkg/domain"
-	"github.com/abc-valera/netsly-api-golang/pkg/persistence/sqlboilerImpl"
-	"github.com/abc-valera/netsly-api-golang/pkg/persistence/sqlboilerImpl/sqlboilerCommand"
-	"github.com/abc-valera/netsly-api-golang/pkg/persistence/sqlboilerImpl/sqlboilerQuery"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler"
 	"github.com/abc-valera/netsly-api-golang/test"
 	"github.com/docker/docker/pkg/ioutils"
 	"github.com/stretchr/testify/require"
@@ -60,7 +59,7 @@ func TestMain(m *testing.M) {
 	}
 
 	// Init DB
-	db, err := sqlboilerImpl.Init(fmt.Sprintf("postgres://test:test@%s/test?sslmode=disable", endpoint))
+	db, err := boiler.Init(fmt.Sprintf("postgres://test:test@%s/test?sslmode=disable", endpoint))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -87,7 +86,7 @@ func TestMain(m *testing.M) {
 		r.NoError(err)
 		_ = res
 
-		return ctx, r, sqlboilerCommand.NewCommands(tx), sqlboilerQuery.NewQueries(tx)
+		return ctx, r, persistence.InitCommands(tx), persistence.InitQueries(tx)
 	}
 
 	m.Run()

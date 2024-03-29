@@ -6,9 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
 )
 
-var (
-	ErrCommentNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Comment not found")
-)
+var ErrCommentNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Comment not found")
 
 type Comment struct {
 	ID        string

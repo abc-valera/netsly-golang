@@ -10,13 +10,11 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/transactioneer"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/transactioneer"
 )
 
-var (
-	ErrProvidedAccessToken = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Access token provided")
-)
+var ErrProvidedAccessToken = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Access token provided")
 
 type ISignUseCase interface {
 	SignUp(ctx context.Context, req SignUpRequest) error

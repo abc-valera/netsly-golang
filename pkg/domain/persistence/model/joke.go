@@ -6,9 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
 )
 
-var (
-	ErrJokeNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Joke not found")
-)
+var ErrJokeNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Joke not found")
 
 type Joke struct {
 	ID          string

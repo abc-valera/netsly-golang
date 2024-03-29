@@ -544,7 +544,7 @@ func (o *User) UserLikes(mods ...qm.QueryMod) likeQuery {
 	return Likes(queryMods...)
 }
 
-// CreatorRooms retrieves all the Room's Rooms with an executor via creator_id column.
+// CreatorRooms retrieves all the Room's Rooms with an executor via creator_user_id column.
 func (o *User) CreatorRooms(mods ...qm.QueryMod) roomQuery {
 	var queryMods []qm.QueryMod
 	if len(mods) != 0 {
@@ -552,7 +552,7 @@ func (o *User) CreatorRooms(mods ...qm.QueryMod) roomQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("\"Room\".\"creator_id\"=?", o.ID),
+		qm.Where("\"Room\".\"creator_user_id\"=?", o.ID),
 	)
 
 	return Rooms(queryMods...)
@@ -981,7 +981,7 @@ func (userL) LoadCreatorRooms(ctx context.Context, e boil.ContextExecutor, singu
 
 	query := NewQuery(
 		qm.From(`Room`),
-		qm.WhereIn(`Room.creator_id in ?`, argsSlice...),
+		qm.WhereIn(`Room.creator_user_id in ?`, argsSlice...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -1024,7 +1024,7 @@ func (userL) LoadCreatorRooms(ctx context.Context, e boil.ContextExecutor, singu
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.ID == foreign.CreatorID {
+			if local.ID == foreign.CreatorUserID {
 				local.R.CreatorRooms = append(local.R.CreatorRooms, foreign)
 				if foreign.R == nil {
 					foreign.R = &roomR{}
@@ -1467,14 +1467,14 @@ func (o *User) AddCreatorRooms(ctx context.Context, exec boil.ContextExecutor, i
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.CreatorID = o.ID
+			rel.CreatorUserID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
 		} else {
 			updateQuery := fmt.Sprintf(
 				"UPDATE \"Room\" SET %s WHERE %s",
-				strmangle.SetParamNames("\"", "\"", 1, []string{"creator_id"}),
+				strmangle.SetParamNames("\"", "\"", 1, []string{"creator_user_id"}),
 				strmangle.WhereClause("\"", "\"", 2, roomPrimaryKeyColumns),
 			)
 			values := []interface{}{o.ID, rel.ID}
@@ -1488,7 +1488,7 @@ func (o *User) AddCreatorRooms(ctx context.Context, exec boil.ContextExecutor, i
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.CreatorID = o.ID
+			rel.CreatorUserID = o.ID
 		}
 	}
 

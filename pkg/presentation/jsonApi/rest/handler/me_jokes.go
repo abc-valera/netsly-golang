@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/restDto"
 )
 
 type MeJokesHandler struct {
@@ -28,9 +28,9 @@ func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesG
 	domainJokes, err := h.jokeQuery.GetAllByUserID(
 		ctx,
 		payloadUserID(ctx),
-		dto.NewDomainSelectParams(&ogenParams.SelectParams),
+		restDto.NewDomainSelectParams(&ogenParams.SelectParams),
 	)
-	return dto.NewJokesResponse(domainJokes), err
+	return restDto.NewJokesResponse(domainJokes), err
 }
 
 func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostReq) (*ogen.Joke, error) {
@@ -43,19 +43,19 @@ func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostRe
 	if err != nil {
 		return nil, err
 	}
-	return dto.NewJokeResponse(joke), err
+	return restDto.NewJokeResponse(joke), err
 }
 
 func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq) (*ogen.Joke, error) {
 	joke, err := h.jokeEntity.Update(ctx, req.JokeID, entity.JokeUpdateRequest{
-		Title:       dto.NewPointerString(req.Title),
-		Text:        dto.NewPointerString(req.Text),
-		Explanation: dto.NewPointerString(req.Explanation),
+		Title:       restDto.NewPointerString(req.Title),
+		Text:        restDto.NewPointerString(req.Text),
+		Explanation: restDto.NewPointerString(req.Explanation),
 	})
 	if err != nil {
 		return nil, err
 	}
-	return dto.NewJokeResponse(joke), err
+	return restDto.NewJokeResponse(joke), err
 }
 
 func (h MeJokesHandler) MeJokesDel(ctx context.Context, req *ogen.MeJokesDelReq) error {

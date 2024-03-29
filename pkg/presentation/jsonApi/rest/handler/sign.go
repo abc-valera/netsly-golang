@@ -5,7 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/pkg/application"
-	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/restDto"
 )
 
 type SignHandler struct {
@@ -37,7 +37,7 @@ func (h SignHandler) SignInPost(ctx context.Context, req *ogen.SignInPostReq) (*
 		return nil, err
 	}
 	return &ogen.SignInPostOK{
-		UserResponse: *dto.NewUserResponse(resp.User),
+		UserResponse: *restDto.NewUserResponse(resp.User),
 		AccessToken:  resp.AccessToken,
 		RefreshToken: resp.RefreshToken,
 	}, nil

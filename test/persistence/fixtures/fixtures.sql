@@ -333,7 +333,7 @@ VALUES
   );
 
 INSERT INTO
-  "Room" (id, name, description, created_at, creator_id)
+  "Room" (id, name, description, created_at, creator_user_id)
 VALUES
   (
     '00000000-0000-0000-0000-000000000000',

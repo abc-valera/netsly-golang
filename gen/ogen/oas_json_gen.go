@@ -2293,8 +2293,8 @@ func (s *Room) encodeFields(e *jx.Encoder) {
 		e.Str(s.ID)
 	}
 	{
-		e.FieldStart("creator_id")
-		e.Str(s.CreatorID)
+		e.FieldStart("creator_user_id")
+		e.Str(s.CreatorUserID)
 	}
 	{
 		e.FieldStart("name")
@@ -2314,7 +2314,7 @@ func (s *Room) encodeFields(e *jx.Encoder) {
 
 var jsonFieldsNameOfRoom = [5]string{
 	0: "id",
-	1: "creator_id",
+	1: "creator_user_id",
 	2: "name",
 	3: "description",
 	4: "created_at",
@@ -2341,17 +2341,17 @@ func (s *Room) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"id\"")
 			}
-		case "creator_id":
+		case "creator_user_id":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
-				s.CreatorID = string(v)
+				s.CreatorUserID = string(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"creator_id\"")
+				return errors.Wrap(err, "decode field \"creator_user_id\"")
 			}
 		case "name":
 			requiredBitSet[0] |= 1 << 2

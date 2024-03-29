@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/restDto"
 )
 
 type MeCommentsHandler struct {
@@ -33,14 +33,14 @@ func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeComme
 	if err != nil {
 		return nil, err
 	}
-	return dto.NewCommentResponse(comment), err
+	return restDto.NewCommentResponse(comment), err
 }
 
 func (h MeCommentsHandler) MeCommentsPut(ctx context.Context, req *ogen.MeCommentsPutReq) (*ogen.Comment, error) {
 	comment, err := h.commentDomain.Update(ctx, req.CommentID, entity.CommentUpdateRequest{
-		Text: dto.NewPointerString(req.Text),
+		Text: restDto.NewPointerString(req.Text),
 	})
-	return dto.NewCommentResponse(comment), err
+	return restDto.NewCommentResponse(comment), err
 }
 
 func (h MeCommentsHandler) MeCommentsDel(ctx context.Context, req *ogen.MeCommentsDelReq) error {

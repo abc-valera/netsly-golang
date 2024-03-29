@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/restDto"
 )
 
 type CommentsHandler struct {
@@ -28,7 +28,7 @@ func (h CommentsHandler) CommentsByJokeIDGet(ctx context.Context, params ogen.Co
 	comments, err := h.commentQuery.GetAllByJokeID(
 		ctx,
 		params.JokeID,
-		dto.NewDomainSelectParams(&params.SelectParams),
+		restDto.NewDomainSelectParams(&params.SelectParams),
 	)
-	return dto.NewCommentsResponse(comments), err
+	return restDto.NewCommentsResponse(comments), err
 }

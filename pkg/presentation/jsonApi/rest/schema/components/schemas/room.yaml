@@ -3,7 +3,7 @@ properties:
   id:
     type: string
     example: "48690945-c3f9-45b4-9045-c6bcfb898f20"
-  creator_id:
+  creator_user_id:
     type: string
     example: "48690945-c3f9-45b4-9045-c6bcfb898f20"
   name:
@@ -18,6 +18,6 @@ properties:
     example: "2021-08-01T00:00:00Z"
 required:
   - id
-  - creator_id
+  - creator_user_id
   - name
   - created_at
