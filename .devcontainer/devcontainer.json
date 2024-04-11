@@ -1,0 +1,87 @@
+{
+  "name": "Netsly Dev Container",
+
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/remote/workspace/netsly-golang,type=bind",
+  "workspaceFolder": "/home/remote/workspace/netsly-golang",
+
+  "features": {
+    "ghcr.io/devcontainers/features/go:1": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers-contrib/features/go-task:1": {}
+  },
+
+  "postCreateCommand": "/home/remote/workspace/netsly-golang/.devcontainer/post-create.sh",
+
+  "forwardPorts": [3000, 3001, 3002, 3003],
+
+  "remoteUser": "remote",
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "files.associations": {
+          "*.env": "dotenv"
+        },
+
+        // Set the editor settings
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.linkedEditing": true,
+
+        // Prtettier
+        "prettier.configPath": "pkg/presentation/webApp/.prettierrc",
+
+        // Golang
+        "[go]": {
+          "editor.defaultFormatter": "golang.go"
+        },
+        "go.useLanguageServer": true,
+        "go.lintTool": "golangci-lint",
+        "gopls": {
+          "formatting.gofumpt": true,
+          "ui.semanticTokens": true
+        },
+
+        // Docker
+        "[dockerfile]": {
+          "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+        },
+
+        // Taskfile
+        "task": {
+          "path": "/usr/local/bin/task"
+        },
+
+        // Dotenv
+        "dotenv.enableAutocloaking": false,
+
+        // Todo plus
+        "todo.embedded.regex": "(?:<!-- *)?(?:#|// @|//|/\\*+|<!--|--|\\* @|\\{!|\\{\\{!--|\\{\\{!) *(TODO:|FIXME:|FIX:|BUG:|UGLY:|HACK:|NOTE:|IDEA:|REVIEW:|DEBUG:|OPTIMIZE:)(?:\\s*\\([^)]+\\))?:?(?!\\w)(?: *-->| *\\*/| *!}| *--}}| *}}|(?= *(?:[^:]//|/\\*+|<!--|@|--|\\{!|\\{\\{!--|\\{\\{!))|((?: +[^\\n@]*?)(?= *(?:[^:]//|/\\*+|<!--|@|--(?!>)|\\{!|\\{\\{!--|\\{\\{!))|(?: +[^@\\n]+)?))",
+        "todo.embedded.include": ["internal/**/*", "cmd/**/*"]
+      },
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "jinliming2.vscode-go-template",
+        "inferrinizzard.prettier-sql-vscode",
+        "dotenv.dotenv-vscode",
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml",
+        "yzhang.markdown-all-in-one",
+        "otovo-oss.htmx-tags",
+        "dz4k.vscode-hyperscript-org",
+        "bradlc.vscode-tailwindcss",
+        "42Crunch.vscode-openapi",
+        "GraphQL.vscode-graphql",
+        "golang.Go",
+        "task.vscode-task",
+        "fabiospampinato.vscode-todo-plus",
+        "mutantdino.resourcemonitor"
+      ]
+    }
+  }
+}

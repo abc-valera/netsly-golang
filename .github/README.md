@@ -49,41 +49,44 @@ The following list describes technologies used in the project:
   - For the SSR web application, golang html/template library is used with the use of [HTMX](https://htmx.org/) and [Tailwind CSS](https://tailwindcss.com/).
   - For the gRPC API, the [gRPC framework](https://grpc.io/) is used with additional tools by [Buf](https://buf.build/).
 
-## Initial setup
+## Development
 
-1. Make sure the `go`, `docker`, `task` and `npm` are installed on your machine.
-2. Clone the repo
-3. Run the `./workspace-init.sh` script
-4. Create required `.env` files.
+The project is supposed to be developed inside a devcontainer, but it can be run locally as well.
 
-### Formatters setup
+### Dev Container setup
 
-Prettier extension should be installed. And the `.prettierrc` file should be created in the project root.
+#### Requirements
 
-The contents of the .prettierrc should be as follows:
+Ensure you have the following installed:
 
-```json
-{
-  "plugins": ["prettier-plugin-go-template", "prettier-plugin-tailwindcss"],
-  "overrides": [
-    {
-      "files": ["*.html"],
-      "options": {
-        "parser": "go-template"
-      }
-    }
-  ]
-}
+- `docker`
+- VSCode with the Dev Containers extension installed
+
+#### Initialise
+
+Firstly you need to clone the repo. After that, open the project in VSCode and click on the "Reopen in Container" button in the Remote Explorer menu.
+
+The Dev Container will be built and you will be able to start developing.
+
+Also, you can provide your own dotfiles by using [this](https://code.visualstudio.com/docs/devcontainers/containers#_personalizing-with-dotfile-repositories) VSCode feature.
+
+### Local setup
+
+#### Requirements
+
+Ensure you have the following installed:
+
+- `go`
+- `docker`
+- `task`
+- `npm`
+
+#### Initialise
+
+Firstly you need to clone the repo. After that, you need to run the following script:
+
+```
+bash .devcontainer/post-create.sh
 ```
 
-#### Golang Templates formatter
-
-https://github.com/NiklasPor/prettier-plugin-go-template
-
-Command to install prettier plugin: `npm install --save-dev prettier prettier-plugin-go-template`
-
-#### Tailwind CSS formatter
-
-https://tailwindcss.com/docs/editor-setup
-
-Command to install prettier plugin: `npm install --save-dev prettier-plugin-tailwindcss`
+It will prepare the environment for you.
