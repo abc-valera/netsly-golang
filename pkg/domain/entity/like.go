@@ -4,25 +4,35 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/core/global"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 )
 
 type ILike interface {
 	Create(ctx context.Context, req LikeCreateRequest) (model.Like, error)
 	Delete(ctx context.Context, req DeleteLikeRequest) error
+
+	query.ILike
 }
 
 type like struct {
 	command command.ILike
+	query.ILike
+
+	validator service.IValidator
 }
 
 func NewLike(
 	command command.ILike,
+	query query.ILike,
+	validator service.IValidator,
 ) ILike {
 	return like{
-		command: command,
+		command:   command,
+		ILike:     query,
+		validator: validator,
 	}
 }
 
@@ -32,7 +42,7 @@ type LikeCreateRequest struct {
 }
 
 func (l like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, error) {
-	if err := global.Validator().Struct(req); err != nil {
+	if err := l.validator.Struct(req); err != nil {
 		return model.Like{}, err
 	}
 
@@ -50,7 +60,7 @@ type DeleteLikeRequest struct {
 }
 
 func (l like) Delete(ctx context.Context, req DeleteLikeRequest) error {
-	if err := global.Validator().Struct(req); err != nil {
+	if err := l.validator.Struct(req); err != nil {
 		return err
 	}
 

@@ -4,9 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/core/global"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 	"github.com/google/uuid"
 )
 
@@ -14,17 +15,26 @@ type IRoomMessage interface {
 	Create(ctx context.Context, req RoomMessageCreateRequest) (model.RoomMessage, error)
 	Update(ctx context.Context, id string, req RoomMessageUpdateRequest) (model.RoomMessage, error)
 	Delete(ctx context.Context, id string) error
+
+	query.IRoomMessage
 }
 
 type roomMessage struct {
 	command command.IRoomMessage
+	query.IRoomMessage
+
+	validator service.IValidator
 }
 
 func NewRoomMessage(
 	command command.IRoomMessage,
+	query query.IRoomMessage,
+	validator service.IValidator,
 ) IRoomMessage {
 	return roomMessage{
-		command: command,
+		command:      command,
+		IRoomMessage: query,
+		validator:    validator,
 	}
 }
 
@@ -35,7 +45,7 @@ type RoomMessageCreateRequest struct {
 }
 
 func (rm roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (model.RoomMessage, error) {
-	if err := global.Validator().Struct(req); err != nil {
+	if err := rm.validator.Struct(req); err != nil {
 		return model.RoomMessage{}, err
 	}
 
@@ -53,7 +63,7 @@ type RoomMessageUpdateRequest struct {
 }
 
 func (rm roomMessage) Update(ctx context.Context, id string, req RoomMessageUpdateRequest) (model.RoomMessage, error) {
-	if err := global.Validator().Struct(req); err != nil {
+	if err := rm.validator.Struct(req); err != nil {
 		return model.RoomMessage{}, err
 	}
 
@@ -63,7 +73,7 @@ func (rm roomMessage) Update(ctx context.Context, id string, req RoomMessageUpda
 }
 
 func (rm roomMessage) Delete(ctx context.Context, id string) error {
-	if err := global.Validator().Var(id, "uuid"); err != nil {
+	if err := rm.validator.Var(id, "uuid"); err != nil {
 		return err
 	}
 

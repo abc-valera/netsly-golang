@@ -1,4 +1,4 @@
-package validation
+package service
 
 import (
 	"errors"
@@ -8,19 +8,24 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// Validator is a wrapper for go-playground/validator/v10.
-// Should be created as a singleton and used across the application.
-type Validator struct {
+// IValidator is a wrapper for go-playground/validator/v10 and is a domain dependency.
+// Should be created as a singleton and used across the entity layer.
+type IValidator interface {
+	Struct(s interface{}) error
+	Var(field interface{}, tag string) error
+}
+
+type validate struct {
 	validate *validator.Validate
 }
 
-func NewValidator() Validator {
-	return Validator{
+func NewValidator() IValidator {
+	return validate{
 		validate: validator.New(),
 	}
 }
 
-func (v Validator) Struct(s interface{}) error {
+func (v validate) Struct(s interface{}) error {
 	if err := v.validate.Struct(s); err != nil {
 		var returnErr error
 		for _, e := range err.(validator.ValidationErrors) {
@@ -43,7 +48,7 @@ func (v Validator) Struct(s interface{}) error {
 	return nil
 }
 
-func (v Validator) Var(field interface{}, tag string) error {
+func (v validate) Var(field interface{}, tag string) error {
 	if err := v.validate.Var(field, tag); err != nil {
 		if e, ok := err.(validator.FieldError); ok {
 			return v.createFormattedError(e.Field(), e.Tag())
@@ -52,14 +57,14 @@ func (v Validator) Var(field interface{}, tag string) error {
 	return nil
 }
 
-func (v Validator) createFormattedError(field, tag string) error {
+func (v validate) createFormattedError(field, tag string) error {
 	return coderr.NewCodeMessage(
 		coderr.CodeInvalidArgument,
 		fmt.Sprintf("%s '%s validation rule' violated", field, tag),
 	)
 }
 
-func (v Validator) createFormattedErrorWithParam(field, tag, param string) error {
+func (v validate) createFormattedErrorWithParam(field, tag, param string) error {
 	return coderr.NewCodeMessage(
 		coderr.CodeInvalidArgument,
 		fmt.Sprintf("%s '%s %s validation rule' violated", field, tag, param),

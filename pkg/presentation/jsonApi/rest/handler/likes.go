@@ -4,21 +4,21 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
 )
 
 type LikesHandler struct {
-	likeQuery query.ILike
+	like entity.ILike
 }
 
 func NewLikesHandler(
-	likeRepo query.ILike,
+	like entity.ILike,
 ) LikesHandler {
 	return LikesHandler{
-		likeQuery: likeRepo,
+		like: like,
 	}
 }
 
 func (h LikesHandler) LikesByJokeIDGet(ctx context.Context, params ogen.LikesByJokeIDGetParams) (int, error) {
-	return h.likeQuery.CountByJokeID(ctx, params.JokeID)
+	return h.like.CountByJokeID(ctx, params.JokeID)
 }

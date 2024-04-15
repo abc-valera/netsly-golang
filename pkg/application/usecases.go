@@ -2,7 +2,7 @@ package application
 
 import (
 	"github.com/abc-valera/netsly-api-golang/pkg/domain"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/transactioneer"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/transactor"
 )
 
 type UseCases struct {
@@ -10,15 +10,13 @@ type UseCases struct {
 }
 
 func NewUseCases(
-	queries domain.Queries,
-	tx transactioneer.ITransactioneer,
+	tx transactor.ITransactor,
 	entities domain.Entities,
 	services domain.Services,
 ) UseCases {
 	return UseCases{
 		SignUseCase: NewSignUseCase(
 			entities.User,
-			queries.User,
 			tx,
 			services.PasswordMaker,
 			services.TokenMaker,

@@ -13,7 +13,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/mock/mockQuery"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/mock/mockTaskQueuer"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/mock/mockTokenMaker"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/mock/mockTransactioneer"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/mock/mockTransactor"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 	"github.com/stretchr/testify/mock"
@@ -24,7 +24,7 @@ func TestSignUseCase(t *testing.T) {
 	type Mocks struct {
 		userEntity    *mockEntity.User
 		userQuery     *mockQuery.User
-		tx            *mockTransactioneer.Transactioneer
+		tx            *mockTransactor.Transactor
 		passwordMaker *mockPasswordMaker.PasswordMaker
 		tokenMaker    *mockTokenMaker.TokenMaker
 		taskQueue     *mockTaskQueuer.TaskQueuer
@@ -34,14 +34,13 @@ func TestSignUseCase(t *testing.T) {
 		mocks := Mocks{
 			userEntity:    mockEntity.NewUser(t),
 			userQuery:     mockQuery.NewUser(t),
-			tx:            mockTransactioneer.NewTransactioneer(t),
+			tx:            mockTransactor.NewTransactor(t),
 			passwordMaker: mockPasswordMaker.NewPasswordMaker(t),
 			tokenMaker:    mockTokenMaker.NewTokenMaker(t),
 			taskQueue:     mockTaskQueuer.NewTaskQueuer(t),
 		}
 		return require.New(t), mocks, application.NewSignUseCase(
 			mocks.userEntity,
-			mocks.userQuery,
 			mocks.tx,
 			mocks.passwordMaker,
 			mocks.tokenMaker,

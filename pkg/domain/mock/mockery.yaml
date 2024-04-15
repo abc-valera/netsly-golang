@@ -17,11 +17,11 @@ packages:
       all: True
       outpkg: "mockQuery"
       dir: "pkg/domain/mock/mockQuery"
-  github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/transactioneer:
+  github.com/abc-valera/netsly-api-golang/pkg/domain/transactor:
     config:
       all: True
-      outpkg: "mockTransactioneer"
-      dir: "pkg/domain/mock/mockTransactioneer"
+      outpkg: "mockTransactor"
+      dir: "pkg/domain/mock/mockTransactor"
   github.com/abc-valera/netsly-api-golang/pkg/domain/service:
     config:
       all: True

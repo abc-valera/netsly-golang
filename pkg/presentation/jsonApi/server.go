@@ -22,9 +22,8 @@ func NewServer(
 	port string,
 	staticPath string,
 
-	queries domain.Queries,
-	entities domain.Entities,
 	services domain.Services,
+	entities domain.Entities,
 	usecases application.UseCases,
 ) (
 	serverStart func(),
@@ -33,20 +32,20 @@ func NewServer(
 	// Init server
 	server := http.Server{
 		Addr:    port,
-		Handler: NewHandler(staticPath, queries, entities, services, usecases),
+		Handler: NewHandler(staticPath, entities, services, usecases),
 	}
 
 	return func() {
 			global.Log().Info("jsonApi is running", "port", port)
 			if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-				global.Log().Fatal("jsonApi server error: ", err)
+				coderr.Fatal("jsonApi server error", err)
 			}
 		}, func() {
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 
 			if err := server.Shutdown(ctx); err != nil {
-				global.Log().Fatal("Shutdown server error: ", err)
+				coderr.Fatal("Shutdown server error", err)
 			}
 		}
 }
@@ -54,7 +53,6 @@ func NewServer(
 func NewHandler(
 	staticPath string,
 
-	queries domain.Queries,
 	entities domain.Entities,
 	services domain.Services,
 	usecases application.UseCases,
@@ -86,14 +84,14 @@ func NewHandler(
 		}{
 			ErrorHandler:      handler.NewErrorHandler(),
 			SignHandler:       handler.NewSignHandler(usecases.SignUseCase),
-			MeHandler:         handler.NewMeHandler(queries.User, entities.User),
-			MeJokesHandler:    handler.NewMeJokesHandler(queries.Joke, entities.Joke),
-			MeCommentsHandler: handler.NewMeCommentsHandler(queries.Comment, entities.Comment),
-			MeLikesHandler:    handler.NewMeLikesHandler(queries.Like, entities.Like),
-			MeRooms:           handler.NewMeRooms(queries.Room, entities.Room, entities.RoomMember),
-			CommentsHandler:   handler.NewCommentsHandler(queries.Comment, entities.Comment),
-			LikesHandler:      handler.NewLikesHandler(queries.Like),
-			Rooms:             handler.NewRooms(queries.RoomMessage),
+			MeHandler:         handler.NewMeHandler(entities.User),
+			MeJokesHandler:    handler.NewMeJokesHandler(entities.Joke),
+			MeCommentsHandler: handler.NewMeCommentsHandler(entities.Comment),
+			MeLikesHandler:    handler.NewMeLikesHandler(entities.Like),
+			MeRooms:           handler.NewMeRooms(entities.Room, entities.RoomMember),
+			CommentsHandler:   handler.NewCommentsHandler(entities.Comment),
+			LikesHandler:      handler.NewLikesHandler(entities.Like),
+			Rooms:             handler.NewRooms(entities.RoomMessage),
 		}
 		// Init security handler
 		securityHandler := handler.NewSecurityHandler(services.TokenMaker)

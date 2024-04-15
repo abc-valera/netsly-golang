@@ -8,12 +8,12 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/domain"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selectParams"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/transactioneer"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/transactor"
 )
 
 // Seed is used to populate the database with initial data.
 // Stops the program execution if an error occurs.
-func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.ITransactioneer) {
+func Seed(entities domain.Entities, tx transactor.ITransactor) {
 	params := selectParams.NewSelectParams("asc", 100, 0)
 
 	txFunc := func(ctx context.Context, txEntities domain.Entities) error {
@@ -94,7 +94,7 @@ func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.IT
 			coderr.Must(entities.User.Create(context.Background(), user))
 		}
 		// Generated users
-		users := coderr.Must(queries.User.SearchAllByUsername(context.Background(), "", params))
+		users := coderr.Must(entities.User.SearchAllByUsername(context.Background(), "", params))
 
 		// Jokes
 		jokeRequests := []entity.JokeCreateRequest{
@@ -193,7 +193,7 @@ func Seed(queries domain.Queries, entities domain.Entities, tx transactioneer.IT
 			coderr.Must(entities.Joke.Create(context.Background(), joke))
 		}
 		// Generated jokes
-		jokes := coderr.Must(queries.Joke.SearchByTitle(context.Background(), "", params))
+		jokes := coderr.Must(entities.Joke.SearchByTitle(context.Background(), "", params))
 
 		// Likes
 		likes := []entity.LikeCreateRequest{

@@ -10,7 +10,9 @@ import (
 // InitTestMain initializes DB connection
 // and should be called in the beggining of every TestMain function in every test package
 func InitTestMain() {
-	// Init global
-	global.InitLog(nopLogger.New())
-	global.InitMode(mode.Production)
+	// Init global variables
+	global.Init(
+		mode.Production,
+		nopLogger.New(),
+	)
 }

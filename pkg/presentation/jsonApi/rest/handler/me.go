@@ -5,27 +5,23 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/restDto"
 )
 
 type MeHandler struct {
-	userQuery  query.IUser
-	userEntity entity.IUser
+	user entity.IUser
 }
 
 func NewMeHandler(
-	userQuery query.IUser,
-	userEntity entity.IUser,
+	user entity.IUser,
 ) MeHandler {
 	return MeHandler{
-		userQuery:  userQuery,
-		userEntity: userEntity,
+		user: user,
 	}
 }
 
 func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
-	user, err := h.userQuery.GetByID(ctx, payloadUserID(ctx))
+	user, err := h.user.GetByID(ctx, payloadUserID(ctx))
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +29,7 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 }
 
 func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, error) {
-	user, err := h.userEntity.Update(ctx, payloadUserID(ctx), entity.UserUpdateRequest{
+	user, err := h.user.Update(ctx, payloadUserID(ctx), entity.UserUpdateRequest{
 		Password: restDto.NewPointerString(req.Password),
 		Fullname: restDto.NewPointerString(req.Fullname),
 		Status:   restDto.NewPointerString(req.Status),
@@ -45,7 +41,7 @@ func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, e
 }
 
 func (h MeHandler) MeDel(ctx context.Context, req *ogen.MeDelReq) error {
-	return h.userEntity.Delete(ctx, payloadUserID(ctx), entity.UserDeleteRequest{
+	return h.user.Delete(ctx, payloadUserID(ctx), entity.UserDeleteRequest{
 		Password: req.Password,
 	})
 }

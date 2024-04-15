@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/core/global"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
@@ -16,23 +15,28 @@ type IUser interface {
 	Create(ctx context.Context, req UserCreateRequest) (model.User, error)
 	Update(ctx context.Context, userID string, req UserUpdateRequest) (model.User, error)
 	Delete(ctx context.Context, userID string, req UserDeleteRequest) error
+
+	query.IUser
 }
 
 type user struct {
 	command command.IUser
-	query   query.IUser
+	query.IUser
 
+	validator service.IValidator
 	passMaker service.IPasswordMaker
 }
 
 func NewUser(
 	command command.IUser,
 	query query.IUser,
+	validator service.IValidator,
 	passMaker service.IPasswordMaker,
 ) IUser {
 	return user{
 		command:   command,
-		query:     query,
+		IUser:     query,
+		validator: validator,
 		passMaker: passMaker,
 	}
 }
@@ -46,7 +50,7 @@ type UserCreateRequest struct {
 }
 
 func (u user) Create(ctx context.Context, req UserCreateRequest) (model.User, error) {
-	if err := global.Validator().Struct(req); err != nil {
+	if err := u.validator.Struct(req); err != nil {
 		return model.User{}, err
 	}
 
@@ -73,7 +77,7 @@ type UserUpdateRequest struct {
 }
 
 func (u user) Update(ctx context.Context, userID string, req UserUpdateRequest) (model.User, error) {
-	if err := global.Validator().Struct(req); err != nil {
+	if err := u.validator.Struct(req); err != nil {
 		return model.User{}, err
 	}
 
@@ -90,15 +94,15 @@ func (u user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 }
 
 type UserDeleteRequest struct {
-	Password string `validate:"required,min=2,max=32"`
+	Password string
 }
 
 func (u user) Delete(ctx context.Context, userID string, req UserDeleteRequest) error {
-	if err := global.Validator().Struct(req); err != nil {
+	if err := u.validator.Struct(req); err != nil {
 		return err
 	}
 
-	user, err := u.query.GetByID(ctx, userID)
+	user, err := u.GetByID(ctx, userID)
 	if err != nil {
 		return err
 	}

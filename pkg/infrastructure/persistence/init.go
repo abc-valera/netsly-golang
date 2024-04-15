@@ -2,7 +2,6 @@ package persistence
 
 import (
 	"database/sql"
-	"os"
 
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain"
@@ -12,14 +11,8 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
-func InitDB() *sql.DB {
-	// Get the environment variables
-	postgresUrlEnv := os.Getenv("POSTGRES_URL")
-	if postgresUrlEnv != "" {
-		coderr.Fatal("POSTGRES_URL environmental variable is not set")
-	}
-
-	return coderr.Must(boiler.Init(postgresUrlEnv))
+func InitDB(postgresURL string) *sql.DB {
+	return coderr.Must(boiler.Init(postgresURL))
 }
 
 func InitCommands(sqlboilerExecutor boil.ContextExecutor) domain.Commands {

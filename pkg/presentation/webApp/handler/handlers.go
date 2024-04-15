@@ -18,7 +18,6 @@ type Handlers struct {
 
 func NewHandlers(
 	templateFS fs.FS,
-	queries domain.Queries,
 	entities domain.Entities,
 	usecases application.UseCases,
 ) Handlers {
@@ -26,7 +25,7 @@ func NewHandlers(
 		Error: NewErrorHandler(templateFS),
 
 		Sign: NewSign(templateFS, usecases.SignUseCase),
-		Home: NewHome(templateFS, queries.User, queries.Joke),
+		Home: NewHome(templateFS, entities.User, entities.Joke),
 
 		Joke: NewJoke(entities.Joke),
 	}

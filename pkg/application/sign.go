@@ -2,16 +2,14 @@ package application
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/transactioneer"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/transactor"
 )
 
 var ErrProvidedAccessToken = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Access token provided")
@@ -23,9 +21,8 @@ type ISignUseCase interface {
 }
 
 type signUseCase struct {
-	userEntity    entity.IUser
-	userQuery     query.IUser
-	tx            transactioneer.ITransactioneer
+	user          entity.IUser
+	tx            transactor.ITransactor
 	passwordMaker service.IPasswordMaker
 	tokenMaker    service.ITokenMaker
 	taskQueue     service.ITaskQueuer
@@ -33,15 +30,13 @@ type signUseCase struct {
 
 func NewSignUseCase(
 	userEntity entity.IUser,
-	userQuery query.IUser,
-	tx transactioneer.ITransactioneer,
+	tx transactor.ITransactor,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
 	taskQueue service.ITaskQueuer,
 ) ISignUseCase {
 	return signUseCase{
-		userEntity:    userEntity,
-		userQuery:     userQuery,
+		user:          userEntity,
 		tx:            tx,
 		passwordMaker: passwordMaker,
 		tokenMaker:    tokenMaker,
@@ -79,8 +74,6 @@ func (uc signUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 			To:      []string{req.Email},
 		}
 
-		return errors.New("test error")
-
 		return uc.taskQueue.SendEmailTask(ctx, service.Critical, welcomeEmail)
 	}
 
@@ -102,7 +95,7 @@ type SignInResponse struct {
 // then creates hash of the provided password and compares it to the hash stored in database.
 // The SignIn returns user, accessToken and refreshToken.
 func (s signUseCase) SignIn(ctx context.Context, req SignInRequest) (SignInResponse, error) {
-	user, err := s.userQuery.GetByEmail(ctx, req.Email)
+	user, err := s.user.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return SignInResponse{}, err
 	}

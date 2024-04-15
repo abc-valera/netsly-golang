@@ -18,8 +18,4 @@ import (
 
 	// mockery is used for generating mocks for interfaces.
 	_ "github.com/vektra/mockery/v2"
-
-	// gqlgen is used to generate GraphQL related code.
-	_ "github.com/99designs/gqlgen"
-	_ "github.com/99designs/gqlgen/graphql/introspection"
 )

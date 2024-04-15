@@ -5,6 +5,7 @@ package mockQuery
 import (
 	context "context"
 
+	model "github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -74,6 +75,65 @@ func (_c *Like_CountByJokeID_Call) Return(_a0 int, _a1 error) *Like_CountByJokeI
 }
 
 func (_c *Like_CountByJokeID_Call) RunAndReturn(run func(context.Context, string) (int, error)) *Like_CountByJokeID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetAllByJokeID provides a mock function with given fields: ctx, jokeID
+func (_m *Like) GetAllByJokeID(ctx context.Context, jokeID string) (model.Likes, error) {
+	ret := _m.Called(ctx, jokeID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetAllByJokeID")
+	}
+
+	var r0 model.Likes
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (model.Likes, error)); ok {
+		return rf(ctx, jokeID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) model.Likes); ok {
+		r0 = rf(ctx, jokeID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(model.Likes)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, jokeID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Like_GetAllByJokeID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAllByJokeID'
+type Like_GetAllByJokeID_Call struct {
+	*mock.Call
+}
+
+// GetAllByJokeID is a helper method to define mock.On call
+//   - ctx context.Context
+//   - jokeID string
+func (_e *Like_Expecter) GetAllByJokeID(ctx interface{}, jokeID interface{}) *Like_GetAllByJokeID_Call {
+	return &Like_GetAllByJokeID_Call{Call: _e.mock.On("GetAllByJokeID", ctx, jokeID)}
+}
+
+func (_c *Like_GetAllByJokeID_Call) Run(run func(ctx context.Context, jokeID string)) *Like_GetAllByJokeID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *Like_GetAllByJokeID_Call) Return(_a0 model.Likes, _a1 error) *Like_GetAllByJokeID_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Like_GetAllByJokeID_Call) RunAndReturn(run func(context.Context, string) (model.Likes, error)) *Like_GetAllByJokeID_Call {
 	_c.Call.Return(run)
 	return _c
 }

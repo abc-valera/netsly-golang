@@ -1,4 +1,4 @@
-package transactioneer
+package transactor
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/domain"
 )
 
-// ITransactioneer is an interface that defines a method to perform a transaction
-type ITransactioneer interface {
+// ITransactor is an interface that defines a method to perform a transaction
+type ITransactor interface {
 	PerformTX(ctx context.Context, txFunc func(ctx context.Context, txEntities domain.Entities) error) error
 }

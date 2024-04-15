@@ -19,7 +19,6 @@ go install github.com/pressly/goose/v3/cmd/goose
 go install github.com/volatiletech/sqlboiler/v4
 go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql
 go install github.com/vektra/mockery/v2
-go install github.com/99designs/gqlgen
 
 npm install --save-dev prettier prettier-plugin-go-template prettier-plugin-tailwindcss
 

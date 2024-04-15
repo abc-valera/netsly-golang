@@ -4,25 +4,42 @@ import (
 	"flag"
 	"os"
 	"os/signal"
+	"strings"
+	"time"
 
 	"github.com/abc-valera/netsly-api-golang/pkg/application"
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/pkg/core/global"
 	"github.com/abc-valera/netsly-api-golang/pkg/core/mode"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service/emailSender/dummyEmailSender"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service/logger/nopLogger"
 	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service/logger/slogLogger"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/transactioneer"
-	"github.com/abc-valera/netsly-api-golang/pkg/presentation/gqlApi"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service/passwordMaker"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service/taskQueuer/dummyTaskQueuer"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service/tokenMaker"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/transactor"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/grpcApi"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/seed"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/webApp"
 )
 
+// Load environment variables
 var (
-	modeEnv = os.Getenv("MODE")
+	modeEnv = LoadEnv("MODE")
+
+	loggerServiceEnv = LoadEnv("LOGGER_SERVICE")
+	emailSenderEnv   = LoadEnv("EMAIL_SENDER_SERVICE")
+	taskQueuerEnv    = LoadEnv("TASK_QUEUER_SERVICE")
+
+	accessTokenDurationEnv  = LoadEnvTime("ACCESS_TOKEN_DURATION")
+	refreshTokenDurationEnv = LoadEnvTime("REFRESH_TOKEN_DURATION")
+	signKeyEnv              = LoadEnv("JWT_SIGN_KEY")
+
+	postgresUrlEnv = LoadEnv("POSTGRES_URL")
 
 	webAppPortEnv         = os.Getenv("WEB_APP_PORT")
 	webApptemplatePathEnv = os.Getenv("WEB_APP_TEMPLATE_PATH")
@@ -36,26 +53,58 @@ var (
 )
 
 func main() {
-	// Init global variables
-
-	global.InitLog(slogLogger.New())
-
-	var appMode mode.Mode
+	var Mode mode.Mode
 	switch modeEnv {
 	case "dev":
-		appMode = mode.Development
+		Mode = mode.Development
 	case "prod":
-		appMode = mode.Production
+		Mode = mode.Production
 	default:
 		coderr.Fatal("'MODE' environmental variable is invalid")
 	}
-	global.InitMode(appMode)
+
+	var Log service.ILogger
+	switch loggerServiceEnv {
+	case "slog":
+		Log = slogLogger.New()
+	case "nop":
+		Log = nopLogger.New()
+	default:
+		coderr.Fatal("'LOGGER_SERVICE' environmental variable is invalid")
+	}
+
+	// Init global variables
+	global.Init(
+		Mode,
+		Log,
+	)
 
 	// Init services
-	services := service.Init()
+	var EmailSender service.IEmailSender
+	switch emailSenderEnv {
+	case "dummy":
+		EmailSender = dummyEmailSender.New()
+	default:
+		coderr.Fatal("EMAIL_SENDER_SERVICE environmental variable is invalid")
+	}
+
+	var TaskQueuer service.ITaskQueuer
+	switch taskQueuerEnv {
+	case "dummy":
+		TaskQueuer = dummyTaskQueuer.New(EmailSender)
+	default:
+		coderr.Fatal("TASK_QUEUER_SERVICE environmental variable is invalid")
+	}
+
+	services := domain.NewServices(
+		EmailSender,
+		passwordMaker.New(),
+		tokenMaker.NewJWT(accessTokenDurationEnv, refreshTokenDurationEnv, signKeyEnv),
+		TaskQueuer,
+	)
 
 	// Init persistence dependencies
-	db := persistence.InitDB()
+	db := persistence.InitDB(postgresUrlEnv)
 
 	// Init persistence
 	commands, queries := persistence.InitCommands(db), persistence.InitQueries(db)
@@ -64,10 +113,10 @@ func main() {
 	entities := domain.NewEntities(commands, queries, services)
 
 	// Init transaction
-	tx := transactioneer.NewTransactioneer(db, services)
+	tx := transactor.NewTransactor(db, services)
 
 	// Init usecases
-	usecases := application.NewUseCases(queries, tx, entities, services)
+	usecases := application.NewUseCases(tx, entities, services)
 
 	// Get cli flags
 	entrypoint := flag.String("entrypoint", "webApp", "Port flag specifies the application presentation to be run: webApp, jsonApi, grpcApi")
@@ -81,18 +130,16 @@ func main() {
 			webAppPortEnv,
 			webApptemplatePathEnv,
 			webAppStaticPathEnv,
-			queries,
-			entities,
 			services,
+			entities,
 			usecases,
 		)
 	case "jsonApi":
 		serverStart, serverGracefulStop = jsonApi.NewServer(
 			jsonApiPortEnv,
 			jsonApiStaticPathEnv,
-			queries,
-			entities,
 			services,
+			entities,
 			usecases,
 		)
 	case "grpcApi":
@@ -102,11 +149,8 @@ func main() {
 			services,
 			usecases,
 		)
-	case "gqlApi":
-		serverStart, serverGracefulStop = gqlApi.NewServer()
 	case "seed":
 		seed.Seed(
-			queries,
 			entities,
 			tx,
 		)
@@ -126,4 +170,22 @@ func main() {
 
 	// After receiving an interrupt signal, run graceful stop
 	serverGracefulStop()
+}
+
+func LoadEnv(key string) string {
+	env := os.Getenv(key)
+	if env == "" {
+		coderr.Fatal(key + " environment variable is not set")
+	}
+
+	return strings.TrimSpace(env)
+}
+
+func LoadEnvTime(key string) time.Duration {
+	env := os.Getenv(key)
+	if env == "" {
+		coderr.Fatal(key + " environment variable is not set")
+	}
+
+	return coderr.Must(time.ParseDuration(env))
 }

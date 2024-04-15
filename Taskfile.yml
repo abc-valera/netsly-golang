@@ -29,12 +29,6 @@ tasks:
       - go build -o build/netsly cmd/main.go
       - ./build/netsly -entrypoint grpcApi
 
-  entrypoint:gqlApi:
-    dotenv: ["{{ .ENV_FILE_PATH }}"]
-    cmds:
-      - go build -o build/netsly cmd/main.go
-      - ./build/netsly -entrypoint gqlApi
-
   entrypoint:seed:
     dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
@@ -102,10 +96,6 @@ tasks:
         --go-grpc_out=gen/pb
         --go-grpc_opt=paths=source_relative
         --proto_path=pkg/presentation/grpcApi/proto
-
-  generate:graphqlApi:code:
-    cmds:
-      - ./bin/gqlgen generate --config pkg/presentation/gqlApi/config/gqlgen.yml
 
   generate:persistence:migration:
     cmds:

@@ -5,27 +5,23 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/restDto"
 )
 
 type MeCommentsHandler struct {
-	commentQuery  query.IComment
-	commentDomain entity.IComment
+	comment entity.IComment
 }
 
 func NewMeCommentsHandler(
-	commentQuery query.IComment,
-	commentDomain entity.IComment,
+	comment entity.IComment,
 ) MeCommentsHandler {
 	return MeCommentsHandler{
-		commentQuery:  commentQuery,
-		commentDomain: commentDomain,
+		comment: comment,
 	}
 }
 
 func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeCommentsPostReq) (*ogen.Comment, error) {
-	comment, err := h.commentDomain.Create(ctx, entity.CommentCreateRequest{
+	comment, err := h.comment.Create(ctx, entity.CommentCreateRequest{
 		UserID: payloadUserID(ctx),
 		JokeID: req.JokeID,
 		Text:   req.Text,
@@ -37,12 +33,12 @@ func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeComme
 }
 
 func (h MeCommentsHandler) MeCommentsPut(ctx context.Context, req *ogen.MeCommentsPutReq) (*ogen.Comment, error) {
-	comment, err := h.commentDomain.Update(ctx, req.CommentID, entity.CommentUpdateRequest{
+	comment, err := h.comment.Update(ctx, req.CommentID, entity.CommentUpdateRequest{
 		Text: restDto.NewPointerString(req.Text),
 	})
 	return restDto.NewCommentResponse(comment), err
 }
 
 func (h MeCommentsHandler) MeCommentsDel(ctx context.Context, req *ogen.MeCommentsDelReq) error {
-	return h.commentDomain.Delete(ctx, req.CommentID)
+	return h.comment.Delete(ctx, req.CommentID)
 }

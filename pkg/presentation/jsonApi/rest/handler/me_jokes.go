@@ -5,27 +5,23 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/restDto"
 )
 
 type MeJokesHandler struct {
-	jokeQuery  query.IJoke
-	jokeEntity entity.IJoke
+	joke entity.IJoke
 }
 
 func NewMeJokesHandler(
-	jokeQuery query.IJoke,
-	jokeEntity entity.IJoke,
+	joke entity.IJoke,
 ) MeJokesHandler {
 	return MeJokesHandler{
-		jokeQuery:  jokeQuery,
-		jokeEntity: jokeEntity,
+		joke: joke,
 	}
 }
 
 func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesGetParams) (*ogen.Jokes, error) {
-	domainJokes, err := h.jokeQuery.GetAllByUserID(
+	domainJokes, err := h.joke.GetAllByUserID(
 		ctx,
 		payloadUserID(ctx),
 		restDto.NewDomainSelectParams(&ogenParams.SelectParams),
@@ -34,7 +30,7 @@ func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesG
 }
 
 func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostReq) (*ogen.Joke, error) {
-	joke, err := h.jokeEntity.Create(ctx, entity.JokeCreateRequest{
+	joke, err := h.joke.Create(ctx, entity.JokeCreateRequest{
 		UserID:      payloadUserID(ctx),
 		Title:       req.Title,
 		Text:        req.Text,
@@ -47,7 +43,7 @@ func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostRe
 }
 
 func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq) (*ogen.Joke, error) {
-	joke, err := h.jokeEntity.Update(ctx, req.JokeID, entity.JokeUpdateRequest{
+	joke, err := h.joke.Update(ctx, req.JokeID, entity.JokeUpdateRequest{
 		Title:       restDto.NewPointerString(req.Title),
 		Text:        restDto.NewPointerString(req.Text),
 		Explanation: restDto.NewPointerString(req.Explanation),
@@ -59,5 +55,5 @@ func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq)
 }
 
 func (h MeJokesHandler) MeJokesDel(ctx context.Context, req *ogen.MeJokesDelReq) error {
-	return h.jokeEntity.Delete(ctx, req.JokeID)
+	return h.joke.Delete(ctx, req.JokeID)
 }

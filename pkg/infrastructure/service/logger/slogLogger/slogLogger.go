@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/core/logger"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 )
 
 var (
@@ -22,7 +22,7 @@ type slogLogger struct {
 	logger *slog.Logger
 }
 
-func New() logger.ILogger {
+func New() service.ILogger {
 	return &slogLogger{
 		logger: slog.New(
 			slog.NewTextHandler(

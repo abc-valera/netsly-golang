@@ -8,8 +8,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/core/global"
 )
 
-type ErrorHandler struct {
-}
+type ErrorHandler struct{}
 
 func NewErrorHandler() ErrorHandler {
 	return ErrorHandler{}

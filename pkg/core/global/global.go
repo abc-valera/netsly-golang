@@ -3,46 +3,33 @@ package global
 import (
 	"sync"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/core/logger"
 	"github.com/abc-valera/netsly-api-golang/pkg/core/mode"
-	"github.com/abc-valera/netsly-api-golang/pkg/core/validation"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 )
 
 // global is a package that contains global variables that are used across the application.
 // Init() function must be called at the application startup.
 
-var (
-	log     logger.ILogger
-	logOnce sync.Once
-)
+var initOnce sync.Once
 
-func InitLog(logger logger.ILogger) {
-	logOnce.Do(func() {
+func Init(
+	mode mode.Mode,
+	logger service.ILogger,
+) {
+	initOnce.Do(func() {
+		appMode = mode
 		log = logger
 	})
 }
 
-func Log() logger.ILogger {
-	return log
-}
-
-var (
-	appMode     mode.Mode
-	appModeOnce sync.Once
-)
-
-func InitMode(mode mode.Mode) {
-	appModeOnce.Do(func() {
-		appMode = mode
-	})
-}
+var appMode mode.Mode
 
 func Mode() mode.Mode {
 	return appMode
 }
 
-var validate validation.Validator = validation.NewValidator()
+var log service.ILogger
 
-func Validator() validation.Validator {
-	return validate
+func Log() service.ILogger {
+	return log
 }

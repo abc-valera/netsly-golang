@@ -4,23 +4,23 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/jsonApi/rest/restDto"
 )
 
 type Rooms struct {
-	roomMessageQuery query.IRoomMessage
+	roomMessage entity.IRoomMessage
 }
 
 func NewRooms(
-	roomMessageQuery query.IRoomMessage,
+	roomMessage entity.IRoomMessage,
 ) Rooms {
 	return Rooms{
-		roomMessageQuery: roomMessageQuery,
+		roomMessage: roomMessage,
 	}
 }
 
 func (h Rooms) MeRoomsIdMessagesGet(ctx context.Context, ogenParams ogen.MeRoomsIdMessagesGetParams) (*ogen.RoomMessages, error) {
-	domainMessages, err := h.roomMessageQuery.GetAllByRoomID(ctx, ogenParams.RoomID, restDto.NewDomainSelectParams(&ogenParams.SelectParams))
+	domainMessages, err := h.roomMessage.GetAllByRoomID(ctx, ogenParams.RoomID, restDto.NewDomainSelectParams(&ogenParams.SelectParams))
 	return restDto.NewRoomMessagesResponse(domainMessages), err
 }

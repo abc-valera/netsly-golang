@@ -1,6 +1,9 @@
 package domain
 
-import "github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
+import (
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
+)
 
 type Entities struct {
 	User        entity.IUser
@@ -17,13 +20,15 @@ func NewEntities(
 	queries Queries,
 	services Services,
 ) Entities {
+	validator := service.NewValidator()
+
 	return Entities{
-		User:        entity.NewUser(commands.User, queries.User, services.PasswordMaker),
-		Joke:        entity.NewJoke(commands.Joke),
-		Like:        entity.NewLike(commands.Like),
-		Comment:     entity.NewComment(commands.Comment),
-		Room:        entity.NewRoom(commands.Room),
-		RoomMember:  entity.NewRoomMember(commands.RoomMember),
-		RoomMessage: entity.NewRoomMessage(commands.RoomMessage),
+		User:        entity.NewUser(commands.User, queries.User, validator, services.PasswordMaker),
+		Joke:        entity.NewJoke(commands.Joke, queries.Joke, validator),
+		Like:        entity.NewLike(commands.Like, queries.Like, validator),
+		Comment:     entity.NewComment(commands.Comment, queries.Comment, validator),
+		Room:        entity.NewRoom(commands.Room, queries.Room, validator),
+		RoomMember:  entity.NewRoomMember(commands.RoomMember, queries.RoomMember, validator),
+		RoomMessage: entity.NewRoomMessage(commands.RoomMessage, queries.RoomMessage, validator),
 	}
 }

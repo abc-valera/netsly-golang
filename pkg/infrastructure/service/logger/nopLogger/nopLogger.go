@@ -1,12 +1,10 @@
 package nopLogger
 
-import (
-	"github.com/abc-valera/netsly-api-golang/pkg/core/logger"
-)
+import "github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 
 type nopLogger struct{}
 
-func New() logger.ILogger {
+func New() service.ILogger {
 	return &nopLogger{}
 }
 
