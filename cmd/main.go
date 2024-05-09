@@ -27,32 +27,32 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/webApp"
 )
 
-// Load environment variables
-var (
-	modeEnv = LoadEnv("MODE")
-
-	loggerServiceEnv = LoadEnv("LOGGER_SERVICE")
-	emailSenderEnv   = LoadEnv("EMAIL_SENDER_SERVICE")
-	taskQueuerEnv    = LoadEnv("TASK_QUEUER_SERVICE")
-
-	accessTokenDurationEnv  = LoadEnvTime("ACCESS_TOKEN_DURATION")
-	refreshTokenDurationEnv = LoadEnvTime("REFRESH_TOKEN_DURATION")
-	signKeyEnv              = LoadEnv("JWT_SIGN_KEY")
-
-	postgresUrlEnv = LoadEnv("POSTGRES_URL")
-
-	webAppPortEnv         = os.Getenv("WEB_APP_PORT")
-	webApptemplatePathEnv = os.Getenv("WEB_APP_TEMPLATE_PATH")
-	webAppStaticPathEnv   = os.Getenv("WEB_APP_STATIC_PATH")
-
-	jsonApiPortEnv       = os.Getenv("JSON_API_PORT")
-	jsonApiStaticPathEnv = os.Getenv("JSON_API_STATIC_PATH")
-
-	grpcApiPortEnv       = os.Getenv("GRPC_API_PORT")
-	grpcApiStaticPathEnv = os.Getenv("GRPC_API_STATIC_PATH")
-)
-
 func main() {
+	// Load environment variables
+	var (
+		modeEnv = LoadEnv("MODE")
+
+		loggerServiceEnv = LoadEnv("LOGGER_SERVICE")
+		emailSenderEnv   = LoadEnv("EMAIL_SENDER_SERVICE")
+		taskQueuerEnv    = LoadEnv("TASK_QUEUER_SERVICE")
+
+		accessTokenDurationEnv  = LoadEnvTime("ACCESS_TOKEN_DURATION")
+		refreshTokenDurationEnv = LoadEnvTime("REFRESH_TOKEN_DURATION")
+		signKeyEnv              = LoadEnv("JWT_SIGN_KEY")
+
+		postgresUrlEnv = LoadEnv("POSTGRES_URL")
+
+		webAppPortEnv         = os.Getenv("WEB_APP_PORT")
+		webApptemplatePathEnv = os.Getenv("WEB_APP_TEMPLATE_PATH")
+		webAppStaticPathEnv   = os.Getenv("WEB_APP_STATIC_PATH")
+
+		jsonApiPortEnv       = os.Getenv("JSON_API_PORT")
+		jsonApiStaticPathEnv = os.Getenv("JSON_API_STATIC_PATH")
+
+		grpcApiPortEnv       = os.Getenv("GRPC_API_PORT")
+		grpcApiStaticPathEnv = os.Getenv("GRPC_API_STATIC_PATH")
+	)
+
 	var Mode mode.Mode
 	switch modeEnv {
 	case "dev":
