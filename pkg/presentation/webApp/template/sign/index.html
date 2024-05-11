@@ -3,6 +3,35 @@
 {{ end }}
 
 {{ define "BaseContent" }}
+  <div
+    class="mx-auto mt-2 max-w-6xl sm:px-6 lg:px-8"
+    x-data="{
+    open() { $refs.dialogRef.showModal() },
+    close() { $refs.dialogRef.close() }
+  }"
+  >
+    <button
+      x-on:click="open()"
+      class="rounded bg-blue-500 px-3 py-2 text-white"
+    >
+      Open dialog
+    </button>
+
+    <dialog
+      x-on:click="(event) => event.currentTarget === event.target && close()"
+      x-ref="dialogRef"
+      class="rounded-lg bg-white p-4 shadow-lg"
+    >
+      <h1>Hello Wolrd!</h1>
+      <button
+        x-on:click="close()"
+        class="rounded bg-blue-500 px-3 py-2 text-white"
+      >
+        Close dialog
+      </button>
+    </dialog>
+  </div>
+
   <!-- Main Content Start -->
   <div class="flex min-h-screen flex-col items-center justify-center">
     <div class="flex w-full max-w-md flex-col items-center justify-center">
@@ -34,7 +63,6 @@
       </div>
     </div>
   </div>
-  <!-- Main Content End -->
 
   <!-- Sign Up Modal Start -->
   <dialog
@@ -165,4 +193,6 @@
     </div>
   </dialog>
   <!-- Sign In Modal End -->
+
+  <!-- Main Content End -->
 {{ end }}

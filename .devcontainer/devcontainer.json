@@ -66,6 +66,7 @@
       },
       "extensions": [
         "esbenp.prettier-vscode",
+        "pcbowers.alpine-intellisense",
         "jinliming2.vscode-go-template",
         "inferrinizzard.prettier-sql-vscode",
         "dotenv.dotenv-vscode",
