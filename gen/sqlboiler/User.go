@@ -97,14 +97,14 @@ var UserRels = struct {
 	UserComments     string
 	UserJokes        string
 	UserLikes        string
-	CreatorRooms     string
+	CreatorUserRooms string
 	UserRoomMembers  string
 	UserRoomMessages string
 }{
 	UserComments:     "UserComments",
 	UserJokes:        "UserJokes",
 	UserLikes:        "UserLikes",
-	CreatorRooms:     "CreatorRooms",
+	CreatorUserRooms: "CreatorUserRooms",
 	UserRoomMembers:  "UserRoomMembers",
 	UserRoomMessages: "UserRoomMessages",
 }
@@ -114,7 +114,7 @@ type userR struct {
 	UserComments     CommentSlice     `boil:"UserComments" json:"UserComments" toml:"UserComments" yaml:"UserComments"`
 	UserJokes        JokeSlice        `boil:"UserJokes" json:"UserJokes" toml:"UserJokes" yaml:"UserJokes"`
 	UserLikes        LikeSlice        `boil:"UserLikes" json:"UserLikes" toml:"UserLikes" yaml:"UserLikes"`
-	CreatorRooms     RoomSlice        `boil:"CreatorRooms" json:"CreatorRooms" toml:"CreatorRooms" yaml:"CreatorRooms"`
+	CreatorUserRooms RoomSlice        `boil:"CreatorUserRooms" json:"CreatorUserRooms" toml:"CreatorUserRooms" yaml:"CreatorUserRooms"`
 	UserRoomMembers  RoomMemberSlice  `boil:"UserRoomMembers" json:"UserRoomMembers" toml:"UserRoomMembers" yaml:"UserRoomMembers"`
 	UserRoomMessages RoomMessageSlice `boil:"UserRoomMessages" json:"UserRoomMessages" toml:"UserRoomMessages" yaml:"UserRoomMessages"`
 }
@@ -145,11 +145,11 @@ func (r *userR) GetUserLikes() LikeSlice {
 	return r.UserLikes
 }
 
-func (r *userR) GetCreatorRooms() RoomSlice {
+func (r *userR) GetCreatorUserRooms() RoomSlice {
 	if r == nil {
 		return nil
 	}
-	return r.CreatorRooms
+	return r.CreatorUserRooms
 }
 
 func (r *userR) GetUserRoomMembers() RoomMemberSlice {
@@ -544,8 +544,8 @@ func (o *User) UserLikes(mods ...qm.QueryMod) likeQuery {
 	return Likes(queryMods...)
 }
 
-// CreatorRooms retrieves all the Room's Rooms with an executor via creator_user_id column.
-func (o *User) CreatorRooms(mods ...qm.QueryMod) roomQuery {
+// CreatorUserRooms retrieves all the Room's Rooms with an executor via creator_user_id column.
+func (o *User) CreatorUserRooms(mods ...qm.QueryMod) roomQuery {
 	var queryMods []qm.QueryMod
 	if len(mods) != 0 {
 		queryMods = append(queryMods, mods...)
@@ -925,9 +925,9 @@ func (userL) LoadUserLikes(ctx context.Context, e boil.ContextExecutor, singular
 	return nil
 }
 
-// LoadCreatorRooms allows an eager lookup of values, cached into the
+// LoadCreatorUserRooms allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (userL) LoadCreatorRooms(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUser interface{}, mods queries.Applicator) error {
+func (userL) LoadCreatorUserRooms(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUser interface{}, mods queries.Applicator) error {
 	var slice []*User
 	var object *User
 
@@ -1012,12 +1012,12 @@ func (userL) LoadCreatorRooms(ctx context.Context, e boil.ContextExecutor, singu
 		}
 	}
 	if singular {
-		object.R.CreatorRooms = resultSlice
+		object.R.CreatorUserRooms = resultSlice
 		for _, foreign := range resultSlice {
 			if foreign.R == nil {
 				foreign.R = &roomR{}
 			}
-			foreign.R.Creator = object
+			foreign.R.CreatorUser = object
 		}
 		return nil
 	}
@@ -1025,11 +1025,11 @@ func (userL) LoadCreatorRooms(ctx context.Context, e boil.ContextExecutor, singu
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
 			if local.ID == foreign.CreatorUserID {
-				local.R.CreatorRooms = append(local.R.CreatorRooms, foreign)
+				local.R.CreatorUserRooms = append(local.R.CreatorUserRooms, foreign)
 				if foreign.R == nil {
 					foreign.R = &roomR{}
 				}
-				foreign.R.Creator = local
+				foreign.R.CreatorUser = local
 				break
 			}
 		}
@@ -1450,20 +1450,20 @@ func (o *User) AddUserLikes(ctx context.Context, exec boil.ContextExecutor, inse
 	return nil
 }
 
-// AddCreatorRoomsG adds the given related objects to the existing relationships
+// AddCreatorUserRoomsG adds the given related objects to the existing relationships
 // of the User, optionally inserting them as new records.
-// Appends related to o.R.CreatorRooms.
-// Sets related.R.Creator appropriately.
+// Appends related to o.R.CreatorUserRooms.
+// Sets related.R.CreatorUser appropriately.
 // Uses the global database handle.
-func (o *User) AddCreatorRoomsG(ctx context.Context, insert bool, related ...*Room) error {
-	return o.AddCreatorRooms(ctx, boil.GetContextDB(), insert, related...)
+func (o *User) AddCreatorUserRoomsG(ctx context.Context, insert bool, related ...*Room) error {
+	return o.AddCreatorUserRooms(ctx, boil.GetContextDB(), insert, related...)
 }
 
-// AddCreatorRooms adds the given related objects to the existing relationships
+// AddCreatorUserRooms adds the given related objects to the existing relationships
 // of the User, optionally inserting them as new records.
-// Appends related to o.R.CreatorRooms.
-// Sets related.R.Creator appropriately.
-func (o *User) AddCreatorRooms(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Room) error {
+// Appends related to o.R.CreatorUserRooms.
+// Sets related.R.CreatorUser appropriately.
+func (o *User) AddCreatorUserRooms(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Room) error {
 	var err error
 	for _, rel := range related {
 		if insert {
@@ -1494,19 +1494,19 @@ func (o *User) AddCreatorRooms(ctx context.Context, exec boil.ContextExecutor, i
 
 	if o.R == nil {
 		o.R = &userR{
-			CreatorRooms: related,
+			CreatorUserRooms: related,
 		}
 	} else {
-		o.R.CreatorRooms = append(o.R.CreatorRooms, related...)
+		o.R.CreatorUserRooms = append(o.R.CreatorUserRooms, related...)
 	}
 
 	for _, rel := range related {
 		if rel.R == nil {
 			rel.R = &roomR{
-				Creator: o,
+				CreatorUser: o,
 			}
 		} else {
-			rel.R.Creator = o
+			rel.R.CreatorUser = o
 		}
 	}
 	return nil

@@ -3,7 +3,7 @@ package command
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 )
 
 type IComment interface {

@@ -5,7 +5,7 @@ package mockQuery
 import (
 	context "context"
 
-	model "github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	model "github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	mock "github.com/stretchr/testify/mock"
 
 	selector "github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selector"

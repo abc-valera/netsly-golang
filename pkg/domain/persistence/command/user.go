@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 )
 
 var (

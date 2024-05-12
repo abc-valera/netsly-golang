@@ -2,7 +2,7 @@ package grpcApiDto
 
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/pb"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 )
 
 func NewUserResponse(user model.User) *pb.UserResponse {

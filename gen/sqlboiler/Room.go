@@ -24,74 +24,74 @@ import (
 
 // Room is an object representing the database table.
 type Room struct {
-	ID          string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Name        string      `boil:"name" json:"name" toml:"name" yaml:"name"`
-	Description null.String `boil:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty"`
-	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	CreatorUserID   string      `boil:"creator_user_id" json:"creator_user_id" toml:"creator_user_id" yaml:"creator_user_id"`
+	ID            string      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Name          string      `boil:"name" json:"name" toml:"name" yaml:"name"`
+	Description   null.String `boil:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty"`
+	CreatedAt     time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	CreatorUserID string      `boil:"creator_user_id" json:"creator_user_id" toml:"creator_user_id" yaml:"creator_user_id"`
 
 	R *roomR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L roomL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var RoomColumns = struct {
-	ID          string
-	Name        string
-	Description string
-	CreatedAt   string
-	CreatorUserID   string
+	ID            string
+	Name          string
+	Description   string
+	CreatedAt     string
+	CreatorUserID string
 }{
-	ID:          "id",
-	Name:        "name",
-	Description: "description",
-	CreatedAt:   "created_at",
-	CreatorUserID:   "creator_user_id",
+	ID:            "id",
+	Name:          "name",
+	Description:   "description",
+	CreatedAt:     "created_at",
+	CreatorUserID: "creator_user_id",
 }
 
 var RoomTableColumns = struct {
-	ID          string
-	Name        string
-	Description string
-	CreatedAt   string
-	CreatorUserID   string
+	ID            string
+	Name          string
+	Description   string
+	CreatedAt     string
+	CreatorUserID string
 }{
-	ID:          "Room.id",
-	Name:        "Room.name",
-	Description: "Room.description",
-	CreatedAt:   "Room.created_at",
-	CreatorUserID:   "Room.creator_user_id",
+	ID:            "Room.id",
+	Name:          "Room.name",
+	Description:   "Room.description",
+	CreatedAt:     "Room.created_at",
+	CreatorUserID: "Room.creator_user_id",
 }
 
 // Generated where
 
 var RoomWhere = struct {
-	ID          whereHelperstring
-	Name        whereHelperstring
-	Description whereHelpernull_String
-	CreatedAt   whereHelpertime_Time
-	CreatorUserID   whereHelperstring
+	ID            whereHelperstring
+	Name          whereHelperstring
+	Description   whereHelpernull_String
+	CreatedAt     whereHelpertime_Time
+	CreatorUserID whereHelperstring
 }{
-	ID:          whereHelperstring{field: "\"Room\".\"id\""},
-	Name:        whereHelperstring{field: "\"Room\".\"name\""},
-	Description: whereHelpernull_String{field: "\"Room\".\"description\""},
-	CreatedAt:   whereHelpertime_Time{field: "\"Room\".\"created_at\""},
-	CreatorUserID:   whereHelperstring{field: "\"Room\".\"creator_user_id\""},
+	ID:            whereHelperstring{field: "\"Room\".\"id\""},
+	Name:          whereHelperstring{field: "\"Room\".\"name\""},
+	Description:   whereHelpernull_String{field: "\"Room\".\"description\""},
+	CreatedAt:     whereHelpertime_Time{field: "\"Room\".\"created_at\""},
+	CreatorUserID: whereHelperstring{field: "\"Room\".\"creator_user_id\""},
 }
 
 // RoomRels is where relationship names are stored.
 var RoomRels = struct {
-	Creator          string
+	CreatorUser      string
 	RoomRoomMembers  string
 	RoomRoomMessages string
 }{
-	Creator:          "Creator",
+	CreatorUser:      "CreatorUser",
 	RoomRoomMembers:  "RoomRoomMembers",
 	RoomRoomMessages: "RoomRoomMessages",
 }
 
 // roomR is where relationships are stored.
 type roomR struct {
-	Creator          *User            `boil:"Creator" json:"Creator" toml:"Creator" yaml:"Creator"`
+	CreatorUser      *User            `boil:"CreatorUser" json:"CreatorUser" toml:"CreatorUser" yaml:"CreatorUser"`
 	RoomRoomMembers  RoomMemberSlice  `boil:"RoomRoomMembers" json:"RoomRoomMembers" toml:"RoomRoomMembers" yaml:"RoomRoomMembers"`
 	RoomRoomMessages RoomMessageSlice `boil:"RoomRoomMessages" json:"RoomRoomMessages" toml:"RoomRoomMessages" yaml:"RoomRoomMessages"`
 }
@@ -101,11 +101,11 @@ func (*roomR) NewStruct() *roomR {
 	return &roomR{}
 }
 
-func (r *roomR) GetCreator() *User {
+func (r *roomR) GetCreatorUser() *User {
 	if r == nil {
 		return nil
 	}
-	return r.Creator
+	return r.CreatorUser
 }
 
 func (r *roomR) GetRoomRoomMembers() RoomMemberSlice {
@@ -458,8 +458,8 @@ func (q roomQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool,
 	return count > 0, nil
 }
 
-// Creator pointed to by the foreign key.
-func (o *Room) Creator(mods ...qm.QueryMod) userQuery {
+// CreatorUser pointed to by the foreign key.
+func (o *Room) CreatorUser(mods ...qm.QueryMod) userQuery {
 	queryMods := []qm.QueryMod{
 		qm.Where("\"id\" = ?", o.CreatorUserID),
 	}
@@ -497,9 +497,9 @@ func (o *Room) RoomRoomMessages(mods ...qm.QueryMod) roomMessageQuery {
 	return RoomMessages(queryMods...)
 }
 
-// LoadCreator allows an eager lookup of values, cached into the
+// LoadCreatorUser allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for an N-1 relationship.
-func (roomL) LoadCreator(ctx context.Context, e boil.ContextExecutor, singular bool, maybeRoom interface{}, mods queries.Applicator) error {
+func (roomL) LoadCreatorUser(ctx context.Context, e boil.ContextExecutor, singular bool, maybeRoom interface{}, mods queries.Applicator) error {
 	var slice []*Room
 	var object *Room
 
@@ -593,22 +593,22 @@ func (roomL) LoadCreator(ctx context.Context, e boil.ContextExecutor, singular b
 
 	if singular {
 		foreign := resultSlice[0]
-		object.R.Creator = foreign
+		object.R.CreatorUser = foreign
 		if foreign.R == nil {
 			foreign.R = &userR{}
 		}
-		foreign.R.CreatorRooms = append(foreign.R.CreatorRooms, object)
+		foreign.R.CreatorUserRooms = append(foreign.R.CreatorUserRooms, object)
 		return nil
 	}
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
 			if local.CreatorUserID == foreign.ID {
-				local.R.Creator = foreign
+				local.R.CreatorUser = foreign
 				if foreign.R == nil {
 					foreign.R = &userR{}
 				}
-				foreign.R.CreatorRooms = append(foreign.R.CreatorRooms, local)
+				foreign.R.CreatorUserRooms = append(foreign.R.CreatorUserRooms, local)
 				break
 			}
 		}
@@ -843,18 +843,18 @@ func (roomL) LoadRoomRoomMessages(ctx context.Context, e boil.ContextExecutor, s
 	return nil
 }
 
-// SetCreatorG of the room to the related item.
-// Sets o.R.Creator to related.
-// Adds o to related.R.CreatorRooms.
+// SetCreatorUserG of the room to the related item.
+// Sets o.R.CreatorUser to related.
+// Adds o to related.R.CreatorUserRooms.
 // Uses the global database handle.
-func (o *Room) SetCreatorG(ctx context.Context, insert bool, related *User) error {
-	return o.SetCreator(ctx, boil.GetContextDB(), insert, related)
+func (o *Room) SetCreatorUserG(ctx context.Context, insert bool, related *User) error {
+	return o.SetCreatorUser(ctx, boil.GetContextDB(), insert, related)
 }
 
-// SetCreator of the room to the related item.
-// Sets o.R.Creator to related.
-// Adds o to related.R.CreatorRooms.
-func (o *Room) SetCreator(ctx context.Context, exec boil.ContextExecutor, insert bool, related *User) error {
+// SetCreatorUser of the room to the related item.
+// Sets o.R.CreatorUser to related.
+// Adds o to related.R.CreatorUserRooms.
+func (o *Room) SetCreatorUser(ctx context.Context, exec boil.ContextExecutor, insert bool, related *User) error {
 	var err error
 	if insert {
 		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
@@ -881,18 +881,18 @@ func (o *Room) SetCreator(ctx context.Context, exec boil.ContextExecutor, insert
 	o.CreatorUserID = related.ID
 	if o.R == nil {
 		o.R = &roomR{
-			Creator: related,
+			CreatorUser: related,
 		}
 	} else {
-		o.R.Creator = related
+		o.R.CreatorUser = related
 	}
 
 	if related.R == nil {
 		related.R = &userR{
-			CreatorRooms: RoomSlice{o},
+			CreatorUserRooms: RoomSlice{o},
 		}
 	} else {
-		related.R.CreatorRooms = append(related.R.CreatorRooms, o)
+		related.R.CreatorUserRooms = append(related.R.CreatorUserRooms, o)
 	}
 
 	return nil

@@ -3,7 +3,7 @@ package query
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selector"
 )
 

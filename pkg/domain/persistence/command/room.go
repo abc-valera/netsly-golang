@@ -4,12 +4,10 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 )
 
-var (
-	ErrRoomNameAlreadyExists = coderr.NewCodeMessage(coderr.CodeAlreadyExists, "Room already exists")
-)
+var ErrRoomNameAlreadyExists = coderr.NewCodeMessage(coderr.CodeAlreadyExists, "Room already exists")
 
 type IRoom interface {
 	Create(ctx context.Context, req model.Room) (model.Room, error)

@@ -7,7 +7,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/pkg/application"
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/webApp/cookie"
 	"github.com/abc-valera/netsly-api-golang/pkg/presentation/webApp/handler/tmpl"
 )

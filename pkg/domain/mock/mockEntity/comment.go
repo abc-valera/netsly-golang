@@ -8,7 +8,7 @@ import (
 	entity "github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
 	mock "github.com/stretchr/testify/mock"
 
-	model "github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	model "github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 
 	selector "github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selector"
 )

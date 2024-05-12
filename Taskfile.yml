@@ -3,7 +3,7 @@
 version: "3"
 
 env:
-  GOOSE_MIGRATION_DIR: "pkg/infrastructure/persistence/sqlboilerImpl/migration"
+  GOOSE_MIGRATION_DIR: "pkg/infrastructure/persistence/boiler/migration"
   GOOSE_DRIVER: "postgres"
   GOOSE_DBSTRING: "postgres://netsly:netsly@localhost:5432/netsly?sslmode=disable"
 
@@ -103,7 +103,7 @@ tasks:
 
   generate:persistence:code:
     cmds:
-      - ./bin/sqlboiler psql -c pkg/infrastructure/persistence/sqlboilerImpl/sqlboiler.toml
+      - ./bin/sqlboiler psql -c pkg/infrastructure/persistence/boiler/sqlboiler.toml
 
   infrastructure:up:
     cmds:

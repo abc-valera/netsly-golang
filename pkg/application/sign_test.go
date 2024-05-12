@@ -14,7 +14,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/mock/mockTaskQueuer"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/mock/mockTokenMaker"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/mock/mockTransactor"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"

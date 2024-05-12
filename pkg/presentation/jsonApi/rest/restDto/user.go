@@ -2,7 +2,7 @@ package restDto
 
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 )
 
 func NewUserResponse(user model.User) *ogen.User {

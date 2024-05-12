@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/dto"
 	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/errors"

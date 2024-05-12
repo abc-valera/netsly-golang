@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 )
