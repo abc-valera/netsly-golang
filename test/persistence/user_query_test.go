@@ -3,7 +3,7 @@ package persistence_test
 import (
 	"testing"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selectParams"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selector"
 	"github.com/stretchr/testify/require"
 )
 
@@ -37,7 +37,10 @@ func TestUserQuery(t *testing.T) {
 	t.Run("SearchAllByUsername", func(t *testing.T) {
 		r := require.New(t)
 
-		users, err := queries.User.SearchAllByUsername(ctx, "", selectParams.NewSelectParams(selectParams.OrderDesc, 3, 0))
+		users, err := queries.User.SearchAllByUsername(ctx, "", selector.Selector{
+			Order: "desc",
+			Limit: 3,
+		})
 		r.NoError(err)
 		r.NotEmpty(users)
 		r.Equal(3, len(users))

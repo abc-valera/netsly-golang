@@ -6,8 +6,8 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	selectParams1 "github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selectParams"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/boilerQuery/selectParams"
+	selector1 "github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selector"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/boilerQuery/selector"
 	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/dto"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
@@ -26,16 +26,16 @@ func (r roomMessage) GetByID(ctx context.Context, id string) (model.RoomMessage,
 	return dto.ToDomainRoomMessageWithErrHandle(sqlboiler.FindRoomMessage(ctx, r.executor, id))
 }
 
-func (r roomMessage) GetAllByRoomID(ctx context.Context, roomID string, spec selectParams1.SelectParams) (model.RoomMessages, error) {
-	mods := selectParams.ToBoilerSelectParamsPipe(
+func (r roomMessage) GetAllByRoomID(ctx context.Context, roomID string, spec selector1.Selector) (model.RoomMessages, error) {
+	mods := selector.ToBoilerSelectorPipe(
 		spec,
 		sqlboiler.RoomMessageWhere.RoomID.EQ(roomID),
 	)
 	return dto.ToDomainRoomMessagesWithErrHandle(sqlboiler.RoomMessages(mods...).All(ctx, r.executor))
 }
 
-func (r roomMessage) SearchAllByText(ctx context.Context, keyword string, spec selectParams1.SelectParams) (model.RoomMessages, error) {
-	mods := selectParams.ToBoilerSelectParamsPipe(
+func (r roomMessage) SearchAllByText(ctx context.Context, keyword string, spec selector1.Selector) (model.RoomMessages, error) {
+	mods := selector.ToBoilerSelectorPipe(
 		spec,
 		sqlboiler.RoomMessageWhere.Text.LIKE("%"+keyword+"%"),
 	)

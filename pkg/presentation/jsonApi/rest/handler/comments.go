@@ -24,7 +24,7 @@ func (h CommentsHandler) CommentsByJokeIDGet(ctx context.Context, params ogen.Co
 	comments, err := h.comment.GetAllByJokeID(
 		ctx,
 		params.JokeID,
-		restDto.NewDomainSelectParams(&params.SelectParams),
+		restDto.NewDomainSelector(&params.Selector),
 	)
 	return restDto.NewCommentsResponse(comments), err
 }

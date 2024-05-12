@@ -96,7 +96,7 @@ func (s *Comments) Validate() error {
 	return nil
 }
 
-func (s *CommentsByJokeIDGetSelectParams) Validate() error {
+func (s *CommentsByJokeIDGetSelector) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
 	}
@@ -203,7 +203,7 @@ func (s *Jokes) Validate() error {
 	return nil
 }
 
-func (s *MeJokesGetSelectParams) Validate() error {
+func (s *MeJokesGetSelector) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
 	}
@@ -287,7 +287,7 @@ func (s *MeJokesGetSelectParams) Validate() error {
 	return nil
 }
 
-func (s *MeRoomsGetSelectParams) Validate() error {
+func (s *MeRoomsGetSelector) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
 	}
@@ -371,7 +371,7 @@ func (s *MeRoomsGetSelectParams) Validate() error {
 	return nil
 }
 
-func (s *MeRoomsIdMessagesGetSelectParams) Validate() error {
+func (s *MeRoomsIdMessagesGetSelector) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
 	}

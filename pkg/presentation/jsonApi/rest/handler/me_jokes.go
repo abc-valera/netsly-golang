@@ -24,7 +24,7 @@ func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesG
 	domainJokes, err := h.joke.GetAllByUserID(
 		ctx,
 		payloadUserID(ctx),
-		restDto.NewDomainSelectParams(&ogenParams.SelectParams),
+		restDto.NewDomainSelector(&ogenParams.Selector),
 	)
 	return restDto.NewJokesResponse(domainJokes), err
 }

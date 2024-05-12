@@ -289,15 +289,15 @@ func (c *Client) sendCommentsByJokeIDGet(ctx context.Context, params CommentsByJ
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "selectParams" parameter.
+		// Encode "selector" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "selectParams",
+			Name:    "selector",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return params.SelectParams.EncodeURI(e)
+			return params.Selector.EncodeURI(e)
 		}); err != nil {
 			return res, errors.Wrap(err, "encode query")
 		}
@@ -1222,15 +1222,15 @@ func (c *Client) sendMeJokesGet(ctx context.Context, params MeJokesGetParams) (r
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "selectParams" parameter.
+		// Encode "selector" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "selectParams",
+			Name:    "selector",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return params.SelectParams.EncodeURI(e)
+			return params.Selector.EncodeURI(e)
 		}); err != nil {
 			return res, errors.Wrap(err, "encode query")
 		}
@@ -1993,15 +1993,15 @@ func (c *Client) sendMeRoomsGet(ctx context.Context, params MeRoomsGetParams) (r
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "selectParams" parameter.
+		// Encode "selector" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "selectParams",
+			Name:    "selector",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return params.SelectParams.EncodeURI(e)
+			return params.Selector.EncodeURI(e)
 		}); err != nil {
 			return res, errors.Wrap(err, "encode query")
 		}
@@ -2135,15 +2135,15 @@ func (c *Client) sendMeRoomsIdMessagesGet(ctx context.Context, params MeRoomsIdM
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "selectParams" parameter.
+		// Encode "selector" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "selectParams",
+			Name:    "selector",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return params.SelectParams.EncodeURI(e)
+			return params.Selector.EncodeURI(e)
 		}); err != nil {
 			return res, errors.Wrap(err, "encode query")
 		}

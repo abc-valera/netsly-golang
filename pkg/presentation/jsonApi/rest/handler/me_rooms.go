@@ -27,7 +27,7 @@ func (h MeRooms) MeRoomsGet(ctx context.Context, ogenParams ogen.MeRoomsGetParam
 	domainRooms, err := h.room.GetAllByUserID(
 		ctx,
 		payloadUserID(ctx),
-		restDto.NewDomainSelectParams(&ogenParams.SelectParams),
+		restDto.NewDomainSelector(&ogenParams.Selector),
 	)
 	return restDto.NewRoomsResponse(domainRooms), err
 }

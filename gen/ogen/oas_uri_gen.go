@@ -9,8 +9,8 @@ import (
 	"github.com/ogen-go/ogen/uri"
 )
 
-// EncodeURI encodes CommentsByJokeIDGetSelectParams as URI form.
-func (s *CommentsByJokeIDGetSelectParams) EncodeURI(e uri.Encoder) error {
+// EncodeURI encodes CommentsByJokeIDGetSelector as URI form.
+func (s *CommentsByJokeIDGetSelector) EncodeURI(e uri.Encoder) error {
 	if err := e.EncodeField("order", func(e uri.Encoder) error {
 		if val, ok := s.Order.Get(); ok {
 			return e.EncodeValue(conv.StringToString(string(val)))
@@ -38,16 +38,16 @@ func (s *CommentsByJokeIDGetSelectParams) EncodeURI(e uri.Encoder) error {
 	return nil
 }
 
-var uriFieldsNameOfCommentsByJokeIDGetSelectParams = [3]string{
+var uriFieldsNameOfCommentsByJokeIDGetSelector = [3]string{
 	0: "order",
 	1: "limit",
 	2: "offset",
 }
 
-// DecodeURI decodes CommentsByJokeIDGetSelectParams from URI form.
-func (s *CommentsByJokeIDGetSelectParams) DecodeURI(d uri.Decoder) error {
+// DecodeURI decodes CommentsByJokeIDGetSelector from URI form.
+func (s *CommentsByJokeIDGetSelector) DecodeURI(d uri.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode CommentsByJokeIDGetSelectParams to nil")
+		return errors.New("invalid: unable to decode CommentsByJokeIDGetSelector to nil")
 	}
 
 	if err := d.DecodeFields(func(k string, d uri.Decoder) error {
@@ -129,14 +129,14 @@ func (s *CommentsByJokeIDGetSelectParams) DecodeURI(d uri.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode CommentsByJokeIDGetSelectParams")
+		return errors.Wrap(err, "decode CommentsByJokeIDGetSelector")
 	}
 
 	return nil
 }
 
-// EncodeURI encodes MeJokesGetSelectParams as URI form.
-func (s *MeJokesGetSelectParams) EncodeURI(e uri.Encoder) error {
+// EncodeURI encodes MeJokesGetSelector as URI form.
+func (s *MeJokesGetSelector) EncodeURI(e uri.Encoder) error {
 	if err := e.EncodeField("order", func(e uri.Encoder) error {
 		if val, ok := s.Order.Get(); ok {
 			return e.EncodeValue(conv.StringToString(string(val)))
@@ -164,16 +164,16 @@ func (s *MeJokesGetSelectParams) EncodeURI(e uri.Encoder) error {
 	return nil
 }
 
-var uriFieldsNameOfMeJokesGetSelectParams = [3]string{
+var uriFieldsNameOfMeJokesGetSelector = [3]string{
 	0: "order",
 	1: "limit",
 	2: "offset",
 }
 
-// DecodeURI decodes MeJokesGetSelectParams from URI form.
-func (s *MeJokesGetSelectParams) DecodeURI(d uri.Decoder) error {
+// DecodeURI decodes MeJokesGetSelector from URI form.
+func (s *MeJokesGetSelector) DecodeURI(d uri.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MeJokesGetSelectParams to nil")
+		return errors.New("invalid: unable to decode MeJokesGetSelector to nil")
 	}
 
 	if err := d.DecodeFields(func(k string, d uri.Decoder) error {
@@ -255,14 +255,14 @@ func (s *MeJokesGetSelectParams) DecodeURI(d uri.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode MeJokesGetSelectParams")
+		return errors.Wrap(err, "decode MeJokesGetSelector")
 	}
 
 	return nil
 }
 
-// EncodeURI encodes MeRoomsGetSelectParams as URI form.
-func (s *MeRoomsGetSelectParams) EncodeURI(e uri.Encoder) error {
+// EncodeURI encodes MeRoomsGetSelector as URI form.
+func (s *MeRoomsGetSelector) EncodeURI(e uri.Encoder) error {
 	if err := e.EncodeField("order", func(e uri.Encoder) error {
 		if val, ok := s.Order.Get(); ok {
 			return e.EncodeValue(conv.StringToString(string(val)))
@@ -290,16 +290,16 @@ func (s *MeRoomsGetSelectParams) EncodeURI(e uri.Encoder) error {
 	return nil
 }
 
-var uriFieldsNameOfMeRoomsGetSelectParams = [3]string{
+var uriFieldsNameOfMeRoomsGetSelector = [3]string{
 	0: "order",
 	1: "limit",
 	2: "offset",
 }
 
-// DecodeURI decodes MeRoomsGetSelectParams from URI form.
-func (s *MeRoomsGetSelectParams) DecodeURI(d uri.Decoder) error {
+// DecodeURI decodes MeRoomsGetSelector from URI form.
+func (s *MeRoomsGetSelector) DecodeURI(d uri.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MeRoomsGetSelectParams to nil")
+		return errors.New("invalid: unable to decode MeRoomsGetSelector to nil")
 	}
 
 	if err := d.DecodeFields(func(k string, d uri.Decoder) error {
@@ -381,14 +381,14 @@ func (s *MeRoomsGetSelectParams) DecodeURI(d uri.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode MeRoomsGetSelectParams")
+		return errors.Wrap(err, "decode MeRoomsGetSelector")
 	}
 
 	return nil
 }
 
-// EncodeURI encodes MeRoomsIdMessagesGetSelectParams as URI form.
-func (s *MeRoomsIdMessagesGetSelectParams) EncodeURI(e uri.Encoder) error {
+// EncodeURI encodes MeRoomsIdMessagesGetSelector as URI form.
+func (s *MeRoomsIdMessagesGetSelector) EncodeURI(e uri.Encoder) error {
 	if err := e.EncodeField("order", func(e uri.Encoder) error {
 		if val, ok := s.Order.Get(); ok {
 			return e.EncodeValue(conv.StringToString(string(val)))
@@ -416,16 +416,16 @@ func (s *MeRoomsIdMessagesGetSelectParams) EncodeURI(e uri.Encoder) error {
 	return nil
 }
 
-var uriFieldsNameOfMeRoomsIdMessagesGetSelectParams = [3]string{
+var uriFieldsNameOfMeRoomsIdMessagesGetSelector = [3]string{
 	0: "order",
 	1: "limit",
 	2: "offset",
 }
 
-// DecodeURI decodes MeRoomsIdMessagesGetSelectParams from URI form.
-func (s *MeRoomsIdMessagesGetSelectParams) DecodeURI(d uri.Decoder) error {
+// DecodeURI decodes MeRoomsIdMessagesGetSelector from URI form.
+func (s *MeRoomsIdMessagesGetSelector) DecodeURI(d uri.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode MeRoomsIdMessagesGetSelectParams to nil")
+		return errors.New("invalid: unable to decode MeRoomsIdMessagesGetSelector to nil")
 	}
 
 	if err := d.DecodeFields(func(k string, d uri.Decoder) error {
@@ -507,7 +507,7 @@ func (s *MeRoomsIdMessagesGetSelectParams) DecodeURI(d uri.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode MeRoomsIdMessagesGetSelectParams")
+		return errors.Wrap(err, "decode MeRoomsIdMessagesGetSelector")
 	}
 
 	return nil

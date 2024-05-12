@@ -865,7 +865,7 @@ components:
               - comments
   parameters:
     query_select_params:
-      name: selectParams
+      name: selector
       in: query
       description: fields to specify select parameters
       required: true

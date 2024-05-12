@@ -15,7 +15,7 @@ require (
 	github.com/gorilla/websocket v1.5.1
 	github.com/jackc/pgx/v5 v5.5.5
 	github.com/microsoft/go-mssqldb v1.7.0
-	github.com/ogen-go/ogen v0.80.1
+	github.com/ogen-go/ogen v1.1.0
 	github.com/pressly/goose/v3 v3.19.2
 	github.com/stretchr/testify v1.9.0
 	github.com/testcontainers/testcontainers-go v0.29.1
@@ -25,11 +25,11 @@ require (
 	github.com/volatiletech/strmangle v0.0.6
 	github.com/ziutek/mymysql v1.5.4
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.47.0
-	go.opentelemetry.io/otel v1.22.0
-	go.opentelemetry.io/otel/metric v1.22.0
-	go.opentelemetry.io/otel/trace v1.22.0
+	go.opentelemetry.io/otel v1.25.0
+	go.opentelemetry.io/otel/metric v1.25.0
+	go.opentelemetry.io/otel/trace v1.25.0
 	go.uber.org/multierr v1.11.0
-	golang.org/x/crypto v0.21.0
+	golang.org/x/crypto v0.22.0
 	google.golang.org/grpc v1.60.0
 )
 
@@ -64,7 +64,7 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/jinzhu/copier v0.3.5 // indirect
-	github.com/klauspost/compress v1.17.2 // indirect
+	github.com/klauspost/compress v1.17.6 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
@@ -96,9 +96,9 @@ require (
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
-	golang.org/x/mod v0.16.0 // indirect
-	golang.org/x/term v0.18.0 // indirect
-	golang.org/x/tools v0.19.0 // indirect
+	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/term v0.19.0 // indirect
+	golang.org/x/tools v0.20.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 )
@@ -106,7 +106,7 @@ require (
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/dlclark/regexp2 v1.10.0 // indirect
+	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
@@ -129,11 +129,11 @@ require (
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/volatiletech/inflect v0.0.1 // indirect
 	github.com/volatiletech/randomize v0.0.1 // indirect
-	go.uber.org/zap v1.26.0 // indirect
+	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/exp v0.0.0-20231214170342-aacd6d4b4611 // indirect
-	golang.org/x/net v0.22.0 // indirect
-	golang.org/x/sync v0.6.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/net v0.24.0 // indirect
+	golang.org/x/sync v0.7.0 // indirect
+	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231212172506-995d672761c0 // indirect

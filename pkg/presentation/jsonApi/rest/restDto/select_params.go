@@ -2,23 +2,23 @@ package restDto
 
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selectParams"
+	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selector"
 )
 
-type ISelectParamsHelper interface {
+type ISelectorHelper interface {
 	GetOrder() ogen.OptOrder
 	GetLimit() ogen.OptInt
 	GetOffset() ogen.OptInt
 }
 
-func NewDomainSelectParams(params ISelectParamsHelper) selectParams.SelectParams {
-	order := selectParams.OrderDesc
-	if params.GetOrder().Value == ogen.Order(selectParams.OrderAsc) {
-		order = selectParams.OrderAsc
+func NewDomainSelector(params ISelectorHelper) selector.Selector {
+	order := selector.OrderDesc
+	if params.GetOrder().Value == ogen.Order(selector.OrderAsc) {
+		order = selector.OrderAsc
 	}
-	return selectParams.NewSelectParams(
-		order,
-		params.GetLimit().Value,
-		params.GetOffset().Value,
-	)
+	return selector.Selector{
+		Order:  order,
+		Limit:  uint(params.GetLimit().Value),
+		Offset: uint(params.GetOffset().Value),
+	}
 }

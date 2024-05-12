@@ -1,4 +1,4 @@
-name: selectParams
+name: selector
 in: query
 description: fields to specify select parameters
 required: true

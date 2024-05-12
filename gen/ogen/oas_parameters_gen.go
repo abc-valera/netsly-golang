@@ -20,7 +20,7 @@ type CommentsByJokeIDGetParams struct {
 	// ID of the joke.
 	JokeID string
 	// Fields to specify select parameters.
-	SelectParams CommentsByJokeIDGetSelectParams
+	Selector CommentsByJokeIDGetSelector
 }
 
 func unpackCommentsByJokeIDGetParams(packed middleware.Parameters) (params CommentsByJokeIDGetParams) {
@@ -33,10 +33,10 @@ func unpackCommentsByJokeIDGetParams(packed middleware.Parameters) (params Comme
 	}
 	{
 		key := middleware.ParameterKey{
-			Name: "selectParams",
+			Name: "selector",
 			In:   "query",
 		}
-		params.SelectParams = packed[key].(CommentsByJokeIDGetSelectParams)
+		params.Selector = packed[key].(CommentsByJokeIDGetSelector)
 	}
 	return params
 }
@@ -88,23 +88,23 @@ func decodeCommentsByJokeIDGetParams(args [1]string, argsEscaped bool, r *http.R
 			Err:  err,
 		}
 	}
-	// Decode query: selectParams.
+	// Decode query: selector.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "selectParams",
+			Name:    "selector",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
-			Fields:  []uri.QueryParameterObjectField{{"order", false}, {"limit", false}, {"offset", false}},
+			Fields:  []uri.QueryParameterObjectField{{Name: "order", Required: false}, {Name: "limit", Required: false}, {Name: "offset", Required: false}},
 		}
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				return params.SelectParams.DecodeURI(d)
+				return params.Selector.DecodeURI(d)
 			}); err != nil {
 				return err
 			}
 			if err := func() error {
-				if err := params.SelectParams.Validate(); err != nil {
+				if err := params.Selector.Validate(); err != nil {
 					return err
 				}
 				return nil
@@ -117,7 +117,7 @@ func decodeCommentsByJokeIDGetParams(args [1]string, argsEscaped bool, r *http.R
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "selectParams",
+			Name: "selector",
 			In:   "query",
 			Err:  err,
 		}
@@ -194,39 +194,39 @@ func decodeLikesByJokeIDGetParams(args [1]string, argsEscaped bool, r *http.Requ
 // MeJokesGetParams is parameters of MeJokesGet operation.
 type MeJokesGetParams struct {
 	// Fields to specify select parameters.
-	SelectParams MeJokesGetSelectParams
+	Selector MeJokesGetSelector
 }
 
 func unpackMeJokesGetParams(packed middleware.Parameters) (params MeJokesGetParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "selectParams",
+			Name: "selector",
 			In:   "query",
 		}
-		params.SelectParams = packed[key].(MeJokesGetSelectParams)
+		params.Selector = packed[key].(MeJokesGetSelector)
 	}
 	return params
 }
 
 func decodeMeJokesGetParams(args [0]string, argsEscaped bool, r *http.Request) (params MeJokesGetParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode query: selectParams.
+	// Decode query: selector.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "selectParams",
+			Name:    "selector",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
-			Fields:  []uri.QueryParameterObjectField{{"order", false}, {"limit", false}, {"offset", false}},
+			Fields:  []uri.QueryParameterObjectField{{Name: "order", Required: false}, {Name: "limit", Required: false}, {Name: "offset", Required: false}},
 		}
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				return params.SelectParams.DecodeURI(d)
+				return params.Selector.DecodeURI(d)
 			}); err != nil {
 				return err
 			}
 			if err := func() error {
-				if err := params.SelectParams.Validate(); err != nil {
+				if err := params.Selector.Validate(); err != nil {
 					return err
 				}
 				return nil
@@ -239,7 +239,7 @@ func decodeMeJokesGetParams(args [0]string, argsEscaped bool, r *http.Request) (
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "selectParams",
+			Name: "selector",
 			In:   "query",
 			Err:  err,
 		}
@@ -250,39 +250,39 @@ func decodeMeJokesGetParams(args [0]string, argsEscaped bool, r *http.Request) (
 // MeRoomsGetParams is parameters of MeRoomsGet operation.
 type MeRoomsGetParams struct {
 	// Fields to specify select parameters.
-	SelectParams MeRoomsGetSelectParams
+	Selector MeRoomsGetSelector
 }
 
 func unpackMeRoomsGetParams(packed middleware.Parameters) (params MeRoomsGetParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "selectParams",
+			Name: "selector",
 			In:   "query",
 		}
-		params.SelectParams = packed[key].(MeRoomsGetSelectParams)
+		params.Selector = packed[key].(MeRoomsGetSelector)
 	}
 	return params
 }
 
 func decodeMeRoomsGetParams(args [0]string, argsEscaped bool, r *http.Request) (params MeRoomsGetParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode query: selectParams.
+	// Decode query: selector.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "selectParams",
+			Name:    "selector",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
-			Fields:  []uri.QueryParameterObjectField{{"order", false}, {"limit", false}, {"offset", false}},
+			Fields:  []uri.QueryParameterObjectField{{Name: "order", Required: false}, {Name: "limit", Required: false}, {Name: "offset", Required: false}},
 		}
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				return params.SelectParams.DecodeURI(d)
+				return params.Selector.DecodeURI(d)
 			}); err != nil {
 				return err
 			}
 			if err := func() error {
-				if err := params.SelectParams.Validate(); err != nil {
+				if err := params.Selector.Validate(); err != nil {
 					return err
 				}
 				return nil
@@ -295,7 +295,7 @@ func decodeMeRoomsGetParams(args [0]string, argsEscaped bool, r *http.Request) (
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "selectParams",
+			Name: "selector",
 			In:   "query",
 			Err:  err,
 		}
@@ -308,7 +308,7 @@ type MeRoomsIdMessagesGetParams struct {
 	// ID of the room.
 	RoomID string
 	// Fields to specify select parameters.
-	SelectParams MeRoomsIdMessagesGetSelectParams
+	Selector MeRoomsIdMessagesGetSelector
 }
 
 func unpackMeRoomsIdMessagesGetParams(packed middleware.Parameters) (params MeRoomsIdMessagesGetParams) {
@@ -321,10 +321,10 @@ func unpackMeRoomsIdMessagesGetParams(packed middleware.Parameters) (params MeRo
 	}
 	{
 		key := middleware.ParameterKey{
-			Name: "selectParams",
+			Name: "selector",
 			In:   "query",
 		}
-		params.SelectParams = packed[key].(MeRoomsIdMessagesGetSelectParams)
+		params.Selector = packed[key].(MeRoomsIdMessagesGetSelector)
 	}
 	return params
 }
@@ -376,23 +376,23 @@ func decodeMeRoomsIdMessagesGetParams(args [1]string, argsEscaped bool, r *http.
 			Err:  err,
 		}
 	}
-	// Decode query: selectParams.
+	// Decode query: selector.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "selectParams",
+			Name:    "selector",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
-			Fields:  []uri.QueryParameterObjectField{{"order", false}, {"limit", false}, {"offset", false}},
+			Fields:  []uri.QueryParameterObjectField{{Name: "order", Required: false}, {Name: "limit", Required: false}, {Name: "offset", Required: false}},
 		}
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				return params.SelectParams.DecodeURI(d)
+				return params.Selector.DecodeURI(d)
 			}); err != nil {
 				return err
 			}
 			if err := func() error {
-				if err := params.SelectParams.Validate(); err != nil {
+				if err := params.Selector.Validate(); err != nil {
 					return err
 				}
 				return nil
@@ -405,7 +405,7 @@ func decodeMeRoomsIdMessagesGetParams(args [1]string, argsEscaped bool, r *http.
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "selectParams",
+			Name: "selector",
 			In:   "query",
 			Err:  err,
 		}

@@ -6,8 +6,8 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	selectParams1 "github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selectParams"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/boilerQuery/selectParams"
+	selector1 "github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query/selector"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/boilerQuery/selector"
 	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/dto"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
@@ -31,8 +31,8 @@ func (r room) GetByName(ctx context.Context, name string) (model.Room, error) {
 	return dto.ToDomainRoomWithErrHandle(sqlboiler.Rooms(sqlboiler.RoomWhere.Name.EQ(name)).One(ctx, r.executor))
 }
 
-func (r room) GetAllByUserID(ctx context.Context, userID string, params selectParams1.SelectParams) (model.Rooms, error) {
-	mods := selectParams.ToBoilerSelectParamsPipe(
+func (r room) GetAllByUserID(ctx context.Context, userID string, params selector1.Selector) (model.Rooms, error) {
+	mods := selector.ToBoilerSelectorPipe(
 		params,
 		qm.InnerJoin(sqlboiler.TableNames.RoomMember+" rm ON rm.room_id = room.id"),
 		sqlboiler.RoomMemberWhere.UserID.EQ(userID),
@@ -40,8 +40,8 @@ func (r room) GetAllByUserID(ctx context.Context, userID string, params selectPa
 	return dto.ToDomainRoomsWithErrHandle(sqlboiler.Rooms(mods...).All(ctx, r.executor))
 }
 
-func (r room) SearchAllByName(ctx context.Context, keyword string, params selectParams1.SelectParams) (model.Rooms, error) {
-	mods := selectParams.ToBoilerSelectParamsPipe(
+func (r room) SearchAllByName(ctx context.Context, keyword string, params selector1.Selector) (model.Rooms, error) {
+	mods := selector.ToBoilerSelectorPipe(
 		params,
 		sqlboiler.RoomWhere.Name.LIKE("%"+keyword+"%"),
 	)

@@ -221,39 +221,39 @@ func (s *Comments) SetComments(val []Comment) {
 	s.Comments = val
 }
 
-type CommentsByJokeIDGetSelectParams struct {
+type CommentsByJokeIDGetSelector struct {
 	Order  OptOrder `json:"order"`
 	Limit  OptInt   `json:"limit"`
 	Offset OptInt   `json:"offset"`
 }
 
 // GetOrder returns the value of Order.
-func (s *CommentsByJokeIDGetSelectParams) GetOrder() OptOrder {
+func (s *CommentsByJokeIDGetSelector) GetOrder() OptOrder {
 	return s.Order
 }
 
 // GetLimit returns the value of Limit.
-func (s *CommentsByJokeIDGetSelectParams) GetLimit() OptInt {
+func (s *CommentsByJokeIDGetSelector) GetLimit() OptInt {
 	return s.Limit
 }
 
 // GetOffset returns the value of Offset.
-func (s *CommentsByJokeIDGetSelectParams) GetOffset() OptInt {
+func (s *CommentsByJokeIDGetSelector) GetOffset() OptInt {
 	return s.Offset
 }
 
 // SetOrder sets the value of Order.
-func (s *CommentsByJokeIDGetSelectParams) SetOrder(val OptOrder) {
+func (s *CommentsByJokeIDGetSelector) SetOrder(val OptOrder) {
 	s.Order = val
 }
 
 // SetLimit sets the value of Limit.
-func (s *CommentsByJokeIDGetSelectParams) SetLimit(val OptInt) {
+func (s *CommentsByJokeIDGetSelector) SetLimit(val OptInt) {
 	s.Limit = val
 }
 
 // SetOffset sets the value of Offset.
-func (s *CommentsByJokeIDGetSelectParams) SetOffset(val OptInt) {
+func (s *CommentsByJokeIDGetSelector) SetOffset(val OptInt) {
 	s.Offset = val
 }
 
@@ -459,39 +459,39 @@ func (s *MeJokesDelReq) SetJokeID(val string) {
 	s.JokeID = val
 }
 
-type MeJokesGetSelectParams struct {
+type MeJokesGetSelector struct {
 	Order  OptOrder `json:"order"`
 	Limit  OptInt   `json:"limit"`
 	Offset OptInt   `json:"offset"`
 }
 
 // GetOrder returns the value of Order.
-func (s *MeJokesGetSelectParams) GetOrder() OptOrder {
+func (s *MeJokesGetSelector) GetOrder() OptOrder {
 	return s.Order
 }
 
 // GetLimit returns the value of Limit.
-func (s *MeJokesGetSelectParams) GetLimit() OptInt {
+func (s *MeJokesGetSelector) GetLimit() OptInt {
 	return s.Limit
 }
 
 // GetOffset returns the value of Offset.
-func (s *MeJokesGetSelectParams) GetOffset() OptInt {
+func (s *MeJokesGetSelector) GetOffset() OptInt {
 	return s.Offset
 }
 
 // SetOrder sets the value of Order.
-func (s *MeJokesGetSelectParams) SetOrder(val OptOrder) {
+func (s *MeJokesGetSelector) SetOrder(val OptOrder) {
 	s.Order = val
 }
 
 // SetLimit sets the value of Limit.
-func (s *MeJokesGetSelectParams) SetLimit(val OptInt) {
+func (s *MeJokesGetSelector) SetLimit(val OptInt) {
 	s.Limit = val
 }
 
 // SetOffset sets the value of Offset.
-func (s *MeJokesGetSelectParams) SetOffset(val OptInt) {
+func (s *MeJokesGetSelector) SetOffset(val OptInt) {
 	s.Offset = val
 }
 
@@ -665,75 +665,75 @@ func (s *MeRoomsDeleteReq) SetID(val string) {
 	s.ID = val
 }
 
-type MeRoomsGetSelectParams struct {
+type MeRoomsGetSelector struct {
 	Order  OptOrder `json:"order"`
 	Limit  OptInt   `json:"limit"`
 	Offset OptInt   `json:"offset"`
 }
 
 // GetOrder returns the value of Order.
-func (s *MeRoomsGetSelectParams) GetOrder() OptOrder {
+func (s *MeRoomsGetSelector) GetOrder() OptOrder {
 	return s.Order
 }
 
 // GetLimit returns the value of Limit.
-func (s *MeRoomsGetSelectParams) GetLimit() OptInt {
+func (s *MeRoomsGetSelector) GetLimit() OptInt {
 	return s.Limit
 }
 
 // GetOffset returns the value of Offset.
-func (s *MeRoomsGetSelectParams) GetOffset() OptInt {
+func (s *MeRoomsGetSelector) GetOffset() OptInt {
 	return s.Offset
 }
 
 // SetOrder sets the value of Order.
-func (s *MeRoomsGetSelectParams) SetOrder(val OptOrder) {
+func (s *MeRoomsGetSelector) SetOrder(val OptOrder) {
 	s.Order = val
 }
 
 // SetLimit sets the value of Limit.
-func (s *MeRoomsGetSelectParams) SetLimit(val OptInt) {
+func (s *MeRoomsGetSelector) SetLimit(val OptInt) {
 	s.Limit = val
 }
 
 // SetOffset sets the value of Offset.
-func (s *MeRoomsGetSelectParams) SetOffset(val OptInt) {
+func (s *MeRoomsGetSelector) SetOffset(val OptInt) {
 	s.Offset = val
 }
 
-type MeRoomsIdMessagesGetSelectParams struct {
+type MeRoomsIdMessagesGetSelector struct {
 	Order  OptOrder `json:"order"`
 	Limit  OptInt   `json:"limit"`
 	Offset OptInt   `json:"offset"`
 }
 
 // GetOrder returns the value of Order.
-func (s *MeRoomsIdMessagesGetSelectParams) GetOrder() OptOrder {
+func (s *MeRoomsIdMessagesGetSelector) GetOrder() OptOrder {
 	return s.Order
 }
 
 // GetLimit returns the value of Limit.
-func (s *MeRoomsIdMessagesGetSelectParams) GetLimit() OptInt {
+func (s *MeRoomsIdMessagesGetSelector) GetLimit() OptInt {
 	return s.Limit
 }
 
 // GetOffset returns the value of Offset.
-func (s *MeRoomsIdMessagesGetSelectParams) GetOffset() OptInt {
+func (s *MeRoomsIdMessagesGetSelector) GetOffset() OptInt {
 	return s.Offset
 }
 
 // SetOrder sets the value of Order.
-func (s *MeRoomsIdMessagesGetSelectParams) SetOrder(val OptOrder) {
+func (s *MeRoomsIdMessagesGetSelector) SetOrder(val OptOrder) {
 	s.Order = val
 }
 
 // SetLimit sets the value of Limit.
-func (s *MeRoomsIdMessagesGetSelectParams) SetLimit(val OptInt) {
+func (s *MeRoomsIdMessagesGetSelector) SetLimit(val OptInt) {
 	s.Limit = val
 }
 
 // SetOffset sets the value of Offset.
-func (s *MeRoomsIdMessagesGetSelectParams) SetOffset(val OptInt) {
+func (s *MeRoomsIdMessagesGetSelector) SetOffset(val OptInt) {
 	s.Offset = val
 }
 
