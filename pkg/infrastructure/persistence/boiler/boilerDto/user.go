@@ -1,4 +1,4 @@
-package dto
+package boilerDto
 
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
@@ -16,8 +16,8 @@ func ToDomainUser(user *sqlboiler.User) model.User {
 		Username:       user.Username,
 		Email:          user.Email,
 		HashedPassword: user.HashedPassword,
-		Fullname:       user.Fullname.String,
-		Status:         user.Status.String,
+		Fullname:       user.Fullname,
+		Status:         user.Status,
 		CreatedAt:      user.CreatedAt,
 	}
 }

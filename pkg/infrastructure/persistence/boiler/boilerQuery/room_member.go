@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/boilerDto"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
@@ -22,9 +22,9 @@ func NewRoomMember(executor boil.ContextExecutor) query.IRoomMember {
 
 func (r roomMember) GetByRoomID(ctx context.Context, roomID string) (model.RoomMembers, error) {
 	mods := sqlboiler.RoomMemberWhere.RoomID.EQ(roomID)
-	return dto.ToDomainRoomMembersWithErrHandle(sqlboiler.RoomMembers(mods).All(ctx, r.executor))
+	return boilerDto.ToDomainRoomMembersWithErrHandle(sqlboiler.RoomMembers(mods).All(ctx, r.executor))
 }
 
 func (r roomMember) GetByIDs(ctx context.Context, userID string, roomID string) (model.RoomMember, error) {
-	return dto.ToDomainRoomMemberWithErrHandle(sqlboiler.FindRoomMember(ctx, r.executor, userID, roomID))
+	return boilerDto.ToDomainRoomMemberWithErrHandle(sqlboiler.FindRoomMember(ctx, r.executor, userID, roomID))
 }

@@ -4,10 +4,12 @@ import (
 	"context"
 	"time"
 
+	"github.com/abc-valera/netsly-api-golang/pkg/core/validator"
+
+	"github.com/abc-valera/netsly-api-golang/pkg/core/optional"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 	"github.com/google/uuid"
 )
 
@@ -23,13 +25,13 @@ type joke struct {
 	command command.IJoke
 	query.IJoke
 
-	validator service.IValidator
+	validator validator.IValidator
 }
 
 func NewJoke(
 	command command.IJoke,
 	query query.IJoke,
-	validator service.IValidator,
+	validator validator.IValidator,
 ) IJoke {
 	return joke{
 		command:   command,
@@ -61,9 +63,9 @@ func (j joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, er
 }
 
 type JokeUpdateRequest struct {
-	Title       *string `validate:"min=4,max=64"`
-	Text        *string `validate:"min=4,max=4096"`
-	Explanation *string `validate:"max=4096"`
+	Title       optional.Optional[string] `validate:"min=4,max=64"`
+	Text        optional.Optional[string] `validate:"min=4,max=4096"`
+	Explanation optional.Optional[string] `validate:"max=4096"`
 }
 
 func (j joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) (model.Joke, error) {

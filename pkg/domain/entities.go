@@ -1,8 +1,8 @@
 package domain
 
 import (
+	"github.com/abc-valera/netsly-api-golang/pkg/core/validator"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 )
 
 type Entities struct {
@@ -20,7 +20,7 @@ func NewEntities(
 	queries Queries,
 	services Services,
 ) Entities {
-	validator := service.NewValidator()
+	validator := validator.NewValidator()
 
 	return Entities{
 		User:        entity.NewUser(commands.User, queries.User, validator, services.PasswordMaker),

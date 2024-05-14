@@ -6,7 +6,7 @@ package sqlboiler
 var TableNames = struct {
 	Comment        string
 	Joke           string
-	Like           string
+	Likes          string
 	Room           string
 	RoomMember     string
 	RoomMessage    string
@@ -15,7 +15,7 @@ var TableNames = struct {
 }{
 	Comment:        "Comment",
 	Joke:           "Joke",
-	Like:           "Like",
+	Likes:          "Likes",
 	Room:           "Room",
 	RoomMember:     "RoomMember",
 	RoomMessage:    "RoomMessage",

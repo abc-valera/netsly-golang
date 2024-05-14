@@ -10,8 +10,8 @@ func NewUserResponse(user model.User) *ogen.User {
 		ID:        user.ID,
 		Username:  user.Username,
 		Email:     user.Email,
-		Fullname:  NewOptString(user.Fullname),
-		Status:    NewOptString(user.Status),
+		Fullname:  ogen.NewOptString(user.Fullname),
+		Status:    ogen.NewOptString(user.Status),
 		CreatedAt: user.CreatedAt,
 	}
 }

@@ -1,4 +1,4 @@
-package dto
+package boilerDto
 
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
@@ -14,7 +14,7 @@ func ToDomainRoom(room *sqlboiler.Room) model.Room {
 	return model.Room{
 		ID:            room.ID,
 		Name:          room.Name,
-		Description:   room.Description.String,
+		Description:   room.Description,
 		CreatedAt:     room.CreatedAt,
 		CreatorUserID: room.CreatorUserID,
 	}

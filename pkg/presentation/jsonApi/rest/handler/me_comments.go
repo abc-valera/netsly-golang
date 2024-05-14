@@ -34,7 +34,7 @@ func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeComme
 
 func (h MeCommentsHandler) MeCommentsPut(ctx context.Context, req *ogen.MeCommentsPutReq) (*ogen.Comment, error) {
 	comment, err := h.comment.Update(ctx, req.CommentID, entity.CommentUpdateRequest{
-		Text: restDto.NewPointerString(req.Text),
+		Text: restDto.NewDomainOptionalString(req.Text),
 	})
 	return restDto.NewCommentResponse(comment), err
 }

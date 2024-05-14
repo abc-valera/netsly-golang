@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/pkg/core/optional"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 )
 
@@ -16,5 +17,5 @@ type IRoom interface {
 }
 
 type RoomUpdate struct {
-	Description *string
+	Description optional.Optional[string]
 }

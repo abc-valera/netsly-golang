@@ -30,9 +30,9 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 
 func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, error) {
 	user, err := h.user.Update(ctx, payloadUserID(ctx), entity.UserUpdateRequest{
-		Password: restDto.NewPointerString(req.Password),
-		Fullname: restDto.NewPointerString(req.Fullname),
-		Status:   restDto.NewPointerString(req.Status),
+		Password: restDto.NewDomainOptionalString(req.Password),
+		Fullname: restDto.NewDomainOptionalString(req.Fullname),
+		Status:   restDto.NewDomainOptionalString(req.Status),
 	})
 	if err != nil {
 		return nil, err

@@ -3,6 +3,7 @@ package command
 import (
 	"context"
 
+	"github.com/abc-valera/netsly-api-golang/pkg/core/optional"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 )
 
@@ -13,5 +14,5 @@ type IComment interface {
 }
 
 type CommentUpdate struct {
-	Text *string
+	Text optional.Optional[string]
 }

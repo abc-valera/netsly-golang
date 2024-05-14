@@ -4,10 +4,12 @@ import (
 	"context"
 	"time"
 
+	"github.com/abc-valera/netsly-api-golang/pkg/core/validator"
+
+	"github.com/abc-valera/netsly-api-golang/pkg/core/optional"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 	"github.com/google/uuid"
 )
 
@@ -23,13 +25,13 @@ type roomMessage struct {
 	command command.IRoomMessage
 	query.IRoomMessage
 
-	validator service.IValidator
+	validator validator.IValidator
 }
 
 func NewRoomMessage(
 	command command.IRoomMessage,
 	query query.IRoomMessage,
-	validator service.IValidator,
+	validator validator.IValidator,
 ) IRoomMessage {
 	return roomMessage{
 		command:      command,
@@ -59,7 +61,7 @@ func (rm roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) 
 }
 
 type RoomMessageUpdateRequest struct {
-	Text *string `validate:"min=1,max=2048"`
+	Text optional.Optional[string] `validate:"min=1,max=2048"`
 }
 
 func (rm roomMessage) Update(ctx context.Context, id string, req RoomMessageUpdateRequest) (model.RoomMessage, error) {

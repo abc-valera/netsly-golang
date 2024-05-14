@@ -38,15 +38,15 @@ func (h MeRooms) MeRoomsPost(ctx context.Context, req *ogen.MeRoomsPostReq) (*og
 	domainRoom, err := h.room.Create(ctx, entity.RoomCreateRequest{
 		Name:          req.Name,
 		CreatorUserID: userID,
-		Description:   *restDto.NewPointerString(req.Description),
+		Description:   req.Description.Value,
 	})
 	return restDto.NewRoomResponse(domainRoom), err
 }
 
 func (h MeRooms) MeRoomsPut(ctx context.Context, req *ogen.MeRoomsPutReq) (*ogen.Room, error) {
 	domainRoom, err := h.room.Update(ctx, req.ID, entity.RoomUpdateRequest{
-		Name:        restDto.NewPointerString(req.Name),
-		Description: restDto.NewPointerString(req.Description),
+		Name:        restDto.NewDomainOptionalString(req.Name),
+		Description: restDto.NewDomainOptionalString(req.Description),
 	})
 	return restDto.NewRoomResponse(domainRoom), err
 }

@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
-	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
@@ -24,13 +23,13 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	ID             string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Username       string      `boil:"username" json:"username" toml:"username" yaml:"username"`
-	Email          string      `boil:"email" json:"email" toml:"email" yaml:"email"`
-	HashedPassword string      `boil:"hashed_password" json:"hashed_password" toml:"hashed_password" yaml:"hashed_password"`
-	Fullname       null.String `boil:"fullname" json:"fullname,omitempty" toml:"fullname" yaml:"fullname,omitempty"`
-	Status         null.String `boil:"status" json:"status,omitempty" toml:"status" yaml:"status,omitempty"`
-	CreatedAt      time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	ID             string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Username       string    `boil:"username" json:"username" toml:"username" yaml:"username"`
+	Email          string    `boil:"email" json:"email" toml:"email" yaml:"email"`
+	HashedPassword string    `boil:"hashed_password" json:"hashed_password" toml:"hashed_password" yaml:"hashed_password"`
+	Fullname       string    `boil:"fullname" json:"fullname" toml:"fullname" yaml:"fullname"`
+	Status         string    `boil:"status" json:"status" toml:"status" yaml:"status"`
+	CreatedAt      time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -79,16 +78,16 @@ var UserWhere = struct {
 	Username       whereHelperstring
 	Email          whereHelperstring
 	HashedPassword whereHelperstring
-	Fullname       whereHelpernull_String
-	Status         whereHelpernull_String
+	Fullname       whereHelperstring
+	Status         whereHelperstring
 	CreatedAt      whereHelpertime_Time
 }{
 	ID:             whereHelperstring{field: "\"User\".\"id\""},
 	Username:       whereHelperstring{field: "\"User\".\"username\""},
 	Email:          whereHelperstring{field: "\"User\".\"email\""},
 	HashedPassword: whereHelperstring{field: "\"User\".\"hashed_password\""},
-	Fullname:       whereHelpernull_String{field: "\"User\".\"fullname\""},
-	Status:         whereHelpernull_String{field: "\"User\".\"status\""},
+	Fullname:       whereHelperstring{field: "\"User\".\"fullname\""},
+	Status:         whereHelperstring{field: "\"User\".\"status\""},
 	CreatedAt:      whereHelpertime_Time{field: "\"User\".\"created_at\""},
 }
 
@@ -171,8 +170,8 @@ type userL struct{}
 
 var (
 	userAllColumns            = []string{"id", "username", "email", "hashed_password", "fullname", "status", "created_at"}
-	userColumnsWithoutDefault = []string{"id", "username", "email", "hashed_password", "created_at"}
-	userColumnsWithDefault    = []string{"fullname", "status"}
+	userColumnsWithoutDefault = []string{"id", "username", "email", "hashed_password", "fullname", "status", "created_at"}
+	userColumnsWithDefault    = []string{}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )
@@ -538,7 +537,7 @@ func (o *User) UserLikes(mods ...qm.QueryMod) likeQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("\"Like\".\"user_id\"=?", o.ID),
+		qm.Where("\"Likes\".\"user_id\"=?", o.ID),
 	)
 
 	return Likes(queryMods...)
@@ -867,8 +866,8 @@ func (userL) LoadUserLikes(ctx context.Context, e boil.ContextExecutor, singular
 	}
 
 	query := NewQuery(
-		qm.From(`Like`),
-		qm.WhereIn(`Like.user_id in ?`, argsSlice...),
+		qm.From(`Likes`),
+		qm.WhereIn(`Likes.user_id in ?`, argsSlice...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -876,19 +875,19 @@ func (userL) LoadUserLikes(ctx context.Context, e boil.ContextExecutor, singular
 
 	results, err := query.QueryContext(ctx, e)
 	if err != nil {
-		return errors.Wrap(err, "failed to eager load Like")
+		return errors.Wrap(err, "failed to eager load Likes")
 	}
 
 	var resultSlice []*Like
 	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice Like")
+		return errors.Wrap(err, "failed to bind eager loaded slice Likes")
 	}
 
 	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on Like")
+		return errors.Wrap(err, "failed to close results in eager load on Likes")
 	}
 	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for Like")
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for Likes")
 	}
 
 	if len(likeAfterSelectHooks) != 0 {
@@ -1411,7 +1410,7 @@ func (o *User) AddUserLikes(ctx context.Context, exec boil.ContextExecutor, inse
 			}
 		} else {
 			updateQuery := fmt.Sprintf(
-				"UPDATE \"Like\" SET %s WHERE %s",
+				"UPDATE \"Likes\" SET %s WHERE %s",
 				strmangle.SetParamNames("\"", "\"", 1, []string{"user_id"}),
 				strmangle.WhereClause("\"", "\"", 2, likePrimaryKeyColumns),
 			)

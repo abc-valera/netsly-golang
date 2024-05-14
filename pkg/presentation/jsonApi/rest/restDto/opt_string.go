@@ -2,18 +2,19 @@ package restDto
 
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
+	"github.com/abc-valera/netsly-api-golang/pkg/core/optional"
 )
 
-func NewOptString(s string) ogen.OptString {
-	if s == "" {
-		return ogen.OptString{Set: false}
+func NewDomainOptionalString(opt ogen.OptString) optional.Optional[string] {
+	if opt.Set {
+		return optional.NewOptional(opt.Value)
 	}
-	return ogen.NewOptString(s)
+	return optional.NewEmptyOptional[string]()
 }
 
-func NewPointerString(s ogen.OptString) *string {
-	if s.Set {
-		return &s.Value
+func NewOgenOptionalString(opt optional.Optional[string]) ogen.OptString {
+	if opt.IsPresent() {
+		return ogen.OptString{Set: true, Value: opt.Value()}
 	}
-	return nil
+	return ogen.OptString{Set: false}
 }

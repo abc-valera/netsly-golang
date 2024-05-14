@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/boilerDto"
 	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/errors"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
@@ -28,7 +28,7 @@ func (l like) Create(ctx context.Context, req model.Like) (model.Like, error) {
 		CreatedAt: req.CreatedAt,
 	}
 	err := like.Insert(ctx, l.executor, boil.Infer())
-	return dto.ToDomainLikeWithErrHandle(&like, err)
+	return boilerDto.ToDomainLikeWithErrHandle(&like, err)
 }
 
 func (l like) Delete(ctx context.Context, userID string, jokeID string) error {

@@ -11,7 +11,7 @@ func NewJokeResponse(joke model.Joke) *ogen.Joke {
 		UserID:      joke.UserID,
 		Title:       joke.Title,
 		Text:        joke.Text,
-		Explanation: NewOptString(joke.Explanation),
+		Explanation: ogen.NewOptString(joke.Explanation),
 		CreatedAt:   joke.CreatedAt,
 	}
 }

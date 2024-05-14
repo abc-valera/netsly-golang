@@ -1,4 +1,4 @@
-package dto
+package boilerDto
 
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"

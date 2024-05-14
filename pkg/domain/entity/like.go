@@ -4,10 +4,11 @@ import (
 	"context"
 	"time"
 
+	"github.com/abc-valera/netsly-api-golang/pkg/core/validator"
+
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 )
 
 type ILike interface {
@@ -21,13 +22,13 @@ type like struct {
 	command command.ILike
 	query.ILike
 
-	validator service.IValidator
+	validator validator.IValidator
 }
 
 func NewLike(
 	command command.ILike,
 	query query.ILike,
-	validator service.IValidator,
+	validator validator.IValidator,
 ) ILike {
 	return like{
 		command:   command,

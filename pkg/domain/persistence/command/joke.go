@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/pkg/core/optional"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 )
 
@@ -16,7 +17,7 @@ type IJoke interface {
 }
 
 type JokeUpdate struct {
-	Title       *string
-	Text        *string
-	Explanation *string
+	Title       optional.Optional[string]
+	Text        optional.Optional[string]
+	Explanation optional.Optional[string]
 }

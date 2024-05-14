@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/boilerDto"
 	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/errors"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
@@ -30,7 +30,7 @@ func (c comment) Create(ctx context.Context, req model.Comment) (model.Comment, 
 		JokeID:    req.JokeID,
 	}
 	err := comment.Insert(ctx, c.executor, boil.Infer())
-	return dto.ToDomainCommentWithErrHandle(&comment, err)
+	return boilerDto.ToDomainCommentWithErrHandle(&comment, err)
 }
 
 func (c comment) Update(ctx context.Context, commentID string, req command.CommentUpdate) (model.Comment, error) {
@@ -38,11 +38,11 @@ func (c comment) Update(ctx context.Context, commentID string, req command.Comme
 	if err != nil {
 		return model.Comment{}, errors.HandleErr(err)
 	}
-	if req.Text != nil {
-		comment.Text = *req.Text
+	if req.Text.IsPresent() {
+		comment.Text = req.Text.Value()
 	}
 	_, err = comment.Update(ctx, c.executor, boil.Infer())
-	return dto.ToDomainCommentWithErrHandle(comment, err)
+	return boilerDto.ToDomainCommentWithErrHandle(comment, err)
 }
 
 func (c comment) Delete(ctx context.Context, id string) error {

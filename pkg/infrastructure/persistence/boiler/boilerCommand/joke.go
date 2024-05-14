@@ -6,9 +6,8 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/boilerDto"
 	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/errors"
-	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
@@ -27,12 +26,12 @@ func (j joke) Create(ctx context.Context, req model.Joke) (model.Joke, error) {
 		ID:          req.ID,
 		Title:       req.Title,
 		Text:        req.Text,
-		Explanation: null.NewString(req.Explanation, req.Explanation != ""),
+		Explanation: req.Explanation,
 		CreatedAt:   req.CreatedAt,
 		UserID:      req.UserID,
 	}
 	err := joke.Insert(ctx, j.executor, boil.Infer())
-	return dto.ToDomainJokeWithErrHandle(&joke, err)
+	return boilerDto.ToDomainJokeWithErrHandle(&joke, err)
 }
 
 func (j joke) Update(ctx context.Context, id string, req command.JokeUpdate) (model.Joke, error) {
@@ -40,17 +39,17 @@ func (j joke) Update(ctx context.Context, id string, req command.JokeUpdate) (mo
 	if err != nil {
 		return model.Joke{}, errors.HandleErr(err)
 	}
-	if req.Title != nil {
-		joke.Title = *req.Title
+	if req.Title.IsPresent() {
+		joke.Title = req.Title.Value()
 	}
-	if req.Text != nil {
-		joke.Text = *req.Text
+	if req.Text.IsPresent() {
+		joke.Text = req.Text.Value()
 	}
-	if req.Explanation != nil {
-		joke.Explanation = null.NewString(*req.Explanation, *req.Explanation != "")
+	if req.Explanation.IsPresent() {
+		joke.Explanation = req.Explanation.Value()
 	}
 	_, err = joke.Update(ctx, j.executor, boil.Infer())
-	return dto.ToDomainJokeWithErrHandle(joke, err)
+	return boilerDto.ToDomainJokeWithErrHandle(joke, err)
 }
 
 func (j joke) Delete(ctx context.Context, id string) error {

@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
-	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
@@ -24,11 +23,11 @@ import (
 
 // Room is an object representing the database table.
 type Room struct {
-	ID            string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Name          string      `boil:"name" json:"name" toml:"name" yaml:"name"`
-	Description   null.String `boil:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty"`
-	CreatedAt     time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	CreatorUserID string      `boil:"creator_user_id" json:"creator_user_id" toml:"creator_user_id" yaml:"creator_user_id"`
+	ID            string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Name          string    `boil:"name" json:"name" toml:"name" yaml:"name"`
+	Description   string    `boil:"description" json:"description" toml:"description" yaml:"description"`
+	CreatedAt     time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	CreatorUserID string    `boil:"creator_user_id" json:"creator_user_id" toml:"creator_user_id" yaml:"creator_user_id"`
 
 	R *roomR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L roomL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -67,13 +66,13 @@ var RoomTableColumns = struct {
 var RoomWhere = struct {
 	ID            whereHelperstring
 	Name          whereHelperstring
-	Description   whereHelpernull_String
+	Description   whereHelperstring
 	CreatedAt     whereHelpertime_Time
 	CreatorUserID whereHelperstring
 }{
 	ID:            whereHelperstring{field: "\"Room\".\"id\""},
 	Name:          whereHelperstring{field: "\"Room\".\"name\""},
-	Description:   whereHelpernull_String{field: "\"Room\".\"description\""},
+	Description:   whereHelperstring{field: "\"Room\".\"description\""},
 	CreatedAt:     whereHelpertime_Time{field: "\"Room\".\"created_at\""},
 	CreatorUserID: whereHelperstring{field: "\"Room\".\"creator_user_id\""},
 }
@@ -127,8 +126,8 @@ type roomL struct{}
 
 var (
 	roomAllColumns            = []string{"id", "name", "description", "created_at", "creator_user_id"}
-	roomColumnsWithoutDefault = []string{"id", "name", "created_at", "creator_user_id"}
-	roomColumnsWithDefault    = []string{"description"}
+	roomColumnsWithoutDefault = []string{"id", "name", "description", "created_at", "creator_user_id"}
+	roomColumnsWithDefault    = []string{}
 	roomPrimaryKeyColumns     = []string{"id"}
 	roomGeneratedColumns      = []string{}
 )

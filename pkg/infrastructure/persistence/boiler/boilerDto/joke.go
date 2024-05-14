@@ -1,4 +1,4 @@
-package dto
+package boilerDto
 
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
@@ -14,7 +14,7 @@ func ToDomainJoke(joke *sqlboiler.Joke) model.Joke {
 	return model.Joke{
 		ID:          joke.ID,
 		Text:        joke.Text,
-		Explanation: joke.Explanation.String,
+		Explanation: joke.Explanation,
 		CreatedAt:   joke.CreatedAt,
 		UserID:      joke.UserID,
 	}

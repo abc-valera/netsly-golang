@@ -4,10 +4,11 @@ import (
 	"context"
 	"time"
 
+	"github.com/abc-valera/netsly-api-golang/pkg/core/validator"
+
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 )
 
 type IRoomMember interface {
@@ -21,13 +22,13 @@ type roomMember struct {
 	command command.IRoomMember
 	query.IRoomMember
 
-	validator service.IValidator
+	validator validator.IValidator
 }
 
 func NewRoomMember(
 	command command.IRoomMember,
 	query query.IRoomMember,
-	validator service.IValidator,
+	validator validator.IValidator,
 ) IRoomMember {
 	return roomMember{
 		command:     command,

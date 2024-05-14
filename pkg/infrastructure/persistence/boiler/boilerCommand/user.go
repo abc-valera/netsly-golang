@@ -6,9 +6,8 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/boilerDto"
 	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/errors"
-	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
@@ -28,12 +27,12 @@ func (u user) Create(ctx context.Context, req model.User) (model.User, error) {
 		Username:       req.Username,
 		Email:          req.Email,
 		HashedPassword: req.HashedPassword,
-		Fullname:       null.NewString(req.Fullname, req.Fullname != ""),
-		Status:         null.NewString(req.Status, req.Status != ""),
+		Fullname:       req.Fullname,
+		Status:         req.Status,
 		CreatedAt:      req.CreatedAt,
 	}
 	err := user.Insert(ctx, u.executor, boil.Infer())
-	return dto.ToDomainUserWithErrHandle(&user, err)
+	return boilerDto.ToDomainUserWithErrHandle(&user, err)
 }
 
 func (u user) Update(ctx context.Context, id string, req command.UserUpdate) (model.User, error) {
@@ -41,17 +40,17 @@ func (u user) Update(ctx context.Context, id string, req command.UserUpdate) (mo
 	if err != nil {
 		return model.User{}, errors.HandleErr(err)
 	}
-	if req.HashedPassword != nil {
-		user.HashedPassword = *req.HashedPassword
+	if req.HashedPassword.IsPresent() {
+		user.HashedPassword = req.HashedPassword.Value()
 	}
-	if req.Fullname != nil {
-		user.Fullname = null.NewString(*req.Fullname, *req.Fullname != "")
+	if req.Fullname.IsPresent() {
+		user.Fullname = req.Fullname.Value()
 	}
-	if req.Status != nil {
-		user.Status = null.NewString(*req.Status, *req.Status != "")
+	if req.Status.IsPresent() {
+		user.Status = req.Status.Value()
 	}
 	_, err = user.Update(ctx, u.executor, boil.Infer())
-	return dto.ToDomainUserWithErrHandle(user, err)
+	return boilerDto.ToDomainUserWithErrHandle(user, err)
 }
 
 func (u user) Delete(ctx context.Context, id string) error {

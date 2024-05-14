@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/pkg/core/coderr"
+	"github.com/abc-valera/netsly-api-golang/pkg/core/optional"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 )
 
@@ -19,7 +20,7 @@ type IUser interface {
 }
 
 type UserUpdate struct {
-	HashedPassword *string
-	Fullname       *string
-	Status         *string
+	HashedPassword optional.Optional[string]
+	Fullname       optional.Optional[string]
+	Status         optional.Optional[string]
 }

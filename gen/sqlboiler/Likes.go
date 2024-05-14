@@ -46,9 +46,9 @@ var LikeTableColumns = struct {
 	UserID    string
 	JokeID    string
 }{
-	CreatedAt: "Like.created_at",
-	UserID:    "Like.user_id",
-	JokeID:    "Like.joke_id",
+	CreatedAt: "Likes.created_at",
+	UserID:    "Likes.user_id",
+	JokeID:    "Likes.joke_id",
 }
 
 // Generated where
@@ -58,9 +58,9 @@ var LikeWhere = struct {
 	UserID    whereHelperstring
 	JokeID    whereHelperstring
 }{
-	CreatedAt: whereHelpertime_Time{field: "\"Like\".\"created_at\""},
-	UserID:    whereHelperstring{field: "\"Like\".\"user_id\""},
-	JokeID:    whereHelperstring{field: "\"Like\".\"joke_id\""},
+	CreatedAt: whereHelpertime_Time{field: "\"Likes\".\"created_at\""},
+	UserID:    whereHelperstring{field: "\"Likes\".\"user_id\""},
+	JokeID:    whereHelperstring{field: "\"Likes\".\"joke_id\""},
 }
 
 // LikeRels is where relationship names are stored.
@@ -357,7 +357,7 @@ func (q likeQuery) One(ctx context.Context, exec boil.ContextExecutor) (*Like, e
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "sqlboiler: failed to execute a one query for Like")
+		return nil, errors.Wrap(err, "sqlboiler: failed to execute a one query for Likes")
 	}
 
 	if err := o.doAfterSelectHooks(ctx, exec); err != nil {
@@ -406,7 +406,7 @@ func (q likeQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64,
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return 0, errors.Wrap(err, "sqlboiler: failed to count Like rows")
+		return 0, errors.Wrap(err, "sqlboiler: failed to count Likes rows")
 	}
 
 	return count, nil
@@ -427,7 +427,7 @@ func (q likeQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool,
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return false, errors.Wrap(err, "sqlboiler: failed to check if Like exists")
+		return false, errors.Wrap(err, "sqlboiler: failed to check if Likes exists")
 	}
 
 	return count > 0, nil
@@ -715,7 +715,7 @@ func (o *Like) SetJoke(ctx context.Context, exec boil.ContextExecutor, insert bo
 	}
 
 	updateQuery := fmt.Sprintf(
-		"UPDATE \"Like\" SET %s WHERE %s",
+		"UPDATE \"Likes\" SET %s WHERE %s",
 		strmangle.SetParamNames("\"", "\"", 1, []string{"joke_id"}),
 		strmangle.WhereClause("\"", "\"", 2, likePrimaryKeyColumns),
 	)
@@ -770,7 +770,7 @@ func (o *Like) SetUser(ctx context.Context, exec boil.ContextExecutor, insert bo
 	}
 
 	updateQuery := fmt.Sprintf(
-		"UPDATE \"Like\" SET %s WHERE %s",
+		"UPDATE \"Likes\" SET %s WHERE %s",
 		strmangle.SetParamNames("\"", "\"", 1, []string{"user_id"}),
 		strmangle.WhereClause("\"", "\"", 2, likePrimaryKeyColumns),
 	)
@@ -807,10 +807,10 @@ func (o *Like) SetUser(ctx context.Context, exec boil.ContextExecutor, insert bo
 
 // Likes retrieves all the records using an executor.
 func Likes(mods ...qm.QueryMod) likeQuery {
-	mods = append(mods, qm.From("\"Like\""))
+	mods = append(mods, qm.From("\"Likes\""))
 	q := NewQuery(mods...)
 	if len(queries.GetSelect(q)) == 0 {
-		queries.SetSelect(q, []string{"\"Like\".*"})
+		queries.SetSelect(q, []string{"\"Likes\".*"})
 	}
 
 	return likeQuery{q}
@@ -831,7 +831,7 @@ func FindLike(ctx context.Context, exec boil.ContextExecutor, userID string, jok
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"Like\" where \"user_id\"=$1 AND \"joke_id\"=$2", sel,
+		"select %s from \"Likes\" where \"user_id\"=$1 AND \"joke_id\"=$2", sel,
 	)
 
 	q := queries.Raw(query, userID, jokeID)
@@ -841,7 +841,7 @@ func FindLike(ctx context.Context, exec boil.ContextExecutor, userID string, jok
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "sqlboiler: unable to select from Like")
+		return nil, errors.Wrap(err, "sqlboiler: unable to select from Likes")
 	}
 
 	if err = likeObj.doAfterSelectHooks(ctx, exec); err != nil {
@@ -860,7 +860,7 @@ func (o *Like) InsertG(ctx context.Context, columns boil.Columns) error {
 // See boil.Columns.InsertColumnSet documentation to understand column list inference for inserts.
 func (o *Like) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
 	if o == nil {
-		return errors.New("sqlboiler: no Like provided for insertion")
+		return errors.New("sqlboiler: no Likes provided for insertion")
 	}
 
 	var err error
@@ -900,9 +900,9 @@ func (o *Like) Insert(ctx context.Context, exec boil.ContextExecutor, columns bo
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO \"Like\" (\"%s\") %%sVALUES (%s)%%s", strings.Join(wl, "\",\""), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO \"Likes\" (\"%s\") %%sVALUES (%s)%%s", strings.Join(wl, "\",\""), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO \"Like\" %sDEFAULT VALUES%s"
+			cache.query = "INSERT INTO \"Likes\" %sDEFAULT VALUES%s"
 		}
 
 		var queryOutput, queryReturning string
@@ -930,7 +930,7 @@ func (o *Like) Insert(ctx context.Context, exec boil.ContextExecutor, columns bo
 	}
 
 	if err != nil {
-		return errors.Wrap(err, "sqlboiler: unable to insert into Like")
+		return errors.Wrap(err, "sqlboiler: unable to insert into Likes")
 	}
 
 	if !cached {
@@ -971,10 +971,10 @@ func (o *Like) Update(ctx context.Context, exec boil.ContextExecutor, columns bo
 			wl = strmangle.SetComplement(wl, []string{"created_at"})
 		}
 		if len(wl) == 0 {
-			return 0, errors.New("sqlboiler: unable to update Like, could not build whitelist")
+			return 0, errors.New("sqlboiler: unable to update Likes, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE \"Like\" SET %s WHERE %s",
+		cache.query = fmt.Sprintf("UPDATE \"Likes\" SET %s WHERE %s",
 			strmangle.SetParamNames("\"", "\"", 1, wl),
 			strmangle.WhereClause("\"", "\"", len(wl)+1, likePrimaryKeyColumns),
 		)
@@ -994,12 +994,12 @@ func (o *Like) Update(ctx context.Context, exec boil.ContextExecutor, columns bo
 	var result sql.Result
 	result, err = exec.ExecContext(ctx, cache.query, values...)
 	if err != nil {
-		return 0, errors.Wrap(err, "sqlboiler: unable to update Like row")
+		return 0, errors.Wrap(err, "sqlboiler: unable to update Likes row")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "sqlboiler: failed to get rows affected by update for Like")
+		return 0, errors.Wrap(err, "sqlboiler: failed to get rows affected by update for Likes")
 	}
 
 	if !cached {
@@ -1022,12 +1022,12 @@ func (q likeQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, col
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "sqlboiler: unable to update all for Like")
+		return 0, errors.Wrap(err, "sqlboiler: unable to update all for Likes")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "sqlboiler: unable to retrieve rows affected for Like")
+		return 0, errors.Wrap(err, "sqlboiler: unable to retrieve rows affected for Likes")
 	}
 
 	return rowsAff, nil
@@ -1065,7 +1065,7 @@ func (o LikeSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, col
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE \"Like\" SET %s WHERE %s",
+	sql := fmt.Sprintf("UPDATE \"Likes\" SET %s WHERE %s",
 		strmangle.SetParamNames("\"", "\"", 1, colNames),
 		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), len(colNames)+1, likePrimaryKeyColumns, len(o)))
 
@@ -1095,7 +1095,7 @@ func (o *Like) UpsertG(ctx context.Context, updateOnConflict bool, conflictColum
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
 func (o *Like) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
 	if o == nil {
-		return errors.New("sqlboiler: no Like provided for upsert")
+		return errors.New("sqlboiler: no Likes provided for upsert")
 	}
 	if !boil.TimestampsAreSkipped(ctx) {
 		currTime := time.Now().In(boil.GetLocation())
@@ -1159,7 +1159,7 @@ func (o *Like) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnCo
 		)
 
 		if updateOnConflict && len(update) == 0 {
-			return errors.New("sqlboiler: unable to upsert Like, could not build update column list")
+			return errors.New("sqlboiler: unable to upsert Likes, could not build update column list")
 		}
 
 		ret := strmangle.SetComplement(likeAllColumns, strmangle.SetIntersect(insert, update))
@@ -1167,13 +1167,13 @@ func (o *Like) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnCo
 		conflict := conflictColumns
 		if len(conflict) == 0 && updateOnConflict && len(update) != 0 {
 			if len(likePrimaryKeyColumns) == 0 {
-				return errors.New("sqlboiler: unable to upsert Like, could not build conflict column list")
+				return errors.New("sqlboiler: unable to upsert Likes, could not build conflict column list")
 			}
 
 			conflict = make([]string, len(likePrimaryKeyColumns))
 			copy(conflict, likePrimaryKeyColumns)
 		}
-		cache.query = buildUpsertQueryPostgres(dialect, "\"Like\"", updateOnConflict, ret, update, conflict, insert, opts...)
+		cache.query = buildUpsertQueryPostgres(dialect, "\"Likes\"", updateOnConflict, ret, update, conflict, insert, opts...)
 
 		cache.valueMapping, err = queries.BindMapping(likeType, likeMapping, insert)
 		if err != nil {
@@ -1208,7 +1208,7 @@ func (o *Like) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnCo
 		_, err = exec.ExecContext(ctx, cache.query, vals...)
 	}
 	if err != nil {
-		return errors.Wrap(err, "sqlboiler: unable to upsert Like")
+		return errors.Wrap(err, "sqlboiler: unable to upsert Likes")
 	}
 
 	if !cached {
@@ -1238,7 +1238,7 @@ func (o *Like) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, er
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), likePrimaryKeyMapping)
-	sql := "DELETE FROM \"Like\" WHERE \"user_id\"=$1 AND \"joke_id\"=$2"
+	sql := "DELETE FROM \"Likes\" WHERE \"user_id\"=$1 AND \"joke_id\"=$2"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1247,12 +1247,12 @@ func (o *Like) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, er
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "sqlboiler: unable to delete from Like")
+		return 0, errors.Wrap(err, "sqlboiler: unable to delete from Likes")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "sqlboiler: failed to get rows affected by delete for Like")
+		return 0, errors.Wrap(err, "sqlboiler: failed to get rows affected by delete for Likes")
 	}
 
 	if err := o.doAfterDeleteHooks(ctx, exec); err != nil {
@@ -1276,12 +1276,12 @@ func (q likeQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (in
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "sqlboiler: unable to delete all from Like")
+		return 0, errors.Wrap(err, "sqlboiler: unable to delete all from Likes")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "sqlboiler: failed to get rows affected by deleteall for Like")
+		return 0, errors.Wrap(err, "sqlboiler: failed to get rows affected by deleteall for Likes")
 	}
 
 	return rowsAff, nil
@@ -1312,7 +1312,7 @@ func (o LikeSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (in
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM \"Like\" WHERE " +
+	sql := "DELETE FROM \"Likes\" WHERE " +
 		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, likePrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
@@ -1327,7 +1327,7 @@ func (o LikeSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (in
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "sqlboiler: failed to get rows affected by deleteall for Like")
+		return 0, errors.Wrap(err, "sqlboiler: failed to get rows affected by deleteall for Likes")
 	}
 
 	if len(likeAfterDeleteHooks) != 0 {
@@ -1386,7 +1386,7 @@ func (o *LikeSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT \"Like\".* FROM \"Like\" WHERE " +
+	sql := "SELECT \"Likes\".* FROM \"Likes\" WHERE " +
 		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, likePrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
@@ -1409,7 +1409,7 @@ func LikeExistsG(ctx context.Context, userID string, jokeID string) (bool, error
 // LikeExists checks if the Like row exists.
 func LikeExists(ctx context.Context, exec boil.ContextExecutor, userID string, jokeID string) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"Like\" where \"user_id\"=$1 AND \"joke_id\"=$2 limit 1)"
+	sql := "select exists(select 1 from \"Likes\" where \"user_id\"=$1 AND \"joke_id\"=$2 limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1420,7 +1420,7 @@ func LikeExists(ctx context.Context, exec boil.ContextExecutor, userID string, j
 
 	err := row.Scan(&exists)
 	if err != nil {
-		return false, errors.Wrap(err, "sqlboiler: unable to check if Like exists")
+		return false, errors.Wrap(err, "sqlboiler: unable to check if Likes exists")
 	}
 
 	return exists, nil

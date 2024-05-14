@@ -5,8 +5,8 @@ CREATE TABLE "User" (
   "username" varchar UNIQUE NOT NULL,
   "email" varchar UNIQUE NOT NULL,
   "hashed_password" varchar NOT NULL,
-  "fullname" varchar,
-  "status" varchar,
+  "fullname" varchar NOT NULL,
+  "status" varchar NOT NULL,
   "created_at" timestamp NOT NULL
 );
 
@@ -14,12 +14,12 @@ CREATE TABLE "Joke" (
   "id" uuid PRIMARY KEY,
   "title" varchar NOT NULL,
   "text" varchar NOT NULL,
-  "explanation" varchar,
+  "explanation" varchar NOT NULL,
   "created_at" timestamp NOT NULL,
   "user_id" uuid NOT NULL
 );
 
-CREATE TABLE "Like" (
+CREATE TABLE "Likes" (
   "created_at" timestamp NOT NULL,
   "user_id" uuid NOT NULL,
   "joke_id" uuid NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE "Comment" (
 CREATE TABLE "Room" (
   "id" uuid PRIMARY KEY,
   "name" varchar UNIQUE NOT NULL,
-  "description" varchar,
+  "description" varchar NOT NULL,
   "created_at" timestamp NOT NULL,
   "creator_user_id" uuid NOT NULL
 );
@@ -61,9 +61,9 @@ CREATE UNIQUE INDEX ON "Joke" ("title", "user_id");
 
 ALTER TABLE "Joke" ADD FOREIGN KEY ("user_id") REFERENCES "User" ("id");
 
-ALTER TABLE "Like" ADD FOREIGN KEY ("user_id") REFERENCES "User" ("id");
+ALTER TABLE "Likes" ADD FOREIGN KEY ("user_id") REFERENCES "User" ("id");
 
-ALTER TABLE "Like" ADD FOREIGN KEY ("joke_id") REFERENCES "Joke" ("id");
+ALTER TABLE "Likes" ADD FOREIGN KEY ("joke_id") REFERENCES "Joke" ("id");
 
 ALTER TABLE "Comment" ADD FOREIGN KEY ("user_id") REFERENCES "User" ("id");
 

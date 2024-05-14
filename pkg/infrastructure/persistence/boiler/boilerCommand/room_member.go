@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/dto"
+	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler/boilerDto"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
@@ -27,7 +27,7 @@ func (r roomMember) Create(ctx context.Context, req model.RoomMember) (model.Roo
 		UserID:    req.UserID,
 	}
 	err := roomMember.Insert(ctx, r.executor, boil.Infer())
-	return dto.ToDomainRoomMemberWithErrHandle(&roomMember, err)
+	return boilerDto.ToDomainRoomMemberWithErrHandle(&roomMember, err)
 }
 
 func (r roomMember) Delete(ctx context.Context, RoomID string, UserID string) error {

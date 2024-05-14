@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/abc-valera/netsly-api-golang/pkg/core/optional"
+	"github.com/abc-valera/netsly-api-golang/pkg/core/validator"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
@@ -23,14 +25,14 @@ type user struct {
 	command command.IUser
 	query.IUser
 
-	validator service.IValidator
+	validator validator.IValidator
 	passMaker service.IPasswordMaker
 }
 
 func NewUser(
 	command command.IUser,
 	query query.IUser,
-	validator service.IValidator,
+	validator validator.IValidator,
 	passMaker service.IPasswordMaker,
 ) IUser {
 	return user{
@@ -71,9 +73,9 @@ func (u user) Create(ctx context.Context, req UserCreateRequest) (model.User, er
 }
 
 type UserUpdateRequest struct {
-	Password *string `validate:"min=2,max=32"`
-	Fullname *string `validate:"max=64"`
-	Status   *string `validate:"max=128"`
+	Password optional.Optional[string] `validate:"min=2,max=32"`
+	Fullname optional.Optional[string] `validate:"max=64"`
+	Status   optional.Optional[string] `validate:"max=128"`
 }
 
 func (u user) Update(ctx context.Context, userID string, req UserUpdateRequest) (model.User, error) {
@@ -81,13 +83,13 @@ func (u user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 		return model.User{}, err
 	}
 
-	hashedPassword, err := u.passMaker.HashPassword(*req.Password)
+	hashedPassword, err := u.passMaker.HashPassword(req.Password.Value())
 	if err != nil {
 		return model.User{}, err
 	}
 
 	return u.command.Update(ctx, userID, command.UserUpdate{
-		HashedPassword: &hashedPassword,
+		HashedPassword: optional.NewOptional(hashedPassword),
 		Fullname:       req.Fullname,
 		Status:         req.Status,
 	})

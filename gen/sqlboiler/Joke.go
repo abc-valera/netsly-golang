@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
-	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
@@ -24,12 +23,12 @@ import (
 
 // Joke is an object representing the database table.
 type Joke struct {
-	ID          string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
-	Text        string      `boil:"text" json:"text" toml:"text" yaml:"text"`
-	Explanation null.String `boil:"explanation" json:"explanation,omitempty" toml:"explanation" yaml:"explanation,omitempty"`
-	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UserID      string      `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
+	ID          string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Title       string    `boil:"title" json:"title" toml:"title" yaml:"title"`
+	Text        string    `boil:"text" json:"text" toml:"text" yaml:"text"`
+	Explanation string    `boil:"explanation" json:"explanation" toml:"explanation" yaml:"explanation"`
+	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UserID      string    `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
 
 	R *jokeR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L jokeL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -69,68 +68,18 @@ var JokeTableColumns = struct {
 
 // Generated where
 
-type whereHelpernull_String struct{ field string }
-
-func (w whereHelpernull_String) EQ(x null.String) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, false, x)
-}
-func (w whereHelpernull_String) NEQ(x null.String) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, true, x)
-}
-func (w whereHelpernull_String) LT(x null.String) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LT, x)
-}
-func (w whereHelpernull_String) LTE(x null.String) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LTE, x)
-}
-func (w whereHelpernull_String) GT(x null.String) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GT, x)
-}
-func (w whereHelpernull_String) GTE(x null.String) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GTE, x)
-}
-func (w whereHelpernull_String) LIKE(x null.String) qm.QueryMod {
-	return qm.Where(w.field+" LIKE ?", x)
-}
-func (w whereHelpernull_String) NLIKE(x null.String) qm.QueryMod {
-	return qm.Where(w.field+" NOT LIKE ?", x)
-}
-func (w whereHelpernull_String) ILIKE(x null.String) qm.QueryMod {
-	return qm.Where(w.field+" ILIKE ?", x)
-}
-func (w whereHelpernull_String) NILIKE(x null.String) qm.QueryMod {
-	return qm.Where(w.field+" NOT ILIKE ?", x)
-}
-func (w whereHelpernull_String) IN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelpernull_String) NIN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
-func (w whereHelpernull_String) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
-func (w whereHelpernull_String) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
-
 var JokeWhere = struct {
 	ID          whereHelperstring
 	Title       whereHelperstring
 	Text        whereHelperstring
-	Explanation whereHelpernull_String
+	Explanation whereHelperstring
 	CreatedAt   whereHelpertime_Time
 	UserID      whereHelperstring
 }{
 	ID:          whereHelperstring{field: "\"Joke\".\"id\""},
 	Title:       whereHelperstring{field: "\"Joke\".\"title\""},
 	Text:        whereHelperstring{field: "\"Joke\".\"text\""},
-	Explanation: whereHelpernull_String{field: "\"Joke\".\"explanation\""},
+	Explanation: whereHelperstring{field: "\"Joke\".\"explanation\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"Joke\".\"created_at\""},
 	UserID:      whereHelperstring{field: "\"Joke\".\"user_id\""},
 }
@@ -184,8 +133,8 @@ type jokeL struct{}
 
 var (
 	jokeAllColumns            = []string{"id", "title", "text", "explanation", "created_at", "user_id"}
-	jokeColumnsWithoutDefault = []string{"id", "title", "text", "created_at", "user_id"}
-	jokeColumnsWithDefault    = []string{"explanation"}
+	jokeColumnsWithoutDefault = []string{"id", "title", "text", "explanation", "created_at", "user_id"}
+	jokeColumnsWithDefault    = []string{}
 	jokePrimaryKeyColumns     = []string{"id"}
 	jokeGeneratedColumns      = []string{}
 )
@@ -548,7 +497,7 @@ func (o *Joke) JokeLikes(mods ...qm.QueryMod) likeQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("\"Like\".\"joke_id\"=?", o.ID),
+		qm.Where("\"Likes\".\"joke_id\"=?", o.ID),
 	)
 
 	return Likes(queryMods...)
@@ -842,8 +791,8 @@ func (jokeL) LoadJokeLikes(ctx context.Context, e boil.ContextExecutor, singular
 	}
 
 	query := NewQuery(
-		qm.From(`Like`),
-		qm.WhereIn(`Like.joke_id in ?`, argsSlice...),
+		qm.From(`Likes`),
+		qm.WhereIn(`Likes.joke_id in ?`, argsSlice...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -851,19 +800,19 @@ func (jokeL) LoadJokeLikes(ctx context.Context, e boil.ContextExecutor, singular
 
 	results, err := query.QueryContext(ctx, e)
 	if err != nil {
-		return errors.Wrap(err, "failed to eager load Like")
+		return errors.Wrap(err, "failed to eager load Likes")
 	}
 
 	var resultSlice []*Like
 	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice Like")
+		return errors.Wrap(err, "failed to bind eager loaded slice Likes")
 	}
 
 	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on Like")
+		return errors.Wrap(err, "failed to close results in eager load on Likes")
 	}
 	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for Like")
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for Likes")
 	}
 
 	if len(likeAfterSelectHooks) != 0 {
@@ -1040,7 +989,7 @@ func (o *Joke) AddJokeLikes(ctx context.Context, exec boil.ContextExecutor, inse
 			}
 		} else {
 			updateQuery := fmt.Sprintf(
-				"UPDATE \"Like\" SET %s WHERE %s",
+				"UPDATE \"Likes\" SET %s WHERE %s",
 				strmangle.SetParamNames("\"", "\"", 1, []string{"joke_id"}),
 				strmangle.WhereClause("\"", "\"", 2, likePrimaryKeyColumns),
 			)

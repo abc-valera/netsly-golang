@@ -4,10 +4,12 @@ import (
 	"context"
 	"time"
 
+	"github.com/abc-valera/netsly-api-golang/pkg/core/validator"
+
+	"github.com/abc-valera/netsly-api-golang/pkg/core/optional"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/model"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/pkg/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
 	"github.com/google/uuid"
 )
 
@@ -23,13 +25,13 @@ type comment struct {
 	command command.IComment
 	query.IComment
 
-	validator service.IValidator
+	validator validator.IValidator
 }
 
 func NewComment(
 	command command.IComment,
 	query query.IComment,
-	validator service.IValidator,
+	validator validator.IValidator,
 ) IComment {
 	return comment{
 		command:   command,
@@ -59,7 +61,7 @@ func (c comment) Create(ctx context.Context, req CommentCreateRequest) (model.Co
 }
 
 type CommentUpdateRequest struct {
-	Text *string `validate:"min=4,max=256"`
+	Text optional.Optional[string] `validate:"min=4,max=256"`
 }
 
 func (c comment) Update(ctx context.Context, commentID string, req CommentUpdateRequest) (model.Comment, error) {

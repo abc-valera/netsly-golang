@@ -44,9 +44,9 @@ func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostRe
 
 func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq) (*ogen.Joke, error) {
 	joke, err := h.joke.Update(ctx, req.JokeID, entity.JokeUpdateRequest{
-		Title:       restDto.NewPointerString(req.Title),
-		Text:        restDto.NewPointerString(req.Text),
-		Explanation: restDto.NewPointerString(req.Explanation),
+		Title:       restDto.NewDomainOptionalString(req.Title),
+		Text:        restDto.NewDomainOptionalString(req.Text),
+		Explanation: restDto.NewDomainOptionalString(req.Explanation),
 	})
 	if err != nil {
 		return nil, err
