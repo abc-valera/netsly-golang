@@ -3,8 +3,8 @@ package service_test
 import (
 	"testing"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/domain/service"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service/emailSender/dummyEmailSender"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/emailSender/dummyEmailSender"
 )
 
 func TestSendEmail(t *testing.T) {

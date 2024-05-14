@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/service/tokenMaker"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/tokenMaker"
 	"github.com/stretchr/testify/require"
 )
 

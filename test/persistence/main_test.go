@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/pkg/domain"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence"
-	"github.com/abc-valera/netsly-api-golang/pkg/infrastructure/persistence/boiler"
+	"github.com/abc-valera/netsly-api-golang/internal/domain"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler"
 	"github.com/abc-valera/netsly-api-golang/test"
 	"github.com/docker/docker/pkg/ioutils"
 	"github.com/stretchr/testify/require"

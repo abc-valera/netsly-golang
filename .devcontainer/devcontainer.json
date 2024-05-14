@@ -34,7 +34,7 @@
         "editor.linkedEditing": true,
 
         // Prtettier
-        "prettier.configPath": "pkg/presentation/webApp/.prettierrc",
+        "prettier.configPath": "internal/presentation/webApp/.prettierrc",
 
         // Golang
         "[go]": {

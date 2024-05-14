@@ -3,7 +3,7 @@
 version: "3"
 
 env:
-  GOOSE_MIGRATION_DIR: "pkg/infrastructure/persistence/boiler/migration"
+  GOOSE_MIGRATION_DIR: "internal/infrastructure/persistence/boiler/migration"
   GOOSE_DRIVER: "postgres"
   GOOSE_DBSTRING: "postgres://netsly:netsly@localhost:5432/netsly?sslmode=disable"
 
@@ -37,7 +37,7 @@ tasks:
 
   test:unit:
     cmds:
-      - go test ./pkg/application/ -count=1
+      - go test ./internal/application/ -count=1
 
   test:integration:
     cmds:
@@ -54,7 +54,7 @@ tasks:
 
   generate:domain:mocks:
     cmds:
-      - ./bin/mockery --config pkg/domain/mock/mockery.yaml
+      - ./bin/mockery --config internal/domain/mock/mockery.yaml
 
   generate:jsonApi:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
@@ -68,14 +68,14 @@ tasks:
       - docker run --rm -v ${PWD}:/spec:Z
         redocly/cli bundle
         -o /spec/gen/openapi/openapi.yaml
-        /spec/pkg/presentation/jsonApi/rest/schema/openapi.yaml
+        /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
 
   generate:jsonApi:rest:docs:
     cmds:
       - docker run --rm -v ${PWD}:/spec:Z
         redocly/cli build-docs
-        -o /spec/pkg/presentation/jsonApi/static/docs/rest.html
-        /spec/pkg/presentation/jsonApi/rest/schema/openapi.yaml
+        -o /spec/internal/presentation/jsonApi/static/docs/rest.html
+        /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
 
   generate:jsonApi:rest:code:
     cmds:
@@ -84,18 +84,18 @@ tasks:
   generate:webApp:tailwindcss:
     cmds:
       - npx tailwindcss
-        -c pkg/presentation/webApp/tailwind.config.js
-        -i pkg/presentation/webApp/static/style/input.css
-        -o pkg/presentation/webApp/static/style/style.css
+        -c internal/presentation/webApp/tailwind.config.js
+        -i internal/presentation/webApp/static/style/input.css
+        -o internal/presentation/webApp/static/style/style.css
 
   generate:grpcApi:code:
     cmds:
-      - ./bin/protoc pkg/presentation/grpcApi/proto/*.proto
+      - ./bin/protoc internal/presentation/grpcApi/proto/*.proto
         --go_out=gen/pb
         --go_opt=paths=source_relative
         --go-grpc_out=gen/pb
         --go-grpc_opt=paths=source_relative
-        --proto_path=pkg/presentation/grpcApi/proto
+        --proto_path=internal/presentation/grpcApi/proto
 
   generate:persistence:migration:
     cmds:
@@ -103,7 +103,7 @@ tasks:
 
   generate:persistence:code:
     cmds:
-      - ./bin/sqlboiler psql -c pkg/infrastructure/persistence/boiler/sqlboiler.toml
+      - ./bin/sqlboiler psql -c internal/infrastructure/persistence/boiler/sqlboiler.toml
 
   infrastructure:up:
     cmds:

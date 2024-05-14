@@ -10,7 +10,7 @@
       "program": "${workspaceFolder}/cmd",
       "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
-        "JSON-API_STATIC_PATH": "${workspaceFolder}/pkg/presentation/jsonApi/static"
+        "JSON-API_STATIC_PATH": "${workspaceFolder}/internal/presentation/jsonApi/static"
       }
     },
     {
@@ -22,8 +22,8 @@
       "args": ["-entrypoint", "webApp"],
       "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
-        "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/pkg/presentation/webApp/template",
-        "WEB_APP_STATIC_PATH": "${workspaceFolder}/pkg/presentation/webApp/static"
+        "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/internal/presentation/webApp/template",
+        "WEB_APP_STATIC_PATH": "${workspaceFolder}/internal/presentation/webApp/static"
       }
     }
   ]

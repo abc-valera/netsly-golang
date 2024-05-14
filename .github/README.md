@@ -14,7 +14,7 @@ Layers of the application can be shown as follows:
 
 ![architecture diagram](images/architecture_circle_diagram.png)
 
-All the code is located in the `pkg` directory. The `cmd` directory contains the entry point of the application.
+All the code is located in the `internal` directory. The `cmd` directory contains the entry point of the application.
 
 ## Key technologies
 
