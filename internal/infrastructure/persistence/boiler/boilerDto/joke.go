@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
 )
 
-func ToDomainJoke(joke *sqlboiler.Joke) model.Joke {
+func NewDomainJoke(joke *sqlboiler.Joke) model.Joke {
 	if joke == nil {
 		return model.Joke{}
 	}
@@ -20,18 +20,18 @@ func ToDomainJoke(joke *sqlboiler.Joke) model.Joke {
 	}
 }
 
-func ToDomainJokeWithErrHandle(joke *sqlboiler.Joke, err error) (model.Joke, error) {
-	return ToDomainJoke(joke), errors.HandleErr(err)
+func NewDomainJokeWithErrHandle(joke *sqlboiler.Joke, err error) (model.Joke, error) {
+	return NewDomainJoke(joke), errors.HandleErr(err)
 }
 
-func ToDomainJokes(jokes sqlboiler.JokeSlice) model.Jokes {
+func NewDomainJokes(jokes sqlboiler.JokeSlice) model.Jokes {
 	var domainJokes model.Jokes
 	for _, joke := range jokes {
-		domainJokes = append(domainJokes, ToDomainJoke(joke))
+		domainJokes = append(domainJokes, NewDomainJoke(joke))
 	}
 	return domainJokes
 }
 
-func ToDomainJokesWithErrHandle(jokes sqlboiler.JokeSlice, err error) (model.Jokes, error) {
-	return ToDomainJokes(jokes), errors.HandleErr(err)
+func NewDomainJokesWithErrHandle(jokes sqlboiler.JokeSlice, err error) (model.Jokes, error) {
+	return NewDomainJokes(jokes), errors.HandleErr(err)
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
 )
 
-func ToDomainLike(like *sqlboiler.Like) model.Like {
+func NewDomainLike(like *sqlboiler.Like) model.Like {
 	if like == nil {
 		return model.Like{}
 	}
@@ -18,18 +18,18 @@ func ToDomainLike(like *sqlboiler.Like) model.Like {
 	}
 }
 
-func ToDomainLikeWithErrHandle(like *sqlboiler.Like, err error) (model.Like, error) {
-	return ToDomainLike(like), errors.HandleErr(err)
+func NewDomainLikeWithErrHandle(like *sqlboiler.Like, err error) (model.Like, error) {
+	return NewDomainLike(like), errors.HandleErr(err)
 }
 
-func ToDomainLikes(likes sqlboiler.LikeSlice) model.Likes {
+func NewDomainLikes(likes sqlboiler.LikeSlice) model.Likes {
 	var domainLikes model.Likes
 	for _, like := range likes {
-		domainLikes = append(domainLikes, ToDomainLike(like))
+		domainLikes = append(domainLikes, NewDomainLike(like))
 	}
 	return domainLikes
 }
 
-func ToDomainLikesWithErrHandle(likes sqlboiler.LikeSlice, err error) (model.Likes, error) {
-	return ToDomainLikes(likes), errors.HandleErr(err)
+func NewDomainLikesWithErrHandle(likes sqlboiler.LikeSlice, err error) (model.Likes, error) {
+	return NewDomainLikes(likes), errors.HandleErr(err)
 }

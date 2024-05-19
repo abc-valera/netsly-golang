@@ -29,14 +29,14 @@ func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeComme
 	if err != nil {
 		return nil, err
 	}
-	return restDto.NewCommentResponse(comment), err
+	return restDto.NewComment(comment), err
 }
 
 func (h MeCommentsHandler) MeCommentsPut(ctx context.Context, req *ogen.MeCommentsPutReq) (*ogen.Comment, error) {
 	comment, err := h.comment.Update(ctx, req.CommentID, entity.CommentUpdateRequest{
 		Text: restDto.NewDomainOptionalString(req.Text),
 	})
-	return restDto.NewCommentResponse(comment), err
+	return restDto.NewComment(comment), err
 }
 
 func (h MeCommentsHandler) MeCommentsDel(ctx context.Context, req *ogen.MeCommentsDelReq) error {

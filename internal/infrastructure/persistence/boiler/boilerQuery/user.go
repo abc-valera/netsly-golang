@@ -23,17 +23,17 @@ func NewUser(executor boil.ContextExecutor) query.IUser {
 }
 
 func (u user) GetByID(ctx context.Context, id string) (model.User, error) {
-	return boilerDto.ToDomainUserWithErrHandle(sqlboiler.FindUser(ctx, u.executor, id))
+	return boilerDto.NewDomainUserWithErrHandle(sqlboiler.FindUser(ctx, u.executor, id))
 }
 
 func (u user) GetByUsername(ctx context.Context, username string) (model.User, error) {
 	query := sqlboiler.UserWhere.Username.EQ(username)
-	return boilerDto.ToDomainUserWithErrHandle(sqlboiler.Users(query).One(ctx, u.executor))
+	return boilerDto.NewDomainUserWithErrHandle(sqlboiler.Users(query).One(ctx, u.executor))
 }
 
 func (u user) GetByEmail(ctx context.Context, email string) (model.User, error) {
 	query := sqlboiler.UserWhere.Email.EQ(email)
-	return boilerDto.ToDomainUserWithErrHandle(sqlboiler.Users(query).One(ctx, u.executor))
+	return boilerDto.NewDomainUserWithErrHandle(sqlboiler.Users(query).One(ctx, u.executor))
 }
 
 func (u user) SearchAllByUsername(ctx context.Context, keyword string, params selector1.Selector) (model.Users, error) {
@@ -41,5 +41,5 @@ func (u user) SearchAllByUsername(ctx context.Context, keyword string, params se
 		params,
 		sqlboiler.UserWhere.Username.LIKE("%"+keyword+"%"),
 	)
-	return boilerDto.ToDomainUsersWithErrHandle(sqlboiler.Users(queries...).All(ctx, u.executor))
+	return boilerDto.NewDomainUsersWithErrHandle(sqlboiler.Users(queries...).All(ctx, u.executor))
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 )
 
-func NewRoomResponse(room model.Room) *ogen.Room {
+func NewRoom(room model.Room) *ogen.Room {
 	return &ogen.Room{
 		ID:            room.ID,
 		CreatorUserID: room.CreatorUserID,
@@ -14,10 +14,10 @@ func NewRoomResponse(room model.Room) *ogen.Room {
 	}
 }
 
-func NewRoomsResponse(rooms []model.Room) *ogen.Rooms {
+func NewRooms(rooms []model.Room) *ogen.Rooms {
 	var ogenRooms []ogen.Room
 	for _, room := range rooms {
-		ogenRooms = append(ogenRooms, *NewRoomResponse(room))
+		ogenRooms = append(ogenRooms, *NewRoom(room))
 	}
 	return &ogen.Rooms{Rooms: ogenRooms}
 }

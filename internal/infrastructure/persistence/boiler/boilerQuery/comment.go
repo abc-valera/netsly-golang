@@ -23,7 +23,7 @@ func NewComment(executor boil.ContextExecutor) query.IComment {
 }
 
 func (c comment) GetByID(ctx context.Context, id string) (model.Comment, error) {
-	return boilerDto.ToDomainCommentWithErrHandle(sqlboiler.FindComment(ctx, c.executor, id))
+	return boilerDto.NewDomainCommentWithErrHandle(sqlboiler.FindComment(ctx, c.executor, id))
 }
 
 func (c comment) GetAllByJokeID(ctx context.Context, jokeID string, params selector1.Selector) (model.Comments, error) {
@@ -31,5 +31,5 @@ func (c comment) GetAllByJokeID(ctx context.Context, jokeID string, params selec
 		params,
 		sqlboiler.CommentWhere.JokeID.EQ(jokeID),
 	)
-	return boilerDto.ToDomainCommentsWithErrHandle(sqlboiler.Comments(mods...).All(ctx, c.executor))
+	return boilerDto.NewDomainCommentsWithErrHandle(sqlboiler.Comments(mods...).All(ctx, c.executor))
 }

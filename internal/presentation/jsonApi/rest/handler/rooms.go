@@ -22,5 +22,5 @@ func NewRooms(
 
 func (h Rooms) MeRoomsIdMessagesGet(ctx context.Context, ogenParams ogen.MeRoomsIdMessagesGetParams) (*ogen.RoomMessages, error) {
 	domainMessages, err := h.roomMessage.GetAllByRoomID(ctx, ogenParams.RoomID, restDto.NewDomainSelector(&ogenParams.Selector))
-	return restDto.NewRoomMessagesResponse(domainMessages), err
+	return restDto.NewRoomMessages(domainMessages), err
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
 )
 
-func ToDomainRoom(room *sqlboiler.Room) model.Room {
+func NewDomainRoom(room *sqlboiler.Room) model.Room {
 	if room == nil {
 		return model.Room{}
 	}
@@ -20,18 +20,18 @@ func ToDomainRoom(room *sqlboiler.Room) model.Room {
 	}
 }
 
-func ToDomainRoomWithErrHandle(room *sqlboiler.Room, err error) (model.Room, error) {
-	return ToDomainRoom(room), errors.HandleErr(err)
+func NewDomainRoomWithErrHandle(room *sqlboiler.Room, err error) (model.Room, error) {
+	return NewDomainRoom(room), errors.HandleErr(err)
 }
 
-func ToDomainRooms(rooms sqlboiler.RoomSlice) model.Rooms {
+func NewDomainRooms(rooms sqlboiler.RoomSlice) model.Rooms {
 	var domainRooms model.Rooms
 	for _, room := range rooms {
-		domainRooms = append(domainRooms, ToDomainRoom(room))
+		domainRooms = append(domainRooms, NewDomainRoom(room))
 	}
 	return domainRooms
 }
 
-func ToDomainRoomsWithErrHandle(rooms sqlboiler.RoomSlice, err error) (model.Rooms, error) {
-	return ToDomainRooms(rooms), errors.HandleErr(err)
+func NewDomainRoomsWithErrHandle(rooms sqlboiler.RoomSlice, err error) (model.Rooms, error) {
+	return NewDomainRooms(rooms), errors.HandleErr(err)
 }

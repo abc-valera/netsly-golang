@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
 )
 
-func ToDomainUser(user *sqlboiler.User) model.User {
+func NewDomainUser(user *sqlboiler.User) model.User {
 	if user == nil {
 		return model.User{}
 	}
@@ -22,18 +22,18 @@ func ToDomainUser(user *sqlboiler.User) model.User {
 	}
 }
 
-func ToDomainUserWithErrHandle(user *sqlboiler.User, err error) (model.User, error) {
-	return ToDomainUser(user), errors.HandleErr(err)
+func NewDomainUserWithErrHandle(user *sqlboiler.User, err error) (model.User, error) {
+	return NewDomainUser(user), errors.HandleErr(err)
 }
 
-func ToDomainUsers(users sqlboiler.UserSlice) model.Users {
+func NewDomainUsers(users sqlboiler.UserSlice) model.Users {
 	var domainUsers model.Users
 	for _, user := range users {
-		domainUsers = append(domainUsers, ToDomainUser(user))
+		domainUsers = append(domainUsers, NewDomainUser(user))
 	}
 	return domainUsers
 }
 
-func ToDomainUsersWithErrHandle(users sqlboiler.UserSlice, err error) (model.Users, error) {
-	return ToDomainUsers(users), errors.HandleErr(err)
+func NewDomainUsersWithErrHandle(users sqlboiler.UserSlice, err error) (model.Users, error) {
+	return NewDomainUsers(users), errors.HandleErr(err)
 }

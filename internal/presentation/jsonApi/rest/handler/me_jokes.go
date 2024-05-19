@@ -26,7 +26,7 @@ func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesG
 		payloadUserID(ctx),
 		restDto.NewDomainSelector(&ogenParams.Selector),
 	)
-	return restDto.NewJokesResponse(domainJokes), err
+	return restDto.NewJokes(domainJokes), err
 }
 
 func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostReq) (*ogen.Joke, error) {
@@ -39,7 +39,7 @@ func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostRe
 	if err != nil {
 		return nil, err
 	}
-	return restDto.NewJokeResponse(joke), err
+	return restDto.NewJoke(joke), err
 }
 
 func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq) (*ogen.Joke, error) {
@@ -51,7 +51,7 @@ func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq)
 	if err != nil {
 		return nil, err
 	}
-	return restDto.NewJokeResponse(joke), err
+	return restDto.NewJoke(joke), err
 }
 
 func (h MeJokesHandler) MeJokesDel(ctx context.Context, req *ogen.MeJokesDelReq) error {

@@ -31,7 +31,7 @@ func (j joke) Create(ctx context.Context, req model.Joke) (model.Joke, error) {
 		UserID:      req.UserID,
 	}
 	err := joke.Insert(ctx, j.executor, boil.Infer())
-	return boilerDto.ToDomainJokeWithErrHandle(&joke, err)
+	return boilerDto.NewDomainJokeWithErrHandle(&joke, err)
 }
 
 func (j joke) Update(ctx context.Context, id string, req command.JokeUpdate) (model.Joke, error) {
@@ -49,7 +49,7 @@ func (j joke) Update(ctx context.Context, id string, req command.JokeUpdate) (mo
 		joke.Explanation = req.Explanation.Value()
 	}
 	_, err = joke.Update(ctx, j.executor, boil.Infer())
-	return boilerDto.ToDomainJokeWithErrHandle(joke, err)
+	return boilerDto.NewDomainJokeWithErrHandle(joke, err)
 }
 
 func (j joke) Delete(ctx context.Context, id string) error {

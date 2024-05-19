@@ -4,8 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/validator"
-
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/core/optional"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
@@ -24,19 +23,15 @@ type IJoke interface {
 type joke struct {
 	command command.IJoke
 	query.IJoke
-
-	validator validator.IValidator
 }
 
 func NewJoke(
 	command command.IJoke,
 	query query.IJoke,
-	validator validator.IValidator,
 ) IJoke {
 	return joke{
-		command:   command,
-		IJoke:     query,
-		validator: validator,
+		command: command,
+		IJoke:   query,
 	}
 }
 
@@ -48,7 +43,7 @@ type JokeCreateRequest struct {
 }
 
 func (j joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error) {
-	if err := j.validator.Struct(req); err != nil {
+	if err := global.Validate().Struct(req); err != nil {
 		return model.Joke{}, err
 	}
 
@@ -69,7 +64,7 @@ type JokeUpdateRequest struct {
 }
 
 func (j joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) (model.Joke, error) {
-	if err := j.validator.Struct(req); err != nil {
+	if err := global.Validate().Struct(req); err != nil {
 		return model.Joke{}, err
 	}
 
@@ -81,7 +76,7 @@ func (j joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) 
 }
 
 func (j joke) Delete(ctx context.Context, jokeID string) error {
-	if err := j.validator.Var(jokeID, "uuid"); err != nil {
+	if err := global.Validate().Var(jokeID, "uuid"); err != nil {
 		return err
 	}
 

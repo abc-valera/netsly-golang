@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
 )
 
-func ToDomainRoomMember(roomMember *sqlboiler.RoomMember) model.RoomMember {
+func NewDomainRoomMember(roomMember *sqlboiler.RoomMember) model.RoomMember {
 	if roomMember == nil {
 		return model.RoomMember{}
 	}
@@ -18,18 +18,18 @@ func ToDomainRoomMember(roomMember *sqlboiler.RoomMember) model.RoomMember {
 	}
 }
 
-func ToDomainRoomMemberWithErrHandle(roomMember *sqlboiler.RoomMember, err error) (model.RoomMember, error) {
-	return ToDomainRoomMember(roomMember), errors.HandleErr(err)
+func NewDomainRoomMemberWithErrHandle(roomMember *sqlboiler.RoomMember, err error) (model.RoomMember, error) {
+	return NewDomainRoomMember(roomMember), errors.HandleErr(err)
 }
 
-func ToDomainRoomMembers(roomMembers sqlboiler.RoomMemberSlice) model.RoomMembers {
+func NewDomainRoomMembers(roomMembers sqlboiler.RoomMemberSlice) model.RoomMembers {
 	var domainRoomMembers model.RoomMembers
 	for _, roomMember := range roomMembers {
-		domainRoomMembers = append(domainRoomMembers, ToDomainRoomMember(roomMember))
+		domainRoomMembers = append(domainRoomMembers, NewDomainRoomMember(roomMember))
 	}
 	return domainRoomMembers
 }
 
-func ToDomainRoomMembersWithErrHandle(roomMembers sqlboiler.RoomMemberSlice, err error) (model.RoomMembers, error) {
-	return ToDomainRoomMembers(roomMembers), errors.HandleErr(err)
+func NewDomainRoomMembersWithErrHandle(roomMembers sqlboiler.RoomMemberSlice, err error) (model.RoomMembers, error) {
+	return NewDomainRoomMembers(roomMembers), errors.HandleErr(err)
 }

@@ -30,7 +30,7 @@ func (r roomMessage) Create(ctx context.Context, req model.RoomMessage) (model.R
 		RoomID:    req.RoomID,
 	}
 	err := roomMessage.Insert(ctx, r.executor, boil.Infer())
-	return boilerDto.ToDomainRoomMessageWithErrHandle(&roomMessage, err)
+	return boilerDto.NewDomainRoomMessageWithErrHandle(&roomMessage, err)
 }
 
 func (r roomMessage) Update(ctx context.Context, id string, req command.RoomMessageUpdate) (model.RoomMessage, error) {
@@ -42,7 +42,7 @@ func (r roomMessage) Update(ctx context.Context, id string, req command.RoomMess
 		roomMessage.Text = req.Text.Value()
 	}
 	_, err = roomMessage.Update(ctx, r.executor, boil.Infer())
-	return boilerDto.ToDomainRoomMessageWithErrHandle(roomMessage, err)
+	return boilerDto.NewDomainRoomMessageWithErrHandle(roomMessage, err)
 }
 
 func (r roomMessage) Delete(ctx context.Context, id string) error {

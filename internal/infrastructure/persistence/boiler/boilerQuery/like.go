@@ -28,5 +28,5 @@ func (l like) CountByJokeID(ctx context.Context, jokeID string) (int, error) {
 
 func (l like) GetAllByJokeID(ctx context.Context, jokeID string) (model.Likes, error) {
 	likes, err := sqlboiler.Likes(sqlboiler.LikeWhere.JokeID.EQ(jokeID)).All(ctx, l.executor)
-	return boilerDto.ToDomainLikesWithErrHandle(likes, err)
+	return boilerDto.NewDomainLikesWithErrHandle(likes, err)
 }

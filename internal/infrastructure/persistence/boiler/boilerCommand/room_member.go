@@ -27,7 +27,7 @@ func (r roomMember) Create(ctx context.Context, req model.RoomMember) (model.Roo
 		UserID:    req.UserID,
 	}
 	err := roomMember.Insert(ctx, r.executor, boil.Infer())
-	return boilerDto.ToDomainRoomMemberWithErrHandle(&roomMember, err)
+	return boilerDto.NewDomainRoomMemberWithErrHandle(&roomMember, err)
 }
 
 func (r roomMember) Delete(ctx context.Context, RoomID string, UserID string) error {

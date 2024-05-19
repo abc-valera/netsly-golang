@@ -5,7 +5,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 )
 
-func NewCommentResponse(comment model.Comment) *ogen.Comment {
+func NewComment(comment model.Comment) *ogen.Comment {
 	return &ogen.Comment{
 		ID:        comment.ID,
 		JokeID:    comment.JokeID,
@@ -15,10 +15,10 @@ func NewCommentResponse(comment model.Comment) *ogen.Comment {
 	}
 }
 
-func NewCommentsResponse(comments []model.Comment) *ogen.Comments {
+func NewComments(comments []model.Comment) *ogen.Comments {
 	res := make([]ogen.Comment, 0, len(comments))
 	for _, comment := range comments {
-		res = append(res, *NewCommentResponse(comment))
+		res = append(res, *NewComment(comment))
 	}
 	return &ogen.Comments{Comments: res}
 }

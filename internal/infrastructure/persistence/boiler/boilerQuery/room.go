@@ -24,11 +24,11 @@ func NewRoom(executor boil.ContextExecutor) query.IRoom {
 }
 
 func (r room) GetByID(ctx context.Context, id string) (model.Room, error) {
-	return boilerDto.ToDomainRoomWithErrHandle(sqlboiler.FindRoom(ctx, r.executor, id))
+	return boilerDto.NewDomainRoomWithErrHandle(sqlboiler.FindRoom(ctx, r.executor, id))
 }
 
 func (r room) GetByName(ctx context.Context, name string) (model.Room, error) {
-	return boilerDto.ToDomainRoomWithErrHandle(sqlboiler.Rooms(sqlboiler.RoomWhere.Name.EQ(name)).One(ctx, r.executor))
+	return boilerDto.NewDomainRoomWithErrHandle(sqlboiler.Rooms(sqlboiler.RoomWhere.Name.EQ(name)).One(ctx, r.executor))
 }
 
 func (r room) GetAllByUserID(ctx context.Context, userID string, params selector1.Selector) (model.Rooms, error) {
@@ -37,7 +37,7 @@ func (r room) GetAllByUserID(ctx context.Context, userID string, params selector
 		qm.InnerJoin(sqlboiler.TableNames.RoomMember+" rm ON rm.room_id = room.id"),
 		sqlboiler.RoomMemberWhere.UserID.EQ(userID),
 	)
-	return boilerDto.ToDomainRoomsWithErrHandle(sqlboiler.Rooms(mods...).All(ctx, r.executor))
+	return boilerDto.NewDomainRoomsWithErrHandle(sqlboiler.Rooms(mods...).All(ctx, r.executor))
 }
 
 func (r room) SearchAllByName(ctx context.Context, keyword string, params selector1.Selector) (model.Rooms, error) {
@@ -45,5 +45,5 @@ func (r room) SearchAllByName(ctx context.Context, keyword string, params select
 		params,
 		sqlboiler.RoomWhere.Name.LIKE("%"+keyword+"%"),
 	)
-	return boilerDto.ToDomainRoomsWithErrHandle(sqlboiler.Rooms(mods...).All(ctx, r.executor))
+	return boilerDto.NewDomainRoomsWithErrHandle(sqlboiler.Rooms(mods...).All(ctx, r.executor))
 }

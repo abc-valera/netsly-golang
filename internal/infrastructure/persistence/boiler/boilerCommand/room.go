@@ -30,7 +30,7 @@ func (r room) Create(ctx context.Context, req model.Room) (model.Room, error) {
 		CreatorUserID: req.CreatorUserID,
 	}
 	err := room.Insert(ctx, r.executor, boil.Infer())
-	return boilerDto.ToDomainRoomWithErrHandle(&room, err)
+	return boilerDto.NewDomainRoomWithErrHandle(&room, err)
 }
 
 func (r room) Update(ctx context.Context, id string, req command.RoomUpdate) (model.Room, error) {
@@ -42,7 +42,7 @@ func (r room) Update(ctx context.Context, id string, req command.RoomUpdate) (mo
 		room.Description = req.Description.Value()
 	}
 	_, err = room.Update(ctx, r.executor, boil.Infer())
-	return boilerDto.ToDomainRoomWithErrHandle(room, err)
+	return boilerDto.NewDomainRoomWithErrHandle(room, err)
 }
 
 func (r room) Delete(ctx context.Context, id string) error {

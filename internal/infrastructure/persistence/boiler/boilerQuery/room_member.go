@@ -22,9 +22,9 @@ func NewRoomMember(executor boil.ContextExecutor) query.IRoomMember {
 
 func (r roomMember) GetByRoomID(ctx context.Context, roomID string) (model.RoomMembers, error) {
 	mods := sqlboiler.RoomMemberWhere.RoomID.EQ(roomID)
-	return boilerDto.ToDomainRoomMembersWithErrHandle(sqlboiler.RoomMembers(mods).All(ctx, r.executor))
+	return boilerDto.NewDomainRoomMembersWithErrHandle(sqlboiler.RoomMembers(mods).All(ctx, r.executor))
 }
 
 func (r roomMember) GetByIDs(ctx context.Context, userID string, roomID string) (model.RoomMember, error) {
-	return boilerDto.ToDomainRoomMemberWithErrHandle(sqlboiler.FindRoomMember(ctx, r.executor, userID, roomID))
+	return boilerDto.NewDomainRoomMemberWithErrHandle(sqlboiler.FindRoomMember(ctx, r.executor, userID, roomID))
 }

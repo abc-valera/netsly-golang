@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
+	"github.com/abc-valera/netsly-api-golang/internal/core/validator"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 
@@ -19,6 +20,7 @@ func Init(
 	initOnce.Do(func() {
 		appMode = mode
 		log = logger
+		validate = validator.NewValidator()
 	})
 }
 
@@ -32,4 +34,10 @@ var log service.ILogger
 
 func Log() service.ILogger {
 	return log
+}
+
+var validate validator.IValidator
+
+func Validate() validator.IValidator {
+	return validate
 }

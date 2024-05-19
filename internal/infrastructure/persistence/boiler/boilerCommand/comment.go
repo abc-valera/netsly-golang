@@ -30,7 +30,7 @@ func (c comment) Create(ctx context.Context, req model.Comment) (model.Comment, 
 		JokeID:    req.JokeID,
 	}
 	err := comment.Insert(ctx, c.executor, boil.Infer())
-	return boilerDto.ToDomainCommentWithErrHandle(&comment, err)
+	return boilerDto.NewDomainCommentWithErrHandle(&comment, err)
 }
 
 func (c comment) Update(ctx context.Context, commentID string, req command.CommentUpdate) (model.Comment, error) {
@@ -42,7 +42,7 @@ func (c comment) Update(ctx context.Context, commentID string, req command.Comme
 		comment.Text = req.Text.Value()
 	}
 	_, err = comment.Update(ctx, c.executor, boil.Infer())
-	return boilerDto.ToDomainCommentWithErrHandle(comment, err)
+	return boilerDto.NewDomainCommentWithErrHandle(comment, err)
 }
 
 func (c comment) Delete(ctx context.Context, id string) error {

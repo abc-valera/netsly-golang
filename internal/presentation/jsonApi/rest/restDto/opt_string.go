@@ -12,7 +12,7 @@ func NewDomainOptionalString(opt ogen.OptString) optional.Optional[string] {
 	return optional.NewEmptyOptional[string]()
 }
 
-func NewOgenOptionalString(opt optional.Optional[string]) ogen.OptString {
+func NewOptionalString(opt optional.Optional[string]) ogen.OptString {
 	if opt.IsPresent() {
 		return ogen.OptString{Set: true, Value: opt.Value()}
 	}

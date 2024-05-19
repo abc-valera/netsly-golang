@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
 )
 
-func ToDomainComment(comment *sqlboiler.Comment) model.Comment {
+func NewDomainComment(comment *sqlboiler.Comment) model.Comment {
 	if comment == nil {
 		return model.Comment{}
 	}
@@ -19,18 +19,18 @@ func ToDomainComment(comment *sqlboiler.Comment) model.Comment {
 	}
 }
 
-func ToDomainCommentWithErrHandle(comment *sqlboiler.Comment, err error) (model.Comment, error) {
-	return ToDomainComment(comment), errors.HandleErr(err)
+func NewDomainCommentWithErrHandle(comment *sqlboiler.Comment, err error) (model.Comment, error) {
+	return NewDomainComment(comment), errors.HandleErr(err)
 }
 
-func ToDomainComments(comments sqlboiler.CommentSlice) model.Comments {
+func NewDomainComments(comments sqlboiler.CommentSlice) model.Comments {
 	var domainComments model.Comments
 	for _, comment := range comments {
-		domainComments = append(domainComments, ToDomainComment(comment))
+		domainComments = append(domainComments, NewDomainComment(comment))
 	}
 	return domainComments
 }
 
-func ToDomainCommentsWithErrHandle(comments sqlboiler.CommentSlice, err error) (model.Comments, error) {
-	return ToDomainComments(comments), errors.HandleErr(err)
+func NewDomainCommentsWithErrHandle(comments sqlboiler.CommentSlice, err error) (model.Comments, error) {
+	return NewDomainComments(comments), errors.HandleErr(err)
 }

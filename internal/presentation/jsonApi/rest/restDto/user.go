@@ -5,7 +5,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 )
 
-func NewUserResponse(user model.User) *ogen.User {
+func NewUser(user model.User) *ogen.User {
 	return &ogen.User{
 		ID:        user.ID,
 		Username:  user.Username,

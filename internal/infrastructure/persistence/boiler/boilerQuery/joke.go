@@ -23,7 +23,7 @@ func NewJoke(executor boil.ContextExecutor) query.IJoke {
 }
 
 func (j joke) GetByID(ctx context.Context, id string) (model.Joke, error) {
-	return boilerDto.ToDomainJokeWithErrHandle(sqlboiler.FindJoke(ctx, j.executor, id))
+	return boilerDto.NewDomainJokeWithErrHandle(sqlboiler.FindJoke(ctx, j.executor, id))
 }
 
 func (j joke) GetAllByUserID(ctx context.Context, userID string, params selector1.Selector) (model.Jokes, error) {
@@ -31,7 +31,7 @@ func (j joke) GetAllByUserID(ctx context.Context, userID string, params selector
 		params,
 		sqlboiler.JokeWhere.UserID.EQ(userID),
 	)
-	return boilerDto.ToDomainJokesWithErrHandle(sqlboiler.Jokes(mods...).All(ctx, j.executor))
+	return boilerDto.NewDomainJokesWithErrHandle(sqlboiler.Jokes(mods...).All(ctx, j.executor))
 }
 
 func (j joke) SearchByTitle(ctx context.Context, keyword string, params selector1.Selector) (model.Jokes, error) {
@@ -39,5 +39,5 @@ func (j joke) SearchByTitle(ctx context.Context, keyword string, params selector
 		params,
 		sqlboiler.JokeWhere.Title.LIKE("%"+keyword+"%"),
 	)
-	return boilerDto.ToDomainJokesWithErrHandle(sqlboiler.Jokes(mods...).All(ctx, j.executor))
+	return boilerDto.NewDomainJokesWithErrHandle(sqlboiler.Jokes(mods...).All(ctx, j.executor))
 }

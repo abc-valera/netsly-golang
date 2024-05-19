@@ -4,8 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/validator"
-
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/core/optional"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
@@ -24,19 +23,15 @@ type IComment interface {
 type comment struct {
 	command command.IComment
 	query.IComment
-
-	validator validator.IValidator
 }
 
 func NewComment(
 	command command.IComment,
 	query query.IComment,
-	validator validator.IValidator,
 ) IComment {
 	return comment{
-		command:   command,
-		IComment:  query,
-		validator: validator,
+		command:  command,
+		IComment: query,
 	}
 }
 
@@ -47,7 +42,7 @@ type CommentCreateRequest struct {
 }
 
 func (c comment) Create(ctx context.Context, req CommentCreateRequest) (model.Comment, error) {
-	if err := c.validator.Struct(req); err != nil {
+	if err := global.Validate().Struct(req); err != nil {
 		return model.Comment{}, err
 	}
 
@@ -65,7 +60,7 @@ type CommentUpdateRequest struct {
 }
 
 func (c comment) Update(ctx context.Context, commentID string, req CommentUpdateRequest) (model.Comment, error) {
-	if err := c.validator.Struct(req); err != nil {
+	if err := global.Validate().Struct(req); err != nil {
 		return model.Comment{}, err
 	}
 
@@ -75,7 +70,7 @@ func (c comment) Update(ctx context.Context, commentID string, req CommentUpdate
 }
 
 func (c comment) Delete(ctx context.Context, commentID string) error {
-	if err := c.validator.Var(commentID, "uuid"); err != nil {
+	if err := global.Validate().Var(commentID, "uuid"); err != nil {
 		return err
 	}
 

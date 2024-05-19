@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/core/optional"
-	"github.com/abc-valera/netsly-api-golang/internal/core/validator"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
@@ -25,20 +25,17 @@ type user struct {
 	command command.IUser
 	query.IUser
 
-	validator validator.IValidator
 	passMaker service.IPasswordMaker
 }
 
 func NewUser(
 	command command.IUser,
 	query query.IUser,
-	validator validator.IValidator,
 	passMaker service.IPasswordMaker,
 ) IUser {
 	return user{
 		command:   command,
 		IUser:     query,
-		validator: validator,
 		passMaker: passMaker,
 	}
 }
@@ -52,7 +49,7 @@ type UserCreateRequest struct {
 }
 
 func (u user) Create(ctx context.Context, req UserCreateRequest) (model.User, error) {
-	if err := u.validator.Struct(req); err != nil {
+	if err := global.Validate().Struct(req); err != nil {
 		return model.User{}, err
 	}
 
@@ -79,7 +76,7 @@ type UserUpdateRequest struct {
 }
 
 func (u user) Update(ctx context.Context, userID string, req UserUpdateRequest) (model.User, error) {
-	if err := u.validator.Struct(req); err != nil {
+	if err := global.Validate().Struct(req); err != nil {
 		return model.User{}, err
 	}
 
@@ -100,7 +97,7 @@ type UserDeleteRequest struct {
 }
 
 func (u user) Delete(ctx context.Context, userID string, req UserDeleteRequest) error {
-	if err := u.validator.Struct(req); err != nil {
+	if err := global.Validate().Struct(req); err != nil {
 		return err
 	}
 

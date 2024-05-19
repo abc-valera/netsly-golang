@@ -29,7 +29,7 @@ func (h MeRooms) MeRoomsGet(ctx context.Context, ogenParams ogen.MeRoomsGetParam
 		payloadUserID(ctx),
 		restDto.NewDomainSelector(&ogenParams.Selector),
 	)
-	return restDto.NewRoomsResponse(domainRooms), err
+	return restDto.NewRooms(domainRooms), err
 }
 
 func (h MeRooms) MeRoomsPost(ctx context.Context, req *ogen.MeRoomsPostReq) (*ogen.Room, error) {
@@ -40,7 +40,7 @@ func (h MeRooms) MeRoomsPost(ctx context.Context, req *ogen.MeRoomsPostReq) (*og
 		CreatorUserID: userID,
 		Description:   req.Description.Value,
 	})
-	return restDto.NewRoomResponse(domainRoom), err
+	return restDto.NewRoom(domainRoom), err
 }
 
 func (h MeRooms) MeRoomsPut(ctx context.Context, req *ogen.MeRoomsPutReq) (*ogen.Room, error) {
@@ -48,7 +48,7 @@ func (h MeRooms) MeRoomsPut(ctx context.Context, req *ogen.MeRoomsPutReq) (*ogen
 		Name:        restDto.NewDomainOptionalString(req.Name),
 		Description: restDto.NewDomainOptionalString(req.Description),
 	})
-	return restDto.NewRoomResponse(domainRoom), err
+	return restDto.NewRoom(domainRoom), err
 }
 
 func (h MeRooms) MeRoomsDelete(ctx context.Context, req *ogen.MeRoomsDeleteReq) error {

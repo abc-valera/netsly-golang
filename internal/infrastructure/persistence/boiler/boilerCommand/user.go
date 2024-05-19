@@ -32,7 +32,7 @@ func (u user) Create(ctx context.Context, req model.User) (model.User, error) {
 		CreatedAt:      req.CreatedAt,
 	}
 	err := user.Insert(ctx, u.executor, boil.Infer())
-	return boilerDto.ToDomainUserWithErrHandle(&user, err)
+	return boilerDto.NewDomainUserWithErrHandle(&user, err)
 }
 
 func (u user) Update(ctx context.Context, id string, req command.UserUpdate) (model.User, error) {
@@ -50,7 +50,7 @@ func (u user) Update(ctx context.Context, id string, req command.UserUpdate) (mo
 		user.Status = req.Status.Value()
 	}
 	_, err = user.Update(ctx, u.executor, boil.Infer())
-	return boilerDto.ToDomainUserWithErrHandle(user, err)
+	return boilerDto.NewDomainUserWithErrHandle(user, err)
 }
 
 func (u user) Delete(ctx context.Context, id string) error {

@@ -28,7 +28,7 @@ func (l like) Create(ctx context.Context, req model.Like) (model.Like, error) {
 		CreatedAt: req.CreatedAt,
 	}
 	err := like.Insert(ctx, l.executor, boil.Infer())
-	return boilerDto.ToDomainLikeWithErrHandle(&like, err)
+	return boilerDto.NewDomainLikeWithErrHandle(&like, err)
 }
 
 func (l like) Delete(ctx context.Context, userID string, jokeID string) error {

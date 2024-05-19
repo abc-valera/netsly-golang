@@ -4,8 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/validator"
-
+	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/core/optional"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
@@ -24,19 +23,15 @@ type IRoom interface {
 type room struct {
 	command command.IRoom
 	query.IRoom
-
-	validator validator.IValidator
 }
 
 func NewRoom(
 	command command.IRoom,
 	query query.IRoom,
-	validator validator.IValidator,
 ) IRoom {
 	return room{
-		command:   command,
-		IRoom:     query,
-		validator: validator,
+		command: command,
+		IRoom:   query,
 	}
 }
 
@@ -47,7 +42,7 @@ type RoomCreateRequest struct {
 }
 
 func (r room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, error) {
-	if err := r.validator.Struct(req); err != nil {
+	if err := global.Validate().Struct(req); err != nil {
 		return model.Room{}, err
 	}
 
@@ -66,7 +61,7 @@ type RoomUpdateRequest struct {
 }
 
 func (r room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) (model.Room, error) {
-	if err := r.validator.Struct(req); err != nil {
+	if err := global.Validate().Struct(req); err != nil {
 		return model.Room{}, err
 	}
 
@@ -76,7 +71,7 @@ func (r room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) 
 }
 
 func (r room) Delete(ctx context.Context, roomID string) error {
-	if err := r.validator.Var(roomID, "uuid"); err != nil {
+	if err := global.Validate().Var(roomID, "uuid"); err != nil {
 		return err
 	}
 

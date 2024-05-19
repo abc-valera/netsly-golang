@@ -23,7 +23,7 @@ func NewRoomMessage(executor boil.ContextExecutor) query.IRoomMessage {
 }
 
 func (r roomMessage) GetByID(ctx context.Context, id string) (model.RoomMessage, error) {
-	return boilerDto.ToDomainRoomMessageWithErrHandle(sqlboiler.FindRoomMessage(ctx, r.executor, id))
+	return boilerDto.NewDomainRoomMessageWithErrHandle(sqlboiler.FindRoomMessage(ctx, r.executor, id))
 }
 
 func (r roomMessage) GetAllByRoomID(ctx context.Context, roomID string, spec selector1.Selector) (model.RoomMessages, error) {
@@ -31,7 +31,7 @@ func (r roomMessage) GetAllByRoomID(ctx context.Context, roomID string, spec sel
 		spec,
 		sqlboiler.RoomMessageWhere.RoomID.EQ(roomID),
 	)
-	return boilerDto.ToDomainRoomMessagesWithErrHandle(sqlboiler.RoomMessages(mods...).All(ctx, r.executor))
+	return boilerDto.NewDomainRoomMessagesWithErrHandle(sqlboiler.RoomMessages(mods...).All(ctx, r.executor))
 }
 
 func (r roomMessage) SearchAllByText(ctx context.Context, keyword string, spec selector1.Selector) (model.RoomMessages, error) {
@@ -39,5 +39,5 @@ func (r roomMessage) SearchAllByText(ctx context.Context, keyword string, spec s
 		spec,
 		sqlboiler.RoomMessageWhere.Text.LIKE("%"+keyword+"%"),
 	)
-	return boilerDto.ToDomainRoomMessagesWithErrHandle(sqlboiler.RoomMessages(mods...).All(ctx, r.executor))
+	return boilerDto.NewDomainRoomMessagesWithErrHandle(sqlboiler.RoomMessages(mods...).All(ctx, r.executor))
 }

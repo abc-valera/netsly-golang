@@ -6,7 +6,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
 )
 
-func ToDomainRoomMessage(roomMessage *sqlboiler.RoomMessage) model.RoomMessage {
+func NewDomainRoomMessage(roomMessage *sqlboiler.RoomMessage) model.RoomMessage {
 	if roomMessage == nil {
 		return model.RoomMessage{}
 	}
@@ -20,18 +20,18 @@ func ToDomainRoomMessage(roomMessage *sqlboiler.RoomMessage) model.RoomMessage {
 	}
 }
 
-func ToDomainRoomMessageWithErrHandle(roomMessage *sqlboiler.RoomMessage, err error) (model.RoomMessage, error) {
-	return ToDomainRoomMessage(roomMessage), errors.HandleErr(err)
+func NewDomainRoomMessageWithErrHandle(roomMessage *sqlboiler.RoomMessage, err error) (model.RoomMessage, error) {
+	return NewDomainRoomMessage(roomMessage), errors.HandleErr(err)
 }
 
-func ToDomainRoomMessages(roomMessages sqlboiler.RoomMessageSlice) model.RoomMessages {
+func NewDomainRoomMessages(roomMessages sqlboiler.RoomMessageSlice) model.RoomMessages {
 	var domainRoomMessages model.RoomMessages
 	for _, roomMessage := range roomMessages {
-		domainRoomMessages = append(domainRoomMessages, ToDomainRoomMessage(roomMessage))
+		domainRoomMessages = append(domainRoomMessages, NewDomainRoomMessage(roomMessage))
 	}
 	return domainRoomMessages
 }
 
-func ToDomainRoomMessagesWithErrHandle(roomMessages sqlboiler.RoomMessageSlice, err error) (model.RoomMessages, error) {
-	return ToDomainRoomMessages(roomMessages), errors.HandleErr(err)
+func NewDomainRoomMessagesWithErrHandle(roomMessages sqlboiler.RoomMessageSlice, err error) (model.RoomMessages, error) {
+	return NewDomainRoomMessages(roomMessages), errors.HandleErr(err)
 }

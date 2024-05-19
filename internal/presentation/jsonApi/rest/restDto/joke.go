@@ -5,7 +5,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 )
 
-func NewJokeResponse(joke model.Joke) *ogen.Joke {
+func NewJoke(joke model.Joke) *ogen.Joke {
 	return &ogen.Joke{
 		ID:          joke.ID,
 		UserID:      joke.UserID,
@@ -16,10 +16,10 @@ func NewJokeResponse(joke model.Joke) *ogen.Joke {
 	}
 }
 
-func NewJokesResponse(jokes model.Jokes) *ogen.Jokes {
+func NewJokes(jokes model.Jokes) *ogen.Jokes {
 	var res []ogen.Joke
 	for _, joke := range jokes {
-		res = append(res, *NewJokeResponse(joke))
+		res = append(res, *NewJoke(joke))
 	}
 	return &ogen.Jokes{Jokes: res}
 }

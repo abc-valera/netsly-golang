@@ -25,7 +25,7 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	return restDto.NewUserResponse(user), nil
+	return restDto.NewUser(user), nil
 }
 
 func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, error) {
@@ -37,7 +37,7 @@ func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, e
 	if err != nil {
 		return nil, err
 	}
-	return restDto.NewUserResponse(user), nil
+	return restDto.NewUser(user), nil
 }
 
 func (h MeHandler) MeDel(ctx context.Context, req *ogen.MeDelReq) error {
