@@ -7,9 +7,9 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/entityTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/transactor"
 )
 
 var ErrProvidedAccessToken = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Access token provided")
@@ -22,7 +22,7 @@ type ISignUseCase interface {
 
 type signUseCase struct {
 	user          entity.IUser
-	tx            transactor.ITransactor
+	tx            entityTransactor.ITransactor
 	passwordMaker service.IPasswordMaker
 	tokenMaker    service.ITokenMaker
 	taskQueue     service.ITaskQueuer
@@ -30,7 +30,7 @@ type signUseCase struct {
 
 func NewSignUseCase(
 	userEntity entity.IUser,
-	tx transactor.ITransactor,
+	tx entityTransactor.ITransactor,
 	passwordMaker service.IPasswordMaker,
 	tokenMaker service.ITokenMaker,
 	taskQueue service.ITaskQueuer,

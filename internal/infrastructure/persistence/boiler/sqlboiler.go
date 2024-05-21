@@ -12,6 +12,7 @@ import (
 //go:embed migration/*.sql
 var embedMigrations embed.FS
 
+// Init initializes the database connection and runs the migrations
 func Init(postgresUrl string) (*sql.DB, error) {
 	// Initialize the database connection
 	db, err := sql.Open("pgx", postgresUrl)

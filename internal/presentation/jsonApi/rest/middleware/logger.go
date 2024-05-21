@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/global"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 )
 
 // responseWriter is a minimal wrapper for http.ResponseWriter that allows the

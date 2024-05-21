@@ -9,18 +9,13 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/entityTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/emailSender/dummyEmailSender"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/nopLogger"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/slogLogger"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/passwordMaker"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/taskQueuer/dummyTaskQueuer"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/tokenMaker"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/transactor"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/seed"
@@ -53,67 +48,34 @@ func main() {
 		grpcApiStaticPathEnv = os.Getenv("GRPC_API_STATIC_PATH")
 	)
 
-	var Mode mode.Mode
-	switch modeEnv {
-	case "dev":
-		Mode = mode.Development
-	case "prod":
-		Mode = mode.Production
-	default:
-		coderr.Fatal("'MODE' environmental variable is invalid")
-	}
-
-	var Log service.ILogger
-	switch loggerServiceEnv {
-	case "slog":
-		Log = slogLogger.New()
-	case "nop":
-		Log = nopLogger.New()
-	default:
-		coderr.Fatal("'LOGGER_SERVICE' environmental variable is invalid")
-	}
-
-	// Init global variables
-	global.Init(
-		Mode,
-		Log,
-	)
+	// Init global application mode
+	global.InitMode(mode.Mode(modeEnv))
 
 	// Init services
-	var EmailSender service.IEmailSender
-	switch emailSenderEnv {
-	case "dummy":
-		EmailSender = dummyEmailSender.New()
-	default:
-		coderr.Fatal("EMAIL_SENDER_SERVICE environmental variable is invalid")
-	}
+	services := service.NewServices(
+		loggerServiceEnv,
+		emailSenderEnv,
+		taskQueuerEnv,
 
-	var TaskQueuer service.ITaskQueuer
-	switch taskQueuerEnv {
-	case "dummy":
-		TaskQueuer = dummyTaskQueuer.New(EmailSender)
-	default:
-		coderr.Fatal("TASK_QUEUER_SERVICE environmental variable is invalid")
-	}
-
-	services := domain.NewServices(
-		EmailSender,
-		passwordMaker.New(),
-		tokenMaker.NewJWT(accessTokenDurationEnv, refreshTokenDurationEnv, signKeyEnv),
-		TaskQueuer,
+		accessTokenDurationEnv,
+		refreshTokenDurationEnv,
+		signKeyEnv,
 	)
 
+	// Init global logger
+	global.InitLog(services.Logger)
+
 	// Init persistence dependencies
-	db := persistence.InitDB(postgresUrlEnv)
+	db := coderr.Must(boiler.Init(postgresUrlEnv))
 
 	// Init persistence
-	commands, queries := persistence.InitCommands(db), persistence.InitQueries(db)
+	commands, queries := persistence.NewCommands(db), persistence.NewQueries(db)
 
 	// Init entities
 	entities := domain.NewEntities(commands, queries, services)
 
 	// Init transaction
-	tx := transactor.NewTransactor(db, services)
+	tx := entityTransactor.NewTransactor(db, services)
 
 	// Init usecases
 	usecases := application.NewUseCases(tx, entities, services)

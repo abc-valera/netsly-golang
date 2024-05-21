@@ -2,6 +2,7 @@ package domain
 
 import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence"
 )
 
 type Entities struct {
@@ -15,8 +16,8 @@ type Entities struct {
 }
 
 func NewEntities(
-	commands Commands,
-	queries Queries,
+	commands persistence.Commands,
+	queries persistence.Queries,
 	services Services,
 ) Entities {
 	return Entities{

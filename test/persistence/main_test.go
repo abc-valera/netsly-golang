@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence"
+	domainPersistence "github.com/abc-valera/netsly-api-golang/internal/domain/persistence"
+	infraPersistence "github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler"
 	"github.com/abc-valera/netsly-api-golang/test"
 	"github.com/docker/docker/pkg/ioutils"
@@ -20,7 +20,7 @@ import (
 
 // initTest initializes environment for tests
 // and should be called in every test function from this package.
-var initTest func(t *testing.T) (context.Context, *require.Assertions, domain.Commands, domain.Queries)
+var initTest func(t *testing.T) (context.Context, *require.Assertions, domainPersistence.Commands, domainPersistence.Queries)
 
 func TestMain(m *testing.M) {
 	test.InitTestMain()
@@ -67,7 +67,7 @@ func TestMain(m *testing.M) {
 		log.Fatal(err)
 	}
 
-	initTest = func(t *testing.T) (context.Context, *require.Assertions, domain.Commands, domain.Queries) {
+	initTest = func(t *testing.T) (context.Context, *require.Assertions, domainPersistence.Commands, domainPersistence.Queries) {
 		// Make sure tests run in parallel
 		t.Parallel()
 
@@ -86,7 +86,7 @@ func TestMain(m *testing.M) {
 		r.NoError(err)
 		_ = res
 
-		return ctx, r, persistence.InitCommands(tx), persistence.InitQueries(tx)
+		return ctx, r, infraPersistence.NewCommands(tx), infraPersistence.NewQueries(tx)
 	}
 
 	m.Run()

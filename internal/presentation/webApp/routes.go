@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/middleware"
 	"github.com/go-chi/chi/v5"

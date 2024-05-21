@@ -5,22 +5,9 @@ import (
 )
 
 type Services struct {
+	Logger        service.ILogger
 	EmailSender   service.IEmailSender
 	PasswordMaker service.IPasswordMaker
 	TokenMaker    service.ITokenMaker
 	TaskQueuer    service.ITaskQueuer
-}
-
-func NewServices(
-	emailSender service.IEmailSender,
-	passwordMaker service.IPasswordMaker,
-	tokenMaker service.ITokenMaker,
-	taskQueue service.ITaskQueuer,
-) Services {
-	return Services{
-		EmailSender:   emailSender,
-		PasswordMaker: passwordMaker,
-		TokenMaker:    tokenMaker,
-		TaskQueuer:    taskQueue,
-	}
 }

@@ -1,9 +1,9 @@
 package mode
 
 // Mode is the application running mode
-type Mode int
+type Mode string
 
 const (
-	Development Mode = iota
-	Production
+	Development Mode = "development"
+	Production  Mode = "production"
 )

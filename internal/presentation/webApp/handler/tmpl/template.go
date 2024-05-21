@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/global"
 	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 )
 
 type Data map[string]interface{}
