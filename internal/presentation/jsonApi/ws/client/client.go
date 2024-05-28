@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/auth"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/ws/event"
 	"github.com/gorilla/websocket"
 )
@@ -48,9 +48,9 @@ type client struct {
 	userID string
 }
 
-func NewClient(w http.ResponseWriter, r *http.Request, tokenMaker service.ITokenMaker) (Client, error) {
+func NewClient(w http.ResponseWriter, r *http.Request, authManager auth.Manager) (Client, error) {
 	// Authenticate the client, if the token is invalid, return 401
-	authPayload, err := tokenMaker.VerifyToken(r.URL.Query().Get("token"))
+	authPayload, err := authManager.VerifyToken(r.URL.Query().Get("token"))
 	if err != nil {
 		switch coderr.ErrorCode(err) {
 		case coderr.CodeUnauthenticated, coderr.CodeInvalidArgument:

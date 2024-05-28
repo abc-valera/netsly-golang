@@ -1,8 +1,6 @@
 package service
 
 import (
-	"time"
-
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/emailSender/dummyEmailSender"
@@ -10,7 +8,6 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/slogLogger"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/passwordMaker"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/taskQueuer/dummyTaskQueuer"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/tokenMaker"
 )
 
 func NewServices(
@@ -19,20 +16,10 @@ func NewServices(
 	emailSenderService string,
 
 	taskQueuerService string,
-
-	accessTokenDurationEnv time.Duration,
-	refreshTokenDurationEnv time.Duration,
-	signKeyEnv string,
 ) domain.Services {
 	var services domain.Services
 
 	services.PasswordMaker = passwordMaker.New()
-
-	services.TokenMaker = tokenMaker.NewJWT(
-		accessTokenDurationEnv,
-		refreshTokenDurationEnv,
-		signKeyEnv,
-	)
 
 	switch loggerService {
 	case "nop":

@@ -1,4 +1,4 @@
-package handler
+package errutil
 
 import (
 	"context"
@@ -8,13 +8,13 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 )
 
-type ErrorHandler struct{}
+type Handler struct{}
 
-func NewErrorHandler() ErrorHandler {
-	return ErrorHandler{}
+func NewHandler() Handler {
+	return Handler{}
 }
 
-func (h ErrorHandler) NewError(ctx context.Context, err error) *ogen.CodeErrorStatusCode {
+func (h Handler) NewError(ctx context.Context, err error) *ogen.CodeErrorStatusCode {
 	var codeError ogen.CodeError
 	if coderr.ErrorCode(err) == coderr.CodeInternal {
 		codeError = ogen.CodeError{

@@ -9,12 +9,12 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler/session"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler/tmpl"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler/templates"
 )
 
 type Home struct {
-	homeIndex    tmpl.ITemplate
-	partialJokes tmpl.ITemplate
+	homeIndex    templates.ITemplate
+	partialJokes templates.ITemplate
 
 	user entity.IUser
 	joke entity.IJoke
@@ -26,8 +26,8 @@ func NewHome(
 	joke entity.IJoke,
 ) Home {
 	return Home{
-		homeIndex:    coderr.Must(tmpl.NewTemplate(templateFS, "home/index/index", "home/layout", "layout")),
-		partialJokes: coderr.Must(tmpl.NewTemplate(templateFS, "home/index/partial_jokes.html")),
+		homeIndex:    coderr.Must(templates.NewTemplate(templateFS, "home/index/index", "home/layout", "layout")),
+		partialJokes: coderr.Must(templates.NewTemplate(templateFS, "home/index/partial_jokes.html")),
 
 		user: user,
 		joke: joke,
@@ -75,7 +75,7 @@ func (h Home) HomePartialJokesGet(w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	return h.partialJokes.Render(w, tmpl.Data{
+	return h.partialJokes.Render(w, templates.Data{
 		"Jokes": jokes,
 	})
 }

@@ -19,7 +19,6 @@ func NewUseCases(
 			entities.User,
 			tx,
 			services.PasswordMaker,
-			services.TokenMaker,
 			services.TaskQueuer,
 		),
 	}

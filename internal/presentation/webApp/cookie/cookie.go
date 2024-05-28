@@ -11,8 +11,7 @@ import (
 )
 
 const (
-	AccessTokenKey  = "netsly_access_token"
-	RefreshTokenKey = "netsly_refresh_token"
+	UserIDKey = "netsly_user_id"
 )
 
 // NOTE: should be env variable
@@ -79,8 +78,8 @@ func Set(w http.ResponseWriter, key string, value string) {
 		Value:    value,
 		Path:     "/",
 		HttpOnly: true,
-		SameSite: http.SameSiteNoneMode,
-		MaxAge:   60 * 60 * 24 * 365,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   60 * 60 * 24 * 30,
 		Secure:   true,
 	}
 

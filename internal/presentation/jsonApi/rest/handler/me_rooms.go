@@ -5,6 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/contexts"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/restDto"
 )
 
@@ -24,16 +25,24 @@ func NewMeRooms(
 }
 
 func (h MeRooms) MeRoomsGet(ctx context.Context, ogenParams ogen.MeRoomsGetParams) (*ogen.Rooms, error) {
+	userID, err := contexts.GetUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	domainRooms, err := h.room.GetAllByUserID(
 		ctx,
-		payloadUserID(ctx),
+		userID,
 		restDto.NewDomainSelector(&ogenParams.Selector),
 	)
 	return restDto.NewRooms(domainRooms), err
 }
 
 func (h MeRooms) MeRoomsPost(ctx context.Context, req *ogen.MeRoomsPostReq) (*ogen.Room, error) {
-	userID := payloadUserID(ctx)
+	userID, err := contexts.GetUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	domainRoom, err := h.room.Create(ctx, entity.RoomCreateRequest{
 		Name:          req.Name,
@@ -56,11 +65,17 @@ func (h MeRooms) MeRoomsDelete(ctx context.Context, req *ogen.MeRoomsDeleteReq) 
 }
 
 func (h MeRooms) MeChatRoomsJoinPost(ctx context.Context, req *ogen.MeChatRoomsJoinPostReq) error {
-	userID := payloadUserID(ctx)
+	userID, err := contexts.GetUserID(ctx)
+	if err != nil {
+		return err
+	}
 
-	_, err := h.roomMember.Create(ctx, entity.RoomMemberCreateRequest{
+	if _, err := h.roomMember.Create(ctx, entity.RoomMemberCreateRequest{
 		UserID: userID,
 		RoomID: req.ID,
-	})
-	return err
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }

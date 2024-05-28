@@ -9,18 +9,18 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/cookie"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler/tmpl"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler/templates"
 )
 
 type Sign struct {
-	signIndex tmpl.ITemplate
+	signIndex templates.ITemplate
 
 	application.ISignUseCase
 }
 
 func NewSign(templateFS fs.FS, signUseCase application.ISignUseCase) Sign {
 	return Sign{
-		signIndex: coderr.Must(tmpl.NewTemplate(templateFS, "sign/index", "layout")),
+		signIndex: coderr.Must(templates.NewTemplate(templateFS, "sign/index", "layout")),
 
 		ISignUseCase: signUseCase,
 	}
@@ -36,7 +36,7 @@ func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 		return coderr.NewInternalErr(err)
 	}
 
-	if err := h.ISignUseCase.SignUp(r.Context(), application.SignUpRequest{
+	if _, err := h.ISignUseCase.SignUp(r.Context(), application.SignUpRequest{
 		Username: r.FormValue("username"),
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
@@ -59,7 +59,7 @@ func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	resp, err := h.ISignUseCase.SignIn(r.Context(), application.SignInRequest{
+	user, err := h.ISignUseCase.SignIn(r.Context(), application.SignInRequest{
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 	})
@@ -67,8 +67,7 @@ func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	cookie.Set(w, cookie.AccessTokenKey, resp.AccessToken)
-	cookie.Set(w, cookie.RefreshTokenKey, resp.RefreshToken)
+	cookie.Set(w, cookie.UserIDKey, user.ID)
 
 	w.Header().Set("HX-Redirect", "/home")
 	return nil
@@ -80,7 +79,7 @@ func (h Sign) SignInPost(w http.ResponseWriter, r *http.Request) error {
 		return coderr.NewInternalErr(err)
 	}
 
-	resp, err := h.ISignUseCase.SignIn(r.Context(), application.SignInRequest{
+	user, err := h.ISignUseCase.SignIn(r.Context(), application.SignInRequest{
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 	})
@@ -103,8 +102,7 @@ func (h Sign) SignInPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	cookie.Set(w, cookie.AccessTokenKey, resp.AccessToken)
-	cookie.Set(w, cookie.RefreshTokenKey, resp.RefreshToken)
+	cookie.Set(w, cookie.UserIDKey, user.ID)
 
 	w.Header().Set("HX-Redirect", "/home")
 	return nil

@@ -56,10 +56,6 @@ func main() {
 		loggerServiceEnv,
 		emailSenderEnv,
 		taskQueuerEnv,
-
-		accessTokenDurationEnv,
-		refreshTokenDurationEnv,
-		signKeyEnv,
 	)
 
 	// Init global logger
@@ -100,8 +96,11 @@ func main() {
 		serverStart, serverGracefulStop = jsonApi.NewServer(
 			jsonApiPortEnv,
 			jsonApiStaticPathEnv,
-			services,
+			signKeyEnv,
+			accessTokenDurationEnv,
+			refreshTokenDurationEnv,
 			entities,
+			services,
 			usecases,
 		)
 	case "grpcApi":

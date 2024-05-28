@@ -8,6 +8,5 @@ type Services struct {
 	Logger        service.ILogger
 	EmailSender   service.IEmailSender
 	PasswordMaker service.IPasswordMaker
-	TokenMaker    service.ITokenMaker
 	TaskQueuer    service.ITaskQueuer
 }

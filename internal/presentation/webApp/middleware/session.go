@@ -5,66 +5,36 @@ import (
 	"strings"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/cookie"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler/session"
 )
 
-func NewSessionMiddleware(tokenMaker service.ITokenMaker) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(
-			func(w http.ResponseWriter, r *http.Request) {
-				accessToken, err := cookie.Get(r, cookie.AccessTokenKey)
-				if err != nil && err != cookie.ErrNoCookie && err != cookie.ErrInvalidValue {
-					global.Log().Error("failed to get access token", "err", err)
-				}
+func SessionMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		userID, err := cookie.Get(r, cookie.UserIDKey)
+		if err == nil && userID != "" {
+			next.ServeHTTP(w, r)
+			return
+		}
 
-				if accessToken != "" {
-					payload, err := tokenMaker.VerifyToken(accessToken)
-					if err == nil {
-						if strings.HasPrefix(r.URL.Path, "/sign") {
-							http.Redirect(w, r, "/home", http.StatusMovedPermanently)
-						}
-						next.ServeHTTP(w, session.SetUserID(r, payload.UserID))
-						return
-					}
-					if err != service.ErrExpiredToken && err != service.ErrInvalidToken {
-						global.Log().Error("failed to verify access token", "err", err)
-					}
-				}
+		if err != nil && err != cookie.ErrInvalidValue && err != cookie.ErrNoCookie {
+			global.Log().Error("failed to get user id cookie", "err", err)
+			return
+		}
 
-				refreshToken, err := cookie.Get(r, cookie.RefreshTokenKey)
-				if err != nil && err != cookie.ErrNoCookie && err != cookie.ErrInvalidValue {
-					global.Log().Error("failed to get refresh token", "err", err)
-				}
+		if err == cookie.ErrInvalidValue || err == cookie.ErrNoCookie {
+			// if the request is not for sign, then redirect the user to the sign page
+			if !strings.HasPrefix(r.URL.Path, "/sign") {
+				http.Redirect(w, r, "/sign", http.StatusMovedPermanently)
+				return
+			}
 
-				if refreshToken != "" {
-					payload, err := tokenMaker.VerifyToken(refreshToken)
-					if err == nil {
-						access, err := tokenMaker.CreateAccessToken(payload.UserID)
-						if err != nil {
-							global.Log().Error("failed to create access token", "err", err)
-						}
-						cookie.Set(w, cookie.AccessTokenKey, access)
-						if strings.HasPrefix(r.URL.Path, "/sign") {
-							http.Redirect(w, r, "/home", http.StatusMovedPermanently)
-						} else {
-							next.ServeHTTP(w, session.SetUserID(r, payload.UserID))
-						}
-						return
-					}
-					if err != service.ErrExpiredToken && err != service.ErrInvalidToken {
-						global.Log().Error("failed to verify refresh token", "err", err)
-					}
-				}
+			next.ServeHTTP(w, r)
+			return
+		}
 
-				// if the request is not for sign, then redirect the user to the sign page
-				if !strings.HasPrefix(r.URL.Path, "/sign") {
-					http.Redirect(w, r, "/sign", http.StatusMovedPermanently)
-				} else {
-					next.ServeHTTP(w, r)
-				}
-			},
-		)
-	}
+		if userID == "" {
+			global.Log().Error("user id is empty")
+			return
+		}
+	})
 }

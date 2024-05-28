@@ -15,31 +15,27 @@ import (
 var ErrProvidedAccessToken = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Access token provided")
 
 type ISignUseCase interface {
-	SignUp(ctx context.Context, req SignUpRequest) error
-	SignIn(ctx context.Context, req SignInRequest) (SignInResponse, error)
-	SignRefresh(ctx context.Context, refreshToken string) (string, error)
+	SignUp(ctx context.Context, req SignUpRequest) (model.User, error)
+	SignIn(ctx context.Context, req SignInRequest) (model.User, error)
 }
 
 type signUseCase struct {
 	user          entity.IUser
-	tx            entityTransactor.ITransactor
+	transactor    entityTransactor.ITransactor
 	passwordMaker service.IPasswordMaker
-	tokenMaker    service.ITokenMaker
 	taskQueue     service.ITaskQueuer
 }
 
 func NewSignUseCase(
 	userEntity entity.IUser,
-	tx entityTransactor.ITransactor,
+	transactor entityTransactor.ITransactor,
 	passwordMaker service.IPasswordMaker,
-	tokenMaker service.ITokenMaker,
 	taskQueue service.ITaskQueuer,
 ) ISignUseCase {
 	return signUseCase{
 		user:          userEntity,
-		tx:            tx,
+		transactor:    transactor,
 		passwordMaker: passwordMaker,
-		tokenMaker:    tokenMaker,
 		taskQueue:     taskQueue,
 	}
 }
@@ -56,17 +52,20 @@ type SignUpRequest struct {
 // it creates new user entity with unique username and email,
 // creates hash of the password provided by user,
 // then it sends welcome email to the users's email address,
-func (uc signUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
+func (uc signUseCase) SignUp(ctx context.Context, req SignUpRequest) (model.User, error) {
+	var user model.User
 	txFunc := func(ctx context.Context, txEntities domain.Entities) error {
-		if _, err := txEntities.User.Create(ctx, entity.UserCreateRequest{
+		createdUser, err := txEntities.User.Create(ctx, entity.UserCreateRequest{
 			Username: req.Username,
 			Email:    req.Email,
 			Password: req.Password,
 			Fullname: req.Fullname,
 			Status:   req.Status,
-		}); err != nil {
+		})
+		if err != nil {
 			return err
 		}
+		user = createdUser
 
 		welcomeEmail := service.Email{
 			Subject: "Verification Email for Netsly!",
@@ -77,7 +76,11 @@ func (uc signUseCase) SignUp(ctx context.Context, req SignUpRequest) error {
 		return uc.taskQueue.SendEmailTask(ctx, service.Critical, welcomeEmail)
 	}
 
-	return uc.tx.PerformTX(ctx, txFunc)
+	if err := uc.transactor.PerformTX(ctx, txFunc); err != nil {
+		return model.User{}, err
+	}
+
+	return user, nil
 }
 
 type SignInRequest struct {
@@ -85,56 +88,18 @@ type SignInRequest struct {
 	Password string
 }
 
-type SignInResponse struct {
-	User         model.User
-	AccessToken  string
-	RefreshToken string
-}
-
 // SignIn performs user sign-in: it checks if user with provided email exists,
 // then creates hash of the provided password and compares it to the hash stored in database.
 // The SignIn returns user, accessToken and refreshToken.
-func (s signUseCase) SignIn(ctx context.Context, req SignInRequest) (SignInResponse, error) {
+func (s signUseCase) SignIn(ctx context.Context, req SignInRequest) (model.User, error) {
 	user, err := s.user.GetByEmail(ctx, req.Email)
 	if err != nil {
-		return SignInResponse{}, err
+		return model.User{}, err
 	}
 
 	if err := s.passwordMaker.CheckPassword(req.Password, user.HashedPassword); err != nil {
-		return SignInResponse{}, err
+		return model.User{}, err
 	}
 
-	access, err := s.tokenMaker.CreateAccessToken(user.ID)
-	if err != nil {
-		return SignInResponse{}, err
-	}
-	refresh, err := s.tokenMaker.CreateRefreshToken(user.ID)
-	if err != nil {
-		return SignInResponse{}, err
-	}
-
-	return SignInResponse{
-		User:         user,
-		AccessToken:  access,
-		RefreshToken: refresh,
-	}, nil
-}
-
-// SignRefresh exchages given refresh token for the access token for the same user.
-func (s signUseCase) SignRefresh(c context.Context, refreshToken string) (string, error) {
-	payload, err := s.tokenMaker.VerifyToken(refreshToken)
-	if err != nil {
-		return "", err
-	}
-
-	if !payload.IsRefresh {
-		return "", ErrProvidedAccessToken
-	}
-
-	access, err := s.tokenMaker.CreateAccessToken(payload.UserID)
-	if err != nil {
-		return "", err
-	}
-
-	return access, nil
+	return user, nil
 }

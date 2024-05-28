@@ -5,6 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/contexts"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/restDto"
 )
 
@@ -21,17 +22,27 @@ func NewMeJokesHandler(
 }
 
 func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesGetParams) (*ogen.Jokes, error) {
+	userID, err := contexts.GetUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	domainJokes, err := h.joke.GetAllByUserID(
 		ctx,
-		payloadUserID(ctx),
+		userID,
 		restDto.NewDomainSelector(&ogenParams.Selector),
 	)
 	return restDto.NewJokes(domainJokes), err
 }
 
 func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostReq) (*ogen.Joke, error) {
+	userID, err := contexts.GetUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	joke, err := h.joke.Create(ctx, entity.JokeCreateRequest{
-		UserID:      payloadUserID(ctx),
+		UserID:      userID,
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation.Value,

@@ -8,7 +8,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/auth"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/ws/client"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/ws/handler"
 	"github.com/gorilla/websocket"
@@ -16,17 +16,18 @@ import (
 
 // Manager is used to hold references to all Clients
 type Manager struct {
-	tokenMaker      service.ITokenMaker
+	authManager     auth.Manager
 	roomMemberQuery query.IRoomMember
 
 	clients *client.Clients
 }
 
 func NewManager(
+	authManager auth.Manager,
 	services domain.Services,
 ) *Manager {
 	return &Manager{
-		tokenMaker: services.TokenMaker,
+		authManager: authManager,
 
 		clients: client.NewClients(),
 	}
@@ -34,7 +35,7 @@ func NewManager(
 
 func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
 	// Create a new websocket connection
-	client, err := client.NewClient(w, r, m.tokenMaker)
+	client, err := client.NewClient(w, r, m.authManager)
 	if err != nil {
 		switch coderr.ErrorCode(err) {
 		case coderr.CodeUnauthenticated, coderr.CodeInvalidArgument:

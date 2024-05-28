@@ -21,7 +21,7 @@ type validate struct {
 	validate *validator.Validate
 }
 
-func NewValidator() IValidator {
+func New() IValidator {
 	val := validator.New(validator.WithRequiredStructEnabled())
 
 	optionalCustomTypeFunc := func(field reflect.Value) interface{} {

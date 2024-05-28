@@ -5,6 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/contexts"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/restDto"
 )
 
@@ -21,8 +22,13 @@ func NewMeCommentsHandler(
 }
 
 func (h MeCommentsHandler) MeCommentsPost(ctx context.Context, req *ogen.MeCommentsPostReq) (*ogen.Comment, error) {
+	userID, err := contexts.GetUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	comment, err := h.comment.Create(ctx, entity.CommentCreateRequest{
-		UserID: payloadUserID(ctx),
+		UserID: userID,
 		JokeID: req.JokeID,
 		Text:   req.Text,
 	})

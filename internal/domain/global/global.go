@@ -44,7 +44,7 @@ func Log() service.ILogger {
 	return log
 }
 
-var validate validator.IValidator = validator.NewValidator()
+var validate validator.IValidator = validator.New()
 
 func Validate() validator.IValidator {
 	return validate

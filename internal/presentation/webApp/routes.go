@@ -20,7 +20,7 @@ func initRoutes(r *chi.Mux, staticPath string, services domain.Services, handler
 		r.Use(
 			middleware.Logger,
 			middleware.Recoverer,
-			middleware.NewSessionMiddleware(services.TokenMaker),
+			middleware.SessionMiddleware,
 		)
 
 		// 404 handler
