@@ -3,7 +3,7 @@ package boilerDto
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
 )
 
 func NewDomainLike(like *sqlboiler.Like) model.Like {
@@ -19,7 +19,7 @@ func NewDomainLike(like *sqlboiler.Like) model.Like {
 }
 
 func NewDomainLikeWithErrHandle(like *sqlboiler.Like, err error) (model.Like, error) {
-	return NewDomainLike(like), errors.HandleErr(err)
+	return NewDomainLike(like), errutil.HandleErr(err)
 }
 
 func NewDomainLikes(likes sqlboiler.LikeSlice) model.Likes {
@@ -31,5 +31,5 @@ func NewDomainLikes(likes sqlboiler.LikeSlice) model.Likes {
 }
 
 func NewDomainLikesWithErrHandle(likes sqlboiler.LikeSlice, err error) (model.Likes, error) {
-	return NewDomainLikes(likes), errors.HandleErr(err)
+	return NewDomainLikes(likes), errutil.HandleErr(err)
 }

@@ -8,13 +8,10 @@ import (
 
 var ErrLikeNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Like not found")
 
-// Like represents a like entity.
-// Technically, it's a many-to-many relationship between users and jokes.
 type Like struct {
 	CreatedAt time.Time
-
-	UserID string
-	JokeID string
+	UserID    string
+	JokeID    string
 }
 
 type Likes []Like

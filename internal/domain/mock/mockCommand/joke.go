@@ -25,9 +25,9 @@ func (_m *Joke) EXPECT() *Joke_Expecter {
 	return &Joke_Expecter{mock: &_m.Mock}
 }
 
-// Create provides a mock function with given fields: ctx, req
-func (_m *Joke) Create(ctx context.Context, req model.Joke) (model.Joke, error) {
-	ret := _m.Called(ctx, req)
+// Create provides a mock function with given fields: ctx, userID, req
+func (_m *Joke) Create(ctx context.Context, userID string, req model.Joke) (model.Joke, error) {
+	ret := _m.Called(ctx, userID, req)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
@@ -35,17 +35,17 @@ func (_m *Joke) Create(ctx context.Context, req model.Joke) (model.Joke, error) 
 
 	var r0 model.Joke
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, model.Joke) (model.Joke, error)); ok {
-		return rf(ctx, req)
+	if rf, ok := ret.Get(0).(func(context.Context, string, model.Joke) (model.Joke, error)); ok {
+		return rf(ctx, userID, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, model.Joke) model.Joke); ok {
-		r0 = rf(ctx, req)
+	if rf, ok := ret.Get(0).(func(context.Context, string, model.Joke) model.Joke); ok {
+		r0 = rf(ctx, userID, req)
 	} else {
 		r0 = ret.Get(0).(model.Joke)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, model.Joke) error); ok {
-		r1 = rf(ctx, req)
+	if rf, ok := ret.Get(1).(func(context.Context, string, model.Joke) error); ok {
+		r1 = rf(ctx, userID, req)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -60,14 +60,15 @@ type Joke_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
+//   - userID string
 //   - req model.Joke
-func (_e *Joke_Expecter) Create(ctx interface{}, req interface{}) *Joke_Create_Call {
-	return &Joke_Create_Call{Call: _e.mock.On("Create", ctx, req)}
+func (_e *Joke_Expecter) Create(ctx interface{}, userID interface{}, req interface{}) *Joke_Create_Call {
+	return &Joke_Create_Call{Call: _e.mock.On("Create", ctx, userID, req)}
 }
 
-func (_c *Joke_Create_Call) Run(run func(ctx context.Context, req model.Joke)) *Joke_Create_Call {
+func (_c *Joke_Create_Call) Run(run func(ctx context.Context, userID string, req model.Joke)) *Joke_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.Joke))
+		run(args[0].(context.Context), args[1].(string), args[2].(model.Joke))
 	})
 	return _c
 }
@@ -77,7 +78,7 @@ func (_c *Joke_Create_Call) Return(_a0 model.Joke, _a1 error) *Joke_Create_Call 
 	return _c
 }
 
-func (_c *Joke_Create_Call) RunAndReturn(run func(context.Context, model.Joke) (model.Joke, error)) *Joke_Create_Call {
+func (_c *Joke_Create_Call) RunAndReturn(run func(context.Context, string, model.Joke) (model.Joke, error)) *Joke_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }

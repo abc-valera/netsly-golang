@@ -36,7 +36,8 @@ func NewRoomMessage(
 }
 
 type RoomMessageCreateRequest struct {
-	Text   string `validate:"required,min=1,max=2048"`
+	Text string `validate:"required,min=1,max=2048"`
+
 	UserID string `validate:"required,uuid"`
 	RoomID string `validate:"required,uuid"`
 }
@@ -46,12 +47,10 @@ func (rm roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) 
 		return model.RoomMessage{}, err
 	}
 
-	return rm.command.Create(ctx, model.RoomMessage{
+	return rm.command.Create(ctx, req.UserID, req.RoomID, model.RoomMessage{
 		ID:        uuid.New().String(),
 		Text:      req.Text,
 		CreatedAt: time.Now(),
-		UserID:    req.UserID,
-		RoomID:    req.RoomID,
 	})
 }
 

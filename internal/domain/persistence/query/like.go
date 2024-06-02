@@ -7,6 +7,6 @@ import (
 )
 
 type ILike interface {
+	GatAllByJokeID(ctx context.Context, jokeID string) (model.Likes, error)
 	CountByJokeID(ctx context.Context, jokeID string) (int, error)
-	GetAllByJokeID(ctx context.Context, jokeID string) (model.Likes, error)
 }

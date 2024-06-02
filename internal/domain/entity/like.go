@@ -12,7 +12,7 @@ import (
 
 type ILike interface {
 	Create(ctx context.Context, req LikeCreateRequest) (model.Like, error)
-	Delete(ctx context.Context, req DeleteLikeRequest) error
+	Delete(ctx context.Context, userID, jokeID string) error
 
 	query.ILike
 }
@@ -42,7 +42,6 @@ func (l like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, er
 		return model.Like{}, err
 	}
 
-	// Save in the data source
 	return l.command.Create(ctx, model.Like{
 		UserID:    req.UserID,
 		JokeID:    req.JokeID,
@@ -50,16 +49,13 @@ func (l like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, er
 	})
 }
 
-type DeleteLikeRequest struct {
-	UserID string `validate:"required,uuid"`
-	JokeID string `validate:"required,uuid"`
-}
-
-func (l like) Delete(ctx context.Context, req DeleteLikeRequest) error {
-	if err := global.Validate().Struct(req); err != nil {
+func (l like) Delete(ctx context.Context, userID string, jokeID string) error {
+	if err := global.Validate().Var(userID, "required,uuid"); err != nil {
+		return err
+	}
+	if err := global.Validate().Var(jokeID, "required,uuid"); err != nil {
 		return err
 	}
 
-	// Delete from the data source
-	return l.command.Delete(ctx, req.UserID, req.JokeID)
+	return l.command.Delete(ctx, userID, jokeID)
 }

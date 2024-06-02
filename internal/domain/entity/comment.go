@@ -36,7 +36,8 @@ func NewComment(
 }
 
 type CommentCreateRequest struct {
-	Text   string `validate:"required,min=4,max=256"`
+	Text string `validate:"required,min=4,max=256"`
+
 	UserID string `validate:"required,uuid"`
 	JokeID string `validate:"required,uuid"`
 }
@@ -46,12 +47,10 @@ func (c comment) Create(ctx context.Context, req CommentCreateRequest) (model.Co
 		return model.Comment{}, err
 	}
 
-	return c.command.Create(ctx, model.Comment{
+	return c.command.Create(ctx, req.UserID, req.JokeID, model.Comment{
 		ID:        uuid.New().String(),
 		Text:      req.Text,
 		CreatedAt: time.Now(),
-		UserID:    req.UserID,
-		JokeID:    req.JokeID,
 	})
 }
 

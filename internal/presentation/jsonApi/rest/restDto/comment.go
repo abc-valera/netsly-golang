@@ -8,8 +8,6 @@ import (
 func NewComment(comment model.Comment) *ogen.Comment {
 	return &ogen.Comment{
 		ID:        comment.ID,
-		JokeID:    comment.JokeID,
-		UserID:    comment.UserID,
 		Text:      comment.Text,
 		CreatedAt: comment.CreatedAt,
 	}

@@ -3,7 +3,7 @@ package boilerDto
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
 )
 
 func NewDomainRoomMessage(roomMessage *sqlboiler.RoomMessage) model.RoomMessage {
@@ -15,13 +15,11 @@ func NewDomainRoomMessage(roomMessage *sqlboiler.RoomMessage) model.RoomMessage 
 		ID:        roomMessage.ID,
 		Text:      roomMessage.Text,
 		CreatedAt: roomMessage.CreatedAt,
-		UserID:    roomMessage.UserID,
-		RoomID:    roomMessage.RoomID,
 	}
 }
 
 func NewDomainRoomMessageWithErrHandle(roomMessage *sqlboiler.RoomMessage, err error) (model.RoomMessage, error) {
-	return NewDomainRoomMessage(roomMessage), errors.HandleErr(err)
+	return NewDomainRoomMessage(roomMessage), errutil.HandleErr(err)
 }
 
 func NewDomainRoomMessages(roomMessages sqlboiler.RoomMessageSlice) model.RoomMessages {
@@ -33,5 +31,5 @@ func NewDomainRoomMessages(roomMessages sqlboiler.RoomMessageSlice) model.RoomMe
 }
 
 func NewDomainRoomMessagesWithErrHandle(roomMessages sqlboiler.RoomMessageSlice, err error) (model.RoomMessages, error) {
-	return NewDomainRoomMessages(roomMessages), errors.HandleErr(err)
+	return NewDomainRoomMessages(roomMessages), errutil.HandleErr(err)
 }

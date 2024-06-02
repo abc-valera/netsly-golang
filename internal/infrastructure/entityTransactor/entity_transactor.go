@@ -8,7 +8,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entityTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
 )
 
 type transactorImpl struct {
@@ -40,7 +40,7 @@ func (t *transactorImpl) PerformTX(ctx context.Context, txFunc func(ctx context.
 		if err := tx.Rollback(); err != nil {
 			return coderr.NewInternalErr(err)
 		}
-		return errors.HandleErr(err)
+		return errutil.HandleErr(err)
 	}
 
 	if err := tx.Commit(); err != nil {

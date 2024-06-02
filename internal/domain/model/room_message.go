@@ -12,9 +12,6 @@ type RoomMessage struct {
 	ID        string
 	Text      string
 	CreatedAt time.Time
-
-	UserID string
-	RoomID string
 }
 
 type RoomMessages []RoomMessage

@@ -3,7 +3,7 @@ package boilerDto
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
 )
 
 func NewDomainComment(comment *sqlboiler.Comment) model.Comment {
@@ -15,12 +15,11 @@ func NewDomainComment(comment *sqlboiler.Comment) model.Comment {
 		ID:        comment.ID,
 		Text:      comment.Text,
 		CreatedAt: comment.CreatedAt,
-		UserID:    comment.UserID,
 	}
 }
 
 func NewDomainCommentWithErrHandle(comment *sqlboiler.Comment, err error) (model.Comment, error) {
-	return NewDomainComment(comment), errors.HandleErr(err)
+	return NewDomainComment(comment), errutil.HandleErr(err)
 }
 
 func NewDomainComments(comments sqlboiler.CommentSlice) model.Comments {
@@ -32,5 +31,5 @@ func NewDomainComments(comments sqlboiler.CommentSlice) model.Comments {
 }
 
 func NewDomainCommentsWithErrHandle(comments sqlboiler.CommentSlice, err error) (model.Comments, error) {
-	return NewDomainComments(comments), errors.HandleErr(err)
+	return NewDomainComments(comments), errutil.HandleErr(err)
 }

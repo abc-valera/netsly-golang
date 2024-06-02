@@ -39,7 +39,8 @@ type JokeCreateRequest struct {
 	Title       string `validate:"required,min=4,max=64"`
 	Text        string `validate:"required,min=4,max=4096"`
 	Explanation string `validate:"max=4096"`
-	UserID      string `validate:"required,uuid"`
+
+	UserID string `validate:"required,uuid"`
 }
 
 func (j joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error) {
@@ -47,13 +48,12 @@ func (j joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, er
 		return model.Joke{}, err
 	}
 
-	return j.command.Create(ctx, model.Joke{
+	return j.command.Create(ctx, req.UserID, model.Joke{
 		ID:          uuid.New().String(),
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation,
 		CreatedAt:   time.Now(),
-		UserID:      req.UserID,
 	})
 }
 

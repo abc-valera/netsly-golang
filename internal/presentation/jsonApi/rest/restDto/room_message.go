@@ -8,8 +8,6 @@ import (
 func NewRoomMessage(roomMessage model.RoomMessage) *ogen.RoomMessage {
 	return &ogen.RoomMessage{
 		ID:        roomMessage.ID,
-		RoomID:    roomMessage.RoomID,
-		UserID:    roomMessage.UserID,
 		Text:      roomMessage.Text,
 		CreatedAt: roomMessage.CreatedAt,
 	}

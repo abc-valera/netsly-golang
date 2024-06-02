@@ -3,7 +3,7 @@ package boilerDto
 import (
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
 )
 
 func NewDomainJoke(joke *sqlboiler.Joke) model.Joke {
@@ -16,12 +16,11 @@ func NewDomainJoke(joke *sqlboiler.Joke) model.Joke {
 		Text:        joke.Text,
 		Explanation: joke.Explanation,
 		CreatedAt:   joke.CreatedAt,
-		UserID:      joke.UserID,
 	}
 }
 
 func NewDomainJokeWithErrHandle(joke *sqlboiler.Joke, err error) (model.Joke, error) {
-	return NewDomainJoke(joke), errors.HandleErr(err)
+	return NewDomainJoke(joke), errutil.HandleErr(err)
 }
 
 func NewDomainJokes(jokes sqlboiler.JokeSlice) model.Jokes {
@@ -33,5 +32,5 @@ func NewDomainJokes(jokes sqlboiler.JokeSlice) model.Jokes {
 }
 
 func NewDomainJokesWithErrHandle(jokes sqlboiler.JokeSlice, err error) (model.Jokes, error) {
-	return NewDomainJokes(jokes), errors.HandleErr(err)
+	return NewDomainJokes(jokes), errutil.HandleErr(err)
 }

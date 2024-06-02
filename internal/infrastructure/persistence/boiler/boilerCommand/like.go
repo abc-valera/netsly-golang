@@ -7,7 +7,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/boilerDto"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
@@ -37,5 +37,5 @@ func (l like) Delete(ctx context.Context, userID string, jokeID string) error {
 		return err
 	}
 	_, err = like.Delete(ctx, l.executor)
-	return errors.HandleErr(err)
+	return errutil.HandleErr(err)
 }

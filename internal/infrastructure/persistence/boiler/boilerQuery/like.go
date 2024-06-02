@@ -7,7 +7,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/boilerDto"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
@@ -23,10 +23,10 @@ func NewLike(executor boil.ContextExecutor) query.ILike {
 
 func (l like) CountByJokeID(ctx context.Context, jokeID string) (int, error) {
 	count, err := sqlboiler.Likes(sqlboiler.LikeWhere.JokeID.EQ(jokeID)).Count(ctx, l.executor)
-	return int(count), errors.HandleErr(err)
+	return int(count), errutil.HandleErr(err)
 }
 
-func (l like) GetAllByJokeID(ctx context.Context, jokeID string) (model.Likes, error) {
+func (l like) GatAllByJokeID(ctx context.Context, jokeID string) (model.Likes, error) {
 	likes, err := sqlboiler.Likes(sqlboiler.LikeWhere.JokeID.EQ(jokeID)).All(ctx, l.executor)
 	return boilerDto.NewDomainLikesWithErrHandle(likes, err)
 }

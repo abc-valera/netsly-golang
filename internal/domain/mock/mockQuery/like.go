@@ -79,12 +79,12 @@ func (_c *Like_CountByJokeID_Call) RunAndReturn(run func(context.Context, string
 	return _c
 }
 
-// GetAllByJokeID provides a mock function with given fields: ctx, jokeID
-func (_m *Like) GetAllByJokeID(ctx context.Context, jokeID string) (model.Likes, error) {
+// GatAllByJokeID provides a mock function with given fields: ctx, jokeID
+func (_m *Like) GatAllByJokeID(ctx context.Context, jokeID string) (model.Likes, error) {
 	ret := _m.Called(ctx, jokeID)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetAllByJokeID")
+		panic("no return value specified for GatAllByJokeID")
 	}
 
 	var r0 model.Likes
@@ -109,31 +109,31 @@ func (_m *Like) GetAllByJokeID(ctx context.Context, jokeID string) (model.Likes,
 	return r0, r1
 }
 
-// Like_GetAllByJokeID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAllByJokeID'
-type Like_GetAllByJokeID_Call struct {
+// Like_GatAllByJokeID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GatAllByJokeID'
+type Like_GatAllByJokeID_Call struct {
 	*mock.Call
 }
 
-// GetAllByJokeID is a helper method to define mock.On call
+// GatAllByJokeID is a helper method to define mock.On call
 //   - ctx context.Context
 //   - jokeID string
-func (_e *Like_Expecter) GetAllByJokeID(ctx interface{}, jokeID interface{}) *Like_GetAllByJokeID_Call {
-	return &Like_GetAllByJokeID_Call{Call: _e.mock.On("GetAllByJokeID", ctx, jokeID)}
+func (_e *Like_Expecter) GatAllByJokeID(ctx interface{}, jokeID interface{}) *Like_GatAllByJokeID_Call {
+	return &Like_GatAllByJokeID_Call{Call: _e.mock.On("GatAllByJokeID", ctx, jokeID)}
 }
 
-func (_c *Like_GetAllByJokeID_Call) Run(run func(ctx context.Context, jokeID string)) *Like_GetAllByJokeID_Call {
+func (_c *Like_GatAllByJokeID_Call) Run(run func(ctx context.Context, jokeID string)) *Like_GatAllByJokeID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *Like_GetAllByJokeID_Call) Return(_a0 model.Likes, _a1 error) *Like_GetAllByJokeID_Call {
+func (_c *Like_GatAllByJokeID_Call) Return(_a0 model.Likes, _a1 error) *Like_GatAllByJokeID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *Like_GetAllByJokeID_Call) RunAndReturn(run func(context.Context, string) (model.Likes, error)) *Like_GetAllByJokeID_Call {
+func (_c *Like_GatAllByJokeID_Call) RunAndReturn(run func(context.Context, string) (model.Likes, error)) *Like_GatAllByJokeID_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/boilerDto"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
@@ -21,13 +21,14 @@ func NewRoomMessage(executor boil.ContextExecutor) command.IRoomMessage {
 	}
 }
 
-func (r roomMessage) Create(ctx context.Context, req model.RoomMessage) (model.RoomMessage, error) {
+func (r roomMessage) Create(ctx context.Context, userID, roomID string, req model.RoomMessage) (model.RoomMessage, error) {
 	roomMessage := sqlboiler.RoomMessage{
 		ID:        req.ID,
 		Text:      req.Text,
 		CreatedAt: req.CreatedAt,
-		UserID:    req.UserID,
-		RoomID:    req.RoomID,
+
+		UserID: userID,
+		RoomID: roomID,
 	}
 	err := roomMessage.Insert(ctx, r.executor, boil.Infer())
 	return boilerDto.NewDomainRoomMessageWithErrHandle(&roomMessage, err)
@@ -36,7 +37,7 @@ func (r roomMessage) Create(ctx context.Context, req model.RoomMessage) (model.R
 func (r roomMessage) Update(ctx context.Context, id string, req command.RoomMessageUpdate) (model.RoomMessage, error) {
 	roomMessage, err := sqlboiler.FindRoomMessage(ctx, r.executor, id)
 	if err != nil {
-		return model.RoomMessage{}, errors.HandleErr(err)
+		return model.RoomMessage{}, errutil.HandleErr(err)
 	}
 	if req.Text.IsPresent() {
 		roomMessage.Text = req.Text.Value()
@@ -48,8 +49,8 @@ func (r roomMessage) Update(ctx context.Context, id string, req command.RoomMess
 func (r roomMessage) Delete(ctx context.Context, id string) error {
 	roomMessage, err := sqlboiler.FindRoomMessage(ctx, r.executor, id)
 	if err != nil {
-		return errors.HandleErr(err)
+		return errutil.HandleErr(err)
 	}
 	_, err = roomMessage.Delete(ctx, r.executor)
-	return errors.HandleErr(err)
+	return errutil.HandleErr(err)
 }

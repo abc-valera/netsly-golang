@@ -50,8 +50,8 @@ func (r room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 		ID:            uuid.New().String(),
 		Name:          req.Name,
 		Description:   req.Description,
-		CreatedAt:     time.Now(),
 		CreatorUserID: req.CreatorUserID,
+		CreatedAt:     time.Now(),
 	})
 }
 

@@ -8,7 +8,6 @@ import (
 func NewJoke(joke model.Joke) *ogen.Joke {
 	return &ogen.Joke{
 		ID:          joke.ID,
-		UserID:      joke.UserID,
 		Title:       joke.Title,
 		Text:        joke.Text,
 		Explanation: ogen.NewOptString(joke.Explanation),

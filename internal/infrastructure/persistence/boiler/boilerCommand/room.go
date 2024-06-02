@@ -7,7 +7,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/boilerDto"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
@@ -36,7 +36,7 @@ func (r room) Create(ctx context.Context, req model.Room) (model.Room, error) {
 func (r room) Update(ctx context.Context, id string, req command.RoomUpdate) (model.Room, error) {
 	room, err := sqlboiler.FindRoom(ctx, r.executor, id)
 	if err != nil {
-		return model.Room{}, errors.HandleErr(err)
+		return model.Room{}, errutil.HandleErr(err)
 	}
 	if req.Description.IsPresent() {
 		room.Description = req.Description.Value()
@@ -48,8 +48,8 @@ func (r room) Update(ctx context.Context, id string, req command.RoomUpdate) (mo
 func (r room) Delete(ctx context.Context, id string) error {
 	room, err := sqlboiler.FindRoom(ctx, r.executor, id)
 	if err != nil {
-		return errors.HandleErr(err)
+		return errutil.HandleErr(err)
 	}
 	_, err = room.Delete(ctx, r.executor)
-	return errors.HandleErr(err)
+	return errutil.HandleErr(err)
 }

@@ -25,9 +25,9 @@ func (_m *RoomMessage) EXPECT() *RoomMessage_Expecter {
 	return &RoomMessage_Expecter{mock: &_m.Mock}
 }
 
-// Create provides a mock function with given fields: ctx, req
-func (_m *RoomMessage) Create(ctx context.Context, req model.RoomMessage) (model.RoomMessage, error) {
-	ret := _m.Called(ctx, req)
+// Create provides a mock function with given fields: ctx, userID, roomID, req
+func (_m *RoomMessage) Create(ctx context.Context, userID string, roomID string, req model.RoomMessage) (model.RoomMessage, error) {
+	ret := _m.Called(ctx, userID, roomID, req)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
@@ -35,17 +35,17 @@ func (_m *RoomMessage) Create(ctx context.Context, req model.RoomMessage) (model
 
 	var r0 model.RoomMessage
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, model.RoomMessage) (model.RoomMessage, error)); ok {
-		return rf(ctx, req)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, model.RoomMessage) (model.RoomMessage, error)); ok {
+		return rf(ctx, userID, roomID, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, model.RoomMessage) model.RoomMessage); ok {
-		r0 = rf(ctx, req)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, model.RoomMessage) model.RoomMessage); ok {
+		r0 = rf(ctx, userID, roomID, req)
 	} else {
 		r0 = ret.Get(0).(model.RoomMessage)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, model.RoomMessage) error); ok {
-		r1 = rf(ctx, req)
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, model.RoomMessage) error); ok {
+		r1 = rf(ctx, userID, roomID, req)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -60,14 +60,16 @@ type RoomMessage_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
+//   - userID string
+//   - roomID string
 //   - req model.RoomMessage
-func (_e *RoomMessage_Expecter) Create(ctx interface{}, req interface{}) *RoomMessage_Create_Call {
-	return &RoomMessage_Create_Call{Call: _e.mock.On("Create", ctx, req)}
+func (_e *RoomMessage_Expecter) Create(ctx interface{}, userID interface{}, roomID interface{}, req interface{}) *RoomMessage_Create_Call {
+	return &RoomMessage_Create_Call{Call: _e.mock.On("Create", ctx, userID, roomID, req)}
 }
 
-func (_c *RoomMessage_Create_Call) Run(run func(ctx context.Context, req model.RoomMessage)) *RoomMessage_Create_Call {
+func (_c *RoomMessage_Create_Call) Run(run func(ctx context.Context, userID string, roomID string, req model.RoomMessage)) *RoomMessage_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.RoomMessage))
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(model.RoomMessage))
 	})
 	return _c
 }
@@ -77,7 +79,7 @@ func (_c *RoomMessage_Create_Call) Return(_a0 model.RoomMessage, _a1 error) *Roo
 	return _c
 }
 
-func (_c *RoomMessage_Create_Call) RunAndReturn(run func(context.Context, model.RoomMessage) (model.RoomMessage, error)) *RoomMessage_Create_Call {
+func (_c *RoomMessage_Create_Call) RunAndReturn(run func(context.Context, string, string, model.RoomMessage) (model.RoomMessage, error)) *RoomMessage_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }

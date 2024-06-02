@@ -12,9 +12,6 @@ type Comment struct {
 	ID        string
 	Text      string
 	CreatedAt time.Time
-
-	UserID string
-	JokeID string
 }
 
 type Comments []Comment

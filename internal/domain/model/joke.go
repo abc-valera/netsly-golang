@@ -14,8 +14,6 @@ type Joke struct {
 	Text        string
 	Explanation string
 	CreatedAt   time.Time
-
-	UserID string
 }
 
 type Jokes []Joke

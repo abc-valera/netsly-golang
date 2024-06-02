@@ -7,7 +7,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/boilerDto"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errors"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
@@ -38,7 +38,7 @@ func (u user) Create(ctx context.Context, req model.User) (model.User, error) {
 func (u user) Update(ctx context.Context, id string, req command.UserUpdate) (model.User, error) {
 	user, err := sqlboiler.FindUser(ctx, u.executor, id)
 	if err != nil {
-		return model.User{}, errors.HandleErr(err)
+		return model.User{}, errutil.HandleErr(err)
 	}
 	if req.HashedPassword.IsPresent() {
 		user.HashedPassword = req.HashedPassword.Value()
@@ -56,8 +56,8 @@ func (u user) Update(ctx context.Context, id string, req command.UserUpdate) (mo
 func (u user) Delete(ctx context.Context, id string) error {
 	user, err := sqlboiler.FindUser(ctx, u.executor, id)
 	if err != nil {
-		return errors.HandleErr(err)
+		return errutil.HandleErr(err)
 	}
 	_, err = user.Delete(ctx, u.executor)
-	return errors.HandleErr(err)
+	return errutil.HandleErr(err)
 }

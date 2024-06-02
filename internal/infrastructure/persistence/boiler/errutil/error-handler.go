@@ -1,4 +1,4 @@
-package errors
+package errutil
 
 import (
 	"strings"
@@ -27,14 +27,14 @@ func HandleErr(err error) error {
 			return model.ErrJokeNotFound
 		}
 
-		// comments table
-		if strings.Contains(err.Error(), "comment") {
-			return model.ErrCommentNotFound
-		}
-
 		// likes table
 		if strings.Contains(err.Error(), "like") {
 			return model.ErrLikeNotFound
+		}
+
+		// comments table
+		if strings.Contains(err.Error(), "comment") {
+			return model.ErrCommentNotFound
 		}
 
 		// chat rooms table

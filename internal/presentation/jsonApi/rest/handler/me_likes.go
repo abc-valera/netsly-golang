@@ -42,8 +42,5 @@ func (h MeLikesHandler) MeLikesDel(ctx context.Context, req *ogen.MeLikesDelReq)
 		return err
 	}
 
-	return h.like.Delete(ctx, entity.DeleteLikeRequest{
-		UserID: userID,
-		JokeID: req.JokeID,
-	})
+	return h.like.Delete(ctx, userID, req.JokeID)
 }
