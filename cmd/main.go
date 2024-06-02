@@ -14,7 +14,6 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/entityTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi"
@@ -23,55 +22,33 @@ import (
 )
 
 func main() {
-	// Load environment variables
-	var (
-		modeEnv = LoadEnv("MODE")
-
-		loggerServiceEnv = LoadEnv("LOGGER_SERVICE")
-		emailSenderEnv   = LoadEnv("EMAIL_SENDER_SERVICE")
-		taskQueuerEnv    = LoadEnv("TASK_QUEUER_SERVICE")
-
-		accessTokenDurationEnv  = LoadEnvTime("ACCESS_TOKEN_DURATION")
-		refreshTokenDurationEnv = LoadEnvTime("REFRESH_TOKEN_DURATION")
-		signKeyEnv              = LoadEnv("JWT_SIGN_KEY")
-
-		postgresUrlEnv = LoadEnv("POSTGRES_URL")
-
-		webAppPortEnv         = os.Getenv("WEB_APP_PORT")
-		webApptemplatePathEnv = os.Getenv("WEB_APP_TEMPLATE_PATH")
-		webAppStaticPathEnv   = os.Getenv("WEB_APP_STATIC_PATH")
-
-		jsonApiPortEnv       = os.Getenv("JSON_API_PORT")
-		jsonApiStaticPathEnv = os.Getenv("JSON_API_STATIC_PATH")
-
-		grpcApiPortEnv       = os.Getenv("GRPC_API_PORT")
-		grpcApiStaticPathEnv = os.Getenv("GRPC_API_STATIC_PATH")
-	)
-
 	// Init global application mode
-	global.InitMode(mode.Mode(modeEnv))
+	global.InitMode(mode.Mode(LoadEnv("MODE")))
 
 	// Init services
-	services := service.NewServices(
-		loggerServiceEnv,
-		emailSenderEnv,
-		taskQueuerEnv,
+	services := service.New(
+		LoadEnv("LOGGER_SERVICE"),
+		LoadEnv("EMAIL_SENDER_SERVICE"),
+		LoadEnv("TASK_QUEUER_SERVICE"),
 	)
 
 	// Init global logger
 	global.InitLog(services.Logger)
 
-	// Init persistence dependencies
-	db := coderr.Must(boiler.Init(postgresUrlEnv))
-
 	// Init persistence
-	commands, queries := persistence.NewCommands(db), persistence.NewQueries(db)
+	persitenceDeps := persistence.NewDependency(LoadEnv("POSTGRES_URL"))
+	commands := persistence.NewCommands(persistence.CommandsDependencies{
+		Boiler: persitenceDeps.Boiler,
+	})
+	queries := persistence.NewQueries(persistence.QueriesDependencies{
+		Boiler: persitenceDeps.Boiler,
+	})
 
 	// Init entities
 	entities := domain.NewEntities(commands, queries, services)
 
 	// Init transaction
-	tx := entityTransactor.NewTransactor(db, services)
+	tx := entityTransactor.NewTransactor(persitenceDeps, services)
 
 	// Init usecases
 	usecases := application.NewUseCases(tx, entities, services)
@@ -85,28 +62,28 @@ func main() {
 	switch *entrypoint {
 	case "webApp":
 		serverStart, serverGracefulStop = webApp.NewServer(
-			webAppPortEnv,
-			webApptemplatePathEnv,
-			webAppStaticPathEnv,
+			LoadEnv("WEB_APP_PORT"),
+			LoadEnv("WEB_APP_TEMPLATE_PATH"),
+			LoadEnv("WEB_APP_STATIC_PATH"),
 			services,
 			entities,
 			usecases,
 		)
 	case "jsonApi":
 		serverStart, serverGracefulStop = jsonApi.NewServer(
-			jsonApiPortEnv,
-			jsonApiStaticPathEnv,
-			signKeyEnv,
-			accessTokenDurationEnv,
-			refreshTokenDurationEnv,
+			LoadEnv("JSON_API_PORT"),
+			LoadEnv("JSON_API_STATIC_PATH"),
+			LoadEnv("JWT_SIGN_KEY"),
+			LoadEnvTime("ACCESS_TOKEN_DURATION"),
+			LoadEnvTime("REFRESH_TOKEN_DURATION"),
 			entities,
 			services,
 			usecases,
 		)
 	case "grpcApi":
 		serverStart, serverGracefulStop = grpcApi.RunServer(
-			grpcApiPortEnv,
-			grpcApiStaticPathEnv,
+			LoadEnv("GRPC_API_PORT"),
+			LoadEnv("GRPC_API_STATIC_PATH"),
 			services,
 			usecases,
 		)

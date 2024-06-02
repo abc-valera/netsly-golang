@@ -10,7 +10,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/taskQueuer/dummyTaskQueuer"
 )
 
-func NewServices(
+func New(
 	loggerService string,
 
 	emailSenderService string,

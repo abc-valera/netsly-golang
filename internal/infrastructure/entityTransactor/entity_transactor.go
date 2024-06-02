@@ -2,7 +2,6 @@ package entityTransactor
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
@@ -12,38 +11,48 @@ import (
 )
 
 type transactorImpl struct {
-	db *sql.DB
+	deps persistence.PeristenceDependencies
 
 	// These are used to create new entities for the transaction
 	services domain.Services
 }
 
-func NewTransactor(db *sql.DB, services domain.Services) entityTransactor.ITransactor {
+func NewTransactor(
+	deps persistence.PeristenceDependencies,
+	services domain.Services,
+) entityTransactor.ITransactor {
 	return &transactorImpl{
-		db:       db,
+		deps:     deps,
 		services: services,
 	}
 }
 
-func (t *transactorImpl) PerformTX(ctx context.Context, txFunc func(ctx context.Context, entities domain.Entities) error) error {
-	tx, err := t.db.BeginTx(ctx, nil)
+func (t transactorImpl) PerformTX(
+	ctx context.Context,
+	txFunc func(ctx context.Context, entities domain.Entities) error,
+) error {
+	boilerTX, err := t.deps.Boiler.BeginTx(ctx, nil)
 	if err != nil {
 		return coderr.NewInternalErr(err)
 	}
 
 	txEntities := domain.NewEntities(
-		persistence.NewCommands(tx),
-		persistence.NewQueries(tx),
+		persistence.NewCommands(persistence.CommandsDependencies{
+			Boiler: boilerTX,
+		}),
+		persistence.NewQueries(persistence.QueriesDependencies{
+			Boiler: boilerTX,
+		}),
 		t.services,
 	)
 	if err := txFunc(ctx, txEntities); err != nil {
-		if err := tx.Rollback(); err != nil {
+		if err := boilerTX.Rollback(); err != nil {
 			return coderr.NewInternalErr(err)
 		}
 		return errutil.HandleErr(err)
 	}
 
-	if err := tx.Commit(); err != nil {
+	if err := boilerTX.Commit(); err != nil {
 		return coderr.NewInternalErr(err)
 	}
 

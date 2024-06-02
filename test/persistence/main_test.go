@@ -86,7 +86,13 @@ func TestMain(m *testing.M) {
 		r.NoError(err)
 		_ = res
 
-		return ctx, r, infraPersistence.NewCommands(tx), infraPersistence.NewQueries(tx)
+		return ctx, r,
+			infraPersistence.NewCommands(infraPersistence.CommandsDependencies{
+				Boiler: tx,
+			}),
+			infraPersistence.NewQueries(infraPersistence.QueriesDependencies{
+				Boiler: tx,
+			})
 	}
 
 	m.Run()
