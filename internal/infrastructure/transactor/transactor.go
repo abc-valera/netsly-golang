@@ -1,13 +1,14 @@
-package entityTransactor
+package transactor
 
 import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entityTransactor"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/transactor"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/errutil"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/commandTransactor"
 )
 
 type transactorImpl struct {
@@ -20,7 +21,7 @@ type transactorImpl struct {
 func NewTransactor(
 	deps persistence.PeristenceDependencies,
 	services domain.Services,
-) entityTransactor.ITransactor {
+) transactor.ITransactor {
 	return &transactorImpl{
 		deps:     deps,
 		services: services,
@@ -40,6 +41,7 @@ func (t transactorImpl) PerformTX(
 		persistence.NewCommands(persistence.CommandsDependencies{
 			Boiler: boilerTX,
 		}),
+		commandTransactor.New(t.deps),
 		persistence.NewQueries(persistence.QueriesDependencies{
 			Boiler: boilerTX,
 		}),

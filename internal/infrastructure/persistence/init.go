@@ -15,7 +15,7 @@ type PeristenceDependencies struct {
 	Boiler *sql.DB
 }
 
-func NewDependency(postgresUrl string) PeristenceDependencies {
+func NewDependencies(postgresUrl string) PeristenceDependencies {
 	return PeristenceDependencies{
 		Boiler: coderr.Must(boiler.Init(postgresUrl)),
 	}
@@ -34,6 +34,7 @@ func NewCommands(deps CommandsDependencies) persistence.Commands {
 		Room:        boilerCommand.NewRoom(deps.Boiler),
 		RoomMember:  boilerCommand.NewRoomMember(deps.Boiler),
 		RoomMessage: boilerCommand.NewRoomMessage(deps.Boiler),
+		FileInfo:    boilerCommand.NewFileInfo(deps.Boiler),
 	}
 }
 
@@ -50,5 +51,6 @@ func NewQueries(deps QueriesDependencies) persistence.Queries {
 		Room:        boilerQuery.NewRoom(deps.Boiler),
 		RoomMember:  boilerQuery.NewRoomMember(deps.Boiler),
 		RoomMessage: boilerQuery.NewRoomMessage(deps.Boiler),
+		FileInfo:    boilerQuery.NewFileInfo(deps.Boiler),
 	}
 }

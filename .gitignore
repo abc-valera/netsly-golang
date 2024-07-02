@@ -10,3 +10,11 @@ build/
 # Env files
 env/*
 !env/example.env
+
+# Logs
+log/*
+!log/.gitkeep
+
+# Static files
+static/*
+!static/.gitkeep

@@ -3,10 +3,9 @@ package validator
 import (
 	"errors"
 	"fmt"
-	"reflect"
 
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/optional"
+	"github.com/abc-valera/netsly-api-golang/internal/core/enum"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -22,78 +21,20 @@ type validate struct {
 }
 
 func New() IValidator {
-	val := validator.New(validator.WithRequiredStructEnabled())
+	v := validator.New(validator.WithRequiredStructEnabled())
 
-	optionalCustomTypeFunc := func(field reflect.Value) interface{} {
-		opt := field.Interface()
-		switch t := opt.(type) {
-		case optional.Optional[string]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		case optional.Optional[int]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		case optional.Optional[int32]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		case optional.Optional[int64]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		case optional.Optional[uint]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		case optional.Optional[uint32]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		case optional.Optional[uint64]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		case optional.Optional[bool]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		case optional.Optional[float32]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		case optional.Optional[float64]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		case optional.Optional[byte]:
-			if t.IsPresent() {
-				return t.Value()
-			}
-		default:
-			return nil
-		}
-		return nil
+	// Define and register custom validation functions here:
+
+	// IEnum validation
+	validateIEnum := func(fl validator.FieldLevel) bool {
+		value := fl.Field().Interface().(enum.IEnum)
+		return value.IsValid()
 	}
 
-	val.RegisterCustomTypeFunc(
-		optionalCustomTypeFunc,
-		optional.Optional[string]{},
-		optional.Optional[int]{},
-		optional.Optional[int32]{},
-		optional.Optional[int64]{},
-		optional.Optional[uint]{},
-		optional.Optional[uint32]{},
-		optional.Optional[uint64]{},
-		optional.Optional[bool]{},
-		optional.Optional[float32]{},
-		optional.Optional[float64]{},
-		optional.Optional[byte]{},
-	)
+	v.RegisterValidation("enum", validateIEnum)
 
 	return validate{
-		validate: val,
+		validate: v,
 	}
 }
 

@@ -20,7 +20,7 @@ func NewRoomMember(executor boil.ContextExecutor) query.IRoomMember {
 	}
 }
 
-func (r roomMember) GetByRoomID(ctx context.Context, roomID string) (model.RoomMembers, error) {
+func (r roomMember) GetAllByRoomID(ctx context.Context, roomID string) (model.RoomMembers, error) {
 	mods := sqlboiler.RoomMemberWhere.RoomID.EQ(roomID)
 	return boilerDto.NewDomainRoomMembersWithErrHandle(sqlboiler.RoomMembers(mods).All(ctx, r.executor))
 }

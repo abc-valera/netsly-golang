@@ -57,6 +57,14 @@ CREATE TABLE "RoomMember" (
   PRIMARY KEY ("user_id", "room_id")
 );
 
+CREATE TABLE "FileInfo" (
+  "id" uuid PRIMARY KEY,
+  "name" varchar NOT NULL,
+  "type" int NOT NULL,
+  "size" int NOT NULL,
+  "created_at" timestamp NOT NULL
+);
+
 CREATE UNIQUE INDEX ON "Joke" ("title", "user_id");
 
 ALTER TABLE "Joke" ADD FOREIGN KEY ("user_id") REFERENCES "User" ("id");
@@ -82,6 +90,7 @@ ALTER TABLE "RoomMember" ADD FOREIGN KEY ("room_id") REFERENCES "Room" ("id");
 
 -- +goose Down
 -- +goose StatementBegin
+DROP TABLE IF EXISTS "FileInfo";
 DROP TABLE IF EXISTS "RoomMember";
 DROP TABLE IF EXISTS "RoomMessage";
 DROP TABLE IF EXISTS "Room";

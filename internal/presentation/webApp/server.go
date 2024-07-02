@@ -23,7 +23,7 @@ func NewServer(
 
 	services domain.Services,
 	entities domain.Entities,
-	usecases application.UseCases,
+	usecases application.Usecases,
 ) (
 	serverStart func(),
 	serverGracefulStop func(),
@@ -55,7 +55,7 @@ func NewHandler(
 
 	entities domain.Entities,
 	services domain.Services,
-	usecases application.UseCases,
+	usecases application.Usecases,
 ) http.Handler {
 	// Init handlers
 	handlers := handler.NewHandlers(

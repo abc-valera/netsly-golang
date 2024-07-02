@@ -37,19 +37,19 @@ type LikeCreateRequest struct {
 	JokeID string `validate:"required,uuid"`
 }
 
-func (l like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, error) {
+func (e like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, error) {
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Like{}, err
 	}
 
-	return l.command.Create(ctx, model.Like{
+	return e.command.Create(ctx, model.Like{
 		UserID:    req.UserID,
 		JokeID:    req.JokeID,
 		CreatedAt: time.Now(),
 	})
 }
 
-func (l like) Delete(ctx context.Context, userID string, jokeID string) error {
+func (e like) Delete(ctx context.Context, userID string, jokeID string) error {
 	if err := global.Validate().Var(userID, "required,uuid"); err != nil {
 		return err
 	}
@@ -57,5 +57,5 @@ func (l like) Delete(ctx context.Context, userID string, jokeID string) error {
 		return err
 	}
 
-	return l.command.Delete(ctx, userID, jokeID)
+	return e.command.Delete(ctx, userID, jokeID)
 }

@@ -6,6 +6,7 @@ import (
 
 type Services struct {
 	Logger        service.ILogger
+	FileManager   service.IFileManager
 	EmailSender   service.IEmailSender
 	PasswordMaker service.IPasswordMaker
 	TaskQueuer    service.ITaskQueuer

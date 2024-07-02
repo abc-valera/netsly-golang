@@ -6,14 +6,14 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entityTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/selector"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/transactor"
 )
 
 // Seed is used to populate the database with initial data.
 // Stops the program execution if an error occurs.
-func Seed(entities domain.Entities, tx entityTransactor.ITransactor) {
+func Seed(entities domain.Entities, tx transactor.ITransactor) {
 	params := selector.Selector{
 		Order: "asc",
 		Limit: 100,
@@ -196,7 +196,7 @@ func Seed(entities domain.Entities, tx entityTransactor.ITransactor) {
 			coderr.Must(entities.Joke.Create(context.Background(), joke))
 		}
 		// Generated jokes
-		jokes := coderr.Must(entities.Joke.SearchByTitle(context.Background(), "", params))
+		jokes := coderr.Must(entities.Joke.SearchAllByTitle(context.Background(), "", params))
 
 		// Likes
 		likes := []entity.LikeCreateRequest{

@@ -20,6 +20,7 @@ func InitMode(m mode.Mode) {
 	if m != mode.Development && m != mode.Production {
 		coderr.Fatal("Provided invalid application mode. Should be either 'development' or 'production'")
 	}
+
 	appModeInitOnce.Do(func() {
 		appMode = m
 	})
@@ -35,6 +36,8 @@ var (
 )
 
 func InitLog(l service.ILogger) {
+	coderr.NotNil(l)
+
 	logInitOnce.Do(func() {
 		log = l
 	})

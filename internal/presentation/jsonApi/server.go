@@ -27,7 +27,7 @@ func newHandler(
 
 	entities domain.Entities,
 	services domain.Services,
-	usecases application.UseCases,
+	usecases application.Usecases,
 ) http.Handler {
 	// Init chi router
 	r := chi.NewRouter()
@@ -58,7 +58,7 @@ func newHandler(
 			handler.Rooms
 		}{
 			Handler:           errutil.NewHandler(),
-			SignHandler:       handler.NewSignHandler(authManager, usecases.SignUseCase),
+			SignHandler:       handler.NewSignHandler(authManager, usecases.SignUsecase),
 			MeHandler:         handler.NewMeHandler(entities.User),
 			MeJokesHandler:    handler.NewMeJokesHandler(entities.Joke),
 			MeCommentsHandler: handler.NewMeCommentsHandler(entities.Comment),
@@ -103,7 +103,7 @@ func NewServer(
 
 	entities domain.Entities,
 	services domain.Services,
-	usecases application.UseCases,
+	usecases application.Usecases,
 ) (
 	serverStart func(),
 	serverGracefulStop func(),

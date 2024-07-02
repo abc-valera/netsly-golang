@@ -40,14 +40,14 @@ func (j joke) Update(ctx context.Context, id string, req command.JokeUpdate) (mo
 	if err != nil {
 		return model.Joke{}, errutil.HandleErr(err)
 	}
-	if req.Title.IsPresent() {
-		joke.Title = req.Title.Value()
+	if req.Title != nil {
+		joke.Title = *req.Title
 	}
-	if req.Text.IsPresent() {
-		joke.Text = req.Text.Value()
+	if req.Text != nil {
+		joke.Text = *req.Text
 	}
-	if req.Explanation.IsPresent() {
-		joke.Explanation = req.Explanation.Value()
+	if req.Explanation != nil {
+		joke.Explanation = *req.Explanation
 	}
 	_, err = joke.Update(ctx, j.executor, boil.Infer())
 	return boilerDto.NewDomainJokeWithErrHandle(joke, err)

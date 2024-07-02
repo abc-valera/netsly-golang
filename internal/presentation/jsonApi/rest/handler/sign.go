@@ -11,12 +11,12 @@ import (
 
 type SignHandler struct {
 	authManager auth.Manager
-	signUsecase application.ISignUseCase
+	signUsecase application.ISignUsecase
 }
 
 func NewSignHandler(
 	authManager auth.Manager,
-	signUsecase application.ISignUseCase,
+	signUsecase application.ISignUsecase,
 ) SignHandler {
 	return SignHandler{
 		authManager: authManager,

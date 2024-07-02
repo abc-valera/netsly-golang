@@ -10,11 +10,31 @@ Netsly is a social network based on the idea of sharing and discussing jokes. It
 
 The project is built based on the Clean Architecture with the use of Domain Driven Design patterns.
 
-Layers of the application can be shown as follows:
+Here’s the circle diagram of the Architecture:
 
-![architecture diagram](images/architecture_circle_diagram.png)
+<img src="images/architecture_circle_diagram.png" width="450">
 
-All the code is located in the `internal` directory. The `cmd` directory contains the entry point of the application.
+The Clean Architecture separates the concerns into different layers which helps to test, maintain, and modify code more easily.The Clean Architecture allows business logic and presentation not to be dependent on specific implementations, but to depend on abstractions defined in the Domain layer.
+
+### Folder structure
+
+All the code, as well as unit tests and mocks, is located in the `internal` directory.
+
+Integration tests are located in the `test` folder.
+
+The `cmd` directory contains the entry point of the application.
+
+The `gen` directory contains the generated code.
+
+All the configuration commands are located in the Taskfile (alternative to Makefile).
+
+### Application layers
+
+Inside the `internal` directory, the code is divided into layers, as in the circle diagram.
+
+The following architecture sketch describes the relationships between the layers:
+
+<img src="images/architecture_sketch.png" width="1200">
 
 ## Key technologies
 
@@ -35,13 +55,11 @@ The following list describes technologies used in the project:
   - [Goose](https://github.com/pressly/goose) is used as a database migration tool.
   - [SQLBoiler](https://github.com/volatiletech/sqlboiler) is used as an ORM.
   - PostgreSQL is used as a database.
-  - Redis is used as a cache.
 
 - Service layer:
 
   - [ElasticMail](https://elasticemail.com/) is used as an email api.
   - [Asynq](https://github.com/hibiken/asynq) library with Redis database is used as a task queue.
-  - JWT tokens are used for authentication.
 
 - Presentation layer:
 

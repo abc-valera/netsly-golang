@@ -32,8 +32,8 @@ packages:
       all: True
       outpkg: "mockEntity"
       dir: "internal/domain/mock/mockEntity"
-  github.com/abc-valera/netsly-api-golang/internal/domain/entityTransactor:
+  github.com/abc-valera/netsly-api-golang/internal/domain/transactor:
     config:
       all: True
-      outpkg: "mockEntityTransactor"
-      dir: "internal/domain/mock/mockEntityTransactor"
+      outpkg: "mockTransactor"
+      dir: "internal/domain/mock/mockTransactor"

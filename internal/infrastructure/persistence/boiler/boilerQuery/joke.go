@@ -34,7 +34,7 @@ func (j joke) GetAllByUserID(ctx context.Context, userID string, params selector
 	return boilerDto.NewDomainJokesWithErrHandle(sqlboiler.Jokes(mods...).All(ctx, j.executor))
 }
 
-func (j joke) SearchByTitle(ctx context.Context, keyword string, params selector1.Selector) (model.Jokes, error) {
+func (j joke) SearchAllByTitle(ctx context.Context, keyword string, params selector1.Selector) (model.Jokes, error) {
 	mods := selector.ToBoilerSelectorPipe(
 		params,
 		sqlboiler.JokeWhere.Title.LIKE("%"+keyword+"%"),

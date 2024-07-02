@@ -9,20 +9,20 @@ import (
 )
 
 type SignHandler struct {
-	signUseCase application.ISignUseCase
+	signUsecase application.ISignUsecase
 	pb.UnimplementedSignServiceServer
 }
 
 func NewSignHandler(
-	signUseCase application.ISignUseCase,
+	signUsecase application.ISignUsecase,
 ) pb.SignServiceServer {
 	return SignHandler{
-		signUseCase: signUseCase,
+		signUsecase: signUsecase,
 	}
 }
 
 func (h SignHandler) SignUp(ctx context.Context, req *pb.SignUpRequest) (*pb.SignUpResponse, error) {
-	_, err := h.signUseCase.SignUp(ctx, application.SignUpRequest{
+	_, err := h.signUsecase.SignUp(ctx, application.SignUpRequest{
 		Username: req.Username,
 		Email:    req.Email,
 		Password: req.Password,
@@ -31,7 +31,7 @@ func (h SignHandler) SignUp(ctx context.Context, req *pb.SignUpRequest) (*pb.Sig
 }
 
 func (h SignHandler) SignIn(ctx context.Context, req *pb.SignInRequest) (*pb.SignInResponse, error) {
-	user, err := h.signUseCase.SignIn(ctx, application.SignInRequest{
+	user, err := h.signUsecase.SignIn(ctx, application.SignInRequest{
 		Email:    req.Email,
 		Password: req.Password,
 	})

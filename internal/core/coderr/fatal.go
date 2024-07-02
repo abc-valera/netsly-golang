@@ -29,7 +29,8 @@ func Must[T any](val T, err error) T {
 	return val
 }
 
-func NotNil(val ...interface{}) {
+// NotNil stops program execution if any of the provided values is nil
+func NotNil(val ...any) {
 	for _, v := range val {
 		if v == nil {
 			fmt.Println(caller(2), "fatal: nil value")

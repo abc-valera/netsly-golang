@@ -71,7 +71,7 @@ func HandleErr(err error) error {
 
 		// joke-owner edge
 		if strings.Contains(err.Error(), "joke") {
-			return command.ErrJokeOwnerTitleAlreadyExists
+			return command.ErrJokeAlreadyExists
 		}
 
 		// likes table

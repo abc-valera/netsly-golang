@@ -3,7 +3,6 @@ package command
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/optional"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 )
 
@@ -14,5 +13,5 @@ type IRoomMessage interface {
 }
 
 type RoomMessageUpdate struct {
-	Text optional.Optional[string]
+	Text *string
 }

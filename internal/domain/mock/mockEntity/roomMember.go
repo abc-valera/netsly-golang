@@ -129,6 +129,65 @@ func (_c *RoomMember_Delete_Call) RunAndReturn(run func(context.Context, string,
 	return _c
 }
 
+// GetAllByRoomID provides a mock function with given fields: ctx, roomID
+func (_m *RoomMember) GetAllByRoomID(ctx context.Context, roomID string) (model.RoomMembers, error) {
+	ret := _m.Called(ctx, roomID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetAllByRoomID")
+	}
+
+	var r0 model.RoomMembers
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (model.RoomMembers, error)); ok {
+		return rf(ctx, roomID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) model.RoomMembers); ok {
+		r0 = rf(ctx, roomID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(model.RoomMembers)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, roomID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// RoomMember_GetAllByRoomID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAllByRoomID'
+type RoomMember_GetAllByRoomID_Call struct {
+	*mock.Call
+}
+
+// GetAllByRoomID is a helper method to define mock.On call
+//   - ctx context.Context
+//   - roomID string
+func (_e *RoomMember_Expecter) GetAllByRoomID(ctx interface{}, roomID interface{}) *RoomMember_GetAllByRoomID_Call {
+	return &RoomMember_GetAllByRoomID_Call{Call: _e.mock.On("GetAllByRoomID", ctx, roomID)}
+}
+
+func (_c *RoomMember_GetAllByRoomID_Call) Run(run func(ctx context.Context, roomID string)) *RoomMember_GetAllByRoomID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *RoomMember_GetAllByRoomID_Call) Return(_a0 model.RoomMembers, _a1 error) *RoomMember_GetAllByRoomID_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *RoomMember_GetAllByRoomID_Call) RunAndReturn(run func(context.Context, string) (model.RoomMembers, error)) *RoomMember_GetAllByRoomID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetByIDs provides a mock function with given fields: ctx, userID, roomID
 func (_m *RoomMember) GetByIDs(ctx context.Context, userID string, roomID string) (model.RoomMember, error) {
 	ret := _m.Called(ctx, userID, roomID)
@@ -183,65 +242,6 @@ func (_c *RoomMember_GetByIDs_Call) Return(_a0 model.RoomMember, _a1 error) *Roo
 }
 
 func (_c *RoomMember_GetByIDs_Call) RunAndReturn(run func(context.Context, string, string) (model.RoomMember, error)) *RoomMember_GetByIDs_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetByRoomID provides a mock function with given fields: ctx, roomID
-func (_m *RoomMember) GetByRoomID(ctx context.Context, roomID string) (model.RoomMembers, error) {
-	ret := _m.Called(ctx, roomID)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByRoomID")
-	}
-
-	var r0 model.RoomMembers
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (model.RoomMembers, error)); ok {
-		return rf(ctx, roomID)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) model.RoomMembers); ok {
-		r0 = rf(ctx, roomID)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(model.RoomMembers)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, roomID)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// RoomMember_GetByRoomID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByRoomID'
-type RoomMember_GetByRoomID_Call struct {
-	*mock.Call
-}
-
-// GetByRoomID is a helper method to define mock.On call
-//   - ctx context.Context
-//   - roomID string
-func (_e *RoomMember_Expecter) GetByRoomID(ctx interface{}, roomID interface{}) *RoomMember_GetByRoomID_Call {
-	return &RoomMember_GetByRoomID_Call{Call: _e.mock.On("GetByRoomID", ctx, roomID)}
-}
-
-func (_c *RoomMember_GetByRoomID_Call) Run(run func(ctx context.Context, roomID string)) *RoomMember_GetByRoomID_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *RoomMember_GetByRoomID_Call) Return(_a0 model.RoomMembers, _a1 error) *RoomMember_GetByRoomID_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *RoomMember_GetByRoomID_Call) RunAndReturn(run func(context.Context, string) (model.RoomMembers, error)) *RoomMember_GetByRoomID_Call {
 	_c.Call.Return(run)
 	return _c
 }
