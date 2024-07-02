@@ -10,34 +10,34 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockEntity"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockEntityTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockPasswordMaker"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockQuery"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockTaskQueuer"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
-func TestSignUseCase(t *testing.T) {
+func TestSignUsecase(t *testing.T) {
 	type Mocks struct {
 		userEntity    *mockEntity.User
 		userQuery     *mockQuery.User
-		transactor    *mockEntityTransactor.Transactor
+		transactor    *mockTransactor.Transactor
 		passwordMaker *mockPasswordMaker.PasswordMaker
 		taskQueue     *mockTaskQueuer.TaskQueuer
 	}
 
-	setupTest := func(t *testing.T) (*require.Assertions, Mocks, application.ISignUseCase) {
+	setupTest := func(t *testing.T) (*require.Assertions, Mocks, application.ISignUsecase) {
 		mocks := Mocks{
 			userEntity:    mockEntity.NewUser(t),
 			userQuery:     mockQuery.NewUser(t),
-			transactor:    mockEntityTransactor.NewTransactor(t),
+			transactor:    mockTransactor.NewTransactor(t),
 			passwordMaker: mockPasswordMaker.NewPasswordMaker(t),
 			taskQueue:     mockTaskQueuer.NewTaskQueuer(t),
 		}
-		return require.New(t), mocks, application.NewSignUseCase(
+		return require.New(t), mocks, application.NewSignUsecase(
 			mocks.userEntity,
 			mocks.transactor,
 			mocks.passwordMaker,
@@ -45,9 +45,9 @@ func TestSignUseCase(t *testing.T) {
 		)
 	}
 
-	t.Run("SignUseCase", func(t *testing.T) {
+	t.Run("SignUsecase", func(t *testing.T) {
 		t.Run("SignUp", func(t *testing.T) {
-			r, mocks, signUseCase := setupTest(t)
+			r, mocks, signUsecase := setupTest(t)
 
 			ctx := context.Background()
 			req := application.SignUpRequest{
@@ -94,13 +94,13 @@ func TestSignUseCase(t *testing.T) {
 			}
 			mocks.taskQueue.EXPECT().SendEmailTask(ctx, service.Critical, sendEmail).Return(nil)
 
-			actual, err := signUseCase.SignUp(ctx, req)
+			actual, err := signUsecase.SignUp(ctx, req)
 			r.NoError(err)
 			r.Equal(expeted, actual)
 		})
 
 		t.Run("SignIn", func(t *testing.T) {
-			r, mocks, signUseCase := setupTest(t)
+			r, mocks, signUsecase := setupTest(t)
 
 			ctx := context.Background()
 			req := application.SignInRequest{
@@ -116,7 +116,7 @@ func TestSignUseCase(t *testing.T) {
 
 			mocks.passwordMaker.EXPECT().CheckPassword(req.Password, expected.HashedPassword).Return(nil)
 
-			actual, err := signUseCase.SignIn(ctx, req)
+			actual, err := signUsecase.SignIn(ctx, req)
 			r.NoError(err)
 			r.Equal(expected, actual)
 		})

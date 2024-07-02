@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/optional"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
@@ -43,12 +42,12 @@ type JokeCreateRequest struct {
 	UserID string `validate:"required,uuid"`
 }
 
-func (j joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error) {
+func (e joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error) {
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Joke{}, err
 	}
 
-	return j.command.Create(ctx, req.UserID, model.Joke{
+	return e.command.Create(ctx, req.UserID, model.Joke{
 		ID:          uuid.New().String(),
 		Title:       req.Title,
 		Text:        req.Text,
@@ -58,27 +57,27 @@ func (j joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, er
 }
 
 type JokeUpdateRequest struct {
-	Title       optional.Optional[string] `validate:"min=4,max=64"`
-	Text        optional.Optional[string] `validate:"min=4,max=4096"`
-	Explanation optional.Optional[string] `validate:"max=4096"`
+	Title       *string `validate:"min=4,max=64"`
+	Text        *string `validate:"min=4,max=4096"`
+	Explanation *string `validate:"max=4096"`
 }
 
-func (j joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) (model.Joke, error) {
+func (e joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) (model.Joke, error) {
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Joke{}, err
 	}
 
-	return j.command.Update(ctx, jokeID, command.JokeUpdate{
+	return e.command.Update(ctx, jokeID, command.JokeUpdate{
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation,
 	})
 }
 
-func (j joke) Delete(ctx context.Context, jokeID string) error {
+func (e joke) Delete(ctx context.Context, jokeID string) error {
 	if err := global.Validate().Var(jokeID, "uuid"); err != nil {
 		return err
 	}
 
-	return j.command.Delete(ctx, jokeID)
+	return e.command.Delete(ctx, jokeID)
 }

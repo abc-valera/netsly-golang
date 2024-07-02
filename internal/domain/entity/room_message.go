@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/optional"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
@@ -42,12 +41,12 @@ type RoomMessageCreateRequest struct {
 	RoomID string `validate:"required,uuid"`
 }
 
-func (rm roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (model.RoomMessage, error) {
+func (e roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (model.RoomMessage, error) {
 	if err := global.Validate().Struct(req); err != nil {
 		return model.RoomMessage{}, err
 	}
 
-	return rm.command.Create(ctx, req.UserID, req.RoomID, model.RoomMessage{
+	return e.command.Create(ctx, req.UserID, req.RoomID, model.RoomMessage{
 		ID:        uuid.New().String(),
 		Text:      req.Text,
 		CreatedAt: time.Now(),
@@ -55,23 +54,23 @@ func (rm roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) 
 }
 
 type RoomMessageUpdateRequest struct {
-	Text optional.Optional[string] `validate:"min=1,max=2048"`
+	Text *string `validate:"min=1,max=2048"`
 }
 
-func (rm roomMessage) Update(ctx context.Context, id string, req RoomMessageUpdateRequest) (model.RoomMessage, error) {
+func (e roomMessage) Update(ctx context.Context, id string, req RoomMessageUpdateRequest) (model.RoomMessage, error) {
 	if err := global.Validate().Struct(req); err != nil {
 		return model.RoomMessage{}, err
 	}
 
-	return rm.command.Update(ctx, id, command.RoomMessageUpdate{
+	return e.command.Update(ctx, id, command.RoomMessageUpdate{
 		Text: req.Text,
 	})
 }
 
-func (rm roomMessage) Delete(ctx context.Context, id string) error {
+func (e roomMessage) Delete(ctx context.Context, id string) error {
 	if err := global.Validate().Var(id, "uuid"); err != nil {
 		return err
 	}
 
-	return rm.command.Delete(ctx, id)
+	return e.command.Delete(ctx, id)
 }

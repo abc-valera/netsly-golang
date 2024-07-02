@@ -7,32 +7,32 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entityTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/transactor"
 )
 
 var ErrProvidedAccessToken = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Access token provided")
 
-type ISignUseCase interface {
+type ISignUsecase interface {
 	SignUp(ctx context.Context, req SignUpRequest) (model.User, error)
 	SignIn(ctx context.Context, req SignInRequest) (model.User, error)
 }
 
-type signUseCase struct {
+type signUsecase struct {
 	user          entity.IUser
-	transactor    entityTransactor.ITransactor
+	transactor    transactor.ITransactor
 	passwordMaker service.IPasswordMaker
 	taskQueue     service.ITaskQueuer
 }
 
-func NewSignUseCase(
+func NewSignUsecase(
 	userEntity entity.IUser,
-	transactor entityTransactor.ITransactor,
+	transactor transactor.ITransactor,
 	passwordMaker service.IPasswordMaker,
 	taskQueue service.ITaskQueuer,
-) ISignUseCase {
-	return signUseCase{
+) ISignUsecase {
+	return signUsecase{
 		user:          userEntity,
 		transactor:    transactor,
 		passwordMaker: passwordMaker,
@@ -52,7 +52,7 @@ type SignUpRequest struct {
 // it creates new user entity with unique username and email,
 // creates hash of the password provided by user,
 // then it sends welcome email to the users's email address,
-func (uc signUseCase) SignUp(ctx context.Context, req SignUpRequest) (model.User, error) {
+func (u signUsecase) SignUp(ctx context.Context, req SignUpRequest) (model.User, error) {
 	var user model.User
 	txFunc := func(ctx context.Context, txEntities domain.Entities) error {
 		createdUser, err := txEntities.User.Create(ctx, entity.UserCreateRequest{
@@ -73,10 +73,10 @@ func (uc signUseCase) SignUp(ctx context.Context, req SignUpRequest) (model.User
 			To:      []string{req.Email},
 		}
 
-		return uc.taskQueue.SendEmailTask(ctx, service.Critical, welcomeEmail)
+		return u.taskQueue.SendEmailTask(ctx, service.Critical, welcomeEmail)
 	}
 
-	if err := uc.transactor.PerformTX(ctx, txFunc); err != nil {
+	if err := u.transactor.PerformTX(ctx, txFunc); err != nil {
 		return model.User{}, err
 	}
 
@@ -91,13 +91,13 @@ type SignInRequest struct {
 // SignIn performs user sign-in: it checks if user with provided email exists,
 // then creates hash of the provided password and compares it to the hash stored in database.
 // The SignIn returns user, accessToken and refreshToken.
-func (s signUseCase) SignIn(ctx context.Context, req SignInRequest) (model.User, error) {
-	user, err := s.user.GetByEmail(ctx, req.Email)
+func (u signUsecase) SignIn(ctx context.Context, req SignInRequest) (model.User, error) {
+	user, err := u.user.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return model.User{}, err
 	}
 
-	if err := s.passwordMaker.CheckPassword(req.Password, user.HashedPassword); err != nil {
+	if err := u.passwordMaker.CheckPassword(req.Password, user.HashedPassword); err != nil {
 		return model.User{}, err
 	}
 

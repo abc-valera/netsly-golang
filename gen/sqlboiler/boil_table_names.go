@@ -5,6 +5,7 @@ package sqlboiler
 
 var TableNames = struct {
 	Comment        string
+	FileInfo       string
 	Joke           string
 	Likes          string
 	Room           string
@@ -14,6 +15,7 @@ var TableNames = struct {
 	GooseDBVersion string
 }{
 	Comment:        "Comment",
+	FileInfo:       "FileInfo",
 	Joke:           "Joke",
 	Likes:          "Likes",
 	Room:           "Room",

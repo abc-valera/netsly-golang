@@ -10,4 +10,5 @@ type Queries struct {
 	Room        query.IRoom
 	RoomMember  query.IRoomMember
 	RoomMessage query.IRoomMessage
+	FileInfo    query.IFileInfo
 }

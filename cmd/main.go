@@ -12,9 +12,10 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/entityTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/commandTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/transactor"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/seed"
@@ -28,7 +29,13 @@ func main() {
 	// Init services
 	services := service.New(
 		LoadEnv("LOGGER_SERVICE"),
+		LoadEnv("LOGGER_SERVICE_LOGS_FOLDER_PATH"),
+
+		LoadEnv("FILE_MANAGER_SERVICE"),
+		LoadEnv("FILE_MANAGER_SERVICE_FILES_PATH"),
+
 		LoadEnv("EMAIL_SENDER_SERVICE"),
+
 		LoadEnv("TASK_QUEUER_SERVICE"),
 	)
 
@@ -36,22 +43,26 @@ func main() {
 	global.InitLog(services.Logger)
 
 	// Init persistence
-	persitenceDeps := persistence.NewDependency(LoadEnv("POSTGRES_URL"))
+	persitenceDeps := persistence.NewDependencies(LoadEnv("POSTGRES_URL"))
+
 	commands := persistence.NewCommands(persistence.CommandsDependencies{
 		Boiler: persitenceDeps.Boiler,
 	})
+
+	commandTransactor := commandTransactor.New(persitenceDeps)
+
 	queries := persistence.NewQueries(persistence.QueriesDependencies{
 		Boiler: persitenceDeps.Boiler,
 	})
 
 	// Init entities
-	entities := domain.NewEntities(commands, queries, services)
+	entities := domain.NewEntities(commands, commandTransactor, queries, services)
 
-	// Init transaction
-	tx := entityTransactor.NewTransactor(persitenceDeps, services)
+	// Init transactor
+	tx := transactor.NewTransactor(persitenceDeps, services)
 
 	// Init usecases
-	usecases := application.NewUseCases(tx, entities, services)
+	usecases := application.NewUsecases(tx, entities, services)
 
 	// Get cli flags
 	entrypoint := flag.String("entrypoint", "webApp", "Port flag specifies the application presentation to be run: webApp, jsonApi, grpcApi")
@@ -64,7 +75,7 @@ func main() {
 		serverStart, serverGracefulStop = webApp.NewServer(
 			LoadEnv("WEB_APP_PORT"),
 			LoadEnv("WEB_APP_TEMPLATE_PATH"),
-			LoadEnv("WEB_APP_STATIC_PATH"),
+			LoadEnv("STATIC_PATH"),
 			services,
 			entities,
 			usecases,
@@ -72,7 +83,7 @@ func main() {
 	case "jsonApi":
 		serverStart, serverGracefulStop = jsonApi.NewServer(
 			LoadEnv("JSON_API_PORT"),
-			LoadEnv("JSON_API_STATIC_PATH"),
+			LoadEnv("STATIC_PATH"),
 			LoadEnv("JWT_SIGN_KEY"),
 			LoadEnvTime("ACCESS_TOKEN_DURATION"),
 			LoadEnvTime("REFRESH_TOKEN_DURATION"),
@@ -83,7 +94,7 @@ func main() {
 	case "grpcApi":
 		serverStart, serverGracefulStop = grpcApi.RunServer(
 			LoadEnv("GRPC_API_PORT"),
-			LoadEnv("GRPC_API_STATIC_PATH"),
+			LoadEnv("STATIC_PATH"),
 			services,
 			usecases,
 		)

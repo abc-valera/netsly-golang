@@ -37,22 +37,22 @@ type RoomMemberCreateRequest struct {
 	RoomID string `validate:"required,uuid"`
 }
 
-func (rm roomMember) Create(ctx context.Context, req RoomMemberCreateRequest) (model.RoomMember, error) {
+func (e roomMember) Create(ctx context.Context, req RoomMemberCreateRequest) (model.RoomMember, error) {
 	if err := global.Validate().Struct(req); err != nil {
 		return model.RoomMember{}, err
 	}
 
-	return rm.command.Create(ctx, model.RoomMember{
+	return e.command.Create(ctx, model.RoomMember{
 		CreatedAt: time.Now(),
 		UserID:    req.UserID,
 		RoomID:    req.RoomID,
 	})
 }
 
-func (rm roomMember) Delete(ctx context.Context, roomID, userID string) error {
+func (e roomMember) Delete(ctx context.Context, roomID, userID string) error {
 	if err := global.Validate().Var(roomID, "uuid"); err != nil {
 		return err
 	}
 
-	return rm.command.Delete(ctx, roomID, userID)
+	return e.command.Delete(ctx, roomID, userID)
 }

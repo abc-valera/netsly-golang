@@ -18,13 +18,13 @@ func RunServer(
 	staicPath string,
 
 	services domain.Services,
-	usecases application.UseCases,
+	usecases application.Usecases,
 ) (
 	serverStart func(),
 	serverGracefulStop func(),
 ) {
 	// Init handlers
-	signHandler := handler.NewSignHandler(usecases.SignUseCase)
+	signHandler := handler.NewSignHandler(usecases.SignUsecase)
 
 	// Register handlers
 	server := grpc.NewServer()

@@ -5,70 +5,86 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 )
 
 var (
 	levelTrace = slog.Level(-8)
-	levelFatal = slog.Level(12)
 
 	levelNames = map[slog.Level]string{
 		levelTrace: "TRACE",
-		levelFatal: "FATAL",
 	}
 )
 
 type slogLogger struct {
-	logger *slog.Logger
+	stdoutLogger *slog.Logger
+	fileLogger   *slog.Logger
 }
 
-func New() service.ILogger {
+// New returns a new instance of the basicLogger.
+// BasicLogger is a simple logger that writes to stdout and to a file.
+func New(logsFolderPath string) service.ILogger {
+	// Create the file inside the logs folder
+	logsFile, err := os.Create(logsFolderPath + "/logs.txt")
+	if err != nil {
+		coderr.Fatal(err)
+	}
+
 	return &slogLogger{
-		logger: slog.New(
+		stdoutLogger: slog.New(
 			slog.NewTextHandler(
 				os.Stdout,
-				&slog.HandlerOptions{
-					Level: levelTrace,
-					ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
-						if a.Key == slog.LevelKey {
-							level := a.Value.Any().(slog.Level)
-							levelLabel, exists := levelNames[level]
-							if !exists {
-								levelLabel = level.String()
-							}
-
-							a.Value = slog.StringValue(levelLabel)
-						}
-
-						return a
-					},
-				},
+				&handlerOptions,
+			),
+		),
+		fileLogger: slog.New(
+			slog.NewJSONHandler(
+				logsFile,
+				&handlerOptions,
 			),
 		),
 	}
 }
 
 func (l slogLogger) Trace(msg string, vals ...interface{}) {
-	l.logger.Log(context.Background(), levelTrace, msg, vals)
+	l.stdoutLogger.Log(context.Background(), levelTrace, msg, vals...)
+	l.fileLogger.Log(context.Background(), levelTrace, msg, vals...)
 }
 
 func (l slogLogger) Debug(msg string, vals ...interface{}) {
-	l.logger.Debug(msg, vals...)
+	l.stdoutLogger.Debug(msg, vals...)
+	l.fileLogger.Debug(msg, vals...)
 }
 
 func (l slogLogger) Info(msg string, vals ...interface{}) {
-	l.logger.Info(msg, vals...)
+	l.stdoutLogger.Info(msg, vals...)
+	l.fileLogger.Info(msg, vals...)
 }
 
 func (l slogLogger) Warn(msg string, vals ...interface{}) {
-	l.logger.Warn(msg, vals...)
+	l.stdoutLogger.Warn(msg, vals...)
+	l.fileLogger.Warn(msg, vals...)
 }
 
 func (l slogLogger) Error(msg string, vals ...interface{}) {
-	l.logger.Error(msg, vals...)
+	l.stdoutLogger.Error(msg, vals...)
+	l.fileLogger.Error(msg, vals...)
 }
 
-func (l slogLogger) Fatal(msg string, vals ...interface{}) {
-	l.logger.Log(context.Background(), levelFatal, msg, vals...)
-	os.Exit(1)
+var handlerOptions = slog.HandlerOptions{
+	Level: levelTrace,
+	ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+		if a.Key == slog.LevelKey {
+			level := a.Value.Any().(slog.Level)
+			levelLabel, exists := levelNames[level]
+			if !exists {
+				levelLabel = level.String()
+			}
+
+			a.Value = slog.StringValue(levelLabel)
+		}
+
+		return a
+	},
 }

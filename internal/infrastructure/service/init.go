@@ -4,6 +4,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/emailSender/dummyEmailSender"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/fileManager/localFileManager"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/nopLogger"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/slogLogger"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/passwordMaker"
@@ -12,6 +13,10 @@ import (
 
 func New(
 	loggerService string,
+	loggerServiceLogsFolderPath string,
+
+	fileManagerService string,
+	filesPath string,
 
 	emailSenderService string,
 
@@ -25,23 +30,30 @@ func New(
 	case "nop":
 		services.Logger = nopLogger.New()
 	case "slog":
-		services.Logger = slogLogger.New()
+		services.Logger = slogLogger.New(loggerServiceLogsFolderPath)
 	default:
-		coderr.Fatal("Invalid logger implementation provided. Should be 'nop' or 'slog'")
+		coderr.Fatal("Invalid Logger implementation provided: " + loggerService)
+	}
+
+	switch fileManagerService {
+	case "local":
+		services.FileManager = localFileManager.New(filesPath)
+	default:
+		coderr.Fatal("Invalid File Manager implementation provided: " + fileManagerService)
 	}
 
 	switch emailSenderService {
 	case "dummy":
 		services.EmailSender = dummyEmailSender.New()
 	default:
-		coderr.Fatal("Invalid email sender implementation provided. Should be 'dummy'")
+		coderr.Fatal("Invalid Email Sender implementation provided: " + emailSenderService)
 	}
 
 	switch taskQueuerService {
 	case "dummy":
 		services.TaskQueuer = dummyTaskQueuer.New(services.EmailSender)
 	default:
-		coderr.Fatal("Invalid task queuer implementation provided. Should be 'dummy'")
+		coderr.Fatal("Invalid Task Queuer implementation provided: " + taskQueuerService)
 	}
 
 	return services

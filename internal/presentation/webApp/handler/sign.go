@@ -15,14 +15,14 @@ import (
 type Sign struct {
 	signIndex templates.ITemplate
 
-	application.ISignUseCase
+	application.ISignUsecase
 }
 
-func NewSign(templateFS fs.FS, signUseCase application.ISignUseCase) Sign {
+func NewSign(templateFS fs.FS, signUsecase application.ISignUsecase) Sign {
 	return Sign{
 		signIndex: coderr.Must(templates.NewTemplate(templateFS, "sign/index", "layout")),
 
-		ISignUseCase: signUseCase,
+		ISignUsecase: signUsecase,
 	}
 }
 
@@ -36,7 +36,7 @@ func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 		return coderr.NewInternalErr(err)
 	}
 
-	if _, err := h.ISignUseCase.SignUp(r.Context(), application.SignUpRequest{
+	if _, err := h.ISignUsecase.SignUp(r.Context(), application.SignUpRequest{
 		Username: r.FormValue("username"),
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
@@ -59,7 +59,7 @@ func (h Sign) SignUpPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	user, err := h.ISignUseCase.SignIn(r.Context(), application.SignInRequest{
+	user, err := h.ISignUsecase.SignIn(r.Context(), application.SignInRequest{
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 	})
@@ -79,7 +79,7 @@ func (h Sign) SignInPost(w http.ResponseWriter, r *http.Request) error {
 		return coderr.NewInternalErr(err)
 	}
 
-	user, err := h.ISignUseCase.SignIn(r.Context(), application.SignInRequest{
+	user, err := h.ISignUsecase.SignIn(r.Context(), application.SignInRequest{
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 	})

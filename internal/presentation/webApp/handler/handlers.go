@@ -19,12 +19,12 @@ type Handlers struct {
 func NewHandlers(
 	templateFS fs.FS,
 	entities domain.Entities,
-	usecases application.UseCases,
+	usecases application.Usecases,
 ) Handlers {
 	return Handlers{
 		Error: NewErrorHandler(templateFS),
 
-		Sign: NewSign(templateFS, usecases.SignUseCase),
+		Sign: NewSign(templateFS, usecases.SignUsecase),
 		Home: NewHome(templateFS, entities.User, entities.Joke),
 
 		Joke: NewJoke(entities.Joke),

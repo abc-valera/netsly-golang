@@ -40,14 +40,14 @@ func (u user) Update(ctx context.Context, id string, req command.UserUpdate) (mo
 	if err != nil {
 		return model.User{}, errutil.HandleErr(err)
 	}
-	if req.HashedPassword.IsPresent() {
-		user.HashedPassword = req.HashedPassword.Value()
+	if req.HashedPassword != nil {
+		user.HashedPassword = *req.HashedPassword
 	}
-	if req.Fullname.IsPresent() {
-		user.Fullname = req.Fullname.Value()
+	if req.Fullname != nil {
+		user.Fullname = *req.Fullname
 	}
-	if req.Status.IsPresent() {
-		user.Status = req.Status.Value()
+	if req.Status != nil {
+		user.Status = *req.Status
 	}
 	_, err = user.Update(ctx, u.executor, boil.Infer())
 	return boilerDto.NewDomainUserWithErrHandle(user, err)

@@ -28,6 +28,9 @@ const (
 
 	// INTERNAL CODES
 
+	// CodeCanceled means the operation was canceled (either by the caller or the system)
+	CodeCanceled Code = "canceled"
+
 	// CodeInternal means an internal error occured
 	CodeInternal Code = "internal"
 )

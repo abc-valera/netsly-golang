@@ -247,12 +247,12 @@ func (_c *Joke_GetByID_Call) RunAndReturn(run func(context.Context, string) (mod
 	return _c
 }
 
-// SearchByTitle provides a mock function with given fields: ctx, keyword, params
-func (_m *Joke) SearchByTitle(ctx context.Context, keyword string, params selector.Selector) (model.Jokes, error) {
+// SearchAllByTitle provides a mock function with given fields: ctx, keyword, params
+func (_m *Joke) SearchAllByTitle(ctx context.Context, keyword string, params selector.Selector) (model.Jokes, error) {
 	ret := _m.Called(ctx, keyword, params)
 
 	if len(ret) == 0 {
-		panic("no return value specified for SearchByTitle")
+		panic("no return value specified for SearchAllByTitle")
 	}
 
 	var r0 model.Jokes
@@ -277,32 +277,32 @@ func (_m *Joke) SearchByTitle(ctx context.Context, keyword string, params select
 	return r0, r1
 }
 
-// Joke_SearchByTitle_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SearchByTitle'
-type Joke_SearchByTitle_Call struct {
+// Joke_SearchAllByTitle_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SearchAllByTitle'
+type Joke_SearchAllByTitle_Call struct {
 	*mock.Call
 }
 
-// SearchByTitle is a helper method to define mock.On call
+// SearchAllByTitle is a helper method to define mock.On call
 //   - ctx context.Context
 //   - keyword string
 //   - params selector.Selector
-func (_e *Joke_Expecter) SearchByTitle(ctx interface{}, keyword interface{}, params interface{}) *Joke_SearchByTitle_Call {
-	return &Joke_SearchByTitle_Call{Call: _e.mock.On("SearchByTitle", ctx, keyword, params)}
+func (_e *Joke_Expecter) SearchAllByTitle(ctx interface{}, keyword interface{}, params interface{}) *Joke_SearchAllByTitle_Call {
+	return &Joke_SearchAllByTitle_Call{Call: _e.mock.On("SearchAllByTitle", ctx, keyword, params)}
 }
 
-func (_c *Joke_SearchByTitle_Call) Run(run func(ctx context.Context, keyword string, params selector.Selector)) *Joke_SearchByTitle_Call {
+func (_c *Joke_SearchAllByTitle_Call) Run(run func(ctx context.Context, keyword string, params selector.Selector)) *Joke_SearchAllByTitle_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})
 	return _c
 }
 
-func (_c *Joke_SearchByTitle_Call) Return(_a0 model.Jokes, _a1 error) *Joke_SearchByTitle_Call {
+func (_c *Joke_SearchAllByTitle_Call) Return(_a0 model.Jokes, _a1 error) *Joke_SearchAllByTitle_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *Joke_SearchByTitle_Call) RunAndReturn(run func(context.Context, string, selector.Selector) (model.Jokes, error)) *Joke_SearchByTitle_Call {
+func (_c *Joke_SearchAllByTitle_Call) RunAndReturn(run func(context.Context, string, selector.Selector) (model.Jokes, error)) *Joke_SearchAllByTitle_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -39,8 +39,8 @@ func (r roomMessage) Update(ctx context.Context, id string, req command.RoomMess
 	if err != nil {
 		return model.RoomMessage{}, errutil.HandleErr(err)
 	}
-	if req.Text.IsPresent() {
-		roomMessage.Text = req.Text.Value()
+	if req.Text != nil {
+		roomMessage.Text = *req.Text
 	}
 	_, err = roomMessage.Update(ctx, r.executor, boil.Infer())
 	return boilerDto.NewDomainRoomMessageWithErrHandle(roomMessage, err)

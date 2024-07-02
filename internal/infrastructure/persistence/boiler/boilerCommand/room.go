@@ -38,8 +38,8 @@ func (r room) Update(ctx context.Context, id string, req command.RoomUpdate) (mo
 	if err != nil {
 		return model.Room{}, errutil.HandleErr(err)
 	}
-	if req.Description.IsPresent() {
-		room.Description = req.Description.Value()
+	if req.Description != nil {
+		room.Description = *req.Description
 	}
 	_, err = room.Update(ctx, r.executor, boil.Infer())
 	return boilerDto.NewDomainRoomWithErrHandle(room, err)

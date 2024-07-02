@@ -39,8 +39,8 @@ func (c comment) Update(ctx context.Context, commentID string, req command.Comme
 	if err != nil {
 		return model.Comment{}, errutil.HandleErr(err)
 	}
-	if req.Text.IsPresent() {
-		comment.Text = req.Text.Value()
+	if req.Text != nil {
+		comment.Text = *req.Text
 	}
 	_, err = comment.Update(ctx, c.executor, boil.Infer())
 	return boilerDto.NewDomainCommentWithErrHandle(comment, err)

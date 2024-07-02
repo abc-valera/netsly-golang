@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/optional"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
@@ -42,12 +41,12 @@ type CommentCreateRequest struct {
 	JokeID string `validate:"required,uuid"`
 }
 
-func (c comment) Create(ctx context.Context, req CommentCreateRequest) (model.Comment, error) {
+func (e comment) Create(ctx context.Context, req CommentCreateRequest) (model.Comment, error) {
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Comment{}, err
 	}
 
-	return c.command.Create(ctx, req.UserID, req.JokeID, model.Comment{
+	return e.command.Create(ctx, req.UserID, req.JokeID, model.Comment{
 		ID:        uuid.New().String(),
 		Text:      req.Text,
 		CreatedAt: time.Now(),
@@ -55,23 +54,23 @@ func (c comment) Create(ctx context.Context, req CommentCreateRequest) (model.Co
 }
 
 type CommentUpdateRequest struct {
-	Text optional.Optional[string] `validate:"min=4,max=256"`
+	Text *string `validate:"min=4,max=256"`
 }
 
-func (c comment) Update(ctx context.Context, commentID string, req CommentUpdateRequest) (model.Comment, error) {
+func (e comment) Update(ctx context.Context, commentID string, req CommentUpdateRequest) (model.Comment, error) {
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Comment{}, err
 	}
 
-	return c.command.Update(ctx, commentID, command.CommentUpdate{
+	return e.command.Update(ctx, commentID, command.CommentUpdate{
 		Text: req.Text,
 	})
 }
 
-func (c comment) Delete(ctx context.Context, commentID string) error {
+func (e comment) Delete(ctx context.Context, commentID string) error {
 	if err := global.Validate().Var(commentID, "uuid"); err != nil {
 		return err
 	}
 
-	return c.command.Delete(ctx, commentID)
+	return e.command.Delete(ctx, commentID)
 }

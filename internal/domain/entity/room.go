@@ -4,10 +4,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/optional"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/commandTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/google/uuid"
 )
@@ -21,17 +22,20 @@ type IRoom interface {
 }
 
 type room struct {
-	command command.IRoom
+	commandTransactor commandTransactor.ITransactor
+	roomCommand       command.IRoom
 	query.IRoom
 }
 
 func NewRoom(
-	command command.IRoom,
+	roomCommand command.IRoom,
+	commandTransactor commandTransactor.ITransactor,
 	query query.IRoom,
 ) IRoom {
 	return room{
-		command: command,
-		IRoom:   query,
+		roomCommand:       roomCommand,
+		commandTransactor: commandTransactor,
+		IRoom:             query,
 	}
 }
 
@@ -41,39 +45,62 @@ type RoomCreateRequest struct {
 	CreatorUserID string `validate:"required,uuid"`
 }
 
-func (r room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, error) {
+func (e room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, error) {
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Room{}, err
 	}
 
-	return r.command.Create(ctx, model.Room{
-		ID:            uuid.New().String(),
-		Name:          req.Name,
-		Description:   req.Description,
-		CreatorUserID: req.CreatorUserID,
-		CreatedAt:     time.Now(),
-	})
+	var returnRoom model.Room
+	txFunc := func(ctx context.Context, txCommands persistence.Commands) error {
+		room, err := txCommands.Room.Create(ctx, model.Room{
+			ID:            uuid.New().String(),
+			Name:          req.Name,
+			Description:   req.Description,
+			CreatorUserID: req.CreatorUserID,
+			CreatedAt:     time.Now(),
+		})
+		if err != nil {
+			return err
+		}
+		returnRoom = room
+
+		if _, err := txCommands.RoomMember.Create(ctx, model.RoomMember{
+			RoomID:    room.ID,
+			UserID:    req.CreatorUserID,
+			CreatedAt: time.Now(),
+		}); err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	if err := e.commandTransactor.PerformTX(ctx, txFunc); err != nil {
+		return model.Room{}, err
+	}
+
+	return returnRoom, nil
 }
 
 type RoomUpdateRequest struct {
-	Name        optional.Optional[string] `validate:"min=4,max=64"`
-	Description optional.Optional[string] `validate:"max=256"`
+	Name        *string `validate:"min=4,max=64"`
+	Description *string `validate:"max=256"`
 }
 
-func (r room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) (model.Room, error) {
+func (e room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) (model.Room, error) {
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Room{}, err
 	}
 
-	return r.command.Update(ctx, roomID, command.RoomUpdate{
+	return e.roomCommand.Update(ctx, roomID, command.RoomUpdate{
 		Description: req.Description,
 	})
 }
 
-func (r room) Delete(ctx context.Context, roomID string) error {
+func (e room) Delete(ctx context.Context, roomID string) error {
 	if err := global.Validate().Var(roomID, "uuid"); err != nil {
 		return err
 	}
 
-	return r.command.Delete(ctx, roomID)
+	return e.roomCommand.Delete(ctx, roomID)
 }
