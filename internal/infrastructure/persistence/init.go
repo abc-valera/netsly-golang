@@ -1,56 +1,28 @@
 package persistence
 
 import (
-	"database/sql"
-
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/boilerCommand"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler/boilerQuery"
-	"github.com/volatiletech/sqlboiler/v4/boil"
+	domainCommandTransactor "github.com/abc-valera/netsly-api-golang/internal/domain/persistence/commandTransactor"
+	infraCommandTransactor "github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/commandTransactor"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation"
 )
 
-type PeristenceDependencies struct {
-	Boiler *sql.DB
-}
+func New(postgresUrl string) (
+	persistence.Commands,
+	persistence.Queries,
+	domainCommandTransactor.ITransactor,
+) {
+	deps := implementation.NewPersistenceDependencies(postgresUrl)
 
-func NewDependencies(postgresUrl string) PeristenceDependencies {
-	return PeristenceDependencies{
-		Boiler: coderr.Must(boiler.Init(postgresUrl)),
-	}
-}
+	commands := implementation.NewCommands(implementation.CommandsDependencies{
+		Boiler: deps.Boiler,
+	})
 
-type CommandsDependencies struct {
-	Boiler boil.ContextExecutor
-}
+	queries := implementation.NewQueries(implementation.QueriesDependencies{
+		Boiler: deps.Boiler,
+	})
 
-func NewCommands(deps CommandsDependencies) persistence.Commands {
-	return persistence.Commands{
-		User:        boilerCommand.NewUser(deps.Boiler),
-		Joke:        boilerCommand.NewJoke(deps.Boiler),
-		Like:        boilerCommand.NewLike(deps.Boiler),
-		Comment:     boilerCommand.NewComment(deps.Boiler),
-		Room:        boilerCommand.NewRoom(deps.Boiler),
-		RoomMember:  boilerCommand.NewRoomMember(deps.Boiler),
-		RoomMessage: boilerCommand.NewRoomMessage(deps.Boiler),
-		FileInfo:    boilerCommand.NewFileInfo(deps.Boiler),
-	}
-}
+	transactor := infraCommandTransactor.New(deps)
 
-type QueriesDependencies struct {
-	Boiler boil.ContextExecutor
-}
-
-func NewQueries(deps QueriesDependencies) persistence.Queries {
-	return persistence.Queries{
-		User:        boilerQuery.NewUser(deps.Boiler),
-		Joke:        boilerQuery.NewJoke(deps.Boiler),
-		Like:        boilerQuery.NewLike(deps.Boiler),
-		Comment:     boilerQuery.NewComment(deps.Boiler),
-		Room:        boilerQuery.NewRoom(deps.Boiler),
-		RoomMember:  boilerQuery.NewRoomMember(deps.Boiler),
-		RoomMessage: boilerQuery.NewRoomMessage(deps.Boiler),
-		FileInfo:    boilerQuery.NewFileInfo(deps.Boiler),
-	}
+	return commands, queries, transactor
 }

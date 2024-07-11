@@ -10,10 +10,10 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockEntity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockEntityTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockPasswordMaker"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockQuery"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockTaskQueuer"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/mock/mockTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/stretchr/testify/mock"
@@ -24,7 +24,7 @@ func TestSignUsecase(t *testing.T) {
 	type Mocks struct {
 		userEntity    *mockEntity.User
 		userQuery     *mockQuery.User
-		transactor    *mockTransactor.Transactor
+		transactor    *mockEntityTransactor.Transactor
 		passwordMaker *mockPasswordMaker.PasswordMaker
 		taskQueue     *mockTaskQueuer.TaskQueuer
 	}
@@ -33,7 +33,7 @@ func TestSignUsecase(t *testing.T) {
 		mocks := Mocks{
 			userEntity:    mockEntity.NewUser(t),
 			userQuery:     mockQuery.NewUser(t),
-			transactor:    mockTransactor.NewTransactor(t),
+			transactor:    mockEntityTransactor.NewTransactor(t),
 			passwordMaker: mockPasswordMaker.NewPasswordMaker(t),
 			taskQueue:     mockTaskQueuer.NewTaskQueuer(t),
 		}

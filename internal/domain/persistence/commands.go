@@ -1,6 +1,8 @@
 package persistence
 
-import "github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
+import (
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
+)
 
 type Commands struct {
 	User        command.IUser

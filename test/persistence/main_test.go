@@ -9,8 +9,8 @@ import (
 	"time"
 
 	domainPersistence "github.com/abc-valera/netsly-api-golang/internal/domain/persistence"
-	infraPersistence "github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/boiler"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler"
 	"github.com/abc-valera/netsly-api-golang/test"
 	"github.com/docker/docker/pkg/ioutils"
 	"github.com/stretchr/testify/require"
@@ -87,10 +87,10 @@ func TestMain(m *testing.M) {
 		_ = res
 
 		return ctx, r,
-			infraPersistence.NewCommands(infraPersistence.CommandsDependencies{
+			implementation.NewCommands(implementation.CommandsDependencies{
 				Boiler: tx,
 			}),
-			infraPersistence.NewQueries(infraPersistence.QueriesDependencies{
+			implementation.NewQueries(implementation.QueriesDependencies{
 				Boiler: tx,
 			})
 	}

@@ -12,10 +12,9 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/entityTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/commandTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/transactor"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/seed"
@@ -43,23 +42,13 @@ func main() {
 	global.InitLog(services.Logger)
 
 	// Init persistence
-	persitenceDeps := persistence.NewDependencies(LoadEnv("POSTGRES_URL"))
-
-	commands := persistence.NewCommands(persistence.CommandsDependencies{
-		Boiler: persitenceDeps.Boiler,
-	})
-
-	commandTransactor := commandTransactor.New(persitenceDeps)
-
-	queries := persistence.NewQueries(persistence.QueriesDependencies{
-		Boiler: persitenceDeps.Boiler,
-	})
+	commands, queries, commandTransactor := persistence.New(LoadEnv("POSTGRES_URL"))
 
 	// Init entities
 	entities := domain.NewEntities(commands, commandTransactor, queries, services)
 
 	// Init transactor
-	tx := transactor.NewTransactor(persitenceDeps, services)
+	tx := entityTransactor.New(commandTransactor, queries, services)
 
 	// Init usecases
 	usecases := application.NewUsecases(tx, entities, services)
