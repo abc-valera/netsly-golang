@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler/boilerDto"
@@ -20,17 +21,23 @@ func NewRoomMember(executor boil.ContextExecutor) command.IRoomMember {
 	}
 }
 
-func (r roomMember) Create(ctx context.Context, req model.RoomMember) (model.RoomMember, error) {
+func (c roomMember) Create(ctx context.Context, req model.RoomMember) (model.RoomMember, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	roomMember := sqlboiler.RoomMember{
 		CreatedAt: req.CreatedAt,
 		RoomID:    req.RoomID,
 		UserID:    req.UserID,
 	}
-	err := roomMember.Insert(ctx, r.executor, boil.Infer())
+	err := roomMember.Insert(ctx, c.executor, boil.Infer())
 	return boilerDto.NewDomainRoomMemberWithErrHandle(&roomMember, err)
 }
 
 func (r roomMember) Delete(ctx context.Context, RoomID string, UserID string) error {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	roomMember, err := sqlboiler.FindRoomMember(ctx, r.executor, RoomID, UserID)
 	if err != nil {
 		return err

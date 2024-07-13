@@ -5,8 +5,10 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/contexts"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/restDto"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type MeRooms struct {
@@ -25,6 +27,10 @@ func NewMeRooms(
 }
 
 func (h MeRooms) MeRoomsGet(ctx context.Context, ogenParams ogen.MeRoomsGetParams) (*ogen.Rooms, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	userID, err := contexts.GetUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -39,6 +45,10 @@ func (h MeRooms) MeRoomsGet(ctx context.Context, ogenParams ogen.MeRoomsGetParam
 }
 
 func (h MeRooms) MeRoomsPost(ctx context.Context, req *ogen.MeRoomsPostReq) (*ogen.Room, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	userID, err := contexts.GetUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -53,6 +63,10 @@ func (h MeRooms) MeRoomsPost(ctx context.Context, req *ogen.MeRoomsPostReq) (*og
 }
 
 func (h MeRooms) MeRoomsPut(ctx context.Context, req *ogen.MeRoomsPutReq) (*ogen.Room, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	domainRoom, err := h.room.Update(ctx, req.ID, entity.RoomUpdateRequest{
 		Name:        restDto.NewDomainOptionalString(req.Name),
 		Description: restDto.NewDomainOptionalString(req.Description),
@@ -61,10 +75,18 @@ func (h MeRooms) MeRoomsPut(ctx context.Context, req *ogen.MeRoomsPutReq) (*ogen
 }
 
 func (h MeRooms) MeRoomsDelete(ctx context.Context, req *ogen.MeRoomsDeleteReq) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	return h.room.Delete(ctx, req.ID)
 }
 
 func (h MeRooms) MeChatRoomsJoinPost(ctx context.Context, req *ogen.MeChatRoomsJoinPostReq) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	userID, err := contexts.GetUserID(ctx)
 	if err != nil {
 		return err

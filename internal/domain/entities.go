@@ -28,9 +28,9 @@ func NewEntities(
 		Joke:        entity.NewJoke(commands.Joke, queries.Joke),
 		Like:        entity.NewLike(commands.Like, queries.Like),
 		Comment:     entity.NewComment(commands.Comment, queries.Comment),
-		Room:        entity.NewRoom(commands.Room, commandTransactor, queries.Room),
+		Room:        entity.NewRoom(commands.Room, queries.Room, commandTransactor),
 		RoomMember:  entity.NewRoomMember(commands.RoomMember, queries.RoomMember),
 		RoomMessage: entity.NewRoomMessage(commands.RoomMessage, queries.RoomMessage),
-		File:        entity.NewFile(commandTransactor, commands.FileInfo, queries.FileInfo, services.FileManager),
+		File:        entity.NewFile(commands.FileInfo, queries.FileInfo, services.FileManager, commandTransactor),
 	}
 }

@@ -2,6 +2,7 @@ package dummyTaskQueuer
 
 import (
 	"context"
+	"time"
 
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
@@ -17,9 +18,16 @@ func New(emailSender service.IEmailSender) service.ITaskQueuer {
 	}
 }
 
-func (b dummyTaskQueuer) SendEmailTask(ctx context.Context, priority service.TaskPriority, email service.Email) error {
+func (s dummyTaskQueuer) SendEmailTask(ctx context.Context, priority service.TaskPriority, email service.Email) error {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
+	// Some logic to enqueue the send email task
+	time.Sleep(10 * time.Millisecond)
+	span.AddEvent("Finished enqueuing the task")
+
 	go func() {
-		b.emailSender.SendEmail(email)
+		s.emailSender.SendEmail(email)
 		global.Log().Info("SENT EMAIL",
 			"to", email.To,
 			"subject", email.Subject,

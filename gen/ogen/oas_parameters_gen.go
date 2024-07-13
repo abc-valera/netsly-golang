@@ -20,7 +20,7 @@ type CommentsByJokeIDGetParams struct {
 	// ID of the joke.
 	JokeID string
 	// Fields to specify select parameters.
-	Selector CommentsByJokeIDGetSelector
+	Selector QuerySelectParams
 }
 
 func unpackCommentsByJokeIDGetParams(packed middleware.Parameters) (params CommentsByJokeIDGetParams) {
@@ -36,7 +36,7 @@ func unpackCommentsByJokeIDGetParams(packed middleware.Parameters) (params Comme
 			Name: "selector",
 			In:   "query",
 		}
-		params.Selector = packed[key].(CommentsByJokeIDGetSelector)
+		params.Selector = packed[key].(QuerySelectParams)
 	}
 	return params
 }
@@ -194,7 +194,7 @@ func decodeLikesByJokeIDGetParams(args [1]string, argsEscaped bool, r *http.Requ
 // MeJokesGetParams is parameters of MeJokesGet operation.
 type MeJokesGetParams struct {
 	// Fields to specify select parameters.
-	Selector MeJokesGetSelector
+	Selector QuerySelectParams
 }
 
 func unpackMeJokesGetParams(packed middleware.Parameters) (params MeJokesGetParams) {
@@ -203,7 +203,7 @@ func unpackMeJokesGetParams(packed middleware.Parameters) (params MeJokesGetPara
 			Name: "selector",
 			In:   "query",
 		}
-		params.Selector = packed[key].(MeJokesGetSelector)
+		params.Selector = packed[key].(QuerySelectParams)
 	}
 	return params
 }
@@ -250,7 +250,7 @@ func decodeMeJokesGetParams(args [0]string, argsEscaped bool, r *http.Request) (
 // MeRoomsGetParams is parameters of MeRoomsGet operation.
 type MeRoomsGetParams struct {
 	// Fields to specify select parameters.
-	Selector MeRoomsGetSelector
+	Selector QuerySelectParams
 }
 
 func unpackMeRoomsGetParams(packed middleware.Parameters) (params MeRoomsGetParams) {
@@ -259,7 +259,7 @@ func unpackMeRoomsGetParams(packed middleware.Parameters) (params MeRoomsGetPara
 			Name: "selector",
 			In:   "query",
 		}
-		params.Selector = packed[key].(MeRoomsGetSelector)
+		params.Selector = packed[key].(QuerySelectParams)
 	}
 	return params
 }
@@ -308,7 +308,7 @@ type MeRoomsIdMessagesGetParams struct {
 	// ID of the room.
 	RoomID string
 	// Fields to specify select parameters.
-	Selector MeRoomsIdMessagesGetSelector
+	Selector QuerySelectParams
 }
 
 func unpackMeRoomsIdMessagesGetParams(packed middleware.Parameters) (params MeRoomsIdMessagesGetParams) {
@@ -324,7 +324,7 @@ func unpackMeRoomsIdMessagesGetParams(packed middleware.Parameters) (params MeRo
 			Name: "selector",
 			In:   "query",
 		}
-		params.Selector = packed[key].(MeRoomsIdMessagesGetSelector)
+		params.Selector = packed[key].(QuerySelectParams)
 	}
 	return params
 }

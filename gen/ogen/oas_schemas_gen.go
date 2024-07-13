@@ -221,42 +221,6 @@ func (s *Comments) SetComments(val []Comment) {
 	s.Comments = val
 }
 
-type CommentsByJokeIDGetSelector struct {
-	Order  OptOrder `json:"order"`
-	Limit  OptInt   `json:"limit"`
-	Offset OptInt   `json:"offset"`
-}
-
-// GetOrder returns the value of Order.
-func (s *CommentsByJokeIDGetSelector) GetOrder() OptOrder {
-	return s.Order
-}
-
-// GetLimit returns the value of Limit.
-func (s *CommentsByJokeIDGetSelector) GetLimit() OptInt {
-	return s.Limit
-}
-
-// GetOffset returns the value of Offset.
-func (s *CommentsByJokeIDGetSelector) GetOffset() OptInt {
-	return s.Offset
-}
-
-// SetOrder sets the value of Order.
-func (s *CommentsByJokeIDGetSelector) SetOrder(val OptOrder) {
-	s.Order = val
-}
-
-// SetLimit sets the value of Limit.
-func (s *CommentsByJokeIDGetSelector) SetLimit(val OptInt) {
-	s.Limit = val
-}
-
-// SetOffset sets the value of Offset.
-func (s *CommentsByJokeIDGetSelector) SetOffset(val OptInt) {
-	s.Offset = val
-}
-
 // Ref: #/components/schemas/joke
 type Joke struct {
 	ID          string    `json:"id"`
@@ -459,42 +423,6 @@ func (s *MeJokesDelReq) SetJokeID(val string) {
 	s.JokeID = val
 }
 
-type MeJokesGetSelector struct {
-	Order  OptOrder `json:"order"`
-	Limit  OptInt   `json:"limit"`
-	Offset OptInt   `json:"offset"`
-}
-
-// GetOrder returns the value of Order.
-func (s *MeJokesGetSelector) GetOrder() OptOrder {
-	return s.Order
-}
-
-// GetLimit returns the value of Limit.
-func (s *MeJokesGetSelector) GetLimit() OptInt {
-	return s.Limit
-}
-
-// GetOffset returns the value of Offset.
-func (s *MeJokesGetSelector) GetOffset() OptInt {
-	return s.Offset
-}
-
-// SetOrder sets the value of Order.
-func (s *MeJokesGetSelector) SetOrder(val OptOrder) {
-	s.Order = val
-}
-
-// SetLimit sets the value of Limit.
-func (s *MeJokesGetSelector) SetLimit(val OptInt) {
-	s.Limit = val
-}
-
-// SetOffset sets the value of Offset.
-func (s *MeJokesGetSelector) SetOffset(val OptInt) {
-	s.Offset = val
-}
-
 type MeJokesPostReq struct {
 	Title       string    `json:"title"`
 	Text        string    `json:"text"`
@@ -663,78 +591,6 @@ func (s *MeRoomsDeleteReq) GetID() string {
 // SetID sets the value of ID.
 func (s *MeRoomsDeleteReq) SetID(val string) {
 	s.ID = val
-}
-
-type MeRoomsGetSelector struct {
-	Order  OptOrder `json:"order"`
-	Limit  OptInt   `json:"limit"`
-	Offset OptInt   `json:"offset"`
-}
-
-// GetOrder returns the value of Order.
-func (s *MeRoomsGetSelector) GetOrder() OptOrder {
-	return s.Order
-}
-
-// GetLimit returns the value of Limit.
-func (s *MeRoomsGetSelector) GetLimit() OptInt {
-	return s.Limit
-}
-
-// GetOffset returns the value of Offset.
-func (s *MeRoomsGetSelector) GetOffset() OptInt {
-	return s.Offset
-}
-
-// SetOrder sets the value of Order.
-func (s *MeRoomsGetSelector) SetOrder(val OptOrder) {
-	s.Order = val
-}
-
-// SetLimit sets the value of Limit.
-func (s *MeRoomsGetSelector) SetLimit(val OptInt) {
-	s.Limit = val
-}
-
-// SetOffset sets the value of Offset.
-func (s *MeRoomsGetSelector) SetOffset(val OptInt) {
-	s.Offset = val
-}
-
-type MeRoomsIdMessagesGetSelector struct {
-	Order  OptOrder `json:"order"`
-	Limit  OptInt   `json:"limit"`
-	Offset OptInt   `json:"offset"`
-}
-
-// GetOrder returns the value of Order.
-func (s *MeRoomsIdMessagesGetSelector) GetOrder() OptOrder {
-	return s.Order
-}
-
-// GetLimit returns the value of Limit.
-func (s *MeRoomsIdMessagesGetSelector) GetLimit() OptInt {
-	return s.Limit
-}
-
-// GetOffset returns the value of Offset.
-func (s *MeRoomsIdMessagesGetSelector) GetOffset() OptInt {
-	return s.Offset
-}
-
-// SetOrder sets the value of Order.
-func (s *MeRoomsIdMessagesGetSelector) SetOrder(val OptOrder) {
-	s.Order = val
-}
-
-// SetLimit sets the value of Limit.
-func (s *MeRoomsIdMessagesGetSelector) SetLimit(val OptInt) {
-	s.Limit = val
-}
-
-// SetOffset sets the value of Offset.
-func (s *MeRoomsIdMessagesGetSelector) SetOffset(val OptInt) {
-	s.Offset = val
 }
 
 type MeRoomsPostReq struct {
@@ -976,6 +832,42 @@ func (s *Order) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+type QuerySelectParams struct {
+	Order  OptOrder `json:"order"`
+	Limit  OptInt   `json:"limit"`
+	Offset OptInt   `json:"offset"`
+}
+
+// GetOrder returns the value of Order.
+func (s *QuerySelectParams) GetOrder() OptOrder {
+	return s.Order
+}
+
+// GetLimit returns the value of Limit.
+func (s *QuerySelectParams) GetLimit() OptInt {
+	return s.Limit
+}
+
+// GetOffset returns the value of Offset.
+func (s *QuerySelectParams) GetOffset() OptInt {
+	return s.Offset
+}
+
+// SetOrder sets the value of Order.
+func (s *QuerySelectParams) SetOrder(val OptOrder) {
+	s.Order = val
+}
+
+// SetLimit sets the value of Limit.
+func (s *QuerySelectParams) SetLimit(val OptInt) {
+	s.Limit = val
+}
+
+// SetOffset sets the value of Offset.
+func (s *QuerySelectParams) SetOffset(val OptInt) {
+	s.Offset = val
 }
 
 // Ref: #/components/schemas/room

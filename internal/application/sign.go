@@ -8,8 +8,10 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entityTransactor"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"go.opentelemetry.io/otel/trace"
 )
 
 var ErrProvidedAccessToken = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Access token provided")
@@ -21,9 +23,10 @@ type ISignUsecase interface {
 
 type signUsecase struct {
 	user          entity.IUser
-	transactor    entityTransactor.ITransactor
 	passwordMaker service.IPasswordMaker
 	taskQueue     service.ITaskQueuer
+
+	transactor entityTransactor.ITransactor
 }
 
 func NewSignUsecase(
@@ -53,6 +56,10 @@ type SignUpRequest struct {
 // creates hash of the password provided by user,
 // then it sends welcome email to the users's email address,
 func (u signUsecase) SignUp(ctx context.Context, req SignUpRequest) (model.User, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	var user model.User
 	txFunc := func(ctx context.Context, txEntities domain.Entities) error {
 		createdUser, err := txEntities.User.Create(ctx, entity.UserCreateRequest{
@@ -92,14 +99,22 @@ type SignInRequest struct {
 // then creates hash of the provided password and compares it to the hash stored in database.
 // The SignIn returns user, accessToken and refreshToken.
 func (u signUsecase) SignIn(ctx context.Context, req SignInRequest) (model.User, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	user, err := u.user.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return model.User{}, err
 	}
 
+	span.AddEvent("Check Password Start")
+
 	if err := u.passwordMaker.CheckPassword(req.Password, user.HashedPassword); err != nil {
 		return model.User{}, err
 	}
+
+	span.AddEvent("Check Password End")
 
 	return user, nil
 }

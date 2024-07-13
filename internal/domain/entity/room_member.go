@@ -8,6 +8,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type IRoomMember interface {
@@ -38,6 +39,10 @@ type RoomMemberCreateRequest struct {
 }
 
 func (e roomMember) Create(ctx context.Context, req RoomMemberCreateRequest) (model.RoomMember, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.RoomMember{}, err
 	}
@@ -50,6 +55,10 @@ func (e roomMember) Create(ctx context.Context, req RoomMemberCreateRequest) (mo
 }
 
 func (e roomMember) Delete(ctx context.Context, roomID, userID string) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Var(roomID, "uuid"); err != nil {
 		return err
 	}

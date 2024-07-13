@@ -12,6 +12,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type IFile interface {
@@ -23,23 +24,23 @@ type IFile interface {
 }
 
 type file struct {
-	commandTransactor commandTransactor.ITransactor
 	fileInfoCommand   command.IFileInfo
 	fileInfoQuery     query.IFileInfo
 	fileManger        service.IFileManager
+	commandTransactor commandTransactor.ITransactor
 }
 
 func NewFile(
-	commandTransactor commandTransactor.ITransactor,
 	fileInfoCommand command.IFileInfo,
 	fileInfoQuery query.IFileInfo,
 	fileManger service.IFileManager,
+	commandTransactor commandTransactor.ITransactor,
 ) IFile {
 	return file{
-		commandTransactor: commandTransactor,
 		fileInfoCommand:   fileInfoCommand,
 		fileInfoQuery:     fileInfoQuery,
 		fileManger:        fileManger,
+		commandTransactor: commandTransactor,
 	}
 }
 
@@ -51,7 +52,11 @@ type FileCreateRequest struct {
 	FileContent model.FileContent
 }
 
-func (f file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo, error) {
+func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.FileInfo{}, err
 	}
@@ -71,14 +76,14 @@ func (f file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo
 		}
 		returnFileInfo = fileInfo
 
-		if err := f.fileManger.Save(guid, req.FileContent); err != nil {
+		if err := e.fileManger.Save(guid, req.FileContent); err != nil {
 			return err
 		}
 
 		return nil
 	}
 
-	if err := f.commandTransactor.PerformTX(ctx, txFunc); err != nil {
+	if err := e.commandTransactor.PerformTX(ctx, txFunc); err != nil {
 		return model.FileInfo{}, err
 	}
 
@@ -92,6 +97,10 @@ type FileUpdateRequest struct {
 }
 
 func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return err
 	}
@@ -114,6 +123,10 @@ func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) erro
 }
 
 func (e file) Delete(ctx context.Context, id string) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	txFunc := func(ctx context.Context, txCommands persistence.Commands) error {
 		if err := txCommands.FileInfo.Delete(ctx, id); err != nil {
 			return err
@@ -130,6 +143,10 @@ func (e file) Delete(ctx context.Context, id string) error {
 }
 
 func (e file) GetByID(ctx context.Context, id string) (model.FileInfo, model.FileContent, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	fileInfo, err := e.fileInfoQuery.GetByID(ctx, id)
 	if err != nil {
 		return model.FileInfo{}, model.FileContent{}, err

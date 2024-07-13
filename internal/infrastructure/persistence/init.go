@@ -14,13 +14,9 @@ func New(postgresUrl string) (
 ) {
 	deps := implementation.NewPersistenceDependencies(postgresUrl)
 
-	commands := implementation.NewCommands(implementation.CommandsDependencies{
-		Boiler: deps.Boiler,
-	})
+	commands := implementation.NewCommands(deps.BoilerDB)
 
-	queries := implementation.NewQueries(implementation.QueriesDependencies{
-		Boiler: deps.Boiler,
-	})
+	queries := implementation.NewQueries(deps.BoilerDB)
 
 	transactor := infraCommandTransactor.New(deps)
 

@@ -5,8 +5,10 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/auth"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/restDto"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type SignHandler struct {
@@ -25,6 +27,10 @@ func NewSignHandler(
 }
 
 func (h SignHandler) SignUpPost(ctx context.Context, req *ogen.SignUpPostReq) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	_, err := h.signUsecase.SignUp(ctx, application.SignUpRequest{
 		Username: req.Username,
 		Email:    req.Email,
@@ -34,6 +40,10 @@ func (h SignHandler) SignUpPost(ctx context.Context, req *ogen.SignUpPostReq) er
 }
 
 func (h SignHandler) SignInPost(ctx context.Context, req *ogen.SignInPostReq) (*ogen.SignInPostOK, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	user, err := h.signUsecase.SignIn(ctx, application.SignInRequest{
 		Email:    req.Email,
 		Password: req.Password,
@@ -60,6 +70,9 @@ func (h SignHandler) SignInPost(ctx context.Context, req *ogen.SignInPostReq) (*
 }
 
 func (h SignHandler) SignRefreshPost(ctx context.Context, req *ogen.SignRefreshPostReq) (*ogen.SignRefreshPostOK, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	access, err := h.authManager.RefreshToken(req.RefreshToken)
 	if err != nil {
 		return nil, err

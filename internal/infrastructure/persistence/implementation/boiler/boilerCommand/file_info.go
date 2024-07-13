@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler/boilerDto"
@@ -22,6 +23,9 @@ func NewFileInfo(executor boil.ContextExecutor) command.IFileInfo {
 }
 
 func (f fileInfo) Create(ctx context.Context, req model.FileInfo) (model.FileInfo, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	fileInfo := sqlboiler.FileInfo{
 		ID:        req.ID,
 		Name:      req.Name,
@@ -34,6 +38,9 @@ func (f fileInfo) Create(ctx context.Context, req model.FileInfo) (model.FileInf
 }
 
 func (f fileInfo) Update(ctx context.Context, id string, req command.FileInfoUpdateRequest) (model.FileInfo, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	fileInfo, err := sqlboiler.FindFileInfo(ctx, f.executor, id)
 	if err != nil {
 		return model.FileInfo{}, errutil.HandleErr(err)
@@ -46,6 +53,9 @@ func (f fileInfo) Update(ctx context.Context, id string, req command.FileInfoUpd
 }
 
 func (f fileInfo) Delete(ctx context.Context, id string) error {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	fileInfo, err := sqlboiler.FindFileInfo(ctx, f.executor, id)
 	if err != nil {
 		return errutil.HandleErr(err)

@@ -9,6 +9,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type IComment interface {
@@ -42,6 +43,10 @@ type CommentCreateRequest struct {
 }
 
 func (e comment) Create(ctx context.Context, req CommentCreateRequest) (model.Comment, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Comment{}, err
 	}
@@ -58,6 +63,10 @@ type CommentUpdateRequest struct {
 }
 
 func (e comment) Update(ctx context.Context, commentID string, req CommentUpdateRequest) (model.Comment, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Comment{}, err
 	}
@@ -68,6 +77,10 @@ func (e comment) Update(ctx context.Context, commentID string, req CommentUpdate
 }
 
 func (e comment) Delete(ctx context.Context, commentID string) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Var(commentID, "uuid"); err != nil {
 		return err
 	}

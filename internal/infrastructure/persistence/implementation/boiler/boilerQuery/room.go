@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	selector1 "github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/selector"
@@ -24,14 +25,23 @@ func NewRoom(executor boil.ContextExecutor) query.IRoom {
 }
 
 func (r room) GetByID(ctx context.Context, id string) (model.Room, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	return boilerDto.NewDomainRoomWithErrHandle(sqlboiler.FindRoom(ctx, r.executor, id))
 }
 
 func (r room) GetByName(ctx context.Context, name string) (model.Room, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	return boilerDto.NewDomainRoomWithErrHandle(sqlboiler.Rooms(sqlboiler.RoomWhere.Name.EQ(name)).One(ctx, r.executor))
 }
 
 func (r room) GetAllByUserID(ctx context.Context, userID string, params selector1.Selector) (model.Rooms, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	mods := selector.ToBoilerSelectorPipe(
 		params,
 		qm.InnerJoin(sqlboiler.TableNames.RoomMember+" rm ON rm.room_id = room.id"),
@@ -41,6 +51,9 @@ func (r room) GetAllByUserID(ctx context.Context, userID string, params selector
 }
 
 func (r room) SearchAllByName(ctx context.Context, keyword string, params selector1.Selector) (model.Rooms, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	mods := selector.ToBoilerSelectorPipe(
 		params,
 		sqlboiler.RoomWhere.Name.LIKE("%"+keyword+"%"),

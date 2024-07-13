@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler/boilerDto"
@@ -22,6 +23,9 @@ func NewComment(executor boil.ContextExecutor) command.IComment {
 }
 
 func (c comment) Create(ctx context.Context, userID, jokeID string, req model.Comment) (model.Comment, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	comment := sqlboiler.Comment{
 		ID:        req.ID,
 		Text:      req.Text,
@@ -35,6 +39,9 @@ func (c comment) Create(ctx context.Context, userID, jokeID string, req model.Co
 }
 
 func (c comment) Update(ctx context.Context, commentID string, req command.CommentUpdate) (model.Comment, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	comment, err := sqlboiler.FindComment(ctx, c.executor, commentID)
 	if err != nil {
 		return model.Comment{}, errutil.HandleErr(err)
@@ -47,6 +54,9 @@ func (c comment) Update(ctx context.Context, commentID string, req command.Comme
 }
 
 func (c comment) Delete(ctx context.Context, id string) error {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	comment, err := sqlboiler.FindComment(ctx, c.executor, id)
 	if err != nil {
 		return errutil.HandleErr(err)

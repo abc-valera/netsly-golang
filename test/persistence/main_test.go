@@ -87,12 +87,8 @@ func TestMain(m *testing.M) {
 		_ = res
 
 		return ctx, r,
-			implementation.NewCommands(implementation.CommandsDependencies{
-				Boiler: tx,
-			}),
-			implementation.NewQueries(implementation.QueriesDependencies{
-				Boiler: tx,
-			})
+			implementation.NewCommands(tx),
+			implementation.NewQueries(tx)
 	}
 
 	m.Run()

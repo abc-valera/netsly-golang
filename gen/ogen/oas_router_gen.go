@@ -516,9 +516,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				elem = ""
 
 				if len(elem) == 0 {
+					// Leaf node.
 					switch method {
 					case "GET":
-						// Leaf: CommentsByJokeIDGet
 						r.name = "CommentsByJokeIDGet"
 						r.summary = "Returns comments of the joke"
 						r.operationID = "CommentsByJokeIDGet"
@@ -546,9 +546,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				elem = ""
 
 				if len(elem) == 0 {
+					// Leaf node.
 					switch method {
 					case "GET":
-						// Leaf: LikesByJokeIDGet
 						r.name = "LikesByJokeIDGet"
 						r.summary = "Counts likes of the joke"
 						r.operationID = "LikesByJokeIDGet"
@@ -622,9 +622,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 
 						if len(elem) == 0 {
+							// Leaf node.
 							switch method {
 							case "DELETE":
-								// Leaf: MeCommentsDel
 								r.name = "MeCommentsDel"
 								r.summary = "Deletes a comment of the current user"
 								r.operationID = "MeCommentsDel"
@@ -633,7 +633,6 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.count = 0
 								return r, true
 							case "POST":
-								// Leaf: MeCommentsPost
 								r.name = "MeCommentsPost"
 								r.summary = "Creates a comment for the current user and the current joke"
 								r.operationID = "MeCommentsPost"
@@ -642,7 +641,6 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.count = 0
 								return r, true
 							case "PUT":
-								// Leaf: MeCommentsPut
 								r.name = "MeCommentsPut"
 								r.summary = "Updates a comment of the current user"
 								r.operationID = "MeCommentsPut"
@@ -665,9 +663,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 
 						if len(elem) == 0 {
+							// Leaf node.
 							switch method {
 							case "DELETE":
-								// Leaf: MeJokesDel
 								r.name = "MeJokesDel"
 								r.summary = "Deletes joke for current user"
 								r.operationID = "MeJokesDel"
@@ -676,7 +674,6 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.count = 0
 								return r, true
 							case "GET":
-								// Leaf: MeJokesGet
 								r.name = "MeJokesGet"
 								r.summary = "Returns jokes of the current user"
 								r.operationID = "MeJokesGet"
@@ -685,7 +682,6 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.count = 0
 								return r, true
 							case "POST":
-								// Leaf: MeJokesPost
 								r.name = "MeJokesPost"
 								r.summary = "Creates a new joke for current user"
 								r.operationID = "MeJokesPost"
@@ -694,7 +690,6 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.count = 0
 								return r, true
 							case "PUT":
-								// Leaf: MeJokesPut
 								r.name = "MeJokesPut"
 								r.summary = "Updates joke for current user"
 								r.operationID = "MeJokesPut"
@@ -717,9 +712,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 
 						if len(elem) == 0 {
+							// Leaf node.
 							switch method {
 							case "DELETE":
-								// Leaf: MeLikesDel
 								r.name = "MeLikesDel"
 								r.summary = "Deletes a like of the current user"
 								r.operationID = "MeLikesDel"
@@ -728,7 +723,6 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.count = 0
 								return r, true
 							case "POST":
-								// Leaf: MeLikesPost
 								r.name = "MeLikesPost"
 								r.summary = "Creates a like for a joke for the current user"
 								r.operationID = "MeLikesPost"
@@ -798,9 +792,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							}
 
 							if len(elem) == 0 {
+								// Leaf node.
 								switch method {
 								case "POST":
-									// Leaf: MeChatRoomsJoinPost
 									r.name = "MeChatRoomsJoinPost"
 									r.summary = "Join room"
 									r.operationID = "MeChatRoomsJoinPost"
@@ -853,9 +847,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "GET":
-							// Leaf: MeRoomsIdMessagesGet
 							r.name = "MeRoomsIdMessagesGet"
 							r.summary = "Retrieve messages from a room"
 							r.operationID = "MeRoomsIdMessagesGet"
@@ -893,9 +887,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "POST":
-							// Leaf: SignInPost
 							r.name = "SignInPost"
 							r.summary = "Performs user authentication"
 							r.operationID = "SignInPost"
@@ -918,9 +912,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "POST":
-							// Leaf: SignRefreshPost
 							r.name = "SignRefreshPost"
 							r.summary = "Exchanges a refresh token for an access token"
 							r.operationID = "SignRefreshPost"
@@ -943,9 +937,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "POST":
-							// Leaf: SignUpPost
 							r.name = "SignUpPost"
 							r.summary = "Performs user registration"
 							r.operationID = "SignUpPost"

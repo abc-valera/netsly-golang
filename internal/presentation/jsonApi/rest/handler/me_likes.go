@@ -5,7 +5,9 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/contexts"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type MeLikesHandler struct {
@@ -21,6 +23,10 @@ func NewMeLikesHandler(
 }
 
 func (h MeLikesHandler) MeLikesPost(ctx context.Context, req *ogen.MeLikesPostReq) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	userID, err := contexts.GetUserID(ctx)
 	if err != nil {
 		return err
@@ -37,6 +43,10 @@ func (h MeLikesHandler) MeLikesPost(ctx context.Context, req *ogen.MeLikesPostRe
 }
 
 func (h MeLikesHandler) MeLikesDel(ctx context.Context, req *ogen.MeLikesDelReq) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	userID, err := contexts.GetUserID(ctx)
 	if err != nil {
 		return err

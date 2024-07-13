@@ -9,6 +9,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type IRoomMessage interface {
@@ -42,6 +43,10 @@ type RoomMessageCreateRequest struct {
 }
 
 func (e roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (model.RoomMessage, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.RoomMessage{}, err
 	}
@@ -58,6 +63,10 @@ type RoomMessageUpdateRequest struct {
 }
 
 func (e roomMessage) Update(ctx context.Context, id string, req RoomMessageUpdateRequest) (model.RoomMessage, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.RoomMessage{}, err
 	}
@@ -68,6 +77,10 @@ func (e roomMessage) Update(ctx context.Context, id string, req RoomMessageUpdat
 }
 
 func (e roomMessage) Delete(ctx context.Context, id string) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Var(id, "uuid"); err != nil {
 		return err
 	}

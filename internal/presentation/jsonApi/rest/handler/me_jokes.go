@@ -5,8 +5,10 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/contexts"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/restDto"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type MeJokesHandler struct {
@@ -22,6 +24,10 @@ func NewMeJokesHandler(
 }
 
 func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesGetParams) (*ogen.Jokes, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	userID, err := contexts.GetUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -36,6 +42,10 @@ func (h MeJokesHandler) MeJokesGet(ctx context.Context, ogenParams ogen.MeJokesG
 }
 
 func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostReq) (*ogen.Joke, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	userID, err := contexts.GetUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -54,6 +64,10 @@ func (h MeJokesHandler) MeJokesPost(ctx context.Context, req *ogen.MeJokesPostRe
 }
 
 func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq) (*ogen.Joke, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	joke, err := h.joke.Update(ctx, req.JokeID, entity.JokeUpdateRequest{
 		Title:       restDto.NewDomainOptionalString(req.Title),
 		Text:        restDto.NewDomainOptionalString(req.Text),
@@ -66,5 +80,9 @@ func (h MeJokesHandler) MeJokesPut(ctx context.Context, req *ogen.MeJokesPutReq)
 }
 
 func (h MeJokesHandler) MeJokesDel(ctx context.Context, req *ogen.MeJokesDelReq) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	return h.joke.Delete(ctx, req.JokeID)
 }

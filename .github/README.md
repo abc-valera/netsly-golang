@@ -43,7 +43,8 @@ The following list describes technologies used in the project:
 - All the main code is written in Golang.
 - For configuration `.env` files are used.
 - The project is containerized and can be run with Docker.
-- The project is not using Makefiles, but instead, it uses [Task](https://taskfile.dev/) as a task runner.
+- Makefiles are not used in the project. [Task](https://taskfile.dev/) is used as a task runner.
+- The project is instrumented with [OpenTelemetry](https://opentelemetry.io/).
 
 - Domain layer:
 

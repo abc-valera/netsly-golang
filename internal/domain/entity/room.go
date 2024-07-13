@@ -11,6 +11,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/commandTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type IRoom interface {
@@ -22,20 +23,20 @@ type IRoom interface {
 }
 
 type room struct {
-	commandTransactor commandTransactor.ITransactor
-	roomCommand       command.IRoom
+	roomCommand command.IRoom
 	query.IRoom
+	commandTransactor commandTransactor.ITransactor
 }
 
 func NewRoom(
 	roomCommand command.IRoom,
-	commandTransactor commandTransactor.ITransactor,
 	query query.IRoom,
+	commandTransactor commandTransactor.ITransactor,
 ) IRoom {
 	return room{
 		roomCommand:       roomCommand,
-		commandTransactor: commandTransactor,
 		IRoom:             query,
+		commandTransactor: commandTransactor,
 	}
 }
 
@@ -46,6 +47,10 @@ type RoomCreateRequest struct {
 }
 
 func (e room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Room{}, err
 	}
@@ -88,6 +93,10 @@ type RoomUpdateRequest struct {
 }
 
 func (e room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) (model.Room, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Room{}, err
 	}
@@ -98,6 +107,10 @@ func (e room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) 
 }
 
 func (e room) Delete(ctx context.Context, roomID string) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Var(roomID, "uuid"); err != nil {
 		return err
 	}

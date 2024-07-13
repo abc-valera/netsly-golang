@@ -5,8 +5,10 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/ogen"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/contexts"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/restDto"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type MeHandler struct {
@@ -22,6 +24,10 @@ func NewMeHandler(
 }
 
 func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	userID, err := contexts.GetUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -35,6 +41,10 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 }
 
 func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	userID, err := contexts.GetUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -52,6 +62,10 @@ func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, e
 }
 
 func (h MeHandler) MeDel(ctx context.Context, req *ogen.MeDelReq) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	userID, err := contexts.GetUserID(ctx)
 	if err != nil {
 		return err

@@ -23,14 +23,12 @@ func (t transactor) PerformTX(
 	ctx context.Context,
 	txFunc func(ctx context.Context, txCommands persistence.Commands) error,
 ) error {
-	boilerTX, err := t.deps.Boiler.BeginTx(ctx, nil)
+	boilerTX, err := t.deps.BoilerDB.BeginTx(ctx, nil)
 	if err != nil {
 		return coderr.NewInternalErr(err)
 	}
 
-	txCommands := implementation.NewCommands(implementation.CommandsDependencies{
-		Boiler: boilerTX,
-	})
+	txCommands := implementation.NewCommands(t.deps.BoilerDB)
 	if err := txFunc(ctx, txCommands); err != nil {
 		if err := boilerTX.Rollback(); err != nil {
 			return coderr.NewInternalErr(err)

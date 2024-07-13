@@ -12,45 +12,37 @@ import (
 )
 
 type PersistenceDependencies struct {
-	Boiler *sql.DB
+	BoilerDB *sql.DB
 }
 
 func NewPersistenceDependencies(postgresUrl string) PersistenceDependencies {
 	return PersistenceDependencies{
-		Boiler: coderr.Must(boiler.Init(postgresUrl)),
+		BoilerDB: coderr.Must(boiler.Init(postgresUrl)),
 	}
 }
 
-type CommandsDependencies struct {
-	Boiler boil.ContextExecutor
-}
-
-func NewCommands(deps CommandsDependencies) persistence.Commands {
+func NewCommands(boilerIDB boil.ContextExecutor) persistence.Commands {
 	return persistence.Commands{
-		User:        boilerCommand.NewUser(deps.Boiler),
-		Joke:        boilerCommand.NewJoke(deps.Boiler),
-		Like:        boilerCommand.NewLike(deps.Boiler),
-		Comment:     boilerCommand.NewComment(deps.Boiler),
-		Room:        boilerCommand.NewRoom(deps.Boiler),
-		RoomMember:  boilerCommand.NewRoomMember(deps.Boiler),
-		RoomMessage: boilerCommand.NewRoomMessage(deps.Boiler),
-		FileInfo:    boilerCommand.NewFileInfo(deps.Boiler),
+		User:        boilerCommand.NewUser(boilerIDB),
+		Joke:        boilerCommand.NewJoke(boilerIDB),
+		Like:        boilerCommand.NewLike(boilerIDB),
+		Comment:     boilerCommand.NewComment(boilerIDB),
+		Room:        boilerCommand.NewRoom(boilerIDB),
+		RoomMember:  boilerCommand.NewRoomMember(boilerIDB),
+		RoomMessage: boilerCommand.NewRoomMessage(boilerIDB),
+		FileInfo:    boilerCommand.NewFileInfo(boilerIDB),
 	}
 }
 
-type QueriesDependencies struct {
-	Boiler boil.ContextExecutor
-}
-
-func NewQueries(deps QueriesDependencies) persistence.Queries {
+func NewQueries(boilerIDB boil.ContextExecutor) persistence.Queries {
 	return persistence.Queries{
-		User:        boilerQuery.NewUser(deps.Boiler),
-		Joke:        boilerQuery.NewJoke(deps.Boiler),
-		Like:        boilerQuery.NewLike(deps.Boiler),
-		Comment:     boilerQuery.NewComment(deps.Boiler),
-		Room:        boilerQuery.NewRoom(deps.Boiler),
-		RoomMember:  boilerQuery.NewRoomMember(deps.Boiler),
-		RoomMessage: boilerQuery.NewRoomMessage(deps.Boiler),
-		FileInfo:    boilerQuery.NewFileInfo(deps.Boiler),
+		User:        boilerQuery.NewUser(boilerIDB),
+		Joke:        boilerQuery.NewJoke(boilerIDB),
+		Like:        boilerQuery.NewLike(boilerIDB),
+		Comment:     boilerQuery.NewComment(boilerIDB),
+		Room:        boilerQuery.NewRoom(boilerIDB),
+		RoomMember:  boilerQuery.NewRoomMember(boilerIDB),
+		RoomMessage: boilerQuery.NewRoomMessage(boilerIDB),
+		FileInfo:    boilerQuery.NewFileInfo(boilerIDB),
 	}
 }

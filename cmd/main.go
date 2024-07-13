@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"os"
 	"os/signal"
@@ -10,6 +11,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
+	"github.com/abc-valera/netsly-api-golang/internal/core/telemetry"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/entityTransactor"
@@ -57,8 +59,17 @@ func main() {
 	entrypoint := flag.String("entrypoint", "webApp", "Port flag specifies the application presentation to be run: webApp, jsonApi, grpcApi")
 	flag.Parse()
 
+	// Init OpenTelemetry instrumentation
+	jaegerTraceExporter := coderr.Must(telemetry.NewJaegerTraceExporter())
+
+	jaegerTraceProvider := telemetry.NewTraceProvider(jaegerTraceExporter, "netsly."+*entrypoint)
+	defer jaegerTraceProvider.Shutdown(context.Background())
+
+	global.InitTracer(jaegerTraceProvider.Tracer("netsly-golang"))
+
 	// Init server functions
 	var serverStart, serverGracefulStop func()
+
 	switch *entrypoint {
 	case "webApp":
 		serverStart, serverGracefulStop = webApp.NewServer(

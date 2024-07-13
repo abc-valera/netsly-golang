@@ -16,7 +16,6 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/handler"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/middleware"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/ws"
-	"github.com/go-chi/chi/v5"
 )
 
 func newHandler(
@@ -29,21 +28,17 @@ func newHandler(
 	services domain.Services,
 	usecases application.Usecases,
 ) http.Handler {
-	// Init chi router
-	r := chi.NewRouter()
+	// Init router
+	mux := http.NewServeMux()
 
 	// Static files
-	r.Handle("/*", http.FileServer(http.Dir(staticPath)))
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticPath))))
 
 	// Init auth manager
 	authManager := auth.NewManager(signKey, accessTokenDuration, refreshTokenDuration)
 
 	// Ogen routes
-	r.Route("/api/v1", func(r chi.Router) {
-		// Regiter middlewares
-		r.Use(middleware.Recoverer)
-		r.Use(middleware.Logger)
-
+	{
 		// Init handlers (implementations of ogen interfaces)
 		ogenHandler := &struct {
 			errutil.Handler
@@ -73,23 +68,38 @@ func newHandler(
 		securityHandler := auth.NewHandler(authManager)
 
 		// Init ogen server
-		ogenServer := coderr.Must(ogen.NewServer(ogenHandler, securityHandler))
-		// Register ogen routes
-		r.Mount("/", http.StripPrefix("/api/v1", ogenServer))
-	})
+		ogenServer := coderr.Must(
+			ogen.NewServer(
+				ogenHandler,
+				securityHandler,
+			),
+		)
+
+		// Ogen routes
+		mux.Handle("/api/v1/", http.StripPrefix("/api/v1", ogenServer))
+	}
 
 	// WS routes
-	r.Route("/ws/v1", func(r chi.Router) {
+	{
+		// Init Open Telemetry handlerTracer for WS handlers
+		// handlerTracer := global.TraceProvider().Tracer("ws")
+
 		// Init ws manager
 		wsManager := ws.NewManager(
 			authManager,
 			services,
 		)
-		// Register ws routes
-		r.HandleFunc("/chat", wsManager.ServeWS)
-	})
 
-	return r
+		// WS routes
+		mux.HandleFunc("/ws/v1/chat", wsManager.ServeWS)
+	}
+
+	// Init middlewares
+	withTracer := middleware.NewTracer(global.Tracer())
+	withRecoverer := middleware.NewRecoverer()
+	withLogger := middleware.NewLogger()
+
+	return withTracer(withRecoverer(withLogger(mux)))
 }
 
 // NewServer returns HTTP server

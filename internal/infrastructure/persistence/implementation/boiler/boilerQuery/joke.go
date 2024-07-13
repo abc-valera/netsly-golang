@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	selector1 "github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/selector"
@@ -23,10 +24,16 @@ func NewJoke(executor boil.ContextExecutor) query.IJoke {
 }
 
 func (j joke) GetByID(ctx context.Context, id string) (model.Joke, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	return boilerDto.NewDomainJokeWithErrHandle(sqlboiler.FindJoke(ctx, j.executor, id))
 }
 
 func (j joke) GetAllByUserID(ctx context.Context, userID string, params selector1.Selector) (model.Jokes, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	mods := selector.ToBoilerSelectorPipe(
 		params,
 		sqlboiler.JokeWhere.UserID.EQ(userID),
@@ -35,6 +42,9 @@ func (j joke) GetAllByUserID(ctx context.Context, userID string, params selector
 }
 
 func (j joke) SearchAllByTitle(ctx context.Context, keyword string, params selector1.Selector) (model.Jokes, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	mods := selector.ToBoilerSelectorPipe(
 		params,
 		sqlboiler.JokeWhere.Title.LIKE("%"+keyword+"%"),

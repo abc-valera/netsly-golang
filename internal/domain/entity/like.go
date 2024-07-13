@@ -8,6 +8,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type ILike interface {
@@ -38,6 +39,10 @@ type LikeCreateRequest struct {
 }
 
 func (e like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Like{}, err
 	}
@@ -50,6 +55,10 @@ func (e like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, er
 }
 
 func (e like) Delete(ctx context.Context, userID string, jokeID string) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Var(userID, "required,uuid"); err != nil {
 		return err
 	}

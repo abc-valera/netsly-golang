@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler/boilerDto"
@@ -22,6 +23,9 @@ func NewJoke(executor boil.ContextExecutor) command.IJoke {
 }
 
 func (j joke) Create(ctx context.Context, userID string, req model.Joke) (model.Joke, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	joke := sqlboiler.Joke{
 		ID:          req.ID,
 		Title:       req.Title,
@@ -36,6 +40,9 @@ func (j joke) Create(ctx context.Context, userID string, req model.Joke) (model.
 }
 
 func (j joke) Update(ctx context.Context, id string, req command.JokeUpdate) (model.Joke, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	joke, err := sqlboiler.FindJoke(ctx, j.executor, id)
 	if err != nil {
 		return model.Joke{}, errutil.HandleErr(err)
@@ -54,6 +61,9 @@ func (j joke) Update(ctx context.Context, id string, req command.JokeUpdate) (mo
 }
 
 func (j joke) Delete(ctx context.Context, id string) error {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	joke, err := sqlboiler.FindJoke(ctx, j.executor, id)
 	if err != nil {
 		return errutil.HandleErr(err)

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler/boilerDto"
@@ -21,7 +22,10 @@ func NewUser(executor boil.ContextExecutor) command.IUser {
 	}
 }
 
-func (u user) Create(ctx context.Context, req model.User) (model.User, error) {
+func (c user) Create(ctx context.Context, req model.User) (model.User, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	user := sqlboiler.User{
 		ID:             req.ID,
 		Username:       req.Username,
@@ -31,12 +35,15 @@ func (u user) Create(ctx context.Context, req model.User) (model.User, error) {
 		Status:         req.Status,
 		CreatedAt:      req.CreatedAt,
 	}
-	err := user.Insert(ctx, u.executor, boil.Infer())
+	err := user.Insert(ctx, c.executor, boil.Infer())
 	return boilerDto.NewDomainUserWithErrHandle(&user, err)
 }
 
-func (u user) Update(ctx context.Context, id string, req command.UserUpdate) (model.User, error) {
-	user, err := sqlboiler.FindUser(ctx, u.executor, id)
+func (c user) Update(ctx context.Context, id string, req command.UserUpdate) (model.User, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
+	user, err := sqlboiler.FindUser(ctx, c.executor, id)
 	if err != nil {
 		return model.User{}, errutil.HandleErr(err)
 	}
@@ -49,15 +56,18 @@ func (u user) Update(ctx context.Context, id string, req command.UserUpdate) (mo
 	if req.Status != nil {
 		user.Status = *req.Status
 	}
-	_, err = user.Update(ctx, u.executor, boil.Infer())
+	_, err = user.Update(ctx, c.executor, boil.Infer())
 	return boilerDto.NewDomainUserWithErrHandle(user, err)
 }
 
-func (u user) Delete(ctx context.Context, id string) error {
-	user, err := sqlboiler.FindUser(ctx, u.executor, id)
+func (c user) Delete(ctx context.Context, id string) error {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
+	user, err := sqlboiler.FindUser(ctx, c.executor, id)
 	if err != nil {
 		return errutil.HandleErr(err)
 	}
-	_, err = user.Delete(ctx, u.executor)
+	_, err = user.Delete(ctx, c.executor)
 	return errutil.HandleErr(err)
 }

@@ -10,6 +10,8 @@
       "program": "${workspaceFolder}/cmd",
       "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
+        "LOGGER_SERVICE_LOGS_FOLDER_PATH": "${workspaceFolder}/log",
+        "FILE_MANAGER_SERVICE_FILES_PATH": "${workspaceFolder}/static",
         "JSON-API_STATIC_PATH": "${workspaceFolder}/internal/presentation/jsonApi/static"
       }
     },
@@ -22,6 +24,8 @@
       "args": ["-entrypoint", "webApp"],
       "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
+        "LOGGER_SERVICE_LOGS_FOLDER_PATH": "${workspaceFolder}/log",
+        "FILE_MANAGER_SERVICE_FILES_PATH": "${workspaceFolder}/static",
         "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/internal/presentation/webApp/template",
         "WEB_APP_STATIC_PATH": "${workspaceFolder}/internal/presentation/webApp/static"
       }

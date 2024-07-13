@@ -10,6 +10,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type IUser interface {
@@ -23,7 +24,6 @@ type IUser interface {
 type user struct {
 	command command.IUser
 	query.IUser
-
 	passMaker service.IPasswordMaker
 }
 
@@ -48,14 +48,22 @@ type UserCreateRequest struct {
 }
 
 func (e user) Create(ctx context.Context, req UserCreateRequest) (model.User, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.User{}, err
 	}
+
+	span.AddEvent("Hashing Password Start")
 
 	hashedPassword, err := e.passMaker.HashPassword(req.Password)
 	if err != nil {
 		return model.User{}, err
 	}
+
+	span.AddEvent("Hashing Password End")
 
 	return e.command.Create(ctx, model.User{
 		ID:             uuid.New().String(),
@@ -75,6 +83,10 @@ type UserUpdateRequest struct {
 }
 
 func (e user) Update(ctx context.Context, userID string, req UserUpdateRequest) (model.User, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.User{}, err
 	}
@@ -86,11 +98,15 @@ func (e user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 	}
 
 	if req.Password != nil {
+		span.AddEvent("Hashing Password Start")
+
 		hashedPassword, err := e.passMaker.HashPassword(*req.Password)
 		if err != nil {
 			return model.User{}, err
 		}
 		updateReq.HashedPassword = &hashedPassword
+
+		span.AddEvent("Hashing Password End")
 	}
 
 	return e.command.Update(ctx, userID, updateReq)
@@ -101,6 +117,10 @@ type UserDeleteRequest struct {
 }
 
 func (e user) Delete(ctx context.Context, userID string, req UserDeleteRequest) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return err
 	}
@@ -110,9 +130,13 @@ func (e user) Delete(ctx context.Context, userID string, req UserDeleteRequest) 
 		return err
 	}
 
+	span.AddEvent("Checking Password Start")
+
 	if err := e.passMaker.CheckPassword(req.Password, user.HashedPassword); err != nil {
 		return err
 	}
+
+	span.AddEvent("Checking Password End")
 
 	return e.command.Delete(ctx, userID)
 }

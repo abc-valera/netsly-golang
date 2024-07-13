@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	selector1 "github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/selector"
@@ -23,10 +24,16 @@ func NewComment(executor boil.ContextExecutor) query.IComment {
 }
 
 func (c comment) GetByID(ctx context.Context, id string) (model.Comment, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	return boilerDto.NewDomainCommentWithErrHandle(sqlboiler.FindComment(ctx, c.executor, id))
 }
 
 func (c comment) GetAllByJokeID(ctx context.Context, jokeID string, params selector1.Selector) (model.Comments, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	mods := selector.ToBoilerSelectorPipe(
 		params,
 		sqlboiler.CommentWhere.JokeID.EQ(jokeID),

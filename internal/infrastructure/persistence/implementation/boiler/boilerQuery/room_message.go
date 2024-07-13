@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/abc-valera/netsly-api-golang/gen/sqlboiler"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	selector1 "github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/selector"
@@ -23,10 +24,16 @@ func NewRoomMessage(executor boil.ContextExecutor) query.IRoomMessage {
 }
 
 func (r roomMessage) GetByID(ctx context.Context, id string) (model.RoomMessage, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	return boilerDto.NewDomainRoomMessageWithErrHandle(sqlboiler.FindRoomMessage(ctx, r.executor, id))
 }
 
 func (r roomMessage) GetAllByRoomID(ctx context.Context, roomID string, spec selector1.Selector) (model.RoomMessages, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	mods := selector.ToBoilerSelectorPipe(
 		spec,
 		sqlboiler.RoomMessageWhere.RoomID.EQ(roomID),
@@ -35,6 +42,9 @@ func (r roomMessage) GetAllByRoomID(ctx context.Context, roomID string, spec sel
 }
 
 func (r roomMessage) SearchAllByText(ctx context.Context, keyword string, spec selector1.Selector) (model.RoomMessages, error) {
+	_, span := global.NewSpan(ctx)
+	defer span.End()
+
 	mods := selector.ToBoilerSelectorPipe(
 		spec,
 		sqlboiler.RoomMessageWhere.Text.LIKE("%"+keyword+"%"),

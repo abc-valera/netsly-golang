@@ -9,6 +9,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type IJoke interface {
@@ -43,6 +44,10 @@ type JokeCreateRequest struct {
 }
 
 func (e joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Joke{}, err
 	}
@@ -63,6 +68,10 @@ type JokeUpdateRequest struct {
 }
 
 func (e joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) (model.Joke, error) {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Struct(req); err != nil {
 		return model.Joke{}, err
 	}
@@ -75,6 +84,10 @@ func (e joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) 
 }
 
 func (e joke) Delete(ctx context.Context, jokeID string) error {
+	var span trace.Span
+	ctx, span = global.NewSpan(ctx)
+	defer span.End()
+
 	if err := global.Validate().Var(jokeID, "uuid"); err != nil {
 		return err
 	}
