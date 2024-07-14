@@ -7,6 +7,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler/boilerDto"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
@@ -28,7 +29,7 @@ func (f fileInfo) GetByID(ctx context.Context, id string) (model.FileInfo, error
 	return boilerDto.NewDomainFileInfoWithErrHandle(sqlboiler.FindFileInfo(ctx, f.executor, id))
 }
 
-func (f fileInfo) GetAll(ctx context.Context) (model.FileInfos, error) {
+func (f fileInfo) GetAll(ctx context.Context, selector selector.Selector) (model.FileInfos, error) {
 	_, span := global.NewSpan(ctx)
 	defer span.End()
 

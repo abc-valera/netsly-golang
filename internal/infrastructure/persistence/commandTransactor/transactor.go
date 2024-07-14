@@ -28,7 +28,10 @@ func (t transactor) PerformTX(
 		return coderr.NewInternalErr(err)
 	}
 
-	txCommands := implementation.NewCommands(t.deps.BoilerDB)
+	txCommands := implementation.NewCommands(
+		t.deps.BoilerDB,
+		t.deps.FilesPath,
+	)
 	if err := txFunc(ctx, txCommands); err != nil {
 		if err := boilerTX.Rollback(); err != nil {
 			return coderr.NewInternalErr(err)

@@ -2,6 +2,13 @@ package model
 
 import (
 	"time"
+
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+)
+
+var (
+	ErrFileInfoNotFound    = coderr.NewCodeMessage(coderr.CodeNotFound, "File info not found")
+	ErrFileContentNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "File content not found")
 )
 
 type FileInfo struct {
@@ -51,5 +58,3 @@ func FileTypeIsAudio(t FileType) bool {
 func FileTypeIsVideo(t FileType) bool {
 	return t == FileTypeMP4
 }
-
-type FileContent []byte

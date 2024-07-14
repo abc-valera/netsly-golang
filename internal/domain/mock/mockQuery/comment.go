@@ -24,9 +24,9 @@ func (_m *Comment) EXPECT() *Comment_Expecter {
 	return &Comment_Expecter{mock: &_m.Mock}
 }
 
-// GetAllByJokeID provides a mock function with given fields: ctx, jokeID, params
-func (_m *Comment) GetAllByJokeID(ctx context.Context, jokeID string, params selector.Selector) (model.Comments, error) {
-	ret := _m.Called(ctx, jokeID, params)
+// GetAllByJokeID provides a mock function with given fields: ctx, jokeID, _a2
+func (_m *Comment) GetAllByJokeID(ctx context.Context, jokeID string, _a2 selector.Selector) (model.Comments, error) {
+	ret := _m.Called(ctx, jokeID, _a2)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAllByJokeID")
@@ -35,10 +35,10 @@ func (_m *Comment) GetAllByJokeID(ctx context.Context, jokeID string, params sel
 	var r0 model.Comments
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) (model.Comments, error)); ok {
-		return rf(ctx, jokeID, params)
+		return rf(ctx, jokeID, _a2)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) model.Comments); ok {
-		r0 = rf(ctx, jokeID, params)
+		r0 = rf(ctx, jokeID, _a2)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(model.Comments)
@@ -46,7 +46,7 @@ func (_m *Comment) GetAllByJokeID(ctx context.Context, jokeID string, params sel
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, selector.Selector) error); ok {
-		r1 = rf(ctx, jokeID, params)
+		r1 = rf(ctx, jokeID, _a2)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -62,12 +62,12 @@ type Comment_GetAllByJokeID_Call struct {
 // GetAllByJokeID is a helper method to define mock.On call
 //   - ctx context.Context
 //   - jokeID string
-//   - params selector.Selector
-func (_e *Comment_Expecter) GetAllByJokeID(ctx interface{}, jokeID interface{}, params interface{}) *Comment_GetAllByJokeID_Call {
-	return &Comment_GetAllByJokeID_Call{Call: _e.mock.On("GetAllByJokeID", ctx, jokeID, params)}
+//   - _a2 selector.Selector
+func (_e *Comment_Expecter) GetAllByJokeID(ctx interface{}, jokeID interface{}, _a2 interface{}) *Comment_GetAllByJokeID_Call {
+	return &Comment_GetAllByJokeID_Call{Call: _e.mock.On("GetAllByJokeID", ctx, jokeID, _a2)}
 }
 
-func (_c *Comment_GetAllByJokeID_Call) Run(run func(ctx context.Context, jokeID string, params selector.Selector)) *Comment_GetAllByJokeID_Call {
+func (_c *Comment_GetAllByJokeID_Call) Run(run func(ctx context.Context, jokeID string, _a2 selector.Selector)) *Comment_GetAllByJokeID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})

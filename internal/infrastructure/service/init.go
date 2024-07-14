@@ -4,7 +4,6 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/emailSender/dummyEmailSender"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/fileManager/localFileManager"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/nopLogger"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/slogLogger"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/passwordMaker"
@@ -14,9 +13,6 @@ import (
 func New(
 	loggerService string,
 	loggerServiceLogsFolderPath string,
-
-	fileManagerService string,
-	filesPath string,
 
 	emailSenderService string,
 
@@ -33,13 +29,6 @@ func New(
 		services.Logger = slogLogger.New(loggerServiceLogsFolderPath)
 	default:
 		coderr.Fatal("Invalid Logger implementation provided: " + loggerService)
-	}
-
-	switch fileManagerService {
-	case "local":
-		services.FileManager = localFileManager.New(filesPath)
-	default:
-		coderr.Fatal("Invalid File Manager implementation provided: " + fileManagerService)
 	}
 
 	switch emailSenderService {

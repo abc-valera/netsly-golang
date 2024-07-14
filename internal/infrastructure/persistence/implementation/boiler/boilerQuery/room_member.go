@@ -7,6 +7,7 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler/boilerDto"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
@@ -21,7 +22,7 @@ func NewRoomMember(executor boil.ContextExecutor) query.IRoomMember {
 	}
 }
 
-func (r roomMember) GetAllByRoomID(ctx context.Context, roomID string) (model.RoomMembers, error) {
+func (r roomMember) GetAllByRoomID(ctx context.Context, roomID string, selector selector.Selector) (model.RoomMembers, error) {
 	_, span := global.NewSpan(ctx)
 	defer span.End()
 

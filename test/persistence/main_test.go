@@ -59,7 +59,7 @@ func TestMain(m *testing.M) {
 	}
 
 	// Init DB
-	db, err := boiler.Init(fmt.Sprintf("postgres://test:test@%s/test?sslmode=disable", endpoint))
+	db, err := boiler.New(fmt.Sprintf("postgres://test:test@%s/test?sslmode=disable", endpoint))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -87,8 +87,8 @@ func TestMain(m *testing.M) {
 		_ = res
 
 		return ctx, r,
-			implementation.NewCommands(tx),
-			implementation.NewQueries(tx)
+			implementation.NewCommands(tx, ""),
+			implementation.NewQueries(tx, "")
 	}
 
 	m.Run()

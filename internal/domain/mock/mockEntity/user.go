@@ -302,9 +302,9 @@ func (_c *User_GetByUsername_Call) RunAndReturn(run func(context.Context, string
 	return _c
 }
 
-// SearchAllByUsername provides a mock function with given fields: ctx, keyword, params
-func (_m *User) SearchAllByUsername(ctx context.Context, keyword string, params selector.Selector) (model.Users, error) {
-	ret := _m.Called(ctx, keyword, params)
+// SearchAllByUsername provides a mock function with given fields: ctx, keyword, _a2
+func (_m *User) SearchAllByUsername(ctx context.Context, keyword string, _a2 selector.Selector) (model.Users, error) {
+	ret := _m.Called(ctx, keyword, _a2)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SearchAllByUsername")
@@ -313,10 +313,10 @@ func (_m *User) SearchAllByUsername(ctx context.Context, keyword string, params 
 	var r0 model.Users
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) (model.Users, error)); ok {
-		return rf(ctx, keyword, params)
+		return rf(ctx, keyword, _a2)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) model.Users); ok {
-		r0 = rf(ctx, keyword, params)
+		r0 = rf(ctx, keyword, _a2)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(model.Users)
@@ -324,7 +324,7 @@ func (_m *User) SearchAllByUsername(ctx context.Context, keyword string, params 
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, selector.Selector) error); ok {
-		r1 = rf(ctx, keyword, params)
+		r1 = rf(ctx, keyword, _a2)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -340,12 +340,12 @@ type User_SearchAllByUsername_Call struct {
 // SearchAllByUsername is a helper method to define mock.On call
 //   - ctx context.Context
 //   - keyword string
-//   - params selector.Selector
-func (_e *User_Expecter) SearchAllByUsername(ctx interface{}, keyword interface{}, params interface{}) *User_SearchAllByUsername_Call {
-	return &User_SearchAllByUsername_Call{Call: _e.mock.On("SearchAllByUsername", ctx, keyword, params)}
+//   - _a2 selector.Selector
+func (_e *User_Expecter) SearchAllByUsername(ctx interface{}, keyword interface{}, _a2 interface{}) *User_SearchAllByUsername_Call {
+	return &User_SearchAllByUsername_Call{Call: _e.mock.On("SearchAllByUsername", ctx, keyword, _a2)}
 }
 
-func (_c *User_SearchAllByUsername_Call) Run(run func(ctx context.Context, keyword string, params selector.Selector)) *User_SearchAllByUsername_Call {
+func (_c *User_SearchAllByUsername_Call) Run(run func(ctx context.Context, keyword string, _a2 selector.Selector)) *User_SearchAllByUsername_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})

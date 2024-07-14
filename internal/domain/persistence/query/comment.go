@@ -9,5 +9,5 @@ import (
 
 type IComment interface {
 	GetByID(ctx context.Context, id string) (model.Comment, error)
-	GetAllByJokeID(ctx context.Context, jokeID string, params selector.Selector) (model.Comments, error)
+	GetAllByJokeID(ctx context.Context, jokeID string, selector selector.Selector) (model.Comments, error)
 }

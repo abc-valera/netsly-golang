@@ -13,4 +13,5 @@ type Commands struct {
 	RoomMember  command.IRoomMember
 	RoomMessage command.IRoomMessage
 	FileInfo    command.IFileInfo
+	FileContent command.IFileContent
 }

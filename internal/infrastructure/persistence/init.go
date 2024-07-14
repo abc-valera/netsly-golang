@@ -7,16 +7,28 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation"
 )
 
-func New(postgresUrl string) (
+func New(
+	postgresUrl string,
+	filesPath string,
+) (
 	persistence.Commands,
 	persistence.Queries,
 	domainCommandTransactor.ITransactor,
 ) {
-	deps := implementation.NewPersistenceDependencies(postgresUrl)
+	deps := implementation.NewPersistenceDependencies(
+		postgresUrl,
+		filesPath,
+	)
 
-	commands := implementation.NewCommands(deps.BoilerDB)
+	commands := implementation.NewCommands(
+		deps.BoilerDB,
+		deps.FilesPath,
+	)
 
-	queries := implementation.NewQueries(deps.BoilerDB)
+	queries := implementation.NewQueries(
+		deps.BoilerDB,
+		deps.FilesPath,
+	)
 
 	transactor := infraCommandTransactor.New(deps)
 

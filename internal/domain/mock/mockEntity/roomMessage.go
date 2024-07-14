@@ -130,9 +130,9 @@ func (_c *RoomMessage_Delete_Call) RunAndReturn(run func(context.Context, string
 	return _c
 }
 
-// GetAllByRoomID provides a mock function with given fields: ctx, roomID, spec
-func (_m *RoomMessage) GetAllByRoomID(ctx context.Context, roomID string, spec selector.Selector) (model.RoomMessages, error) {
-	ret := _m.Called(ctx, roomID, spec)
+// GetAllByRoomID provides a mock function with given fields: ctx, roomID, _a2
+func (_m *RoomMessage) GetAllByRoomID(ctx context.Context, roomID string, _a2 selector.Selector) (model.RoomMessages, error) {
+	ret := _m.Called(ctx, roomID, _a2)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAllByRoomID")
@@ -141,10 +141,10 @@ func (_m *RoomMessage) GetAllByRoomID(ctx context.Context, roomID string, spec s
 	var r0 model.RoomMessages
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) (model.RoomMessages, error)); ok {
-		return rf(ctx, roomID, spec)
+		return rf(ctx, roomID, _a2)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) model.RoomMessages); ok {
-		r0 = rf(ctx, roomID, spec)
+		r0 = rf(ctx, roomID, _a2)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(model.RoomMessages)
@@ -152,7 +152,7 @@ func (_m *RoomMessage) GetAllByRoomID(ctx context.Context, roomID string, spec s
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, selector.Selector) error); ok {
-		r1 = rf(ctx, roomID, spec)
+		r1 = rf(ctx, roomID, _a2)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -168,12 +168,12 @@ type RoomMessage_GetAllByRoomID_Call struct {
 // GetAllByRoomID is a helper method to define mock.On call
 //   - ctx context.Context
 //   - roomID string
-//   - spec selector.Selector
-func (_e *RoomMessage_Expecter) GetAllByRoomID(ctx interface{}, roomID interface{}, spec interface{}) *RoomMessage_GetAllByRoomID_Call {
-	return &RoomMessage_GetAllByRoomID_Call{Call: _e.mock.On("GetAllByRoomID", ctx, roomID, spec)}
+//   - _a2 selector.Selector
+func (_e *RoomMessage_Expecter) GetAllByRoomID(ctx interface{}, roomID interface{}, _a2 interface{}) *RoomMessage_GetAllByRoomID_Call {
+	return &RoomMessage_GetAllByRoomID_Call{Call: _e.mock.On("GetAllByRoomID", ctx, roomID, _a2)}
 }
 
-func (_c *RoomMessage_GetAllByRoomID_Call) Run(run func(ctx context.Context, roomID string, spec selector.Selector)) *RoomMessage_GetAllByRoomID_Call {
+func (_c *RoomMessage_GetAllByRoomID_Call) Run(run func(ctx context.Context, roomID string, _a2 selector.Selector)) *RoomMessage_GetAllByRoomID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})
@@ -247,9 +247,9 @@ func (_c *RoomMessage_GetByID_Call) RunAndReturn(run func(context.Context, strin
 	return _c
 }
 
-// SearchAllByText provides a mock function with given fields: ctx, keyword, spec
-func (_m *RoomMessage) SearchAllByText(ctx context.Context, keyword string, spec selector.Selector) (model.RoomMessages, error) {
-	ret := _m.Called(ctx, keyword, spec)
+// SearchAllByText provides a mock function with given fields: ctx, keyword, _a2
+func (_m *RoomMessage) SearchAllByText(ctx context.Context, keyword string, _a2 selector.Selector) (model.RoomMessages, error) {
+	ret := _m.Called(ctx, keyword, _a2)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SearchAllByText")
@@ -258,10 +258,10 @@ func (_m *RoomMessage) SearchAllByText(ctx context.Context, keyword string, spec
 	var r0 model.RoomMessages
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) (model.RoomMessages, error)); ok {
-		return rf(ctx, keyword, spec)
+		return rf(ctx, keyword, _a2)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) model.RoomMessages); ok {
-		r0 = rf(ctx, keyword, spec)
+		r0 = rf(ctx, keyword, _a2)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(model.RoomMessages)
@@ -269,7 +269,7 @@ func (_m *RoomMessage) SearchAllByText(ctx context.Context, keyword string, spec
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, selector.Selector) error); ok {
-		r1 = rf(ctx, keyword, spec)
+		r1 = rf(ctx, keyword, _a2)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -285,12 +285,12 @@ type RoomMessage_SearchAllByText_Call struct {
 // SearchAllByText is a helper method to define mock.On call
 //   - ctx context.Context
 //   - keyword string
-//   - spec selector.Selector
-func (_e *RoomMessage_Expecter) SearchAllByText(ctx interface{}, keyword interface{}, spec interface{}) *RoomMessage_SearchAllByText_Call {
-	return &RoomMessage_SearchAllByText_Call{Call: _e.mock.On("SearchAllByText", ctx, keyword, spec)}
+//   - _a2 selector.Selector
+func (_e *RoomMessage_Expecter) SearchAllByText(ctx interface{}, keyword interface{}, _a2 interface{}) *RoomMessage_SearchAllByText_Call {
+	return &RoomMessage_SearchAllByText_Call{Call: _e.mock.On("SearchAllByText", ctx, keyword, _a2)}
 }
 
-func (_c *RoomMessage_SearchAllByText_Call) Run(run func(ctx context.Context, keyword string, spec selector.Selector)) *RoomMessage_SearchAllByText_Call {
+func (_c *RoomMessage_SearchAllByText_Call) Run(run func(ctx context.Context, keyword string, _a2 selector.Selector)) *RoomMessage_SearchAllByText_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})

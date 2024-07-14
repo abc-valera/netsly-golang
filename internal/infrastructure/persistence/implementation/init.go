@@ -8,20 +8,30 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler/boilerCommand"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler/boilerQuery"
+	localFileSaverQuery "github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/localFileSaver"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/localFileSaver/localFileSaverCommand"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 type PersistenceDependencies struct {
-	BoilerDB *sql.DB
+	BoilerDB  *sql.DB
+	FilesPath string
 }
 
-func NewPersistenceDependencies(postgresUrl string) PersistenceDependencies {
+func NewPersistenceDependencies(
+	postgresUrl string,
+	filesPath string,
+) PersistenceDependencies {
 	return PersistenceDependencies{
-		BoilerDB: coderr.Must(boiler.Init(postgresUrl)),
+		BoilerDB:  coderr.Must(boiler.New(postgresUrl)),
+		FilesPath: filesPath,
 	}
 }
 
-func NewCommands(boilerIDB boil.ContextExecutor) persistence.Commands {
+func NewCommands(
+	boilerIDB boil.ContextExecutor,
+	filesPath string,
+) persistence.Commands {
 	return persistence.Commands{
 		User:        boilerCommand.NewUser(boilerIDB),
 		Joke:        boilerCommand.NewJoke(boilerIDB),
@@ -31,10 +41,14 @@ func NewCommands(boilerIDB boil.ContextExecutor) persistence.Commands {
 		RoomMember:  boilerCommand.NewRoomMember(boilerIDB),
 		RoomMessage: boilerCommand.NewRoomMessage(boilerIDB),
 		FileInfo:    boilerCommand.NewFileInfo(boilerIDB),
+		FileContent: localFileSaverCommand.New(filesPath),
 	}
 }
 
-func NewQueries(boilerIDB boil.ContextExecutor) persistence.Queries {
+func NewQueries(
+	boilerIDB boil.ContextExecutor,
+	filesPath string,
+) persistence.Queries {
 	return persistence.Queries{
 		User:        boilerQuery.NewUser(boilerIDB),
 		Joke:        boilerQuery.NewJoke(boilerIDB),
@@ -44,5 +58,6 @@ func NewQueries(boilerIDB boil.ContextExecutor) persistence.Queries {
 		RoomMember:  boilerQuery.NewRoomMember(boilerIDB),
 		RoomMessage: boilerQuery.NewRoomMessage(boilerIDB),
 		FileInfo:    boilerQuery.NewFileInfo(boilerIDB),
+		FileContent: localFileSaverQuery.New(filesPath),
 	}
 }

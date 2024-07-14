@@ -24,13 +24,42 @@ func NewEntities(
 	services Services,
 ) Entities {
 	return Entities{
-		User:        entity.NewUser(commands.User, queries.User, services.PasswordMaker),
-		Joke:        entity.NewJoke(commands.Joke, queries.Joke),
-		Like:        entity.NewLike(commands.Like, queries.Like),
-		Comment:     entity.NewComment(commands.Comment, queries.Comment),
-		Room:        entity.NewRoom(commands.Room, queries.Room, commandTransactor),
-		RoomMember:  entity.NewRoomMember(commands.RoomMember, queries.RoomMember),
-		RoomMessage: entity.NewRoomMessage(commands.RoomMessage, queries.RoomMessage),
-		File:        entity.NewFile(commands.FileInfo, queries.FileInfo, services.FileManager, commandTransactor),
+		User: entity.NewUser(
+			commands.User,
+			queries.User,
+			services.PasswordMaker,
+		),
+		Joke: entity.NewJoke(
+			commands.Joke,
+			queries.Joke,
+		),
+		Like: entity.NewLike(
+			commands.Like,
+			queries.Like,
+		),
+		Comment: entity.NewComment(
+			commands.Comment,
+			queries.Comment,
+		),
+		Room: entity.NewRoom(
+			commands.Room,
+			queries.Room,
+			commandTransactor,
+		),
+		RoomMember: entity.NewRoomMember(
+			commands.RoomMember,
+			queries.RoomMember,
+		),
+		RoomMessage: entity.NewRoomMessage(
+			commands.RoomMessage,
+			queries.RoomMessage,
+		),
+		File: entity.NewFile(
+			commands.FileInfo,
+			queries.FileInfo,
+			commands.FileContent,
+			queries.FileContent,
+			commandTransactor,
+		),
 	}
 }

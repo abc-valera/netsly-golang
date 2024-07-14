@@ -7,21 +7,21 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
-func ToBoilerSelector(params selector.Selector) []qm.QueryMod {
+func ToBoilerSelector(s selector.Selector) []qm.QueryMod {
 	mods := make([]qm.QueryMod, 0, 3)
 
-	if params.Order == selector.OrderAsc {
+	if s.Order == selector.OrderAsc {
 		mods = append(mods, qm.OrderBy("created_at asc"))
 	} else {
 		mods = append(mods, qm.OrderBy("created_at desc"))
 	}
 
-	mods = append(mods, qm.Limit(int(params.Limit)))
-	mods = append(mods, qm.Offset(int(params.Offset)))
+	mods = append(mods, qm.Limit(int(s.Limit)))
+	mods = append(mods, qm.Offset(int(s.Offset)))
 
 	return mods
 }
 
-func ToBoilerSelectorPipe(params selector.Selector, mods ...qm.QueryMod) []qm.QueryMod {
-	return slices.Concat(mods, ToBoilerSelector(params))
+func ToBoilerSelectorPipe(selector selector.Selector, mods ...qm.QueryMod) []qm.QueryMod {
+	return slices.Concat(mods, ToBoilerSelector(selector))
 }

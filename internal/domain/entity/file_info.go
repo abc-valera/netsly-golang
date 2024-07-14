@@ -10,7 +10,6 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/commandTransactor"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -20,27 +19,30 @@ type IFile interface {
 	Update(ctx context.Context, id string, req FileUpdateRequest) error
 	Delete(ctx context.Context, id string) error
 
-	GetByID(ctx context.Context, id string) (model.FileInfo, model.FileContent, error)
+	GetByID(ctx context.Context, id string) (model.FileInfo, []byte, error)
 }
 
 type file struct {
-	fileInfoCommand   command.IFileInfo
-	fileInfoQuery     query.IFileInfo
-	fileManger        service.IFileManager
-	commandTransactor commandTransactor.ITransactor
+	fileInfoCommand    command.IFileInfo
+	fileInfoQuery      query.IFileInfo
+	fileContentCommand command.IFileContent
+	fileContentQuery   query.IFileContent
+	commandTransactor  commandTransactor.ITransactor
 }
 
 func NewFile(
 	fileInfoCommand command.IFileInfo,
 	fileInfoQuery query.IFileInfo,
-	fileManger service.IFileManager,
+	fileContentCommand command.IFileContent,
+	fileContentQuery query.IFileContent,
 	commandTransactor commandTransactor.ITransactor,
 ) IFile {
 	return file{
-		fileInfoCommand:   fileInfoCommand,
-		fileInfoQuery:     fileInfoQuery,
-		fileManger:        fileManger,
-		commandTransactor: commandTransactor,
+		fileInfoCommand:    fileInfoCommand,
+		fileInfoQuery:      fileInfoQuery,
+		fileContentCommand: fileContentCommand,
+		fileContentQuery:   fileContentQuery,
+		commandTransactor:  commandTransactor,
 	}
 }
 
@@ -49,7 +51,7 @@ type FileCreateRequest struct {
 	Type model.FileType `validate:"enum"`
 	Size int            `validate:"min=1,max=32000000"`
 
-	FileContent model.FileContent
+	FileContent []byte
 }
 
 func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo, error) {
@@ -76,7 +78,7 @@ func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo
 		}
 		returnFileInfo = fileInfo
 
-		if err := e.fileManger.Save(guid, req.FileContent); err != nil {
+		if err := txCommands.FileContent.Create(ctx, guid, req.FileContent); err != nil {
 			return err
 		}
 
@@ -93,7 +95,7 @@ func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo
 type FileUpdateRequest struct {
 	Name *string `validate:"omitempty,min=1,max=256"`
 
-	FileContent *model.FileContent `validate:"omitempty,min=1,max=32000000"`
+	FileContent *[]byte `validate:"omitempty,min=1,max=32000000"`
 }
 
 func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) error {
@@ -114,7 +116,7 @@ func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) erro
 	}
 
 	if req.FileContent != nil {
-		if err := e.fileManger.Update(id, *req.FileContent); err != nil {
+		if err := e.fileContentCommand.Update(ctx, id, *req.FileContent); err != nil {
 			return err
 		}
 	}
@@ -132,7 +134,7 @@ func (e file) Delete(ctx context.Context, id string) error {
 			return err
 		}
 
-		if err := e.fileManger.Remove(id); err != nil {
+		if err := e.fileContentCommand.Delete(ctx, id); err != nil {
 			return err
 		}
 
@@ -142,19 +144,19 @@ func (e file) Delete(ctx context.Context, id string) error {
 	return e.commandTransactor.PerformTX(ctx, txFunc)
 }
 
-func (e file) GetByID(ctx context.Context, id string) (model.FileInfo, model.FileContent, error) {
+func (e file) GetByID(ctx context.Context, id string) (model.FileInfo, []byte, error) {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
 
 	fileInfo, err := e.fileInfoQuery.GetByID(ctx, id)
 	if err != nil {
-		return model.FileInfo{}, model.FileContent{}, err
+		return model.FileInfo{}, []byte{}, err
 	}
 
-	fileContent, err := e.fileManger.GetContent(id)
+	fileContent, err := e.fileContentQuery.GetByID(ctx, id)
 	if err != nil {
-		return model.FileInfo{}, model.FileContent{}, err
+		return model.FileInfo{}, []byte{}, err
 	}
 
 	return fileInfo, fileContent, nil

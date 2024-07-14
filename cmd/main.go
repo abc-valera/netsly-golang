@@ -32,9 +32,6 @@ func main() {
 		LoadEnv("LOGGER_SERVICE"),
 		LoadEnv("LOGGER_SERVICE_LOGS_FOLDER_PATH"),
 
-		LoadEnv("FILE_MANAGER_SERVICE"),
-		LoadEnv("FILE_MANAGER_SERVICE_FILES_PATH"),
-
 		LoadEnv("EMAIL_SENDER_SERVICE"),
 
 		LoadEnv("TASK_QUEUER_SERVICE"),
@@ -44,7 +41,10 @@ func main() {
 	global.InitLog(services.Logger)
 
 	// Init persistence
-	commands, queries, commandTransactor := persistence.New(LoadEnv("POSTGRES_URL"))
+	commands, queries, commandTransactor := persistence.New(
+		LoadEnv("POSTGRES_URL"),
+		LoadEnv("FILE_SAVER_FILES_PATH"),
+	)
 
 	// Init entities
 	entities := domain.NewEntities(commands, commandTransactor, queries, services)
