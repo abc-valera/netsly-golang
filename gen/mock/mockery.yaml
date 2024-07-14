@@ -11,29 +11,29 @@ packages:
     config:
       all: True
       outpkg: "mockCommand"
-      dir: "internal/domain/mock/mockCommand"
+      dir: "gen/mock/mockCommand"
   github.com/abc-valera/netsly-api-golang/internal/domain/persistence/commandTransactor:
     config:
       all: True
       outpkg: "mockCommandTransactor"
-      dir: "internal/domain/mock/mockCommandTransactor"
+      dir: "gen/mock/mockCommandTransactor"
   github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query:
     config:
       all: True
       outpkg: "mockQuery"
-      dir: "internal/domain/mock/mockQuery"
+      dir: "gen/mock/mockQuery"
   github.com/abc-valera/netsly-api-golang/internal/domain/service:
     config:
       all: True
       outpkg: "mock{{ trimPrefix .InterfaceName `I` }}"
-      dir: "internal/domain/mock/mock{{ trimPrefix .InterfaceName `I` }}"
+      dir: "gen/mock/mock{{ trimPrefix .InterfaceName `I` }}"
   github.com/abc-valera/netsly-api-golang/internal/domain/entity:
     config:
       all: True
       outpkg: "mockEntity"
-      dir: "internal/domain/mock/mockEntity"
+      dir: "gen/mock/mockEntity"
   github.com/abc-valera/netsly-api-golang/internal/domain/entityTransactor:
     config:
       all: True
       outpkg: "mockEntityTransactor"
-      dir: "internal/domain/mock/mockEntityTransactor"
+      dir: "gen/mock/mockEntityTransactor"

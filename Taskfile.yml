@@ -54,7 +54,7 @@ tasks:
 
   generate:domain:mocks:
     cmds:
-      - ./bin/mockery --config internal/domain/mock/mockery.yaml
+      - ./bin/mockery --config gen/mock/mockery.yaml
 
   generate:jsonApi:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
