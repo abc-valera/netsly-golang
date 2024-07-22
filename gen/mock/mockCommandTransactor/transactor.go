@@ -23,7 +23,7 @@ func (_m *Transactor) EXPECT() *Transactor_Expecter {
 }
 
 // PerformTX provides a mock function with given fields: ctx, txFunc
-func (_m *Transactor) PerformTX(ctx context.Context, txFunc func(context.Context, persistence.Commands) error) error {
+func (_m *Transactor) PerformTX(ctx context.Context, txFunc func(context.Context, persistence.Commands, persistence.Queries) error) error {
 	ret := _m.Called(ctx, txFunc)
 
 	if len(ret) == 0 {
@@ -31,7 +31,7 @@ func (_m *Transactor) PerformTX(ctx context.Context, txFunc func(context.Context
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, func(context.Context, persistence.Commands) error) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, func(context.Context, persistence.Commands, persistence.Queries) error) error); ok {
 		r0 = rf(ctx, txFunc)
 	} else {
 		r0 = ret.Error(0)
@@ -47,14 +47,14 @@ type Transactor_PerformTX_Call struct {
 
 // PerformTX is a helper method to define mock.On call
 //   - ctx context.Context
-//   - txFunc func(context.Context , persistence.Commands) error
+//   - txFunc func(context.Context , persistence.Commands , persistence.Queries) error
 func (_e *Transactor_Expecter) PerformTX(ctx interface{}, txFunc interface{}) *Transactor_PerformTX_Call {
 	return &Transactor_PerformTX_Call{Call: _e.mock.On("PerformTX", ctx, txFunc)}
 }
 
-func (_c *Transactor_PerformTX_Call) Run(run func(ctx context.Context, txFunc func(context.Context, persistence.Commands) error)) *Transactor_PerformTX_Call {
+func (_c *Transactor_PerformTX_Call) Run(run func(ctx context.Context, txFunc func(context.Context, persistence.Commands, persistence.Queries) error)) *Transactor_PerformTX_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(func(context.Context, persistence.Commands) error))
+		run(args[0].(context.Context), args[1].(func(context.Context, persistence.Commands, persistence.Queries) error))
 	})
 	return _c
 }
@@ -64,7 +64,7 @@ func (_c *Transactor_PerformTX_Call) Return(_a0 error) *Transactor_PerformTX_Cal
 	return _c
 }
 
-func (_c *Transactor_PerformTX_Call) RunAndReturn(run func(context.Context, func(context.Context, persistence.Commands) error) error) *Transactor_PerformTX_Call {
+func (_c *Transactor_PerformTX_Call) RunAndReturn(run func(context.Context, func(context.Context, persistence.Commands, persistence.Queries) error) error) *Transactor_PerformTX_Call {
 	_c.Call.Return(run)
 	return _c
 }

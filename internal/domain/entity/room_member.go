@@ -47,10 +47,12 @@ func (e roomMember) Create(ctx context.Context, req RoomMemberCreateRequest) (mo
 		return model.RoomMember{}, err
 	}
 
-	return e.command.Create(ctx, model.RoomMember{
-		CreatedAt: time.Now(),
-		UserID:    req.UserID,
-		RoomID:    req.RoomID,
+	return e.command.Create(ctx, command.RoomMemberCreateRequest{
+		RoomMember: model.RoomMember{
+			CreatedAt: time.Now(),
+		},
+		UserID: req.UserID,
+		RoomID: req.RoomID,
 	})
 }
 

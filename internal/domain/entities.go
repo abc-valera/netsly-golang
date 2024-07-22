@@ -27,7 +27,7 @@ func NewEntities(
 		User: entity.NewUser(
 			commands.User,
 			queries.User,
-			services.PasswordMaker,
+			services.Passworder,
 		),
 		Joke: entity.NewJoke(
 			commands.Joke,

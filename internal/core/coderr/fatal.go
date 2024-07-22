@@ -29,12 +29,12 @@ func Must[T any](val T, err error) T {
 	return val
 }
 
-// NotNil stops program execution if any of the provided values is nil
-func NotNil(val ...any) {
-	for _, v := range val {
-		if v == nil {
-			fmt.Println(caller(2), "fatal: nil value")
-			os.Exit(1)
-		}
+// NoEmpty stops program execution if the provided value is empty/nil
+func NoEmpty[T comparable](val T) T {
+	var nullValue T
+	if val == nullValue {
+		fmt.Println(caller(2), "fatal: empty/nil value")
+		os.Exit(1)
 	}
+	return val
 }

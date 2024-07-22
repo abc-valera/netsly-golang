@@ -25,9 +25,9 @@ func (_m *Joke) EXPECT() *Joke_Expecter {
 	return &Joke_Expecter{mock: &_m.Mock}
 }
 
-// Create provides a mock function with given fields: ctx, userID, req
-func (_m *Joke) Create(ctx context.Context, userID string, req model.Joke) (model.Joke, error) {
-	ret := _m.Called(ctx, userID, req)
+// Create provides a mock function with given fields: ctx, req
+func (_m *Joke) Create(ctx context.Context, req command.JokeCreateRequest) (model.Joke, error) {
+	ret := _m.Called(ctx, req)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
@@ -35,17 +35,17 @@ func (_m *Joke) Create(ctx context.Context, userID string, req model.Joke) (mode
 
 	var r0 model.Joke
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, model.Joke) (model.Joke, error)); ok {
-		return rf(ctx, userID, req)
+	if rf, ok := ret.Get(0).(func(context.Context, command.JokeCreateRequest) (model.Joke, error)); ok {
+		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, model.Joke) model.Joke); ok {
-		r0 = rf(ctx, userID, req)
+	if rf, ok := ret.Get(0).(func(context.Context, command.JokeCreateRequest) model.Joke); ok {
+		r0 = rf(ctx, req)
 	} else {
 		r0 = ret.Get(0).(model.Joke)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string, model.Joke) error); ok {
-		r1 = rf(ctx, userID, req)
+	if rf, ok := ret.Get(1).(func(context.Context, command.JokeCreateRequest) error); ok {
+		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -60,15 +60,14 @@ type Joke_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - userID string
-//   - req model.Joke
-func (_e *Joke_Expecter) Create(ctx interface{}, userID interface{}, req interface{}) *Joke_Create_Call {
-	return &Joke_Create_Call{Call: _e.mock.On("Create", ctx, userID, req)}
+//   - req command.JokeCreateRequest
+func (_e *Joke_Expecter) Create(ctx interface{}, req interface{}) *Joke_Create_Call {
+	return &Joke_Create_Call{Call: _e.mock.On("Create", ctx, req)}
 }
 
-func (_c *Joke_Create_Call) Run(run func(ctx context.Context, userID string, req model.Joke)) *Joke_Create_Call {
+func (_c *Joke_Create_Call) Run(run func(ctx context.Context, req command.JokeCreateRequest)) *Joke_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(model.Joke))
+		run(args[0].(context.Context), args[1].(command.JokeCreateRequest))
 	})
 	return _c
 }
@@ -78,7 +77,7 @@ func (_c *Joke_Create_Call) Return(_a0 model.Joke, _a1 error) *Joke_Create_Call 
 	return _c
 }
 
-func (_c *Joke_Create_Call) RunAndReturn(run func(context.Context, string, model.Joke) (model.Joke, error)) *Joke_Create_Call {
+func (_c *Joke_Create_Call) RunAndReturn(run func(context.Context, command.JokeCreateRequest) (model.Joke, error)) *Joke_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -131,7 +130,7 @@ func (_c *Joke_Delete_Call) RunAndReturn(run func(context.Context, string) error
 }
 
 // Update provides a mock function with given fields: ctx, id, req
-func (_m *Joke) Update(ctx context.Context, id string, req command.JokeUpdate) (model.Joke, error) {
+func (_m *Joke) Update(ctx context.Context, id string, req command.JokeUpdateRequest) (model.Joke, error) {
 	ret := _m.Called(ctx, id, req)
 
 	if len(ret) == 0 {
@@ -140,16 +139,16 @@ func (_m *Joke) Update(ctx context.Context, id string, req command.JokeUpdate) (
 
 	var r0 model.Joke
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, command.JokeUpdate) (model.Joke, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, command.JokeUpdateRequest) (model.Joke, error)); ok {
 		return rf(ctx, id, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, command.JokeUpdate) model.Joke); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, command.JokeUpdateRequest) model.Joke); ok {
 		r0 = rf(ctx, id, req)
 	} else {
 		r0 = ret.Get(0).(model.Joke)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string, command.JokeUpdate) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string, command.JokeUpdateRequest) error); ok {
 		r1 = rf(ctx, id, req)
 	} else {
 		r1 = ret.Error(1)
@@ -166,14 +165,14 @@ type Joke_Update_Call struct {
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
 //   - id string
-//   - req command.JokeUpdate
+//   - req command.JokeUpdateRequest
 func (_e *Joke_Expecter) Update(ctx interface{}, id interface{}, req interface{}) *Joke_Update_Call {
 	return &Joke_Update_Call{Call: _e.mock.On("Update", ctx, id, req)}
 }
 
-func (_c *Joke_Update_Call) Run(run func(ctx context.Context, id string, req command.JokeUpdate)) *Joke_Update_Call {
+func (_c *Joke_Update_Call) Run(run func(ctx context.Context, id string, req command.JokeUpdateRequest)) *Joke_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(command.JokeUpdate))
+		run(args[0].(context.Context), args[1].(string), args[2].(command.JokeUpdateRequest))
 	})
 	return _c
 }
@@ -183,7 +182,7 @@ func (_c *Joke_Update_Call) Return(_a0 model.Joke, _a1 error) *Joke_Update_Call 
 	return _c
 }
 
-func (_c *Joke_Update_Call) RunAndReturn(run func(context.Context, string, command.JokeUpdate) (model.Joke, error)) *Joke_Update_Call {
+func (_c *Joke_Update_Call) RunAndReturn(run func(context.Context, string, command.JokeUpdateRequest) (model.Joke, error)) *Joke_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

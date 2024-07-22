@@ -25,9 +25,9 @@ func (_m *Comment) EXPECT() *Comment_Expecter {
 	return &Comment_Expecter{mock: &_m.Mock}
 }
 
-// Create provides a mock function with given fields: ctx, userID, jokeID, req
-func (_m *Comment) Create(ctx context.Context, userID string, jokeID string, req model.Comment) (model.Comment, error) {
-	ret := _m.Called(ctx, userID, jokeID, req)
+// Create provides a mock function with given fields: ctx, req
+func (_m *Comment) Create(ctx context.Context, req command.CommentCreateRequest) (model.Comment, error) {
+	ret := _m.Called(ctx, req)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
@@ -35,17 +35,17 @@ func (_m *Comment) Create(ctx context.Context, userID string, jokeID string, req
 
 	var r0 model.Comment
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, model.Comment) (model.Comment, error)); ok {
-		return rf(ctx, userID, jokeID, req)
+	if rf, ok := ret.Get(0).(func(context.Context, command.CommentCreateRequest) (model.Comment, error)); ok {
+		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, model.Comment) model.Comment); ok {
-		r0 = rf(ctx, userID, jokeID, req)
+	if rf, ok := ret.Get(0).(func(context.Context, command.CommentCreateRequest) model.Comment); ok {
+		r0 = rf(ctx, req)
 	} else {
 		r0 = ret.Get(0).(model.Comment)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string, string, model.Comment) error); ok {
-		r1 = rf(ctx, userID, jokeID, req)
+	if rf, ok := ret.Get(1).(func(context.Context, command.CommentCreateRequest) error); ok {
+		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -60,16 +60,14 @@ type Comment_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - userID string
-//   - jokeID string
-//   - req model.Comment
-func (_e *Comment_Expecter) Create(ctx interface{}, userID interface{}, jokeID interface{}, req interface{}) *Comment_Create_Call {
-	return &Comment_Create_Call{Call: _e.mock.On("Create", ctx, userID, jokeID, req)}
+//   - req command.CommentCreateRequest
+func (_e *Comment_Expecter) Create(ctx interface{}, req interface{}) *Comment_Create_Call {
+	return &Comment_Create_Call{Call: _e.mock.On("Create", ctx, req)}
 }
 
-func (_c *Comment_Create_Call) Run(run func(ctx context.Context, userID string, jokeID string, req model.Comment)) *Comment_Create_Call {
+func (_c *Comment_Create_Call) Run(run func(ctx context.Context, req command.CommentCreateRequest)) *Comment_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(model.Comment))
+		run(args[0].(context.Context), args[1].(command.CommentCreateRequest))
 	})
 	return _c
 }
@@ -79,7 +77,7 @@ func (_c *Comment_Create_Call) Return(_a0 model.Comment, _a1 error) *Comment_Cre
 	return _c
 }
 
-func (_c *Comment_Create_Call) RunAndReturn(run func(context.Context, string, string, model.Comment) (model.Comment, error)) *Comment_Create_Call {
+func (_c *Comment_Create_Call) RunAndReturn(run func(context.Context, command.CommentCreateRequest) (model.Comment, error)) *Comment_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -131,9 +129,9 @@ func (_c *Comment_Delete_Call) RunAndReturn(run func(context.Context, string) er
 	return _c
 }
 
-// Update provides a mock function with given fields: ctx, commentID, req
-func (_m *Comment) Update(ctx context.Context, commentID string, req command.CommentUpdate) (model.Comment, error) {
-	ret := _m.Called(ctx, commentID, req)
+// Update provides a mock function with given fields: ctx, id, req
+func (_m *Comment) Update(ctx context.Context, id string, req command.CommentUpdateRequest) (model.Comment, error) {
+	ret := _m.Called(ctx, id, req)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
@@ -141,17 +139,17 @@ func (_m *Comment) Update(ctx context.Context, commentID string, req command.Com
 
 	var r0 model.Comment
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, command.CommentUpdate) (model.Comment, error)); ok {
-		return rf(ctx, commentID, req)
+	if rf, ok := ret.Get(0).(func(context.Context, string, command.CommentUpdateRequest) (model.Comment, error)); ok {
+		return rf(ctx, id, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, command.CommentUpdate) model.Comment); ok {
-		r0 = rf(ctx, commentID, req)
+	if rf, ok := ret.Get(0).(func(context.Context, string, command.CommentUpdateRequest) model.Comment); ok {
+		r0 = rf(ctx, id, req)
 	} else {
 		r0 = ret.Get(0).(model.Comment)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string, command.CommentUpdate) error); ok {
-		r1 = rf(ctx, commentID, req)
+	if rf, ok := ret.Get(1).(func(context.Context, string, command.CommentUpdateRequest) error); ok {
+		r1 = rf(ctx, id, req)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -166,15 +164,15 @@ type Comment_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - commentID string
-//   - req command.CommentUpdate
-func (_e *Comment_Expecter) Update(ctx interface{}, commentID interface{}, req interface{}) *Comment_Update_Call {
-	return &Comment_Update_Call{Call: _e.mock.On("Update", ctx, commentID, req)}
+//   - id string
+//   - req command.CommentUpdateRequest
+func (_e *Comment_Expecter) Update(ctx interface{}, id interface{}, req interface{}) *Comment_Update_Call {
+	return &Comment_Update_Call{Call: _e.mock.On("Update", ctx, id, req)}
 }
 
-func (_c *Comment_Update_Call) Run(run func(ctx context.Context, commentID string, req command.CommentUpdate)) *Comment_Update_Call {
+func (_c *Comment_Update_Call) Run(run func(ctx context.Context, id string, req command.CommentUpdateRequest)) *Comment_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(command.CommentUpdate))
+		run(args[0].(context.Context), args[1].(string), args[2].(command.CommentUpdateRequest))
 	})
 	return _c
 }
@@ -184,7 +182,7 @@ func (_c *Comment_Update_Call) Return(_a0 model.Comment, _a1 error) *Comment_Upd
 	return _c
 }
 
-func (_c *Comment_Update_Call) RunAndReturn(run func(context.Context, string, command.CommentUpdate) (model.Comment, error)) *Comment_Update_Call {
+func (_c *Comment_Update_Call) RunAndReturn(run func(context.Context, string, command.CommentUpdateRequest) (model.Comment, error)) *Comment_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

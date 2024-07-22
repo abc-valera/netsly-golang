@@ -52,12 +52,15 @@ func (e joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, er
 		return model.Joke{}, err
 	}
 
-	return e.command.Create(ctx, req.UserID, model.Joke{
-		ID:          uuid.New().String(),
-		Title:       req.Title,
-		Text:        req.Text,
-		Explanation: req.Explanation,
-		CreatedAt:   time.Now(),
+	return e.command.Create(ctx, command.JokeCreateRequest{
+		Joke: model.Joke{
+			ID:          uuid.New().String(),
+			Title:       req.Title,
+			Text:        req.Text,
+			Explanation: req.Explanation,
+			CreatedAt:   time.Now(),
+		},
+		UserID: req.UserID,
 	})
 }
 
@@ -76,7 +79,7 @@ func (e joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) 
 		return model.Joke{}, err
 	}
 
-	return e.command.Update(ctx, jokeID, command.JokeUpdate{
+	return e.command.Update(ctx, jokeID, command.JokeUpdateRequest{
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation,

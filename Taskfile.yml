@@ -2,35 +2,25 @@
 
 version: "3"
 
-env:
-  GOOSE_MIGRATION_DIR: "internal/infrastructure/persistence/boiler/migration"
-  GOOSE_DRIVER: "postgres"
-  GOOSE_DBSTRING: "postgres://netsly:netsly@localhost:5432/netsly?sslmode=disable"
-
-vars:
-  ENV_FILE_PATH: "env/dev.env"
+dotenv: ["env/dev.env"]
 
 tasks:
   entrypoint:jsonApi:
-    dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/netsly cmd/main.go
       - ./build/netsly -entrypoint jsonApi
 
   entrypoint:webApp:
-    dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/netsly cmd/main.go
       - ./build/netsly -entrypoint webApp
 
   entrypoint:grpcApi:
-    dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/netsly cmd/main.go
       - ./build/netsly -entrypoint grpcApi
 
   entrypoint:seed:
-    dotenv: ["{{ .ENV_FILE_PATH }}"]
     cmds:
       - go build -o build/netsly cmd/main.go
       - ./build/netsly -entrypoint seed
@@ -56,39 +46,39 @@ tasks:
     cmds:
       - ./bin/mockery --config gen/mock/mockery.yaml
 
-  generate:jsonApi:main:
+  generate:presentation:jsonApi:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
     cmds:
       - task: generate:jsonApi:rest:single_openapi_config_file
       - task: generate:jsonApi:rest:docs
       - task: generate:jsonApi:rest:code
 
-  generate:jsonApi:rest:single_openapi_config_file:
+  generate:presentation:jsonApi:rest:single_openapi_config_file:
     cmds:
       - docker run --rm -v ${PWD}:/spec:Z
         redocly/cli bundle
         -o /spec/gen/openapi/openapi.yaml
         /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
 
-  generate:jsonApi:rest:docs:
+  generate:presentation:jsonApi:rest:docs:
     cmds:
       - docker run --rm -v ${PWD}:/spec:Z
         redocly/cli build-docs
         -o /spec/internal/presentation/jsonApi/static/docs/rest.html
         /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
 
-  generate:jsonApi:rest:code:
+  generate:presentation:jsonApi:rest:code:
     cmds:
       - go generate gen/ogen/generate.go
 
-  generate:webApp:tailwindcss:
+  generate:presentation:webApp:tailwindcss:
     cmds:
       - npx tailwindcss
         -c internal/presentation/webApp/tailwind.config.js
         -i internal/presentation/webApp/static/style/input.css
         -o internal/presentation/webApp/static/style/style.css
 
-  generate:grpcApi:code:
+  generate:presentation:grpcApi:code:
     cmds:
       - ./bin/protoc internal/presentation/grpcApi/proto/*.proto
         --go_out=gen/pb
@@ -97,62 +87,57 @@ tasks:
         --go-grpc_opt=paths=source_relative
         --proto_path=internal/presentation/grpcApi/proto
 
-  generate:persistence:migration:
+  generate:persistence:boilerSqlite:code:
     cmds:
-      - ./bin/goose -s create main sql
-
-  generate:persistence:code:
-    cmds:
-      - ./bin/sqlboiler psql -c internal/infrastructure/persistence/boiler/sqlboiler.toml
+      - ./bin/sqlboiler sqlite3 -c internal/infrastructure/persistence/implementation/boilerSqlite/sqlboiler.toml
 
   infrastructure:up:
     cmds:
-      - task: infrastructure:run_postgres
-      - task: infrastructure:run_redis
-      - task: infrastructure:run_jaeger
+      - task: infrastructure:persistence:boilerSqlite:up
+      - task: infrastructure:jaeger:up
 
   infrastructure:down:
     cmds:
-      - docker rm -f netsly-postgres
-      - docker rm -f netsly-redis
-      - docker rm -f netsly-jaeger
+      - task: infrastructure:service:slogLogger:down
+      - task: infrastructure:persistence:localFileSaver:down
+      - task: infrastructure:persistence:gormSqlite:down
+      - task: infrastructure:persistence:boilerSqlite:down
+      - task: infrastructure:jaeger:down
 
   infrastructure:start:
     cmds:
-      - docker start netsly-postgres
-      - docker start netsly-redis
       - docker start netsly-jaeger
 
   infrastructure:stop:
     cmds:
-      - docker stop netsly-postgres
       - docker stop netsly-redis
       - docker stop netsly-jaeger
 
-  infrastructure:migrate:
+  infrastructure:service:slogLogger:down:
     cmds:
-      - ./bin/goose up
+      - cmd: rm $LOGGER_SERVICE_LOGS_FOLDER_PATH/*
+        ignore_error: true
 
-  infrastructure:run_postgres:
+  infrastructure:persistence:gormSqlite:down:
     cmds:
-      - docker run
-        --name netsly-postgres
-        --network netsly-network
-        -p 5432:5432
-        -e POSTGRES_USER=netsly
-        -e POSTGRES_PASSWORD=netsly
-        -e POSTGRES_DB=netsly
-        -d postgres:15-alpine
+      - cmd: rm $GORM_SQLITE_PATH
+        ignore_error: true
 
-  infrastructure:run_redis:
+  infrastructure:persistence:boilerSqlite:up:
     cmds:
-      - docker run
-        --name netsly-redis
-        --network netsly-network
-        -p 6379:6379
-        -d redis/redis-stack:latest
+      - ./bin/goose -dir internal/infrastructure/persistence/implementation/boilerSqlite/migration sqlite3 $BOILER_SQLITE_PATH up
 
-  infrastructure:run_jaeger:
+  infrastructure:persistence:boilerSqlite:down:
+    cmds:
+      - cmd: rm $BOILER_SQLITE_PATH
+        ignore_error: true
+
+  infrastructure:persistence:localFileSaver:down:
+    cmds:
+      - cmd: rm $LOCAL_FILE_SAVER_FILES_PATH/*
+        ignore_error: true
+
+  infrastructure:jaeger:up:
     cmds:
       - docker run --rm --name netsly-jaeger
         -e COLLECTOR_ZIPKIN_HOST_PORT=:9411
@@ -167,6 +152,11 @@ tasks:
         -p 14269:14269
         -p 9411:9411
         -d jaegertracing/all-in-one:1.58
+
+  infrastructure:jaeger:down:
+    cmds:
+      - cmd: docker rm -f netsly-jaeger
+        ignore_error: true
 
   image:jsonApi:build:
     cmds:

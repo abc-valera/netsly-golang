@@ -13,12 +13,17 @@ var ErrJokeAlreadyExists = coderr.NewCodeMessage(
 )
 
 type IJoke interface {
-	Create(ctx context.Context, userID string, req model.Joke) (model.Joke, error)
-	Update(ctx context.Context, id string, req JokeUpdate) (model.Joke, error)
+	Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error)
+	Update(ctx context.Context, id string, req JokeUpdateRequest) (model.Joke, error)
 	Delete(ctx context.Context, id string) error
 }
 
-type JokeUpdate struct {
+type JokeCreateRequest struct {
+	Joke   model.Joke
+	UserID string
+}
+
+type JokeUpdateRequest struct {
 	Title       *string
 	Text        *string
 	Explanation *string

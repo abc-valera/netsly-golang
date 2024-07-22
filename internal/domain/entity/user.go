@@ -24,13 +24,13 @@ type IUser interface {
 type user struct {
 	command command.IUser
 	query.IUser
-	passMaker service.IPasswordMaker
+	passMaker service.IPassworder
 }
 
 func NewUser(
 	command command.IUser,
 	query query.IUser,
-	passMaker service.IPasswordMaker,
+	passMaker service.IPassworder,
 ) IUser {
 	return user{
 		command:   command,
@@ -91,7 +91,7 @@ func (e user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 		return model.User{}, err
 	}
 
-	updateReq := command.UserUpdate{
+	updateReq := command.UserUpdateRequest{
 		HashedPassword: nil,
 		Fullname:       req.Fullname,
 		Status:         req.Status,

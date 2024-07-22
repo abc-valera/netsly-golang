@@ -24,10 +24,10 @@ import (
 
 // GooseDBVersion is an object representing the database table.
 type GooseDBVersion struct {
-	ID        int       `boil:"id" json:"id" toml:"id" yaml:"id"`
-	VersionID int64     `boil:"version_id" json:"version_id" toml:"version_id" yaml:"version_id"`
-	IsApplied bool      `boil:"is_applied" json:"is_applied" toml:"is_applied" yaml:"is_applied"`
-	Tstamp    null.Time `boil:"tstamp" json:"tstamp,omitempty" toml:"tstamp" yaml:"tstamp,omitempty"`
+	ID        null.Int64  `boil:"id" json:"id,omitempty" toml:"id" yaml:"id,omitempty"`
+	VersionID int64       `boil:"version_id" json:"version_id" toml:"version_id" yaml:"version_id"`
+	IsApplied int64       `boil:"is_applied" json:"is_applied" toml:"is_applied" yaml:"is_applied"`
+	Tstamp    null.String `boil:"tstamp" json:"tstamp,omitempty" toml:"tstamp" yaml:"tstamp,omitempty"`
 
 	R *gooseDBVersionR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L gooseDBVersionL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -59,22 +59,34 @@ var GooseDBVersionTableColumns = struct {
 
 // Generated where
 
-type whereHelperint64 struct{ field string }
+type whereHelpernull_Int64 struct{ field string }
 
-func (w whereHelperint64) EQ(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperint64) NEQ(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperint64) LT(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperint64) LTE(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperint64) GT(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperint64) GTE(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperint64) IN(slice []int64) qm.QueryMod {
+func (w whereHelpernull_Int64) EQ(x null.Int64) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Int64) NEQ(x null.Int64) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Int64) LT(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Int64) LTE(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Int64) GT(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Int64) GTE(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+func (w whereHelpernull_Int64) IN(slice []int64) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
 	}
 	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
 }
-func (w whereHelperint64) NIN(slice []int64) qm.QueryMod {
+func (w whereHelpernull_Int64) NIN(slice []int64) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
@@ -82,49 +94,63 @@ func (w whereHelperint64) NIN(slice []int64) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
-type whereHelperbool struct{ field string }
+func (w whereHelpernull_Int64) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Int64) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
-func (w whereHelperbool) EQ(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperbool) NEQ(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperbool) LT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperbool) LTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperbool) GT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperbool) GTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+type whereHelpernull_String struct{ field string }
 
-type whereHelpernull_Time struct{ field string }
-
-func (w whereHelpernull_Time) EQ(x null.Time) qm.QueryMod {
+func (w whereHelpernull_String) EQ(x null.String) qm.QueryMod {
 	return qmhelper.WhereNullEQ(w.field, false, x)
 }
-func (w whereHelpernull_Time) NEQ(x null.Time) qm.QueryMod {
+func (w whereHelpernull_String) NEQ(x null.String) qm.QueryMod {
 	return qmhelper.WhereNullEQ(w.field, true, x)
 }
-func (w whereHelpernull_Time) LT(x null.Time) qm.QueryMod {
+func (w whereHelpernull_String) LT(x null.String) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LT, x)
 }
-func (w whereHelpernull_Time) LTE(x null.Time) qm.QueryMod {
+func (w whereHelpernull_String) LTE(x null.String) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LTE, x)
 }
-func (w whereHelpernull_Time) GT(x null.Time) qm.QueryMod {
+func (w whereHelpernull_String) GT(x null.String) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GT, x)
 }
-func (w whereHelpernull_Time) GTE(x null.Time) qm.QueryMod {
+func (w whereHelpernull_String) GTE(x null.String) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
+func (w whereHelpernull_String) LIKE(x null.String) qm.QueryMod {
+	return qm.Where(w.field+" LIKE ?", x)
+}
+func (w whereHelpernull_String) NLIKE(x null.String) qm.QueryMod {
+	return qm.Where(w.field+" NOT LIKE ?", x)
+}
+func (w whereHelpernull_String) IN(slice []string) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+}
+func (w whereHelpernull_String) NIN(slice []string) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
+}
 
-func (w whereHelpernull_Time) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
-func (w whereHelpernull_Time) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+func (w whereHelpernull_String) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_String) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
 var GooseDBVersionWhere = struct {
-	ID        whereHelperint
+	ID        whereHelpernull_Int64
 	VersionID whereHelperint64
-	IsApplied whereHelperbool
-	Tstamp    whereHelpernull_Time
+	IsApplied whereHelperint64
+	Tstamp    whereHelpernull_String
 }{
-	ID:        whereHelperint{field: "\"goose_db_version\".\"id\""},
+	ID:        whereHelpernull_Int64{field: "\"goose_db_version\".\"id\""},
 	VersionID: whereHelperint64{field: "\"goose_db_version\".\"version_id\""},
-	IsApplied: whereHelperbool{field: "\"goose_db_version\".\"is_applied\""},
-	Tstamp:    whereHelpernull_Time{field: "\"goose_db_version\".\"tstamp\""},
+	IsApplied: whereHelperint64{field: "\"goose_db_version\".\"is_applied\""},
+	Tstamp:    whereHelpernull_String{field: "\"goose_db_version\".\"tstamp\""},
 }
 
 // GooseDBVersionRels is where relationship names are stored.
@@ -148,7 +174,7 @@ var (
 	gooseDBVersionColumnsWithoutDefault = []string{"version_id", "is_applied"}
 	gooseDBVersionColumnsWithDefault    = []string{"id", "tstamp"}
 	gooseDBVersionPrimaryKeyColumns     = []string{"id"}
-	gooseDBVersionGeneratedColumns      = []string{}
+	gooseDBVersionGeneratedColumns      = []string{"id"}
 )
 
 type (
@@ -488,13 +514,13 @@ func GooseDBVersions(mods ...qm.QueryMod) gooseDBVersionQuery {
 }
 
 // FindGooseDBVersionG retrieves a single record by ID.
-func FindGooseDBVersionG(ctx context.Context, iD int, selectCols ...string) (*GooseDBVersion, error) {
+func FindGooseDBVersionG(ctx context.Context, iD null.Int64, selectCols ...string) (*GooseDBVersion, error) {
 	return FindGooseDBVersion(ctx, boil.GetContextDB(), iD, selectCols...)
 }
 
 // FindGooseDBVersion retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindGooseDBVersion(ctx context.Context, exec boil.ContextExecutor, iD int, selectCols ...string) (*GooseDBVersion, error) {
+func FindGooseDBVersion(ctx context.Context, exec boil.ContextExecutor, iD null.Int64, selectCols ...string) (*GooseDBVersion, error) {
 	gooseDBVersionObj := &GooseDBVersion{}
 
 	sel := "*"
@@ -502,7 +528,7 @@ func FindGooseDBVersion(ctx context.Context, exec boil.ContextExecutor, iD int, 
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from \"goose_db_version\" where \"id\"=$1", sel,
+		"select %s from \"goose_db_version\" where \"id\"=?", sel,
 	)
 
 	q := queries.Raw(query, iD)
@@ -554,6 +580,7 @@ func (o *GooseDBVersion) Insert(ctx context.Context, exec boil.ContextExecutor, 
 			gooseDBVersionColumnsWithoutDefault,
 			nzDefaults,
 		)
+		wl = strmangle.SetComplement(wl, gooseDBVersionGeneratedColumns)
 
 		cache.valueMapping, err = queries.BindMapping(gooseDBVersionType, gooseDBVersionMapping, wl)
 		if err != nil {
@@ -630,6 +657,7 @@ func (o *GooseDBVersion) Update(ctx context.Context, exec boil.ContextExecutor, 
 			gooseDBVersionAllColumns,
 			gooseDBVersionPrimaryKeyColumns,
 		)
+		wl = strmangle.SetComplement(wl, gooseDBVersionGeneratedColumns)
 
 		if !columns.IsWhitelist() {
 			wl = strmangle.SetComplement(wl, []string{"created_at"})
@@ -639,8 +667,8 @@ func (o *GooseDBVersion) Update(ctx context.Context, exec boil.ContextExecutor, 
 		}
 
 		cache.query = fmt.Sprintf("UPDATE \"goose_db_version\" SET %s WHERE %s",
-			strmangle.SetParamNames("\"", "\"", 1, wl),
-			strmangle.WhereClause("\"", "\"", len(wl)+1, gooseDBVersionPrimaryKeyColumns),
+			strmangle.SetParamNames("\"", "\"", 0, wl),
+			strmangle.WhereClause("\"", "\"", 0, gooseDBVersionPrimaryKeyColumns),
 		)
 		cache.valueMapping, err = queries.BindMapping(gooseDBVersionType, gooseDBVersionMapping, append(wl, gooseDBVersionPrimaryKeyColumns...))
 		if err != nil {
@@ -730,8 +758,8 @@ func (o GooseDBVersionSlice) UpdateAll(ctx context.Context, exec boil.ContextExe
 	}
 
 	sql := fmt.Sprintf("UPDATE \"goose_db_version\" SET %s WHERE %s",
-		strmangle.SetParamNames("\"", "\"", 1, colNames),
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), len(colNames)+1, gooseDBVersionPrimaryKeyColumns, len(o)))
+		strmangle.SetParamNames("\"", "\"", 0, colNames),
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, gooseDBVersionPrimaryKeyColumns, len(o)))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -751,13 +779,13 @@ func (o GooseDBVersionSlice) UpdateAll(ctx context.Context, exec boil.ContextExe
 }
 
 // UpsertG attempts an insert, and does an update or ignore on conflict.
-func (o *GooseDBVersion) UpsertG(ctx context.Context, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
-	return o.Upsert(ctx, boil.GetContextDB(), updateOnConflict, conflictColumns, updateColumns, insertColumns, opts...)
+func (o *GooseDBVersion) UpsertG(ctx context.Context, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
+	return o.Upsert(ctx, boil.GetContextDB(), updateOnConflict, conflictColumns, updateColumns, insertColumns)
 }
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *GooseDBVersion) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns, opts ...UpsertOptionFunc) error {
+func (o *GooseDBVersion) Upsert(ctx context.Context, exec boil.ContextExecutor, updateOnConflict bool, conflictColumns []string, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
 		return errors.New("sqlboiler: no goose_db_version provided for upsert")
 	}
@@ -809,7 +837,6 @@ func (o *GooseDBVersion) Upsert(ctx context.Context, exec boil.ContextExecutor, 
 			gooseDBVersionColumnsWithoutDefault,
 			nzDefaults,
 		)
-
 		update := updateColumns.UpdateColumnSet(
 			gooseDBVersionAllColumns,
 			gooseDBVersionPrimaryKeyColumns,
@@ -822,15 +849,11 @@ func (o *GooseDBVersion) Upsert(ctx context.Context, exec boil.ContextExecutor, 
 		ret := strmangle.SetComplement(gooseDBVersionAllColumns, strmangle.SetIntersect(insert, update))
 
 		conflict := conflictColumns
-		if len(conflict) == 0 && updateOnConflict && len(update) != 0 {
-			if len(gooseDBVersionPrimaryKeyColumns) == 0 {
-				return errors.New("sqlboiler: unable to upsert goose_db_version, could not build conflict column list")
-			}
-
+		if len(conflict) == 0 {
 			conflict = make([]string, len(gooseDBVersionPrimaryKeyColumns))
 			copy(conflict, gooseDBVersionPrimaryKeyColumns)
 		}
-		cache.query = buildUpsertQueryPostgres(dialect, "\"goose_db_version\"", updateOnConflict, ret, update, conflict, insert, opts...)
+		cache.query = buildUpsertQuerySQLite(dialect, "\"goose_db_version\"", updateOnConflict, ret, update, conflict, insert)
 
 		cache.valueMapping, err = queries.BindMapping(gooseDBVersionType, gooseDBVersionMapping, insert)
 		if err != nil {
@@ -895,7 +918,7 @@ func (o *GooseDBVersion) Delete(ctx context.Context, exec boil.ContextExecutor) 
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), gooseDBVersionPrimaryKeyMapping)
-	sql := "DELETE FROM \"goose_db_version\" WHERE \"id\"=$1"
+	sql := "DELETE FROM \"goose_db_version\" WHERE \"id\"=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -970,7 +993,7 @@ func (o GooseDBVersionSlice) DeleteAll(ctx context.Context, exec boil.ContextExe
 	}
 
 	sql := "DELETE FROM \"goose_db_version\" WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, gooseDBVersionPrimaryKeyColumns, len(o))
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, gooseDBVersionPrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1044,7 +1067,7 @@ func (o *GooseDBVersionSlice) ReloadAll(ctx context.Context, exec boil.ContextEx
 	}
 
 	sql := "SELECT \"goose_db_version\".* FROM \"goose_db_version\" WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 1, gooseDBVersionPrimaryKeyColumns, len(*o))
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, gooseDBVersionPrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
 
@@ -1059,14 +1082,14 @@ func (o *GooseDBVersionSlice) ReloadAll(ctx context.Context, exec boil.ContextEx
 }
 
 // GooseDBVersionExistsG checks if the GooseDBVersion row exists.
-func GooseDBVersionExistsG(ctx context.Context, iD int) (bool, error) {
+func GooseDBVersionExistsG(ctx context.Context, iD null.Int64) (bool, error) {
 	return GooseDBVersionExists(ctx, boil.GetContextDB(), iD)
 }
 
 // GooseDBVersionExists checks if the GooseDBVersion row exists.
-func GooseDBVersionExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool, error) {
+func GooseDBVersionExists(ctx context.Context, exec boil.ContextExecutor, iD null.Int64) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from \"goose_db_version\" where \"id\"=$1 limit 1)"
+	sql := "select exists(select 1 from \"goose_db_version\" where \"id\"=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)

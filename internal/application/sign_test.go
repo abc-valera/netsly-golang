@@ -8,7 +8,7 @@ import (
 
 	"github.com/abc-valera/netsly-api-golang/gen/mock/mockEntity"
 	"github.com/abc-valera/netsly-api-golang/gen/mock/mockEntityTransactor"
-	"github.com/abc-valera/netsly-api-golang/gen/mock/mockPasswordMaker"
+	"github.com/abc-valera/netsly-api-golang/gen/mock/mockPassworder"
 	"github.com/abc-valera/netsly-api-golang/gen/mock/mockQuery"
 	"github.com/abc-valera/netsly-api-golang/gen/mock/mockTaskQueuer"
 	"github.com/abc-valera/netsly-api-golang/internal/application"
@@ -22,25 +22,25 @@ import (
 
 func TestSignUsecase(t *testing.T) {
 	type Mocks struct {
-		userEntity    *mockEntity.User
-		userQuery     *mockQuery.User
-		transactor    *mockEntityTransactor.Transactor
-		passwordMaker *mockPasswordMaker.PasswordMaker
-		taskQueue     *mockTaskQueuer.TaskQueuer
+		userEntity *mockEntity.User
+		userQuery  *mockQuery.User
+		transactor *mockEntityTransactor.Transactor
+		passworder *mockPassworder.Passworder
+		taskQueue  *mockTaskQueuer.TaskQueuer
 	}
 
 	setupTest := func(t *testing.T) (*require.Assertions, Mocks, application.ISignUsecase) {
 		mocks := Mocks{
-			userEntity:    mockEntity.NewUser(t),
-			userQuery:     mockQuery.NewUser(t),
-			transactor:    mockEntityTransactor.NewTransactor(t),
-			passwordMaker: mockPasswordMaker.NewPasswordMaker(t),
-			taskQueue:     mockTaskQueuer.NewTaskQueuer(t),
+			userEntity: mockEntity.NewUser(t),
+			userQuery:  mockQuery.NewUser(t),
+			transactor: mockEntityTransactor.NewTransactor(t),
+			passworder: mockPassworder.NewPassworder(t),
+			taskQueue:  mockTaskQueuer.NewTaskQueuer(t),
 		}
 		return require.New(t), mocks, application.NewSignUsecase(
 			mocks.userEntity,
 			mocks.transactor,
-			mocks.passwordMaker,
+			mocks.passworder,
 			mocks.taskQueue,
 		)
 	}
@@ -84,7 +84,7 @@ func TestSignUsecase(t *testing.T) {
 				Status:         req.Status,
 				CreatedAt:      time.Now(),
 			}
-			mocks.passwordMaker.EXPECT().HashPassword(req.Password).Return("test_hashed", nil)
+			mocks.passworder.EXPECT().HashPassword(req.Password).Return("test_hashed", nil)
 			mocks.userEntity.EXPECT().Create(ctx, userEntityCreateReq).Return(expeted, nil)
 
 			sendEmail := service.Email{
@@ -114,7 +114,7 @@ func TestSignUsecase(t *testing.T) {
 
 			mocks.userQuery.EXPECT().GetByEmail(ctx, req.Email).Return(expected, nil)
 
-			mocks.passwordMaker.EXPECT().CheckPassword(req.Password, expected.HashedPassword).Return(nil)
+			mocks.passworder.EXPECT().CheckPassword(req.Password, expected.HashedPassword).Return(nil)
 
 			actual, err := signUsecase.SignIn(ctx, req)
 			r.NoError(err)

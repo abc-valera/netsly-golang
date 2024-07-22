@@ -47,10 +47,12 @@ func (e like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, er
 		return model.Like{}, err
 	}
 
-	return e.command.Create(ctx, model.Like{
-		UserID:    req.UserID,
-		JokeID:    req.JokeID,
-		CreatedAt: time.Now(),
+	return e.command.Create(ctx, command.LikeCreateRequest{
+		Like: model.Like{
+			CreatedAt: time.Now(),
+		},
+		UserID: req.UserID,
+		JokeID: req.JokeID,
 	})
 }
 

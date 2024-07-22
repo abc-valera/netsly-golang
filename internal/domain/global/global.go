@@ -15,37 +15,32 @@ import (
 
 // global is a package that contains global variables that are used across the application.
 
-var (
-	appModeGlobal   mode.Mode
-	appModeInitOnce sync.Once
-)
+var initOnce sync.Once
 
-func InitMode(appMode mode.Mode) {
-	if appMode != mode.Development && appMode != mode.Production {
-		coderr.Fatal("Provided invalid application mode. Should be either 'development' or 'production'")
-	}
-
-	appModeInitOnce.Do(func() {
+func Init(
+	appMode mode.Mode,
+	tracer trace.Tracer,
+	logger service.ILogger,
+) {
+	initOnce.Do(func() {
+		if appMode != mode.Development && appMode != mode.Production {
+			coderr.Fatal("Provided invalid application mode. Should be either 'development' or 'production'")
+		}
 		appModeGlobal = appMode
+
+		tracerGlobal = coderr.NoEmpty(tracer)
+
+		logGlobal = coderr.NoEmpty(logger)
 	})
 }
+
+var appModeGlobal mode.Mode
 
 func Mode() mode.Mode {
 	return appModeGlobal
 }
 
-var (
-	tracerGlobal   trace.Tracer
-	tracerInitOnce sync.Once
-)
-
-func InitTracer(tracer trace.Tracer) {
-	coderr.NotNil(tracer)
-
-	tracerInitOnce.Do(func() {
-		tracerGlobal = tracer
-	})
-}
+var tracerGlobal trace.Tracer
 
 func Tracer() trace.Tracer {
 	return tracerGlobal
@@ -61,18 +56,7 @@ func NewSpan(ctx context.Context) (context.Context, trace.Span) {
 	return tracerGlobal.Start(ctx, funcName)
 }
 
-var (
-	logGlobal   service.ILogger
-	logInitOnce sync.Once
-)
-
-func InitLog(logger service.ILogger) {
-	coderr.NotNil(logger)
-
-	logInitOnce.Do(func() {
-		logGlobal = logger
-	})
-}
+var logGlobal service.ILogger
 
 func Log() service.ILogger {
 	return logGlobal

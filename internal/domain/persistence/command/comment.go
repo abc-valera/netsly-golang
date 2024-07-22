@@ -7,11 +7,17 @@ import (
 )
 
 type IComment interface {
-	Create(ctx context.Context, userID, jokeID string, req model.Comment) (model.Comment, error)
-	Update(ctx context.Context, commentID string, req CommentUpdate) (model.Comment, error)
+	Create(ctx context.Context, req CommentCreateRequest) (model.Comment, error)
+	Update(ctx context.Context, id string, req CommentUpdateRequest) (model.Comment, error)
 	Delete(ctx context.Context, id string) error
 }
 
-type CommentUpdate struct {
+type CommentCreateRequest struct {
+	Comment model.Comment
+	UserID  string
+	JokeID  string
+}
+
+type CommentUpdateRequest struct {
 	Text *string
 }

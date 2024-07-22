@@ -10,7 +10,7 @@ import (
 
 	domainPersistence "github.com/abc-valera/netsly-api-golang/internal/domain/persistence"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boiler"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/boilerSqlite"
 	"github.com/abc-valera/netsly-api-golang/test"
 	"github.com/docker/docker/pkg/ioutils"
 	"github.com/stretchr/testify/require"
@@ -59,7 +59,7 @@ func TestMain(m *testing.M) {
 	}
 
 	// Init DB
-	db, err := boiler.New(fmt.Sprintf("postgres://test:test@%s/test?sslmode=disable", endpoint))
+	db, err := boilerSqlite.New(fmt.Sprintf("postgres://test:test@%s/test?sslmode=disable", endpoint))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -87,7 +87,7 @@ func TestMain(m *testing.M) {
 		_ = res
 
 		return ctx, r,
-			implementation.NewCommands(tx, ""),
+			implementation.NewCommandsQueries(tx, ""),
 			implementation.NewQueries(tx, "")
 	}
 

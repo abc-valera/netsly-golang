@@ -26,7 +26,7 @@ func (_m *Room) EXPECT() *Room_Expecter {
 }
 
 // Create provides a mock function with given fields: ctx, req
-func (_m *Room) Create(ctx context.Context, req model.Room) (model.Room, error) {
+func (_m *Room) Create(ctx context.Context, req command.RoomCreateRequest) (model.Room, error) {
 	ret := _m.Called(ctx, req)
 
 	if len(ret) == 0 {
@@ -35,16 +35,16 @@ func (_m *Room) Create(ctx context.Context, req model.Room) (model.Room, error) 
 
 	var r0 model.Room
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, model.Room) (model.Room, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, command.RoomCreateRequest) (model.Room, error)); ok {
 		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, model.Room) model.Room); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, command.RoomCreateRequest) model.Room); ok {
 		r0 = rf(ctx, req)
 	} else {
 		r0 = ret.Get(0).(model.Room)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, model.Room) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, command.RoomCreateRequest) error); ok {
 		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
@@ -60,14 +60,14 @@ type Room_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - req model.Room
+//   - req command.RoomCreateRequest
 func (_e *Room_Expecter) Create(ctx interface{}, req interface{}) *Room_Create_Call {
 	return &Room_Create_Call{Call: _e.mock.On("Create", ctx, req)}
 }
 
-func (_c *Room_Create_Call) Run(run func(ctx context.Context, req model.Room)) *Room_Create_Call {
+func (_c *Room_Create_Call) Run(run func(ctx context.Context, req command.RoomCreateRequest)) *Room_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.Room))
+		run(args[0].(context.Context), args[1].(command.RoomCreateRequest))
 	})
 	return _c
 }
@@ -77,7 +77,7 @@ func (_c *Room_Create_Call) Return(_a0 model.Room, _a1 error) *Room_Create_Call 
 	return _c
 }
 
-func (_c *Room_Create_Call) RunAndReturn(run func(context.Context, model.Room) (model.Room, error)) *Room_Create_Call {
+func (_c *Room_Create_Call) RunAndReturn(run func(context.Context, command.RoomCreateRequest) (model.Room, error)) *Room_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -130,7 +130,7 @@ func (_c *Room_Delete_Call) RunAndReturn(run func(context.Context, string) error
 }
 
 // Update provides a mock function with given fields: ctx, id, req
-func (_m *Room) Update(ctx context.Context, id string, req command.RoomUpdate) (model.Room, error) {
+func (_m *Room) Update(ctx context.Context, id string, req command.RoomUpdateRequest) (model.Room, error) {
 	ret := _m.Called(ctx, id, req)
 
 	if len(ret) == 0 {
@@ -139,16 +139,16 @@ func (_m *Room) Update(ctx context.Context, id string, req command.RoomUpdate) (
 
 	var r0 model.Room
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, command.RoomUpdate) (model.Room, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, command.RoomUpdateRequest) (model.Room, error)); ok {
 		return rf(ctx, id, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, command.RoomUpdate) model.Room); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, command.RoomUpdateRequest) model.Room); ok {
 		r0 = rf(ctx, id, req)
 	} else {
 		r0 = ret.Get(0).(model.Room)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string, command.RoomUpdate) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string, command.RoomUpdateRequest) error); ok {
 		r1 = rf(ctx, id, req)
 	} else {
 		r1 = ret.Error(1)
@@ -165,14 +165,14 @@ type Room_Update_Call struct {
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
 //   - id string
-//   - req command.RoomUpdate
+//   - req command.RoomUpdateRequest
 func (_e *Room_Expecter) Update(ctx interface{}, id interface{}, req interface{}) *Room_Update_Call {
 	return &Room_Update_Call{Call: _e.mock.On("Update", ctx, id, req)}
 }
 
-func (_c *Room_Update_Call) Run(run func(ctx context.Context, id string, req command.RoomUpdate)) *Room_Update_Call {
+func (_c *Room_Update_Call) Run(run func(ctx context.Context, id string, req command.RoomUpdateRequest)) *Room_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(command.RoomUpdate))
+		run(args[0].(context.Context), args[1].(string), args[2].(command.RoomUpdateRequest))
 	})
 	return _c
 }
@@ -182,7 +182,7 @@ func (_c *Room_Update_Call) Return(_a0 model.Room, _a1 error) *Room_Update_Call 
 	return _c
 }
 
-func (_c *Room_Update_Call) RunAndReturn(run func(context.Context, string, command.RoomUpdate) (model.Room, error)) *Room_Update_Call {
+func (_c *Room_Update_Call) RunAndReturn(run func(context.Context, string, command.RoomUpdateRequest) (model.Room, error)) *Room_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

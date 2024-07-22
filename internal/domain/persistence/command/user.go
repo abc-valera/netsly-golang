@@ -14,11 +14,11 @@ var (
 
 type IUser interface {
 	Create(ctx context.Context, req model.User) (model.User, error)
-	Update(ctx context.Context, id string, req UserUpdate) (model.User, error)
+	Update(ctx context.Context, id string, req UserUpdateRequest) (model.User, error)
 	Delete(ctx context.Context, id string) error
 }
 
-type UserUpdate struct {
+type UserUpdateRequest struct {
 	HashedPassword *string
 	Fullname       *string
 	Status         *string

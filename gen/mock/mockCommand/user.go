@@ -130,7 +130,7 @@ func (_c *User_Delete_Call) RunAndReturn(run func(context.Context, string) error
 }
 
 // Update provides a mock function with given fields: ctx, id, req
-func (_m *User) Update(ctx context.Context, id string, req command.UserUpdate) (model.User, error) {
+func (_m *User) Update(ctx context.Context, id string, req command.UserUpdateRequest) (model.User, error) {
 	ret := _m.Called(ctx, id, req)
 
 	if len(ret) == 0 {
@@ -139,16 +139,16 @@ func (_m *User) Update(ctx context.Context, id string, req command.UserUpdate) (
 
 	var r0 model.User
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, command.UserUpdate) (model.User, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, command.UserUpdateRequest) (model.User, error)); ok {
 		return rf(ctx, id, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, command.UserUpdate) model.User); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, command.UserUpdateRequest) model.User); ok {
 		r0 = rf(ctx, id, req)
 	} else {
 		r0 = ret.Get(0).(model.User)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string, command.UserUpdate) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string, command.UserUpdateRequest) error); ok {
 		r1 = rf(ctx, id, req)
 	} else {
 		r1 = ret.Error(1)
@@ -165,14 +165,14 @@ type User_Update_Call struct {
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
 //   - id string
-//   - req command.UserUpdate
+//   - req command.UserUpdateRequest
 func (_e *User_Expecter) Update(ctx interface{}, id interface{}, req interface{}) *User_Update_Call {
 	return &User_Update_Call{Call: _e.mock.On("Update", ctx, id, req)}
 }
 
-func (_c *User_Update_Call) Run(run func(ctx context.Context, id string, req command.UserUpdate)) *User_Update_Call {
+func (_c *User_Update_Call) Run(run func(ctx context.Context, id string, req command.UserUpdateRequest)) *User_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(command.UserUpdate))
+		run(args[0].(context.Context), args[1].(string), args[2].(command.UserUpdateRequest))
 	})
 	return _c
 }
@@ -182,7 +182,7 @@ func (_c *User_Update_Call) Return(_a0 model.User, _a1 error) *User_Update_Call 
 	return _c
 }
 
-func (_c *User_Update_Call) RunAndReturn(run func(context.Context, string, command.UserUpdate) (model.User, error)) *User_Update_Call {
+func (_c *User_Update_Call) RunAndReturn(run func(context.Context, string, command.UserUpdateRequest) (model.User, error)) *User_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

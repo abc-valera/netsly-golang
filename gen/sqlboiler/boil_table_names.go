@@ -4,23 +4,23 @@
 package sqlboiler
 
 var TableNames = struct {
-	Comment        string
-	FileInfo       string
-	Joke           string
-	Likes          string
-	Room           string
-	RoomMember     string
-	RoomMessage    string
-	User           string
+	Comments       string
+	FileInfos      string
 	GooseDBVersion string
+	Jokes          string
+	Likes          string
+	RoomMembers    string
+	RoomMessages   string
+	Rooms          string
+	Users          string
 }{
-	Comment:        "Comment",
-	FileInfo:       "FileInfo",
-	Joke:           "Joke",
-	Likes:          "Likes",
-	Room:           "Room",
-	RoomMember:     "RoomMember",
-	RoomMessage:    "RoomMessage",
-	User:           "User",
+	Comments:       "comments",
+	FileInfos:      "file_infos",
 	GooseDBVersion: "goose_db_version",
+	Jokes:          "jokes",
+	Likes:          "likes",
+	RoomMembers:    "room_members",
+	RoomMessages:   "room_messages",
+	Rooms:          "rooms",
+	Users:          "users",
 }

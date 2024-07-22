@@ -22,9 +22,9 @@ type ISignUsecase interface {
 }
 
 type signUsecase struct {
-	user          entity.IUser
-	passwordMaker service.IPasswordMaker
-	taskQueue     service.ITaskQueuer
+	user       entity.IUser
+	passworder service.IPassworder
+	taskQueue  service.ITaskQueuer
 
 	transactor entityTransactor.ITransactor
 }
@@ -32,14 +32,14 @@ type signUsecase struct {
 func NewSignUsecase(
 	userEntity entity.IUser,
 	transactor entityTransactor.ITransactor,
-	passwordMaker service.IPasswordMaker,
+	passworder service.IPassworder,
 	taskQueue service.ITaskQueuer,
 ) ISignUsecase {
 	return signUsecase{
-		user:          userEntity,
-		transactor:    transactor,
-		passwordMaker: passwordMaker,
-		taskQueue:     taskQueue,
+		user:       userEntity,
+		transactor: transactor,
+		passworder: passworder,
+		taskQueue:  taskQueue,
 	}
 }
 
@@ -110,7 +110,7 @@ func (u signUsecase) SignIn(ctx context.Context, req SignInRequest) (model.User,
 
 	span.AddEvent("Check Password Start")
 
-	if err := u.passwordMaker.CheckPassword(req.Password, user.HashedPassword); err != nil {
+	if err := u.passworder.CheckPassword(req.Password, user.HashedPassword); err != nil {
 		return model.User{}, err
 	}
 

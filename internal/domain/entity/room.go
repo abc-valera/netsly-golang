@@ -56,23 +56,27 @@ func (e room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 	}
 
 	var returnRoom model.Room
-	txFunc := func(ctx context.Context, txCommands persistence.Commands) error {
-		room, err := txCommands.Room.Create(ctx, model.Room{
-			ID:            uuid.New().String(),
-			Name:          req.Name,
-			Description:   req.Description,
+	txFunc := func(ctx context.Context, txCommands persistence.Commands, txQueries persistence.Queries) error {
+		room, err := txCommands.Room.Create(ctx, command.RoomCreateRequest{
+			Room: model.Room{
+				ID:          uuid.NewString(),
+				Name:        req.Name,
+				Description: req.Description,
+				CreatedAt:   time.Now(),
+			},
 			CreatorUserID: req.CreatorUserID,
-			CreatedAt:     time.Now(),
 		})
 		if err != nil {
 			return err
 		}
 		returnRoom = room
 
-		if _, err := txCommands.RoomMember.Create(ctx, model.RoomMember{
-			RoomID:    room.ID,
-			UserID:    req.CreatorUserID,
-			CreatedAt: time.Now(),
+		if _, err := txCommands.RoomMember.Create(ctx, command.RoomMemberCreateRequest{
+			RoomMember: model.RoomMember{
+				CreatedAt: time.Now(),
+			},
+			UserID: req.CreatorUserID,
+			RoomID: room.ID,
 		}); err != nil {
 			return err
 		}
@@ -101,7 +105,7 @@ func (e room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) 
 		return model.Room{}, err
 	}
 
-	return e.roomCommand.Update(ctx, roomID, command.RoomUpdate{
+	return e.roomCommand.Update(ctx, roomID, command.RoomUpdateRequest{
 		Description: req.Description,
 	})
 }

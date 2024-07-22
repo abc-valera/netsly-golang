@@ -7,10 +7,9 @@ import (
 
 func NewRoom(room model.Room) *ogen.Room {
 	return &ogen.Room{
-		ID:            room.ID,
-		CreatorUserID: room.CreatorUserID,
-		Name:          room.Name,
-		CreatedAt:     room.CreatedAt,
+		ID:        room.ID,
+		Name:      room.Name,
+		CreatedAt: room.CreatedAt,
 	}
 }
 

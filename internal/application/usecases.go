@@ -18,7 +18,7 @@ func NewUsecases(
 		SignUsecase: NewSignUsecase(
 			entities.User,
 			tx,
-			services.PasswordMaker,
+			services.Passworder,
 			services.TaskQueuer,
 		),
 	}

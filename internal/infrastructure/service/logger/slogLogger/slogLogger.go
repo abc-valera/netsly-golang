@@ -22,8 +22,8 @@ type slogLogger struct {
 	fileLogger   *slog.Logger
 }
 
-// New returns a new instance of the basicLogger.
-// BasicLogger is a simple logger that writes to stdout and to a file.
+// New returns a new instance of the slogLogger.
+// SlogLogger is a simple wrapper for a slog library that writes to stdout and to a file.
 func New(logsFolderPath string) service.ILogger {
 	// Create the file inside the logs folder
 	logsFile, err := os.Create(logsFolderPath + "/logs.txt")

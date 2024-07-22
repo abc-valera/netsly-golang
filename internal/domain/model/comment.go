@@ -12,6 +12,8 @@ type Comment struct {
 	ID        string
 	Text      string
 	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time
 }
 
 type Comments []Comment

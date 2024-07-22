@@ -25,9 +25,9 @@ func (_m *RoomMessage) EXPECT() *RoomMessage_Expecter {
 	return &RoomMessage_Expecter{mock: &_m.Mock}
 }
 
-// Create provides a mock function with given fields: ctx, userID, roomID, req
-func (_m *RoomMessage) Create(ctx context.Context, userID string, roomID string, req model.RoomMessage) (model.RoomMessage, error) {
-	ret := _m.Called(ctx, userID, roomID, req)
+// Create provides a mock function with given fields: ctx, req
+func (_m *RoomMessage) Create(ctx context.Context, req command.RoomMessageCreateRequest) (model.RoomMessage, error) {
+	ret := _m.Called(ctx, req)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
@@ -35,17 +35,17 @@ func (_m *RoomMessage) Create(ctx context.Context, userID string, roomID string,
 
 	var r0 model.RoomMessage
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, model.RoomMessage) (model.RoomMessage, error)); ok {
-		return rf(ctx, userID, roomID, req)
+	if rf, ok := ret.Get(0).(func(context.Context, command.RoomMessageCreateRequest) (model.RoomMessage, error)); ok {
+		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, model.RoomMessage) model.RoomMessage); ok {
-		r0 = rf(ctx, userID, roomID, req)
+	if rf, ok := ret.Get(0).(func(context.Context, command.RoomMessageCreateRequest) model.RoomMessage); ok {
+		r0 = rf(ctx, req)
 	} else {
 		r0 = ret.Get(0).(model.RoomMessage)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string, string, model.RoomMessage) error); ok {
-		r1 = rf(ctx, userID, roomID, req)
+	if rf, ok := ret.Get(1).(func(context.Context, command.RoomMessageCreateRequest) error); ok {
+		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -60,16 +60,14 @@ type RoomMessage_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - userID string
-//   - roomID string
-//   - req model.RoomMessage
-func (_e *RoomMessage_Expecter) Create(ctx interface{}, userID interface{}, roomID interface{}, req interface{}) *RoomMessage_Create_Call {
-	return &RoomMessage_Create_Call{Call: _e.mock.On("Create", ctx, userID, roomID, req)}
+//   - req command.RoomMessageCreateRequest
+func (_e *RoomMessage_Expecter) Create(ctx interface{}, req interface{}) *RoomMessage_Create_Call {
+	return &RoomMessage_Create_Call{Call: _e.mock.On("Create", ctx, req)}
 }
 
-func (_c *RoomMessage_Create_Call) Run(run func(ctx context.Context, userID string, roomID string, req model.RoomMessage)) *RoomMessage_Create_Call {
+func (_c *RoomMessage_Create_Call) Run(run func(ctx context.Context, req command.RoomMessageCreateRequest)) *RoomMessage_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(model.RoomMessage))
+		run(args[0].(context.Context), args[1].(command.RoomMessageCreateRequest))
 	})
 	return _c
 }
@@ -79,7 +77,7 @@ func (_c *RoomMessage_Create_Call) Return(_a0 model.RoomMessage, _a1 error) *Roo
 	return _c
 }
 
-func (_c *RoomMessage_Create_Call) RunAndReturn(run func(context.Context, string, string, model.RoomMessage) (model.RoomMessage, error)) *RoomMessage_Create_Call {
+func (_c *RoomMessage_Create_Call) RunAndReturn(run func(context.Context, command.RoomMessageCreateRequest) (model.RoomMessage, error)) *RoomMessage_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -132,7 +130,7 @@ func (_c *RoomMessage_Delete_Call) RunAndReturn(run func(context.Context, string
 }
 
 // Update provides a mock function with given fields: ctx, id, req
-func (_m *RoomMessage) Update(ctx context.Context, id string, req command.RoomMessageUpdate) (model.RoomMessage, error) {
+func (_m *RoomMessage) Update(ctx context.Context, id string, req command.RoomMessageUpdateRequest) (model.RoomMessage, error) {
 	ret := _m.Called(ctx, id, req)
 
 	if len(ret) == 0 {
@@ -141,16 +139,16 @@ func (_m *RoomMessage) Update(ctx context.Context, id string, req command.RoomMe
 
 	var r0 model.RoomMessage
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, command.RoomMessageUpdate) (model.RoomMessage, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, command.RoomMessageUpdateRequest) (model.RoomMessage, error)); ok {
 		return rf(ctx, id, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, command.RoomMessageUpdate) model.RoomMessage); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, command.RoomMessageUpdateRequest) model.RoomMessage); ok {
 		r0 = rf(ctx, id, req)
 	} else {
 		r0 = ret.Get(0).(model.RoomMessage)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string, command.RoomMessageUpdate) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string, command.RoomMessageUpdateRequest) error); ok {
 		r1 = rf(ctx, id, req)
 	} else {
 		r1 = ret.Error(1)
@@ -167,14 +165,14 @@ type RoomMessage_Update_Call struct {
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
 //   - id string
-//   - req command.RoomMessageUpdate
+//   - req command.RoomMessageUpdateRequest
 func (_e *RoomMessage_Expecter) Update(ctx interface{}, id interface{}, req interface{}) *RoomMessage_Update_Call {
 	return &RoomMessage_Update_Call{Call: _e.mock.On("Update", ctx, id, req)}
 }
 
-func (_c *RoomMessage_Update_Call) Run(run func(ctx context.Context, id string, req command.RoomMessageUpdate)) *RoomMessage_Update_Call {
+func (_c *RoomMessage_Update_Call) Run(run func(ctx context.Context, id string, req command.RoomMessageUpdateRequest)) *RoomMessage_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(command.RoomMessageUpdate))
+		run(args[0].(context.Context), args[1].(string), args[2].(command.RoomMessageUpdateRequest))
 	})
 	return _c
 }
@@ -184,7 +182,7 @@ func (_c *RoomMessage_Update_Call) Return(_a0 model.RoomMessage, _a1 error) *Roo
 	return _c
 }
 
-func (_c *RoomMessage_Update_Call) RunAndReturn(run func(context.Context, string, command.RoomMessageUpdate) (model.RoomMessage, error)) *RoomMessage_Update_Call {
+func (_c *RoomMessage_Update_Call) RunAndReturn(run func(context.Context, string, command.RoomMessageUpdateRequest) (model.RoomMessage, error)) *RoomMessage_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

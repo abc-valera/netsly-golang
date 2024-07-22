@@ -51,10 +51,14 @@ func (e comment) Create(ctx context.Context, req CommentCreateRequest) (model.Co
 		return model.Comment{}, err
 	}
 
-	return e.command.Create(ctx, req.UserID, req.JokeID, model.Comment{
-		ID:        uuid.New().String(),
-		Text:      req.Text,
-		CreatedAt: time.Now(),
+	return e.command.Create(ctx, command.CommentCreateRequest{
+		Comment: model.Comment{
+			ID:        uuid.New().String(),
+			Text:      req.Text,
+			CreatedAt: time.Now(),
+		},
+		UserID: req.UserID,
+		JokeID: req.JokeID,
 	})
 }
 
@@ -71,7 +75,7 @@ func (e comment) Update(ctx context.Context, commentID string, req CommentUpdate
 		return model.Comment{}, err
 	}
 
-	return e.command.Update(ctx, commentID, command.CommentUpdate{
+	return e.command.Update(ctx, commentID, command.CommentUpdateRequest{
 		Text: req.Text,
 	})
 }

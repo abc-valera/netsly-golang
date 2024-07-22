@@ -7,11 +7,17 @@ import (
 )
 
 type IRoomMessage interface {
-	Create(ctx context.Context, userID, roomID string, req model.RoomMessage) (model.RoomMessage, error)
-	Update(ctx context.Context, id string, req RoomMessageUpdate) (model.RoomMessage, error)
+	Create(ctx context.Context, req RoomMessageCreateRequest) (model.RoomMessage, error)
+	Update(ctx context.Context, id string, req RoomMessageUpdateRequest) (model.RoomMessage, error)
 	Delete(ctx context.Context, id string) error
 }
 
-type RoomMessageUpdate struct {
+type RoomMessageCreateRequest struct {
+	RoomMessage model.RoomMessage
+	UserID      string
+	RoomID      string
+}
+
+type RoomMessageUpdateRequest struct {
 	Text *string
 }

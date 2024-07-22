@@ -9,11 +9,12 @@ import (
 var ErrRoomNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Room not found")
 
 type Room struct {
-	ID            string
-	Name          string
-	Description   string
-	CreatorUserID string
-	CreatedAt     time.Time
+	ID          string
+	Name        string
+	Description string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   time.Time
 }
 
 type Rooms []Room

@@ -1,7 +1,11 @@
 package query
 
-import "context"
+import (
+	"context"
+
+	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
+)
 
 type IFileContent interface {
-	GetByID(ctx context.Context, fileID string) ([]byte, error)
+	GetByID(ctx context.Context, fileID string) (model.FileContent, error)
 }

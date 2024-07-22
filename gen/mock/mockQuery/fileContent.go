@@ -5,6 +5,7 @@ package mockQuery
 import (
 	context "context"
 
+	model "github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -22,23 +23,23 @@ func (_m *FileContent) EXPECT() *FileContent_Expecter {
 }
 
 // GetByID provides a mock function with given fields: ctx, fileID
-func (_m *FileContent) GetByID(ctx context.Context, fileID string) ([]byte, error) {
+func (_m *FileContent) GetByID(ctx context.Context, fileID string) (model.FileContent, error) {
 	ret := _m.Called(ctx, fileID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByID")
 	}
 
-	var r0 []byte
+	var r0 model.FileContent
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) ([]byte, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (model.FileContent, error)); ok {
 		return rf(ctx, fileID)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) []byte); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) model.FileContent); ok {
 		r0 = rf(ctx, fileID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]byte)
+			r0 = ret.Get(0).(model.FileContent)
 		}
 	}
 
@@ -70,12 +71,12 @@ func (_c *FileContent_GetByID_Call) Run(run func(ctx context.Context, fileID str
 	return _c
 }
 
-func (_c *FileContent_GetByID_Call) Return(_a0 []byte, _a1 error) *FileContent_GetByID_Call {
+func (_c *FileContent_GetByID_Call) Return(_a0 model.FileContent, _a1 error) *FileContent_GetByID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *FileContent_GetByID_Call) RunAndReturn(run func(context.Context, string) ([]byte, error)) *FileContent_GetByID_Call {
+func (_c *FileContent_GetByID_Call) RunAndReturn(run func(context.Context, string) (model.FileContent, error)) *FileContent_GetByID_Call {
 	_c.Call.Return(run)
 	return _c
 }

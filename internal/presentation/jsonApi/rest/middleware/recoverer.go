@@ -38,9 +38,12 @@ func NewRecoverer() func(http.Handler) http.Handler {
 								break
 							}
 
+							if strings.Contains(tFunc, "go.opentelemetry.io") {
+								continue
+							}
+
 							stackTrace = append(stackTrace, trace)
 						}
-
 						panicLocation, _ := strings.CutPrefix(fmt.Sprintf("%+v", stackTrace[1]), "github.com/abc-valera/netsly-golang/")
 						global.Log().Error("PANIC_OCCURED",
 							"err", err,

@@ -5,8 +5,8 @@ import (
 )
 
 type Services struct {
-	Logger        service.ILogger
-	EmailSender   service.IEmailSender
-	PasswordMaker service.IPasswordMaker
-	TaskQueuer    service.ITaskQueuer
+	Logger      service.ILogger
+	EmailSender service.IEmailSender
+	Passworder  service.IPassworder
+	TaskQueuer  service.ITaskQueuer
 }

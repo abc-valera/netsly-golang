@@ -10,5 +10,8 @@ import (
 //
 // # Should be used only inside the Entity layer!
 type ITransactor interface {
-	PerformTX(ctx context.Context, txFunc func(ctx context.Context, txCommands persistence.Commands) error) error
+	PerformTX(
+		ctx context.Context,
+		txFunc func(ctx context.Context, txCommands persistence.Commands, txQueries persistence.Queries) error,
+	) error
 }
