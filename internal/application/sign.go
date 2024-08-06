@@ -51,6 +51,14 @@ type SignUpRequest struct {
 	Status   string
 }
 
+var welcomeEmailTemplateFunc = func(username, email string) service.Email {
+	return service.Email{
+		Subject: "Verification Email for Netsly!",
+		Content: fmt.Sprintf("%s, congrats with joining the Netsly community!", username),
+		To:      []string{email},
+	}
+}
+
 // SignUp performs user sign-up:
 // it creates new user entity with unique username and email,
 // creates hash of the password provided by user,
@@ -74,13 +82,11 @@ func (u signUsecase) SignUp(ctx context.Context, req SignUpRequest) (model.User,
 		}
 		user = createdUser
 
-		welcomeEmail := service.Email{
-			Subject: "Verification Email for Netsly!",
-			Content: fmt.Sprintf("%s, congrats with joining the Netsly community!", req.Username),
-			To:      []string{req.Email},
-		}
-
-		return u.taskQueue.SendEmailTask(ctx, service.Critical, welcomeEmail)
+		return u.taskQueue.SendEmailTask(
+			ctx,
+			service.Critical,
+			welcomeEmailTemplateFunc(req.Username, req.Email),
+		)
 	}
 
 	if err := u.transactor.PerformTX(ctx, txFunc); err != nil {

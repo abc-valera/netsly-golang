@@ -1,43 +1,57 @@
-package application_test
+package application
 
 import (
 	"context"
-	"fmt"
 	"testing"
 	"time"
 
 	"github.com/abc-valera/netsly-api-golang/gen/mock/mockEntity"
 	"github.com/abc-valera/netsly-api-golang/gen/mock/mockEntityTransactor"
 	"github.com/abc-valera/netsly-api-golang/gen/mock/mockPassworder"
-	"github.com/abc-valera/netsly-api-golang/gen/mock/mockQuery"
 	"github.com/abc-valera/netsly-api-golang/gen/mock/mockTaskQueuer"
-	"github.com/abc-valera/netsly-api-golang/internal/application"
+	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/nopLogger"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel/trace/noop"
 )
 
 func TestSignUsecase(t *testing.T) {
 	type Mocks struct {
 		userEntity *mockEntity.User
-		userQuery  *mockQuery.User
-		transactor *mockEntityTransactor.Transactor
 		passworder *mockPassworder.Passworder
 		taskQueue  *mockTaskQueuer.TaskQueuer
+		transactor *mockEntityTransactor.Transactor
 	}
 
-	setupTest := func(t *testing.T) (*require.Assertions, Mocks, application.ISignUsecase) {
+	// Init global variables
+	// (generally we don't want to mock it, just use noop variants and make sure it's not null)
+	global.Init(
+		mode.Production,
+		noop.NewTracerProvider().Tracer("noop"),
+		nopLogger.New(),
+	)
+
+	// setupTest is a helper function to setup the test.
+	// It returns the instrumented background context, instance of require.Assertions,
+	// initialized mocks, and the usecase, initialized with the mocks.
+	setupTest := func(t *testing.T) (context.Context, *require.Assertions, Mocks, ISignUsecase) {
 		mocks := Mocks{
 			userEntity: mockEntity.NewUser(t),
-			userQuery:  mockQuery.NewUser(t),
-			transactor: mockEntityTransactor.NewTransactor(t),
 			passworder: mockPassworder.NewPassworder(t),
 			taskQueue:  mockTaskQueuer.NewTaskQueuer(t),
+			transactor: mockEntityTransactor.NewTransactor(t),
 		}
-		return require.New(t), mocks, application.NewSignUsecase(
+
+		ctx, _ := global.NewSpan(context.Background())
+
+		return ctx, require.New(t), mocks, NewSignUsecase(
 			mocks.userEntity,
 			mocks.transactor,
 			mocks.passworder,
@@ -47,15 +61,24 @@ func TestSignUsecase(t *testing.T) {
 
 	t.Run("SignUsecase", func(t *testing.T) {
 		t.Run("SignUp", func(t *testing.T) {
-			r, mocks, signUsecase := setupTest(t)
+			ctx, r, mocks, signUsecase := setupTest(t)
 
-			ctx := context.Background()
-			req := application.SignUpRequest{
-				Username: "test",
-				Email:    "test@gmail.com",
-				Password: "test",
-				Fullname: "test",
-				Status:   "test",
+			req := SignUpRequest{
+				Username: "username",
+				Email:    "email@gmail.com",
+				Password: "test_password",
+				Fullname: "fullname",
+				Status:   "status",
+			}
+
+			expetedResp := model.User{
+				ID:             uuid.NewString(),
+				Username:       req.Username,
+				Email:          req.Email,
+				HashedPassword: "test_password_hashed",
+				Fullname:       req.Fullname,
+				Status:         req.Status,
+				CreatedAt:      time.Now(),
 			}
 
 			mocks.transactor.EXPECT().
@@ -75,48 +98,39 @@ func TestSignUsecase(t *testing.T) {
 				Fullname: req.Fullname,
 				Status:   req.Status,
 			}
-			expeted := model.User{
-				ID:             "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-				Username:       req.Username,
-				Email:          req.Email,
-				HashedPassword: "test_hashed",
-				Fullname:       req.Fullname,
-				Status:         req.Status,
-				CreatedAt:      time.Now(),
-			}
-			mocks.passworder.EXPECT().HashPassword(req.Password).Return("test_hashed", nil)
-			mocks.userEntity.EXPECT().Create(ctx, userEntityCreateReq).Return(expeted, nil)
 
-			sendEmail := service.Email{
-				Subject: "Verification Email for Netsly!",
-				Content: fmt.Sprintf("%s, congrats with joining the Netsly community!", req.Username),
-				To:      []string{req.Email},
-			}
-			mocks.taskQueue.EXPECT().SendEmailTask(ctx, service.Critical, sendEmail).Return(nil)
+			mocks.userEntity.EXPECT().Create(ctx, userEntityCreateReq).Return(expetedResp, nil)
 
-			actual, err := signUsecase.SignUp(ctx, req)
+			mocks.taskQueue.EXPECT().SendEmailTask(
+				ctx,
+				service.Critical,
+				welcomeEmailTemplateFunc(req.Username, req.Email),
+			).Return(nil)
+
+			// Note, that the usecase should be ran with newly created background context
+			// (setupTest function returns the already instrumented one of it)
+			actualResp, err := signUsecase.SignUp(context.Background(), req)
 			r.NoError(err)
-			r.Equal(expeted, actual)
+			r.Equal(expetedResp, actualResp)
 		})
 
 		t.Run("SignIn", func(t *testing.T) {
-			r, mocks, signUsecase := setupTest(t)
+			ctx, r, mocks, signUsecase := setupTest(t)
 
-			ctx := context.Background()
-			req := application.SignInRequest{
+			req := SignInRequest{
 				Email:    "test@gmail.com",
 				Password: "test-test",
 			}
 			expected := model.User{
-				ID:             "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-				HashedPassword: "test-test_hashed",
+				ID:             uuid.NewString(),
+				HashedPassword: "test_password_hashed",
 			}
 
-			mocks.userQuery.EXPECT().GetByEmail(ctx, req.Email).Return(expected, nil)
+			mocks.userEntity.EXPECT().GetByEmail(ctx, req.Email).Return(expected, nil)
 
 			mocks.passworder.EXPECT().CheckPassword(req.Password, expected.HashedPassword).Return(nil)
 
-			actual, err := signUsecase.SignIn(ctx, req)
+			actual, err := signUsecase.SignIn(context.Background(), req)
 			r.NoError(err)
 			r.Equal(expected, actual)
 		})

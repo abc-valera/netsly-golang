@@ -4,6 +4,8 @@ import "github.com/abc-valera/netsly-api-golang/internal/domain/service"
 
 type nopLogger struct{}
 
+// New creates a new instance of the nop logger.
+// Nop means `no operation` - it's a logger that does nothing.
 func New() service.ILogger {
 	return &nopLogger{}
 }

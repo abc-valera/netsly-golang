@@ -157,7 +157,6 @@ func main() {
 		)
 	case "seed":
 		seed.Seed(
-			entities,
 			entityTransactor,
 		)
 		return
