@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence"
@@ -49,7 +50,6 @@ func NewFile(
 type FileCreateRequest struct {
 	Name string         `validate:"min=1,max=256"`
 	Type model.FileType `validate:"enum"`
-	Size int            `validate:"min=1,max=32000000"`
 
 	FileContent []byte
 }
@@ -63,13 +63,18 @@ func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo
 		return model.FileInfo{}, err
 	}
 
+	size := len(req.FileContent)
+	if size > 32000000 {
+		return model.FileInfo{}, coderr.NewCodeMessage(coderr.CodeInvalidArgument, "File content size is too large")
+	}
+
 	var returnFileInfo model.FileInfo
 	txFunc := func(ctx context.Context, txCommands persistence.Commands, txQueries persistence.Queries) error {
 		fileInfo, err := txCommands.FileInfo.Create(ctx, model.FileInfo{
 			ID:        uuid.New().String(),
 			Name:      req.Name,
 			Type:      req.Type,
-			Size:      req.Size,
+			Size:      size,
 			CreatedAt: time.Now(),
 		})
 		if err != nil {
@@ -96,8 +101,6 @@ func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo
 
 type FileUpdateRequest struct {
 	Name *string `validate:"omitempty,min=1,max=256"`
-
-	FileContent *[]byte `validate:"omitempty,min=1,max=32000000"`
 }
 
 func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) error {
@@ -112,14 +115,6 @@ func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) erro
 	if req.Name != nil {
 		if _, err := e.fileInfoCommand.Update(ctx, id, command.FileInfoUpdateRequest{
 			Name: req.Name,
-		}); err != nil {
-			return err
-		}
-	}
-
-	if req.FileContent != nil {
-		if _, err := e.fileContentCommand.Update(ctx, id, command.FileContentUpdateRequest{
-			Content: *req.FileContent,
 		}); err != nil {
 			return err
 		}
