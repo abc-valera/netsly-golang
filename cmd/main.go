@@ -11,7 +11,6 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
-	"github.com/abc-valera/netsly-api-golang/internal/core/telemetry"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/entityTransactor"
@@ -23,12 +22,17 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/emailSender/dummyEmailSender"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/nopLogger"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/slogLogger"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/opentelemetry/writerExporter"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/passworder"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/taskQueuer/dummyTaskQueuer"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/seed"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp"
+	"go.opentelemetry.io/otel/sdk/resource"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
+
+	traceSDK "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
@@ -39,10 +43,22 @@ func main() {
 	flag.Parse()
 
 	// Init OpenTelemetry instrumentation
-	jaegerTraceExporter := coderr.Must(telemetry.NewJaegerTraceExporter())
+	res := coderr.Must(
+		resource.Merge(
+			resource.Default(),
+			resource.NewWithAttributes(
+				semconv.SchemaURL,
+				semconv.ServiceNameKey.String("netsly."+*entrypoint),
+			),
+		),
+	)
 
-	jaegerTraceProvider := telemetry.NewTraceProvider(jaegerTraceExporter, "netsly."+*entrypoint)
-	defer jaegerTraceProvider.Shutdown(context.Background())
+	traceProvider := traceSDK.NewTracerProvider(
+		traceSDK.WithBatcher(coderr.Must(writerExporter.New(os.Stdout))),
+		traceSDK.WithResource(res),
+	)
+
+	defer traceProvider.Shutdown(context.Background())
 
 	// Init services
 	var services domain.Services
@@ -75,7 +91,7 @@ func main() {
 	// Init global
 	global.Init(
 		mode.Mode(LoadEnv("MODE")),
-		jaegerTraceProvider.Tracer("netsly-golang"),
+		traceProvider.Tracer("netsly-golang"),
 		services.Logger,
 	)
 
