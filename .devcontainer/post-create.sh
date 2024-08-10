@@ -25,8 +25,6 @@ npm install --save-dev prettier prettier-plugin-go-template prettier-plugin-tail
 # Pull docker images
 echo "Pulling docker images 🐳 (It can take even more time.....)"
 docker pull redocly/cli
-docker pull postgres:15-alpine
-docker pull redis/redis-stack:latest
 
 # Create docker network
 docker network create netsly-network
