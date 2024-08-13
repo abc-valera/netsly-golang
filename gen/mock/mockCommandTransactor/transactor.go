@@ -5,7 +5,7 @@ package mockCommandTransactor
 import (
 	context "context"
 
-	persistence "github.com/abc-valera/netsly-api-golang/internal/domain/persistence"
+	persistence "github.com/abc-valera/netsly-golang/internal/domain/persistence"
 	mock "github.com/stretchr/testify/mock"
 )
 

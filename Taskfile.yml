@@ -45,9 +45,9 @@ tasks:
   generate:presentation:jsonApi:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
     cmds:
-      - task: generate:jsonApi:rest:single_openapi_config_file
-      - task: generate:jsonApi:rest:docs
-      - task: generate:jsonApi:rest:code
+      - task: generate:presentation:jsonApi:rest:single_openapi_config_file
+      - task: generate:presentation:jsonApi:rest:docs
+      - task: generate:presentation:jsonApi:rest:code
 
   generate:presentation:jsonApi:rest:single_openapi_config_file:
     cmd: docker run --rm -v ${PWD}:/spec:Z

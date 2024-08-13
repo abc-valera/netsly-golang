@@ -3,8 +3,8 @@ package query
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/selector"
+	"github.com/abc-valera/netsly-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 )
 
 type IComment interface {

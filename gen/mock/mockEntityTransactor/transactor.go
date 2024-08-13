@@ -5,7 +5,7 @@ package mockEntityTransactor
 import (
 	context "context"
 
-	domain "github.com/abc-valera/netsly-api-golang/internal/domain"
+	domain "github.com/abc-valera/netsly-golang/internal/domain"
 
 	mock "github.com/stretchr/testify/mock"
 )

@@ -4,11 +4,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/command"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-golang/internal/domain/service"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 )

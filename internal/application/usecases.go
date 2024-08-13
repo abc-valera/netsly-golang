@@ -1,8 +1,8 @@
 package application
 
 import (
-	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entityTransactor"
+	"github.com/abc-valera/netsly-golang/internal/core/entityTransactor"
+	"github.com/abc-valera/netsly-golang/internal/domain"
 )
 
 type Usecases struct {

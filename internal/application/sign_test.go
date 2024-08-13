@@ -5,17 +5,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/gen/mock/mockEntity"
-	"github.com/abc-valera/netsly-api-golang/gen/mock/mockEntityTransactor"
-	"github.com/abc-valera/netsly-api-golang/gen/mock/mockPassworder"
-	"github.com/abc-valera/netsly-api-golang/gen/mock/mockTaskQueuer"
-	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
-	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/service"
-	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/nopLogger"
+	"github.com/abc-valera/netsly-golang/gen/mock/mockEntity"
+	"github.com/abc-valera/netsly-golang/gen/mock/mockEntityTransactor"
+	"github.com/abc-valera/netsly-golang/gen/mock/mockPassworder"
+	"github.com/abc-valera/netsly-golang/gen/mock/mockTaskQueuer"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-golang/internal/domain/service"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -30,13 +28,9 @@ func TestSignUsecase(t *testing.T) {
 		transactor *mockEntityTransactor.Transactor
 	}
 
-	// Init global variables
+	// Init global variables that are used in the usecase
 	// (generally we don't want to mock it, just use noop variants and make sure it's not null)
-	global.Init(
-		mode.Production,
-		noop.NewTracerProvider().Tracer("noop"),
-		nopLogger.New(),
-	)
+	global.InitTracer(noop.NewTracerProvider().Tracer("testing"))
 
 	// setupTest is a helper function to setup the test.
 	// It returns the instrumented background context, instance of require.Assertions,

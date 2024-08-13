@@ -3,12 +3,12 @@ package seed
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entityTransactor"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query/selector"
+	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/core/entityTransactor"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 )
 
 // Seed is used to populate the database with initial data.

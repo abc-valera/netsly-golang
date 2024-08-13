@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/enum"
+	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/core/enum"
 	"github.com/go-playground/validator/v10"
 )
 

@@ -9,12 +9,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/internal/application"
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
-	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler"
+	"github.com/abc-valera/netsly-golang/internal/application"
+	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -35,11 +34,10 @@ func NewServer(
 	serverGracefulStop func(),
 ) {
 	var templateFS fs.FS
-	if global.Mode() == mode.Development {
-		templateFS = os.DirFS(templatePath)
-	}
-	if global.Mode() == mode.Production {
+	if global.IsProduction() {
 		templateFS = templateEmbedFS
+	} else {
+		templateFS = os.DirFS(templatePath)
 	}
 
 	// Init handlers

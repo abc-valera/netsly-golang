@@ -3,8 +3,8 @@ package command
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/domain/model"
 )
 
 var ErrLikeAlreadyExists = coderr.NewCodeMessage(coderr.CodeAlreadyExists, "Like already exists")

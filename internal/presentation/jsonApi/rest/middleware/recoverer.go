@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
 	"github.com/go-stack/stack"
 )
 

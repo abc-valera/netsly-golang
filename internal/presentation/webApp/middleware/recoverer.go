@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
 	"github.com/go-stack/stack"
 )
 
@@ -37,7 +37,7 @@ func Recoverer(next http.Handler) http.Handler {
 						stackTrace = append(stackTrace, trace)
 					}
 
-					panicLocation, _ := strings.CutPrefix(fmt.Sprintf("%+v", stackTrace[3]), "github.com/abc-valera/netsly-api-golang/internal/")
+					panicLocation, _ := strings.CutPrefix(fmt.Sprintf("%+v", stackTrace[3]), "github.com/abc-valera/netsly-golang/internal/")
 					global.Log().Error("PANIC_OCCURED",
 						"err", err,
 						"stack", panicLocation,

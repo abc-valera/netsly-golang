@@ -3,12 +3,12 @@ package grpcApi
 import (
 	"net"
 
-	"github.com/abc-valera/netsly-api-golang/gen/pb"
-	"github.com/abc-valera/netsly-api-golang/internal/application"
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi/handler"
+	"github.com/abc-valera/netsly-golang/gen/pb"
+	"github.com/abc-valera/netsly-golang/internal/application"
+	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/presentation/grpcApi/handler"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

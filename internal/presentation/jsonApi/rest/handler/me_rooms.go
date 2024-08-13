@@ -3,11 +3,11 @@ package handler
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/contexts"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/restDto"
+	"github.com/abc-valera/netsly-golang/gen/ogen"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/contexts"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/restDto"
 	"go.opentelemetry.io/otel/trace"
 )
 

@@ -11,8 +11,7 @@ build/
 test/tmp
 
 # Env files
-env/*
-!env/example.env
+env/*.env
 
 # Local infrastructure files
 infra/local/*

@@ -1,7 +1,7 @@
 package restDto
 
 import (
-	"github.com/abc-valera/netsly-api-golang/gen/ogen"
+	"github.com/abc-valera/netsly-golang/gen/ogen"
 )
 
 func NewDomainOptionalString(opt ogen.OptString) *string {

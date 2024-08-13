@@ -4,13 +4,13 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/query"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/auth"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/ws/client"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/ws/handler"
+	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/auth"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/ws/client"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/ws/handler"
 	"github.com/gorilla/websocket"
 )
 

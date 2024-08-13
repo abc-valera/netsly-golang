@@ -3,9 +3,9 @@ package handler
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/gen/pb"
-	"github.com/abc-valera/netsly-api-golang/internal/application"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi/grpcApiDto"
+	"github.com/abc-valera/netsly-golang/gen/pb"
+	"github.com/abc-valera/netsly-golang/internal/application"
+	"github.com/abc-valera/netsly-golang/internal/presentation/grpcApi/grpcApiDto"
 )
 
 type SignHandler struct {

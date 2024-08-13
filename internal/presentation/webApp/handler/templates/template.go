@@ -7,9 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
 )
 
 type Data map[string]interface{}
@@ -103,8 +102,8 @@ func (t devTemplate) Render(wr http.ResponseWriter, data interface{}) error {
 }
 
 func NewTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
-	if global.Mode() == mode.Development {
-		return newDevTemplate(fs, filenames...)
+	if global.IsProduction() {
+		return newProdTemplate(fs, filenames...)
 	}
-	return newProdTemplate(fs, filenames...)
+	return newDevTemplate(fs, filenames...)
 }

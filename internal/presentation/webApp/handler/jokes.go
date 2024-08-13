@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp/handler/session"
+	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler/session"
 )
 
 type Joke struct {

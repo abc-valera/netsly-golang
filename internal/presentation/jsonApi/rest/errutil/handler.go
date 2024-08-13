@@ -3,9 +3,9 @@ package errutil
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-golang/gen/ogen"
+	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
 )
 
 type Handler struct{}

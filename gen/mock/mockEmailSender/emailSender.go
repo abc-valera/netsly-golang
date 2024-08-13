@@ -3,7 +3,7 @@
 package mockEmailSender
 
 import (
-	service "github.com/abc-valera/netsly-api-golang/internal/domain/service"
+	service "github.com/abc-valera/netsly-golang/internal/domain/service"
 	mock "github.com/stretchr/testify/mock"
 )
 

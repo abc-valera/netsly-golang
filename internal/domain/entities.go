@@ -1,9 +1,9 @@
 package domain
 
 import (
-	"github.com/abc-valera/netsly-api-golang/internal/domain/entity"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/persistence/commandTransactor"
+	"github.com/abc-valera/netsly-golang/internal/core/commandTransactor"
+	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence"
 )
 
 type Entities struct {

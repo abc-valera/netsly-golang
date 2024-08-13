@@ -6,16 +6,16 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/internal/application"
-	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-api-golang/internal/domain"
-	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/auth"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/errutil"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/handler"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/middleware"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/ws"
+	"github.com/abc-valera/netsly-golang/gen/ogen"
+	"github.com/abc-valera/netsly-golang/internal/application"
+	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/auth"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/errutil"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/handler"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/middleware"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/ws"
 )
 
 //go:embed static

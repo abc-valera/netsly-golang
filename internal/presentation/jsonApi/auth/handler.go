@@ -3,8 +3,8 @@ package auth
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-api-golang/gen/ogen"
-	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi/rest/contexts"
+	"github.com/abc-valera/netsly-golang/gen/ogen"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/contexts"
 )
 
 type Handler struct {

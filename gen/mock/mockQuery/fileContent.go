@@ -5,7 +5,7 @@ package mockQuery
 import (
 	context "context"
 
-	model "github.com/abc-valera/netsly-api-golang/internal/domain/model"
+	model "github.com/abc-valera/netsly-golang/internal/domain/model"
 	mock "github.com/stretchr/testify/mock"
 )
 

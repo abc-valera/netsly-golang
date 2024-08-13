@@ -1,6 +1,6 @@
 package service
 
-import "github.com/abc-valera/netsly-api-golang/internal/core/coderr"
+import "github.com/abc-valera/netsly-golang/internal/core/coderr"
 
 var ErrPasswordDontMatch = coderr.NewCodeMessage(coderr.CodeInvalidArgument, "Provided password doesn't match the original one")
 
