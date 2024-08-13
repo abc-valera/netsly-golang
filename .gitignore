@@ -7,27 +7,18 @@ package.json
 bin/
 build/
 
+# Test files
+test/tmp
+
 # Env files
 env/*
 !env/example.env
 
-# Test files
-test/tmp
+# Local infrastructure files
+infra/local/*
+!infra/local/.gitkeep
 
-### INFRASTRUCTURE FILES ###
-
-# slogLogger
-internal/infrastructure/service/logger/slogLogger/log/*
-!internal/infrastructure/service/logger/slogLogger/log/.gitkeep
-
-# localFileSaver
-internal/infrastructure/persistence/implementation/localFileSaver/files/*
-!internal/infrastructure/persistence/implementation/localFileSaver/files/.gitkeep
-
-# gormSqlite
-internal/infrastructure/persistence/implementation/gormSqlite/db/*
-!internal/infrastructure/persistence/implementation/gormSqlite/db/.gitkeep
-
-# boilerSqlite
-internal/infrastructure/persistence/implementation/boilerSqlite/db/*
-!internal/infrastructure/persistence/implementation/boilerSqlite/db/.gitkeep
+# Terraform files
+infra/terraform/.terraform
+infra/terraform/terraform.tfstate
+infra/terraform/terraform.tfstate.backup

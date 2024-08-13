@@ -26,8 +26,7 @@ tasks:
       - ./build/netsly -entrypoint seed
 
   test:unit:
-    cmds:
-      - go test ./internal/application/ -count=1
+    cmd: go test ./internal/application/ -count=1
 
   test:integration:
     cmds:
@@ -35,16 +34,13 @@ tasks:
       - task: test:integration:service
 
   test:integration:persistence:
-    cmds:
-      - go test ./test/persistence -count=1
+    cmd: go test ./test/persistence -count=1
 
   test:integration:service:
-    cmds:
-      - go test ./test/service -count=1
+    cmd: go test ./test/service -count=1
 
   generate:domain:mocks:
-    cmds:
-      - ./bin/mockery --config gen/mock/mockery.yaml
+    cmd: ./bin/mockery --config gen/mock/mockery.yaml
 
   generate:presentation:jsonApi:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
@@ -54,138 +50,54 @@ tasks:
       - task: generate:jsonApi:rest:code
 
   generate:presentation:jsonApi:rest:single_openapi_config_file:
-    cmds:
-      - docker run --rm -v ${PWD}:/spec:Z
-        redocly/cli bundle
-        -o /spec/gen/openapi/openapi.yaml
-        /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
+    cmd: docker run --rm -v ${PWD}:/spec:Z
+      redocly/cli bundle
+      -o /spec/gen/openapi/openapi.yaml
+      /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
 
   generate:presentation:jsonApi:rest:docs:
-    cmds:
-      - docker run --rm -v ${PWD}:/spec:Z
-        redocly/cli build-docs
-        -o /spec/internal/presentation/jsonApi/static/docs/rest.html
-        /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
+    cmd: docker run --rm -v ${PWD}:/spec:Z
+      redocly/cli build-docs
+      -o /spec/internal/presentation/jsonApi/static/docs/rest.html
+      /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
 
   generate:presentation:jsonApi:rest:code:
-    cmds:
-      - go generate gen/ogen/generate.go
+    cmd: go generate gen/ogen/generate.go
 
   generate:presentation:webApp:tailwindcss:
-    cmds:
-      - npx tailwindcss
-        -c internal/presentation/webApp/tailwind.config.js
-        -i internal/presentation/webApp/static/style/input.css
-        -o internal/presentation/webApp/static/style/style.css
+    cmd: npx tailwindcss
+      -c internal/presentation/webApp/tailwind.config.js
+      -i internal/presentation/webApp/static/style/input.css
+      -o internal/presentation/webApp/static/style/style.css
 
   generate:presentation:grpcApi:code:
-    cmds:
-      - ./bin/protoc internal/presentation/grpcApi/proto/*.proto
-        --go_out=gen/pb
-        --go_opt=paths=source_relative
-        --go-grpc_out=gen/pb
-        --go-grpc_opt=paths=source_relative
-        --proto_path=internal/presentation/grpcApi/proto
+    cmd: ./bin/protoc internal/presentation/grpcApi/proto/*.proto
+      --go_out=gen/pb
+      --go_opt=paths=source_relative
+      --go-grpc_out=gen/pb
+      --go-grpc_opt=paths=source_relative
+      --proto_path=internal/presentation/grpcApi/proto
 
   generate:persistence:boilerSqlite:code:
-    cmds:
-      - ./bin/sqlboiler sqlite3 -c internal/infrastructure/persistence/implementation/boilerSqlite/sqlboiler.toml
-
-  infrastructure:up:
-    cmds:
-      - task: infrastructure:persistence:boilerSqlite:up
-      - task: infrastructure:jaeger:up
+    cmd: ./bin/sqlboiler sqlite3 -c internal/infrastructure/persistence/implementation/boilerSqlite/sqlboiler.toml
 
   infrastructure:down:
     cmds:
-      - task: infrastructure:service:slogLogger:down
-      - task: infrastructure:persistence:localFileSaver:down
-      - task: infrastructure:persistence:gormSqlite:down
-      - task: infrastructure:persistence:boilerSqlite:down
-      - task: infrastructure:jaeger:down
+      - task: infrastructure:local:down
+      - task: infrastructure:terraform:down
 
-  infrastructure:start:
-    cmds:
-      - docker start netsly-jaeger
+  infrastructure:local:down:
+    cmd: rm -r infra/local/*
 
-  infrastructure:stop:
-    cmds:
-      - docker stop netsly-redis
-      - docker stop netsly-jaeger
+  # Note, that to start terraform you need to have kubernetes cluster configured and running
+  # (for example with minikube)
+  infrastructure:terraform:up:
+    cmd: cd infra/terraform &&
+      terraform init &&
+      terraform apply
 
-  infrastructure:service:slogLogger:down:
-    cmds:
-      - cmd: rm $LOGGER_SERVICE_LOGS_FOLDER_PATH/*
-        ignore_error: true
-
-  infrastructure:persistence:gormSqlite:down:
-    cmds:
-      - cmd: rm $GORM_SQLITE_PATH
-        ignore_error: true
-
-  infrastructure:persistence:boilerSqlite:up:
-    cmds:
-      - ./bin/goose -dir internal/infrastructure/persistence/implementation/boilerSqlite/migration sqlite3 $BOILER_SQLITE_PATH up
-
-  infrastructure:persistence:boilerSqlite:down:
-    cmds:
-      - cmd: rm $BOILER_SQLITE_PATH
-        ignore_error: true
-
-  infrastructure:persistence:localFileSaver:down:
-    cmds:
-      - cmd: rm $LOCAL_FILE_SAVER_FILES_PATH/*
-        ignore_error: true
-
-  infrastructure:jaeger:up:
-    cmds:
-      - docker run --rm --name netsly-jaeger
-        -e COLLECTOR_ZIPKIN_HOST_PORT=:9411
-        -p 6831:6831/udp
-        -p 6832:6832/udp
-        -p 5778:5778
-        -p 16686:16686
-        -p 4317:4317
-        -p 4318:4318
-        -p 14250:14250
-        -p 14268:14268
-        -p 14269:14269
-        -p 9411:9411
-        -d jaegertracing/all-in-one:1.58
-
-  infrastructure:jaeger:down:
-    cmds:
-      - cmd: docker rm -f netsly-jaeger
-        ignore_error: true
-
-  image:jsonApi:build:
-    cmds:
-      - docker build -t netsly/jsonApi:latest -f docker/Dockerfile.jsonApi .
-
-  image:jsonApi:up:
-    cmds:
-      - docker run
-        --name netsly_json-api
-        --network netsly-network
-        -p 3010:3010
-        -e POSTGRES_URL=postgres://netsly:netsly@netsly-postgres:5432/netsly?sslmode=disable
-        -e REDIS_PORT=netsly-redis:6379
-        -e REDIS_USER=netsly-redis
-        -e REDIS_PASS=
-        --env-file env/staging.env
-        localhost/netsly/jsonApi:latest
-
-  image:jsonApi:down:
-    cmds:
-      - docker rm netsly_json-api
-
-  compose:up:
-    cmds:
-      - docker-compose -f docker/docker-compose.dev.yml --env-file env/staging.env up -d
-
-  compose:down:
-    cmds:
-      - docker-compose -f docker/docker-compose.dev.yml down
+  infrastructure:terraform:down:
+    cmd: terraform destroy -auto-approve
 
   other:run_evans:
     cmds:

@@ -1,13 +1,18 @@
 package localFileSaver
 
 import (
+	"os"
+
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 )
 
-func New(filesPath string) (string, error) {
-	if filesPath == "" {
-		return "", coderr.NewInternalString("filesPath is empty")
+func New(localFileSaverFolderPath string) (string, error) {
+	// Create the folder
+	if err := os.MkdirAll(localFileSaverFolderPath, 0o755); err != nil {
+		if !os.IsExist(err) {
+			return "", coderr.NewInternalErr(err)
+		}
 	}
 
-	return filesPath, nil
+	return localFileSaverFolderPath, nil
 }

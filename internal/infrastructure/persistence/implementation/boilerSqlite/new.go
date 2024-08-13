@@ -3,6 +3,7 @@ package boilerSqlite
 import (
 	"database/sql"
 	"embed"
+	"os"
 
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/pressly/goose/v3"
@@ -12,9 +13,16 @@ import (
 var embedMigrations embed.FS
 
 // New initializes the database connection and runs the migrations
-func New(boilerSqlitePath string) (*sql.DB, error) {
+func New(boilerSqliteFolderPath string) (*sql.DB, error) {
+	// Create the folder
+	if err := os.MkdirAll(boilerSqliteFolderPath, 0o755); err != nil {
+		if !os.IsExist(err) {
+			return nil, coderr.NewInternalErr(err)
+		}
+	}
+
 	// Initialize the database connection
-	db, err := sql.Open("sqlite", boilerSqlitePath)
+	db, err := sql.Open("sqlite", boilerSqliteFolderPath+"/sqlite.db")
 	if err != nil {
 		return nil, coderr.NewInternalErr(err)
 	}

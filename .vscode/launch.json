@@ -10,11 +10,11 @@
       "program": "${workspaceFolder}/cmd",
       "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
-        "GORM_SQLITE_PATH": "${workspaceFolder}/internal/infrastructure/persistence/implementation/gormSqlite/sqlite.db",
-        // "BOILER_SQLITE_PATH": "${workspaceFolder}/internal/infrastructure/persistence/implementation/boilerSqlite/sqlite.db",
-        "LOCAL_FILE_SAVER_FILES_PATH": "${workspaceFolder}/internal/infrastructure/persistence/implementation/localFileSaver/files",
+        "GORM_SQLITE_FOLDER_PATH": "${workspaceFolder}/internal/infra/local/gormSqlite",
+        // "BOILER_SQLITE_FOLDER_PATH": "${workspaceFolder}/infra/local/boilerSqlite",
+        "LOCAL_FILE_SAVER_FOLDER_PATH": "${workspaceFolder}/infra/local/localFileSaver",
 
-        "LOGGER_SERVICE_LOGS_FOLDER_PATH": "${workspaceFolder}/internal/infrastructure/service/logger/slogLogger/log"
+        "SLOG_LOGGER_FOLDER_PATH": "${workspaceFolder}/infra/local/slogLogger"
       }
     },
     {
@@ -26,7 +26,7 @@
       "args": ["-entrypoint", "webApp"],
       "envFile": "${workspaceFolder}/env/dev.env",
       "env": {
-        "LOGGER_SERVICE_LOGS_FOLDER_PATH": "${workspaceFolder}/log",
+        "SLOG_LOGGER_FOLDER_PATH": "${workspaceFolder}/log",
         "FILE_MANAGER_SERVICE_FILES_PATH": "${workspaceFolder}/static",
         "WEB_APP_TEMPLATE_PATH": "${workspaceFolder}/internal/presentation/webApp/template",
         "WEB_APP_STATIC_PATH": "${workspaceFolder}/internal/presentation/webApp/static"

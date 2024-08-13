@@ -7,10 +7,12 @@ node_modules
 package-lock.json
 package.json
 
+# Tests
+test/
+
 # Other
 .devcontainer/
 .githooks/
 .github/
 .vscode/
-.prettierrc
-workspace-init.sh
+infra/

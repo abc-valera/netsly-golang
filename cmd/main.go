@@ -11,7 +11,6 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/application"
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/core/mode"
-	"github.com/abc-valera/netsly-api-golang/internal/core/telemetry"
 	"github.com/abc-valera/netsly-api-golang/internal/domain"
 	"github.com/abc-valera/netsly-api-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/entityTransactor"
@@ -23,12 +22,18 @@ import (
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/emailSender/dummyEmailSender"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/nopLogger"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/logger/slogLogger"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/opentelemetry/otelHttpExporter"
+	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/opentelemetry/otelWriterExporter"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/passworder"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/service/taskQueuer/dummyTaskQueuer"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/grpcApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/jsonApi"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/seed"
 	"github.com/abc-valera/netsly-api-golang/internal/presentation/webApp"
+	"go.opentelemetry.io/otel/sdk/resource"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
+
+	traceSDK "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
@@ -39,10 +44,31 @@ func main() {
 	flag.Parse()
 
 	// Init OpenTelemetry instrumentation
-	jaegerTraceExporter := coderr.Must(telemetry.NewJaegerTraceExporter())
+	res := coderr.Must(
+		resource.Merge(
+			resource.Default(),
+			resource.NewWithAttributes(
+				semconv.SchemaURL,
+				semconv.ServiceNameKey.String("netsly."+*entrypoint),
+			),
+		),
+	)
 
-	jaegerTraceProvider := telemetry.NewTraceProvider(jaegerTraceExporter, "netsly."+*entrypoint)
-	defer jaegerTraceProvider.Shutdown(context.Background())
+	var otelTraceExporter traceSDK.SpanExporter
+	switch otelTraceExporterService := LoadEnv("OTEL_TRACE_EXPORTER"); otelTraceExporterService {
+	case "console":
+		otelTraceExporter = coderr.Must(otelWriterExporter.New(os.Stdout))
+	case "tempo":
+		otelTraceExporter = coderr.Must(otelHttpExporter.NewTrace(LoadEnv("TRACE_TEMPO_ENDPOINT")))
+	default:
+		coderr.Fatal("Invalid Trace Exporter implementation provided: " + otelTraceExporterService)
+	}
+
+	traceProvider := traceSDK.NewTracerProvider(
+		traceSDK.WithBatcher(otelTraceExporter),
+		traceSDK.WithResource(res),
+	)
+	defer traceProvider.Shutdown(context.Background())
 
 	// Init services
 	var services domain.Services
@@ -52,8 +78,8 @@ func main() {
 	switch loggerService := LoadEnv("LOGGER_SERVICE"); loggerService {
 	case "nop":
 		services.Logger = nopLogger.New()
-	case "slog":
-		services.Logger = slogLogger.New(LoadEnv("LOGGER_SERVICE_LOGS_FOLDER_PATH"))
+	case "slogLogger":
+		services.Logger = slogLogger.New(LoadEnv("SLOG_LOGGER_FOLDER_PATH"))
 	default:
 		coderr.Fatal("Invalid Logger implementation provided: " + loggerService)
 	}
@@ -75,7 +101,7 @@ func main() {
 	// Init global
 	global.Init(
 		mode.Mode(LoadEnv("MODE")),
-		jaegerTraceProvider.Tracer("netsly-golang"),
+		traceProvider.Tracer("netsly-golang"),
 		services.Logger,
 	)
 
@@ -84,7 +110,7 @@ func main() {
 	var commandTransactorDependencies commandTransactor.Dependencies
 	var entityTransactorDependencies entityTransactor.Dependencies
 
-	if gormSqliteEnv := strings.TrimSpace(os.Getenv("GORM_SQLITE_PATH")); gormSqliteEnv != "" {
+	if gormSqliteEnv := strings.TrimSpace(os.Getenv("GORM_SQLITE_FOLDER_PATH")); gormSqliteEnv != "" {
 		gormSqliteDependency := coderr.Must(gormSqlite.New(gormSqliteEnv))
 
 		commandsAndQueriesDependencies.GormSqlite = gormSqliteDependency
@@ -92,7 +118,7 @@ func main() {
 		entityTransactorDependencies.GormSqlite = gormSqliteDependency
 	}
 
-	if boilerSqliteEnv := strings.TrimSpace(os.Getenv("BOILER_SQLITE_PATH")); boilerSqliteEnv != "" {
+	if boilerSqliteEnv := strings.TrimSpace(os.Getenv("BOILER_SQLITE_FOLDER_PATH")); boilerSqliteEnv != "" {
 		boilerSqliteDependency := coderr.Must(boilerSqlite.New(boilerSqliteEnv))
 
 		commandsAndQueriesDependencies.BoilerSqlite = boilerSqliteDependency
@@ -100,7 +126,7 @@ func main() {
 		entityTransactorDependencies.BoilerSqlite = boilerSqliteDependency
 	}
 
-	if localFileSaverEnv := strings.TrimSpace(os.Getenv("LOCAL_FILE_SAVER_FILES_PATH")); localFileSaverEnv != "" {
+	if localFileSaverEnv := strings.TrimSpace(os.Getenv("LOCAL_FILE_SAVER_FOLDER_PATH")); localFileSaverEnv != "" {
 		localFileSaverDependency := coderr.Must(localFileSaver.New(localFileSaverEnv))
 
 		commandsAndQueriesDependencies.LocalFileSaver = localFileSaverDependency

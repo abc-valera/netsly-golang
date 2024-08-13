@@ -9,4 +9,4 @@ add-global-variants = true
 add-enum-types = true
 
 [sqlite3]
-dbname = "/home/abc-valera/dev/personal/netsly-golang/internal/infrastructure/persistence/implementation/boilerSqlite/sqlite.db"
+dbname = "<your ABSOLUTE path to the db>"

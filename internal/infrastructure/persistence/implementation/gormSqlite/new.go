@@ -1,6 +1,8 @@
 package gormSqlite
 
 import (
+	"os"
+
 	"github.com/abc-valera/netsly-api-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-api-golang/internal/infrastructure/persistence/implementation/gormSqlite/gormSqliteDto"
 	"github.com/glebarez/sqlite"
@@ -8,8 +10,15 @@ import (
 )
 
 // New creates a new sqlite database connection and migrates all models
-func New(sqlitePath string) (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open(sqlitePath), &gorm.Config{})
+func New(gormSqliteFolderPath string) (*gorm.DB, error) {
+	// Create the folder
+	if err := os.MkdirAll(gormSqliteFolderPath, 0o755); err != nil {
+		if !os.IsExist(err) {
+			return nil, coderr.NewInternalErr(err)
+		}
+	}
+
+	db, err := gorm.Open(sqlite.Open(gormSqliteFolderPath+"/sqlite.db"), &gorm.Config{})
 	if err != nil {
 		return nil, coderr.NewInternalErr(err)
 	}

@@ -24,9 +24,16 @@ type slogLogger struct {
 
 // New returns a new instance of the slogLogger.
 // SlogLogger is a simple wrapper for a slog library that writes to stdout and to a file.
-func New(logsFolderPath string) service.ILogger {
+func New(slogLoggerFolderPath string) service.ILogger {
+	// Create the folder
+	if err := os.MkdirAll(slogLoggerFolderPath, 0o755); err != nil {
+		if !os.IsExist(err) {
+			coderr.Fatal(err)
+		}
+	}
+
 	// Create the file inside the logs folder
-	logsFile, err := os.Create(logsFolderPath + "/logs.txt")
+	logsFile, err := os.Create(slogLoggerFolderPath + "/logs.txt")
 	if err != nil {
 		coderr.Fatal(err)
 	}
