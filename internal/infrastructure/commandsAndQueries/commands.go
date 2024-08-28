@@ -22,6 +22,17 @@ func newCommands(deps Dependencies) (persistence.Commands, error) {
 		commands.FileInfo = gormSqliteCommand.NewFileInfo(deps.GormSqlite)
 	}
 
+	if deps.BunSqlite != nil {
+		commands.User = boilerSqliteCommand.NewUser(deps.BoilerSqlite)
+		commands.Joke = boilerSqliteCommand.NewJoke(deps.BoilerSqlite)
+		commands.Like = boilerSqliteCommand.NewLike(deps.BoilerSqlite)
+		commands.Comment = boilerSqliteCommand.NewComment(deps.BoilerSqlite)
+		commands.Room = boilerSqliteCommand.NewRoom(deps.BoilerSqlite)
+		commands.RoomMember = boilerSqliteCommand.NewRoomMember(deps.BoilerSqlite)
+		commands.RoomMessage = boilerSqliteCommand.NewRoomMessage(deps.BoilerSqlite)
+		commands.FileInfo = boilerSqliteCommand.NewFileInfo(deps.BoilerSqlite)
+	}
+
 	if deps.BoilerSqlite != nil {
 		commands.User = boilerSqliteCommand.NewUser(deps.BoilerSqlite)
 		commands.Joke = boilerSqliteCommand.NewJoke(deps.BoilerSqlite)

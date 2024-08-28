@@ -22,6 +22,17 @@ func newQueries(deps Dependencies) (persistence.Queries, error) {
 		queries.FileInfo = gormSqliteQuery.NewFileInfo(deps.GormSqlite)
 	}
 
+	if deps.BunSqlite != nil {
+		queries.User = boilerSqliteQuery.NewUser(deps.BoilerSqlite)
+		queries.Joke = boilerSqliteQuery.NewJoke(deps.BoilerSqlite)
+		queries.Like = boilerSqliteQuery.NewLike(deps.BoilerSqlite)
+		queries.Comment = boilerSqliteQuery.NewComment(deps.BoilerSqlite)
+		queries.Room = boilerSqliteQuery.NewRoom(deps.BoilerSqlite)
+		queries.RoomMember = boilerSqliteQuery.NewRoomMember(deps.BoilerSqlite)
+		queries.RoomMessage = boilerSqliteQuery.NewRoomMessage(deps.BoilerSqlite)
+		queries.FileInfo = boilerSqliteQuery.NewFileInfo(deps.BoilerSqlite)
+	}
+
 	if deps.BoilerSqlite != nil {
 		queries.User = boilerSqliteQuery.NewUser(deps.BoilerSqlite)
 		queries.Joke = boilerSqliteQuery.NewJoke(deps.BoilerSqlite)

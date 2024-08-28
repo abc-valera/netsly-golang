@@ -31,7 +31,7 @@ func (l like) CountByJokeID(ctx context.Context, jokeID string) (int, error) {
 	return int(count), boilerSqliteErrutil.HandleErr(err)
 }
 
-func (l like) GatAllByJokeID(ctx context.Context, jokeID string, selector selector.Selector) (model.Likes, error) {
+func (l like) GetAllByJokeID(ctx context.Context, jokeID string, selector selector.Selector) (model.Likes, error) {
 	_, span := global.NewSpan(ctx)
 	defer span.End()
 

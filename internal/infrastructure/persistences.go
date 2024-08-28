@@ -11,6 +11,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/commandsAndQueries"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/boilerSqlite"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/bunSqlite"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/gormSqlite"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/localFileSaver"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/transactors"
@@ -30,6 +31,13 @@ func NewPersistences(services domain.Services) (
 
 		commandsAndQueriesDependencies.GormSqlite = gormSqliteDependency
 		transactorsDependencies.GormSqlite = gormSqliteDependency
+	}
+
+	if bunSqliteEnv := strings.TrimSpace(os.Getenv("BUN_SQLITE_FOLDER_PATH")); bunSqliteEnv != "" {
+		bunSqliteDependency := coderr.Must(bunSqlite.New(bunSqliteEnv))
+
+		commandsAndQueriesDependencies.BunSqlite = bunSqliteDependency
+		transactorsDependencies.BunSqlite = bunSqliteDependency
 	}
 
 	if boilerSqliteEnv := strings.TrimSpace(os.Getenv("BOILER_SQLITE_FOLDER_PATH")); boilerSqliteEnv != "" {

@@ -2,12 +2,14 @@ package commandsAndQueries
 
 import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence"
+	"github.com/uptrace/bun"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"gorm.io/gorm"
 )
 
 type Dependencies struct {
 	GormSqlite     *gorm.DB
+	BunSqlite      bun.IDB
 	BoilerSqlite   boil.ContextExecutor
 	LocalFileSaver string
 }

@@ -31,7 +31,7 @@ func (q like) CountByJokeID(ctx context.Context, jokeID string) (int, error) {
 	return int(count), res.Error
 }
 
-func (q like) GatAllByJokeID(ctx context.Context, jokeID string, selector selector.Selector) (model.Likes, error) {
+func (q like) GetAllByJokeID(ctx context.Context, jokeID string, selector selector.Selector) (model.Likes, error) {
 	_, span := global.NewSpan(ctx)
 	defer span.End()
 

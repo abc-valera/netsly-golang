@@ -8,6 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/core/commandTransactor"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/commandsAndQueries"
+	"github.com/uptrace/bun"
 	"gorm.io/gorm"
 )
 
@@ -37,6 +38,16 @@ func (t transactor) PerformTX(
 		commandsQueriesDependencies.GormSqlite = gormTX
 	}
 
+	var bunTX bun.Tx
+	if t.Deps.BunSqlite != nil {
+		var err error
+		bunTX, err = t.Deps.BunSqlite.BeginTx(ctx, nil)
+		if err != nil {
+			return coderr.NewInternalErr(err)
+		}
+		commandsQueriesDependencies.BunSqlite = bunTX
+	}
+
 	var boilerTX *sql.Tx
 	if t.Deps.BoilerSqlite != nil {
 		var err error
@@ -61,6 +72,11 @@ func (t transactor) PerformTX(
 				return coderr.NewInternalErr(err)
 			}
 		}
+		if bunTX != (bun.Tx{}) {
+			if err := bunTX.Rollback(); err != nil {
+				return coderr.NewInternalErr(err)
+			}
+		}
 		if boilerTX != nil {
 			if err := boilerTX.Rollback(); err != nil {
 				return coderr.NewInternalErr(err)
@@ -71,6 +87,12 @@ func (t transactor) PerformTX(
 
 	if gormTX != nil {
 		if err := gormTX.Commit().Error; err != nil {
+			return coderr.NewInternalErr(err)
+		}
+	}
+
+	if bunTX != (bun.Tx{}) {
+		if err := bunTX.Commit(); err != nil {
 			return coderr.NewInternalErr(err)
 		}
 	}
