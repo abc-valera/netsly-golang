@@ -1,5 +1,8 @@
 package boilerSqlite
 
+// Note, that we don't import sqlite driver here
+// because it is already imported in the gormSqlite/new.go file.
+
 import (
 	"database/sql"
 	"embed"

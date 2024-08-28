@@ -45,8 +45,8 @@ CREATE TABLE `comments` (
   `id` text NOT NULL, 
   `text` text NOT NULL, 
   `created_at` datetime NOT NULL, 
-  `updated_at` datetime NOT NULL,
-  `deleted_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL, 
+  `deleted_at` datetime NOT NULL, 
   `user_id` text NOT NULL, 
   `joke_id` text NOT NULL, 
   PRIMARY KEY (`id`), 
@@ -77,19 +77,6 @@ CREATE TABLE `room_members` (
   CONSTRAINT `fk_rooms_members` FOREIGN KEY (`room_id`) REFERENCES `rooms`(`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE `room_messages` (
-  `id` text NOT NULL, 
-  `text` text NOT NULL, 
-  `created_at` datetime NOT NULL, 
-  `updated_at` datetime NOT NULL, 
-  `deleted_at` datetime NOT NULL, 
-  `user_id` text NOT NULL, 
-  `room_id` text NOT NULL, 
-  PRIMARY KEY (`id`), 
-  CONSTRAINT `fk_rooms_messages` FOREIGN KEY (`room_id`) REFERENCES `rooms`(`id`) ON DELETE CASCADE, 
-  CONSTRAINT `fk_users_room_messages` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
-);
-
 CREATE TABLE `file_infos` (
   `id` text NOT NULL, 
   `name` text NOT NULL, 
@@ -99,6 +86,20 @@ CREATE TABLE `file_infos` (
   `updated_at` datetime NOT NULL, 
   `deleted_at` datetime NOT NULL, 
   PRIMARY KEY (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS "room_messages" (
+  `id` text NOT NULL, 
+  `text` text NOT NULL, 
+  `created_at` datetime NOT NULL, 
+  `updated_at` datetime NOT NULL, 
+  `deleted_at` datetime NOT NULL, 
+  `user_id` text NOT NULL, 
+  `room_id` text NOT NULL, 
+  PRIMARY KEY (`id`), 
+  CONSTRAINT `fk_rooms_messages` FOREIGN KEY (`room_id`) REFERENCES `rooms`(`id`) ON DELETE CASCADE, 
+  CONSTRAINT `fk_users_room_messages` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE, 
+  CONSTRAINT `fk_room_members_messages` FOREIGN KEY (`user_id`, `room_id`) REFERENCES `room_members`(`user_id`, `room_id`)
 );
 
 -- +goose StatementEnd

@@ -17,12 +17,11 @@ type User struct {
 	UpdatedAt      time.Time `gorm:"not null"`
 	DeletedAt      time.Time `gorm:"not null"`
 
-	Jokes        Jokes        `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	Comments     Comments     `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	Likes        Likes        `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	CreatedRooms Rooms        `gorm:"foreignKey:CreatorUserID;constraint:OnDelete:CASCADE"`
-	RoomMembers  RoomMembers  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	RoomMessages RoomMessages `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	Jokes        Jokes       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	Comments     Comments    `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	Likes        Likes       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	CreatedRooms Rooms       `gorm:"foreignKey:CreatorUserID;constraint:OnDelete:CASCADE"`
+	RoomMembers  RoomMembers `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 }
 
 func NewDomainUser(user User) model.User {

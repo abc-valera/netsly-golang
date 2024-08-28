@@ -10,8 +10,9 @@ type RoomMember struct {
 	CreatedAt time.Time `gorm:"not null"`
 	DeletedAt time.Time `gorm:"not null"`
 
-	UserID string `gorm:"primaryKey;not null"`
-	RoomID string `gorm:"primaryKey;not null"`
+	UserID   string       `gorm:"primaryKey;not null"`
+	RoomID   string       `gorm:"primaryKey;not null"`
+	Messages RoomMessages `gorm:"foreignKey:UserID,RoomID;constraint:OnDelete:CASCADE"`
 }
 
 func NewDomainRoomMember(roomMember RoomMember) model.RoomMember {

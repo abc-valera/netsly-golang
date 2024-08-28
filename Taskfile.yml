@@ -79,7 +79,8 @@ tasks:
       --proto_path=internal/presentation/grpcApi/proto
 
   generate:persistence:boilerSqlite:code:
-    cmd: ./bin/sqlboiler sqlite3 -c internal/infrastructure/persistence/implementation/boilerSqlite/sqlboiler.toml
+    cmd: export PATH="$PWD/bin:$PATH" &&
+      ./bin/sqlboiler sqlite3 -c internal/infrastructure/persistences/boilerSqlite/sqlboiler.toml
 
   infrastructure:down:
     cmds:

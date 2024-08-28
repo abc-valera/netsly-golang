@@ -5,8 +5,13 @@ import (
 
 	"github.com/abc-valera/netsly-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/gormSqlite/gormSqliteDto"
-	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
+
+	// Note, that we're importing sqlite driver only here
+	// (this lib calls init() function of modernc.org/sqlite package).
+	// It would be nice to import it in another place, but it's not possible
+	// because of the way gorm works (a shitty ORM).
+	"github.com/glebarez/sqlite"
 )
 
 // New creates a new sqlite database connection and migrates all models

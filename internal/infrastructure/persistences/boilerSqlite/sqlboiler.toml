@@ -9,4 +9,4 @@ add-global-variants = true
 add-enum-types = true
 
 [sqlite3]
-dbname = "<your ABSOLUTE path to the db>"
+dbname = "infra/local/boilerSqlite/sqlite.db"

@@ -15,9 +15,9 @@ type Joke struct {
 	UpdatedAt   time.Time `gorm:"not null"`
 	DeletedAt   time.Time `gorm:"not null"`
 
-	UserID   string    `gorm:"not null;index:unique_title_per_user,unique"`
-	Likes    []Like    `gorm:"foreignKey:JokeID;constraint:OnDelete:CASCADE"`
-	Comments []Comment `gorm:"foreignKey:JokeID;constraint:OnDelete:CASCADE"`
+	UserID   string   `gorm:"not null;index:unique_title_per_user,unique"`
+	Likes    Likes    `gorm:"foreignKey:JokeID;constraint:OnDelete:CASCADE"`
+	Comments Comments `gorm:"foreignKey:JokeID;constraint:OnDelete:CASCADE"`
 }
 
 func NewDomainJoke(joke Joke) model.Joke {
