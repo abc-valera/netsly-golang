@@ -4,10 +4,10 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
-	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/auth"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/ws/client"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/ws/handler"
@@ -24,7 +24,7 @@ type Manager struct {
 
 func NewManager(
 	authManager auth.Manager,
-	services domain.Services,
+	services service.Services,
 ) *Manager {
 	return &Manager{
 		authManager: authManager,

@@ -4,9 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -19,17 +18,16 @@ type IRoomMember interface {
 }
 
 type roomMember struct {
-	command command.IRoomMember
+	IDependency
+
 	query.IRoomMember
 }
 
-func NewRoomMember(
-	command command.IRoomMember,
-	query query.IRoomMember,
-) IRoomMember {
+func newRoomMember(dep IDependency) IRoomMember {
 	return roomMember{
-		command:     command,
-		IRoomMember: query,
+		IDependency: dep,
+
+		IRoomMember: dep.Q().RoomMember,
 	}
 }
 
@@ -47,12 +45,10 @@ func (e roomMember) Create(ctx context.Context, req RoomMemberCreateRequest) (mo
 		return model.RoomMember{}, err
 	}
 
-	return e.command.Create(ctx, command.RoomMemberCreateRequest{
-		RoomMember: model.RoomMember{
-			CreatedAt: time.Now(),
-		},
-		UserID: req.UserID,
-		RoomID: req.RoomID,
+	return e.C().RoomMember.Create(ctx, model.RoomMember{
+		CreatedAt: time.Now(),
+		UserID:    req.UserID,
+		RoomID:    req.RoomID,
 	})
 }
 
@@ -65,5 +61,5 @@ func (e roomMember) Delete(ctx context.Context, roomID, userID string) error {
 		return err
 	}
 
-	return e.command.Delete(ctx, roomID, userID)
+	return e.C().RoomMember.Delete(ctx, model.RoomMember{UserID: userID, RoomID: roomID})
 }

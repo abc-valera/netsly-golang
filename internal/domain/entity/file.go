@@ -4,13 +4,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-golang/internal/core/commandTransactor"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -20,30 +18,16 @@ type IFile interface {
 	Update(ctx context.Context, id string, req FileUpdateRequest) error
 	Delete(ctx context.Context, id string) error
 
-	GetByID(ctx context.Context, id string) (model.FileInfo, []byte, error)
+	GetByID(ctx context.Context, id string) (model.FileInfo, model.FileContent, error)
 }
 
 type file struct {
-	fileInfoCommand    command.IFileInfo
-	fileInfoQuery      query.IFileInfo
-	fileContentCommand command.IFileContent
-	fileContentQuery   query.IFileContent
-	commandTransactor  commandTransactor.ITransactor
+	IDependency
 }
 
-func NewFile(
-	fileInfoCommand command.IFileInfo,
-	fileInfoQuery query.IFileInfo,
-	fileContentCommand command.IFileContent,
-	fileContentQuery query.IFileContent,
-	commandTransactor commandTransactor.ITransactor,
-) IFile {
+func newFile(dep IDependency) IFile {
 	return file{
-		fileInfoCommand:    fileInfoCommand,
-		fileInfoQuery:      fileInfoQuery,
-		fileContentCommand: fileContentCommand,
-		fileContentQuery:   fileContentQuery,
-		commandTransactor:  commandTransactor,
+		IDependency: dep,
 	}
 }
 
@@ -69,8 +53,13 @@ func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo
 	}
 
 	var returnFileInfo model.FileInfo
-	txFunc := func(ctx context.Context, txCommands persistence.Commands, txQueries persistence.Queries) error {
-		fileInfo, err := txCommands.FileInfo.Create(ctx, model.FileInfo{
+	txFunc := func(
+		ctx context.Context,
+		txC command.Commands,
+		txQ query.Queries,
+		txE Entities,
+	) error {
+		fileInfo, err := txC.FileInfo.Create(ctx, model.FileInfo{
 			ID:        uuid.New().String(),
 			Name:      req.Name,
 			Type:      req.Type,
@@ -82,9 +71,9 @@ func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo
 		}
 		returnFileInfo = fileInfo
 
-		if _, err := txCommands.FileContent.Create(ctx, command.FileContentCreateRequest{
-			Content: req.FileContent,
+		if _, err := txC.FileContent.Create(ctx, model.FileContent{
 			ID:      fileInfo.ID,
+			Content: req.FileContent,
 		}); err != nil {
 			return err
 		}
@@ -92,7 +81,7 @@ func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo
 		return nil
 	}
 
-	if err := e.commandTransactor.PerformTX(ctx, txFunc); err != nil {
+	if err := e.RunInTX(ctx, txFunc); err != nil {
 		return model.FileInfo{}, err
 	}
 
@@ -113,9 +102,14 @@ func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) erro
 	}
 
 	if req.Name != nil {
-		if _, err := e.fileInfoCommand.Update(ctx, id, command.FileInfoUpdateRequest{
-			Name: req.Name,
-		}); err != nil {
+		if _, err := e.C().FileInfo.Update(
+			ctx,
+			model.FileInfo{ID: id},
+			command.FileInfoUpdateRequest{
+				UpdatedAt: time.Now(),
+
+				Name: req.Name,
+			}); err != nil {
 			return err
 		}
 	}
@@ -128,34 +122,39 @@ func (e file) Delete(ctx context.Context, id string) error {
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
 
-	txFunc := func(ctx context.Context, txCommands persistence.Commands, txQueries persistence.Queries) error {
-		if err := txCommands.FileInfo.Delete(ctx, id); err != nil {
+	txFunc := func(
+		ctx context.Context,
+		txC command.Commands,
+		txQ query.Queries,
+		txE Entities,
+	) error {
+		if err := txC.FileInfo.Delete(ctx, model.FileInfo{ID: id}); err != nil {
 			return err
 		}
 
-		if err := e.fileContentCommand.Delete(ctx, id); err != nil {
+		if err := txC.FileContent.Delete(ctx, model.FileContent{ID: id}); err != nil {
 			return err
 		}
 
 		return nil
 	}
 
-	return e.commandTransactor.PerformTX(ctx, txFunc)
+	return e.RunInTX(ctx, txFunc)
 }
 
-func (e file) GetByID(ctx context.Context, id string) (model.FileInfo, []byte, error) {
+func (e file) GetByID(ctx context.Context, id string) (model.FileInfo, model.FileContent, error) {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
 
-	fileInfo, err := e.fileInfoQuery.GetByID(ctx, id)
+	fileInfo, err := e.Q().FileInfo.GetByID(ctx, id)
 	if err != nil {
-		return model.FileInfo{}, []byte{}, err
+		return model.FileInfo{}, model.FileContent{}, err
 	}
 
-	fileContent, err := e.fileContentQuery.GetByID(ctx, id)
+	fileContent, err := e.Q().FileContent.GetByID(ctx, id)
 	if err != nil {
-		return model.FileInfo{}, []byte{}, err
+		return model.FileInfo{}, model.FileContent{}, err
 	}
 
 	return fileInfo, fileContent, nil

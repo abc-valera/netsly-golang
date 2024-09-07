@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
 type key string

@@ -7,33 +7,9 @@ with-expecter: True
 disable-version-string: True
 
 packages:
-  github.com/abc-valera/netsly-golang/internal/domain/persistence/command:
-    config:
-      all: True
-      outpkg: "mockCommand"
-      dir: "gen/mock/mockCommand"
-  github.com/abc-valera/netsly-golang/internal/domain/persistence/query:
-    config:
-      all: True
-      outpkg: "mockQuery"
-      dir: "gen/mock/mockQuery"
-  github.com/abc-valera/netsly-golang/internal/domain/service:
-    config:
-      all: True
-      outpkg: "mock{{ trimPrefix .InterfaceName `I` }}"
-      dir: "gen/mock/mock{{ trimPrefix .InterfaceName `I` }}"
   github.com/abc-valera/netsly-golang/internal/domain/entity:
     config:
-      all: True
       outpkg: "mockEntity"
       dir: "gen/mock/mockEntity"
-  github.com/abc-valera/netsly-golang/internal/core/entityTransactor:
-    config:
-      all: True
-      outpkg: "mockEntityTransactor"
-      dir: "gen/mock/mockEntityTransactor"
-  github.com/abc-valera/netsly-golang/internal/core/commandTransactor:
-    config:
-      all: True
-      outpkg: "mockCommandTransactor"
-      dir: "gen/mock/mockCommandTransactor"
+      include-regex: ".*"
+      exclude-regex: "IDependency"

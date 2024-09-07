@@ -4,14 +4,15 @@ import (
 	"flag"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/application"
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-golang/internal/core/env"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
-	"github.com/abc-valera/netsly-golang/internal/core/opentelemetry"
-	"github.com/abc-valera/netsly-golang/internal/domain"
-	"github.com/abc-valera/netsly-golang/internal/infrastructure"
+	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/env"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/globals"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/services"
 	"github.com/abc-valera/netsly-golang/internal/presentation/grpcApi"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi"
 	"github.com/abc-valera/netsly-golang/internal/presentation/seed"
@@ -19,32 +20,27 @@ import (
 )
 
 func main() {
-	// For the configuration the environment variables are used
+	// Set the timezone to UTC
+	time.Local = time.UTC
 
 	// Get cli flags for the entrypoint
 	entrypoint := flag.String("entrypoint", "webApp", "Port flag specifies the application presentation to be run: webApp, jsonApi, grpcApi")
 	flag.Parse()
 
-	// Init Mode first
-	global.InitMode()
+	// Init Globals
+	globals.New(*entrypoint)
 
-	// Init services
-	services := infrastructure.NewServices()
+	// Init Services
+	services := services.NewServices()
 
-	// Init other global variables
-	global.InitLog(services.Logger)
-	global.InitTracer(coderr.Must(
-		opentelemetry.NewTracer(services.OtelTraceExporter, "netsly."+*entrypoint),
-	))
+	// Init DB
+	db := persistences.NewDB()
 
-	// Init persistence
-	commands, queries, commandTransactor, entityTransactor := infrastructure.NewPersistences(services)
-
-	// Init entities
-	entities := domain.NewEntities(commands, commandTransactor, queries, services)
+	// Init Entities
+	entities := entity.NewEntities(entity.NewDependency(db, services))
 
 	// Init usecases
-	usecases := application.NewUsecases(entityTransactor, entities, services)
+	usecases := application.NewUsecases(application.NewDependency(db, services))
 
 	// Init server functions
 	var serverStart, serverGracefulStop func()
@@ -77,9 +73,7 @@ func main() {
 			usecases,
 		)
 	case "seed":
-		seed.Seed(
-			entityTransactor,
-		)
+		seed.Seed(entities)
 		return
 	default:
 		coderr.Fatal("Provided invalid entrypoint flag")

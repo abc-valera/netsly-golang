@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
@@ -21,17 +21,16 @@ type IRoomMessage interface {
 }
 
 type roomMessage struct {
-	command command.IRoomMessage
+	IDependency
+
 	query.IRoomMessage
 }
 
-func NewRoomMessage(
-	command command.IRoomMessage,
-	query query.IRoomMessage,
-) IRoomMessage {
+func newRoomMessage(dep IDependency) IRoomMessage {
 	return roomMessage{
-		command:      command,
-		IRoomMessage: query,
+		IDependency: dep,
+
+		IRoomMessage: dep.Q().RoomMessage,
 	}
 }
 
@@ -51,14 +50,12 @@ func (e roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (
 		return model.RoomMessage{}, err
 	}
 
-	return e.command.Create(ctx, command.RoomMessageCreateRequest{
-		RoomMessage: model.RoomMessage{
-			ID:        uuid.New().String(),
-			Text:      req.Text,
-			CreatedAt: time.Now(),
-		},
-		UserID: req.UserID,
-		RoomID: req.RoomID,
+	return e.C().RoomMessage.Create(ctx, model.RoomMessage{
+		ID:        uuid.New().String(),
+		Text:      req.Text,
+		CreatedAt: time.Now(),
+		UserID:    req.UserID,
+		RoomID:    req.RoomID,
 	})
 }
 
@@ -75,9 +72,14 @@ func (e roomMessage) Update(ctx context.Context, id string, req RoomMessageUpdat
 		return model.RoomMessage{}, err
 	}
 
-	return e.command.Update(ctx, id, command.RoomMessageUpdateRequest{
-		Text: req.Text,
-	})
+	return e.C().RoomMessage.Update(
+		ctx,
+		model.RoomMessage{ID: id},
+		command.RoomMessageUpdateRequest{
+			UpdatedAt: time.Now(),
+
+			Text: req.Text,
+		})
 }
 
 func (e roomMessage) Delete(ctx context.Context, id string) error {
@@ -89,5 +91,5 @@ func (e roomMessage) Delete(ctx context.Context, id string) error {
 		return err
 	}
 
-	return e.command.Delete(ctx, id)
+	return e.C().RoomMessage.Delete(ctx, model.RoomMessage{ID: id})
 }

@@ -3,19 +3,13 @@ package command
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
 var ErrLikeAlreadyExists = coderr.NewCodeMessage(coderr.CodeAlreadyExists, "Like already exists")
 
 type ILike interface {
-	Create(ctx context.Context, req LikeCreateRequest) (model.Like, error)
-	Delete(ctx context.Context, userID, jokeID string) error
-}
-
-type LikeCreateRequest struct {
-	Like   model.Like
-	UserID string
-	JokeID string
+	Create(ctx context.Context, req model.Like) (model.Like, error)
+	Delete(ctx context.Context, req model.Like) error
 }

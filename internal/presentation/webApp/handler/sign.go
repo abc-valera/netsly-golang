@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/abc-valera/netsly-golang/internal/application"
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/cookie"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler/templates"
 )

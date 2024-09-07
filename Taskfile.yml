@@ -2,7 +2,7 @@
 
 version: "3"
 
-dotenv: ["env/dev.env"]
+dotenv: ["env/.env.dev"]
 
 tasks:
   entrypoint:jsonApi:
@@ -30,11 +30,11 @@ tasks:
 
   test:integration:
     cmds:
-      - task: test:integration:persistence
+      - task: test:integration:entity
       - task: test:integration:service
 
-  test:integration:persistence:
-    cmd: go test ./test/persistence -count=1
+  test:integration:entity:
+    cmd: go test ./test/entity -count=1
 
   test:integration:service:
     cmd: go test ./test/service -count=1
@@ -77,10 +77,6 @@ tasks:
       --go-grpc_out=gen/pb
       --go-grpc_opt=paths=source_relative
       --proto_path=internal/presentation/grpcApi/proto
-
-  generate:persistence:boilerSqlite:code:
-    cmd: export PATH="$PWD/bin:$PATH" &&
-      ./bin/sqlboiler sqlite3 -c internal/infrastructure/persistences/boilerSqlite/sqlboiler.toml
 
   infrastructure:down:
     cmds:

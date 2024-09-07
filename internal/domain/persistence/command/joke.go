@@ -2,9 +2,10 @@ package command
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
 var ErrJokeAlreadyExists = coderr.NewCodeMessage(
@@ -13,17 +14,14 @@ var ErrJokeAlreadyExists = coderr.NewCodeMessage(
 )
 
 type IJoke interface {
-	Create(ctx context.Context, req JokeCreateRequest) (model.Joke, error)
-	Update(ctx context.Context, id string, req JokeUpdateRequest) (model.Joke, error)
-	Delete(ctx context.Context, id string) error
-}
-
-type JokeCreateRequest struct {
-	Joke   model.Joke
-	UserID string
+	Create(ctx context.Context, req model.Joke) (model.Joke, error)
+	Update(ctx context.Context, ids model.Joke, req JokeUpdateRequest) (model.Joke, error)
+	Delete(ctx context.Context, req model.Joke) error
 }
 
 type JokeUpdateRequest struct {
+	UpdatedAt time.Time
+
 	Title       *string
 	Text        *string
 	Explanation *string

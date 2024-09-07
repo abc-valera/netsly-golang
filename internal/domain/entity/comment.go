@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
@@ -21,17 +21,16 @@ type IComment interface {
 }
 
 type comment struct {
-	command command.IComment
+	IDependency
+
 	query.IComment
 }
 
-func NewComment(
-	command command.IComment,
-	query query.IComment,
-) IComment {
+func newComment(dep IDependency) IComment {
 	return comment{
-		command:  command,
-		IComment: query,
+		IDependency: dep,
+
+		IComment: dep.Q().Comment,
 	}
 }
 
@@ -51,14 +50,12 @@ func (e comment) Create(ctx context.Context, req CommentCreateRequest) (model.Co
 		return model.Comment{}, err
 	}
 
-	return e.command.Create(ctx, command.CommentCreateRequest{
-		Comment: model.Comment{
-			ID:        uuid.New().String(),
-			Text:      req.Text,
-			CreatedAt: time.Now(),
-		},
-		UserID: req.UserID,
-		JokeID: req.JokeID,
+	return e.C().Comment.Create(ctx, model.Comment{
+		ID:        uuid.New().String(),
+		Text:      req.Text,
+		CreatedAt: time.Now(),
+		UserID:    req.UserID,
+		JokeID:    req.JokeID,
 	})
 }
 
@@ -75,9 +72,14 @@ func (e comment) Update(ctx context.Context, commentID string, req CommentUpdate
 		return model.Comment{}, err
 	}
 
-	return e.command.Update(ctx, commentID, command.CommentUpdateRequest{
-		Text: req.Text,
-	})
+	return e.C().Comment.Update(
+		ctx,
+		model.Comment{ID: commentID},
+		command.CommentUpdateRequest{
+			UpdatedAt: time.Now(),
+
+			Text: req.Text,
+		})
 }
 
 func (e comment) Delete(ctx context.Context, commentID string) error {
@@ -89,5 +91,5 @@ func (e comment) Delete(ctx context.Context, commentID string) error {
 		return err
 	}
 
-	return e.command.Delete(ctx, commentID)
+	return e.C().Comment.Delete(ctx, model.Comment{ID: commentID})
 }

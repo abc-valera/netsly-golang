@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/ws/client"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/ws/event"
 )

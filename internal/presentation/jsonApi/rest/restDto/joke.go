@@ -12,6 +12,7 @@ func NewJoke(joke model.Joke) *ogen.Joke {
 		Text:        joke.Text,
 		Explanation: ogen.NewOptString(joke.Explanation),
 		CreatedAt:   joke.CreatedAt,
+		UserID:      joke.UserID,
 	}
 }
 

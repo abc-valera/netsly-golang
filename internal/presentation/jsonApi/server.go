@@ -7,9 +7,10 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/application"
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
-	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
 // NewServer returns HTTP server
@@ -20,8 +21,8 @@ func NewServer(
 	accessTokenDuration time.Duration,
 	refreshTokenDuration time.Duration,
 
-	entities domain.Entities,
-	services domain.Services,
+	entities entity.Entities,
+	services service.Services,
 	usecases application.Usecases,
 ) (
 	serverStart func(),

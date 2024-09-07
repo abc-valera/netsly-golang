@@ -188,12 +188,12 @@ func (_c *Like_Delete_Call) RunAndReturn(run func(context.Context, string, strin
 	return _c
 }
 
-// GatAllByJokeID provides a mock function with given fields: ctx, jokeID, _a2
-func (_m *Like) GatAllByJokeID(ctx context.Context, jokeID string, _a2 selector.Selector) (model.Likes, error) {
+// GetAllByJokeID provides a mock function with given fields: ctx, jokeID, _a2
+func (_m *Like) GetAllByJokeID(ctx context.Context, jokeID string, _a2 selector.Selector) (model.Likes, error) {
 	ret := _m.Called(ctx, jokeID, _a2)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GatAllByJokeID")
+		panic("no return value specified for GetAllByJokeID")
 	}
 
 	var r0 model.Likes
@@ -218,32 +218,32 @@ func (_m *Like) GatAllByJokeID(ctx context.Context, jokeID string, _a2 selector.
 	return r0, r1
 }
 
-// Like_GatAllByJokeID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GatAllByJokeID'
-type Like_GatAllByJokeID_Call struct {
+// Like_GetAllByJokeID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAllByJokeID'
+type Like_GetAllByJokeID_Call struct {
 	*mock.Call
 }
 
-// GatAllByJokeID is a helper method to define mock.On call
+// GetAllByJokeID is a helper method to define mock.On call
 //   - ctx context.Context
 //   - jokeID string
 //   - _a2 selector.Selector
-func (_e *Like_Expecter) GatAllByJokeID(ctx interface{}, jokeID interface{}, _a2 interface{}) *Like_GatAllByJokeID_Call {
-	return &Like_GatAllByJokeID_Call{Call: _e.mock.On("GatAllByJokeID", ctx, jokeID, _a2)}
+func (_e *Like_Expecter) GetAllByJokeID(ctx interface{}, jokeID interface{}, _a2 interface{}) *Like_GetAllByJokeID_Call {
+	return &Like_GetAllByJokeID_Call{Call: _e.mock.On("GetAllByJokeID", ctx, jokeID, _a2)}
 }
 
-func (_c *Like_GatAllByJokeID_Call) Run(run func(ctx context.Context, jokeID string, _a2 selector.Selector)) *Like_GatAllByJokeID_Call {
+func (_c *Like_GetAllByJokeID_Call) Run(run func(ctx context.Context, jokeID string, _a2 selector.Selector)) *Like_GetAllByJokeID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})
 	return _c
 }
 
-func (_c *Like_GatAllByJokeID_Call) Return(_a0 model.Likes, _a1 error) *Like_GatAllByJokeID_Call {
+func (_c *Like_GetAllByJokeID_Call) Return(_a0 model.Likes, _a1 error) *Like_GetAllByJokeID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *Like_GatAllByJokeID_Call) RunAndReturn(run func(context.Context, string, selector.Selector) (model.Likes, error)) *Like_GatAllByJokeID_Call {
+func (_c *Like_GetAllByJokeID_Call) RunAndReturn(run func(context.Context, string, selector.Selector) (model.Likes, error)) *Like_GetAllByJokeID_Call {
 	_c.Call.Return(run)
 	return _c
 }

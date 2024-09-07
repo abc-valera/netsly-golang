@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
 var ErrRoomMemberNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "RoomMember not found")
@@ -13,6 +13,9 @@ var ErrRoomMemberNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "RoomMemb
 type RoomMember struct {
 	CreatedAt time.Time
 	DeletedAt time.Time
+
+	UserID string
+	RoomID string
 }
 
 type RoomMembers []RoomMember

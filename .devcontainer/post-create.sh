@@ -10,14 +10,12 @@ go install mvdan.cc/gofumpt@latest
 # Turn on git hooks for the project
 git config --local core.hooksPath .githooks
 
-# Install project tools and dependencies
+# Install all the dependencies
 echo "Downloading tools and dependencies 📦 (It can take some time...)"
 go mod download
 
+# Install project tools
 export GOBIN=$PWD/bin
-go install github.com/pressly/goose/v3/cmd/goose
-go install github.com/volatiletech/sqlboiler/v4
-go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-sqlite3
 go install github.com/vektra/mockery/v2
 
 npm install --save-dev prettier prettier-plugin-go-template prettier-plugin-tailwindcss

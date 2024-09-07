@@ -4,11 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
-	"github.com/abc-valera/netsly-golang/internal/domain/service"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -22,20 +21,16 @@ type IUser interface {
 }
 
 type user struct {
-	command command.IUser
+	IDependency
+
 	query.IUser
-	passMaker service.IPassworder
 }
 
-func NewUser(
-	command command.IUser,
-	query query.IUser,
-	passMaker service.IPassworder,
-) IUser {
+func newUser(dep IDependency) IUser {
 	return user{
-		command:   command,
-		IUser:     query,
-		passMaker: passMaker,
+		IDependency: dep,
+
+		IUser: dep.Q().User,
 	}
 }
 
@@ -58,14 +53,14 @@ func (e user) Create(ctx context.Context, req UserCreateRequest) (model.User, er
 
 	span.AddEvent("Hashing Password Start")
 
-	hashedPassword, err := e.passMaker.HashPassword(req.Password)
+	hashedPassword, err := e.E().Passworder.HashPassword(req.Password)
 	if err != nil {
 		return model.User{}, err
 	}
 
 	span.AddEvent("Hashing Password End")
 
-	return e.command.Create(ctx, model.User{
+	return e.C().User.Create(ctx, model.User{
 		ID:             uuid.New().String(),
 		Username:       req.Username,
 		Email:          req.Email,
@@ -92,6 +87,8 @@ func (e user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 	}
 
 	updateReq := command.UserUpdateRequest{
+		UpdatedAt: time.Now(),
+
 		HashedPassword: nil,
 		Fullname:       req.Fullname,
 		Status:         req.Status,
@@ -100,7 +97,7 @@ func (e user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 	if req.Password != nil {
 		span.AddEvent("Hashing Password Start")
 
-		hashedPassword, err := e.passMaker.HashPassword(*req.Password)
+		hashedPassword, err := e.E().Passworder.HashPassword(*req.Password)
 		if err != nil {
 			return model.User{}, err
 		}
@@ -109,7 +106,11 @@ func (e user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 		span.AddEvent("Hashing Password End")
 	}
 
-	return e.command.Update(ctx, userID, updateReq)
+	return e.C().User.Update(
+		ctx,
+		model.User{ID: userID},
+		updateReq,
+	)
 }
 
 type UserDeleteRequest struct {
@@ -132,11 +133,11 @@ func (e user) Delete(ctx context.Context, userID string, req UserDeleteRequest) 
 
 	span.AddEvent("Checking Password Start")
 
-	if err := e.passMaker.CheckPassword(req.Password, user.HashedPassword); err != nil {
+	if err := e.E().Passworder.CheckPassword(req.Password, user.HashedPassword); err != nil {
 		return err
 	}
 
 	span.AddEvent("Checking Password End")
 
-	return e.command.Delete(ctx, userID)
+	return e.C().User.Delete(ctx, model.User{ID: userID})
 }

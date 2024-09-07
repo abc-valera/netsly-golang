@@ -5,9 +5,9 @@ import (
 	"io/fs"
 	"net/http"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler/session"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler/templates"
 )

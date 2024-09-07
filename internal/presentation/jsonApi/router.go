@@ -8,9 +8,10 @@ import (
 
 	"github.com/abc-valera/netsly-golang/gen/ogen"
 	"github.com/abc-valera/netsly-golang/internal/application"
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
-	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/auth"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/errutil"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/handler"
@@ -26,8 +27,8 @@ func newHttpHandler(
 	accessTokenDuration time.Duration,
 	refreshTokenDuration time.Duration,
 
-	entities domain.Entities,
-	services domain.Services,
+	entities entity.Entities,
+	services service.Services,
 	usecases application.Usecases,
 ) http.Handler {
 	// Init router

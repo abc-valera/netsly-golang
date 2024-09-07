@@ -5,7 +5,7 @@ import (
 
 	"github.com/abc-valera/netsly-golang/gen/ogen"
 	"github.com/abc-valera/netsly-golang/internal/application"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/auth"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/restDto"
 	"go.opentelemetry.io/otel/trace"

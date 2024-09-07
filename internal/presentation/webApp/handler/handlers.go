@@ -4,7 +4,7 @@ import (
 	"io/fs"
 
 	"github.com/abc-valera/netsly-golang/internal/application"
-	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 )
 
 type Handlers struct {
@@ -18,7 +18,7 @@ type Handlers struct {
 
 func NewHandlers(
 	templateFS fs.FS,
-	entities domain.Entities,
+	entities entity.Entities,
 	usecases application.Usecases,
 ) Handlers {
 	return Handlers{

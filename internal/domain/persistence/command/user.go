@@ -2,9 +2,10 @@ package command
 
 import (
 	"context"
+	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
 var (
@@ -14,11 +15,13 @@ var (
 
 type IUser interface {
 	Create(ctx context.Context, req model.User) (model.User, error)
-	Update(ctx context.Context, id string, req UserUpdateRequest) (model.User, error)
-	Delete(ctx context.Context, id string) error
+	Update(ctx context.Context, ids model.User, req UserUpdateRequest) (model.User, error)
+	Delete(ctx context.Context, req model.User) error
 }
 
 type UserUpdateRequest struct {
+	UpdatedAt time.Time
+
 	HashedPassword *string
 	Fullname       *string
 	Status         *string

@@ -5,9 +5,9 @@ import (
 
 	"github.com/abc-valera/netsly-golang/gen/pb"
 	"github.com/abc-valera/netsly-golang/internal/application"
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
-	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/grpcApi/handler"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -17,7 +17,7 @@ func RunServer(
 	port string,
 	staicPath string,
 
-	services domain.Services,
+	services service.Services,
 	usecases application.Usecases,
 ) (
 	serverStart func(),

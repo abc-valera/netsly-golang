@@ -4,9 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -19,17 +18,16 @@ type ILike interface {
 }
 
 type like struct {
-	command command.ILike
+	IDependency
+
 	query.ILike
 }
 
-func NewLike(
-	command command.ILike,
-	query query.ILike,
-) ILike {
+func newLike(dep IDependency) ILike {
 	return like{
-		command: command,
-		ILike:   query,
+		IDependency: dep,
+
+		ILike: dep.Q().Like,
 	}
 }
 
@@ -47,12 +45,10 @@ func (e like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, er
 		return model.Like{}, err
 	}
 
-	return e.command.Create(ctx, command.LikeCreateRequest{
-		Like: model.Like{
-			CreatedAt: time.Now(),
-		},
-		UserID: req.UserID,
-		JokeID: req.JokeID,
+	return e.C().Like.Create(ctx, model.Like{
+		CreatedAt: time.Now(),
+		UserID:    req.UserID,
+		JokeID:    req.JokeID,
 	})
 }
 
@@ -68,5 +64,5 @@ func (e like) Delete(ctx context.Context, userID string, jokeID string) error {
 		return err
 	}
 
-	return e.command.Delete(ctx, userID, jokeID)
+	return e.C().Like.Delete(ctx, model.Like{UserID: userID, JokeID: jokeID})
 }

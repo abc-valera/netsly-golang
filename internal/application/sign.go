@@ -4,13 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-golang/internal/core/entityTransactor"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
-	"github.com/abc-valera/netsly-golang/internal/domain"
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -22,25 +19,11 @@ type ISignUsecase interface {
 }
 
 type signUsecase struct {
-	user       entity.IUser
-	passworder service.IPassworder
-	taskQueue  service.ITaskQueuer
-
-	transactor entityTransactor.ITransactor
+	IDependency
 }
 
-func NewSignUsecase(
-	userEntity entity.IUser,
-	transactor entityTransactor.ITransactor,
-	passworder service.IPassworder,
-	taskQueue service.ITaskQueuer,
-) ISignUsecase {
-	return signUsecase{
-		user:       userEntity,
-		transactor: transactor,
-		passworder: passworder,
-		taskQueue:  taskQueue,
-	}
+func newSignUsecase(dep IDependency) ISignUsecase {
+	return signUsecase{dep}
 }
 
 type SignUpRequest struct {
@@ -51,8 +34,8 @@ type SignUpRequest struct {
 	Status   string
 }
 
-var welcomeEmailTemplateFunc = func(username, email string) service.Email {
-	return service.Email{
+var welcomeEmailTemplateFunc = func(username, email string) entity.EmailSendRequest {
+	return entity.EmailSendRequest{
 		Subject: "Verification Email for Netsly!",
 		Content: fmt.Sprintf("%s, congrats with joining the Netsly community!", username),
 		To:      []string{email},
@@ -69,8 +52,8 @@ func (u signUsecase) SignUp(ctx context.Context, req SignUpRequest) (model.User,
 	defer span.End()
 
 	var user model.User
-	txFunc := func(ctx context.Context, txEntities domain.Entities) error {
-		createdUser, err := txEntities.User.Create(ctx, entity.UserCreateRequest{
+	txFunc := func(ctx context.Context, txE entity.Entities, txU Usecases) error {
+		createdUser, err := txE.User.Create(ctx, entity.UserCreateRequest{
 			Username: req.Username,
 			Email:    req.Email,
 			Password: req.Password,
@@ -82,14 +65,10 @@ func (u signUsecase) SignUp(ctx context.Context, req SignUpRequest) (model.User,
 		}
 		user = createdUser
 
-		return u.taskQueue.SendEmailTask(
-			ctx,
-			service.Critical,
-			welcomeEmailTemplateFunc(req.Username, req.Email),
-		)
+		return u.E().Emailer.SendEmail(welcomeEmailTemplateFunc(req.Username, req.Email))
 	}
 
-	if err := u.transactor.PerformTX(ctx, txFunc); err != nil {
+	if err := u.RunInTX(ctx, txFunc); err != nil {
 		return model.User{}, err
 	}
 
@@ -109,14 +88,14 @@ func (u signUsecase) SignIn(ctx context.Context, req SignInRequest) (model.User,
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
 
-	user, err := u.user.GetByEmail(ctx, req.Email)
+	user, err := u.E().User.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return model.User{}, err
 	}
 
 	span.AddEvent("Check Password Start")
 
-	if err := u.passworder.CheckPassword(req.Password, user.HashedPassword); err != nil {
+	if err := u.E().Passworder.CheckPassword(req.Password, user.HashedPassword); err != nil {
 		return model.User{}, err
 	}
 

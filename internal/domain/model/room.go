@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
 var ErrRoomNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Room not found")
@@ -15,6 +15,8 @@ type Room struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   time.Time
+
+	CreatorUserID string
 }
 
 type Rooms []Room

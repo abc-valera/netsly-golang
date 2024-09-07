@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
 type Data map[string]interface{}

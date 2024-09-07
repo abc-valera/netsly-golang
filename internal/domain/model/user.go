@@ -3,8 +3,8 @@ package model
 import (
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-golang/internal/core/enum"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/enum"
 )
 
 var ErrUserNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "User not found")

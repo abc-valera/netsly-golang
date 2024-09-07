@@ -5,9 +5,9 @@ import (
 	"io/fs"
 	"net/http"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
-	"github.com/abc-valera/netsly-golang/internal/domain"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/service"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/middleware"
 	"github.com/go-chi/chi/v5"
@@ -18,7 +18,7 @@ var staticFiles embed.FS
 
 func newRouter(
 	r *chi.Mux,
-	services domain.Services,
+	services service.Services,
 	handlers handler.Handlers,
 ) {
 	// Static files (before middleware)

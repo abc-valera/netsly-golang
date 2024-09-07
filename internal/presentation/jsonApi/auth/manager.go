@@ -3,7 +3,7 @@ package auth
 import (
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/golang-jwt/jwt/v5"
 )
 

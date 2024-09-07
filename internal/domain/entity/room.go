@@ -4,10 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/commandTransactor"
-	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/google/uuid"
@@ -23,20 +21,16 @@ type IRoom interface {
 }
 
 type room struct {
-	roomCommand command.IRoom
+	IDependency
+
 	query.IRoom
-	commandTransactor commandTransactor.ITransactor
 }
 
-func NewRoom(
-	roomCommand command.IRoom,
-	query query.IRoom,
-	commandTransactor commandTransactor.ITransactor,
-) IRoom {
+func newRoom(dep IDependency) IRoom {
 	return room{
-		roomCommand:       roomCommand,
-		IRoom:             query,
-		commandTransactor: commandTransactor,
+		IDependency: dep,
+
+		IRoom: dep.Q().Room,
 	}
 }
 
@@ -56,14 +50,17 @@ func (e room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 	}
 
 	var returnRoom model.Room
-	txFunc := func(ctx context.Context, txCommands persistence.Commands, txQueries persistence.Queries) error {
-		room, err := txCommands.Room.Create(ctx, command.RoomCreateRequest{
-			Room: model.Room{
-				ID:          uuid.NewString(),
-				Name:        req.Name,
-				Description: req.Description,
-				CreatedAt:   time.Now(),
-			},
+	txFunc := func(
+		ctx context.Context,
+		txC command.Commands,
+		txQ query.Queries,
+		txE Entities,
+	) error {
+		room, err := txC.Room.Create(ctx, model.Room{
+			ID:            uuid.NewString(),
+			Name:          req.Name,
+			Description:   req.Description,
+			CreatedAt:     time.Now(),
 			CreatorUserID: req.CreatorUserID,
 		})
 		if err != nil {
@@ -71,10 +68,7 @@ func (e room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 		}
 		returnRoom = room
 
-		if _, err := txCommands.RoomMember.Create(ctx, command.RoomMemberCreateRequest{
-			RoomMember: model.RoomMember{
-				CreatedAt: time.Now(),
-			},
+		if _, err := txE.RoomMember.Create(ctx, RoomMemberCreateRequest{
 			UserID: req.CreatorUserID,
 			RoomID: room.ID,
 		}); err != nil {
@@ -84,7 +78,7 @@ func (e room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 		return nil
 	}
 
-	if err := e.commandTransactor.PerformTX(ctx, txFunc); err != nil {
+	if err := e.RunInTX(ctx, txFunc); err != nil {
 		return model.Room{}, err
 	}
 
@@ -105,9 +99,14 @@ func (e room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) 
 		return model.Room{}, err
 	}
 
-	return e.roomCommand.Update(ctx, roomID, command.RoomUpdateRequest{
-		Description: req.Description,
-	})
+	return e.C().Room.Update(
+		ctx,
+		model.Room{ID: roomID},
+		command.RoomUpdateRequest{
+			UpdatedAt: time.Now(),
+
+			Description: req.Description,
+		})
 }
 
 func (e room) Delete(ctx context.Context, roomID string) error {
@@ -119,5 +118,5 @@ func (e room) Delete(ctx context.Context, roomID string) error {
 		return err
 	}
 
-	return e.roomCommand.Delete(ctx, roomID)
+	return e.C().Room.Delete(ctx, model.Room{ID: roomID})
 }

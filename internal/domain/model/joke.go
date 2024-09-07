@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/coderr"
+	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
 var ErrJokeNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Joke not found")
@@ -16,6 +16,8 @@ type Joke struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   time.Time
+
+	UserID string
 }
 
 type Jokes []Joke

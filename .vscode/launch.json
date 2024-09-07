@@ -8,7 +8,7 @@
       "mode": "auto",
       "args": ["-entrypoint", "jsonApi"],
       "program": "${workspaceFolder}/cmd",
-      "envFile": "${workspaceFolder}/env/dev.env",
+      "envFile": "${workspaceFolder}/env/.env.dev",
       "env": {
         "GORM_SQLITE_FOLDER_PATH": "${workspaceFolder}/internal/infra/local/gormSqlite",
         // "BOILER_SQLITE_FOLDER_PATH": "${workspaceFolder}/infra/local/boilerSqlite",
@@ -24,7 +24,7 @@
       "mode": "auto",
       "program": "${workspaceFolder}/cmd",
       "args": ["-entrypoint", "webApp"],
-      "envFile": "${workspaceFolder}/env/dev.env",
+      "envFile": "${workspaceFolder}/env/.env.dev",
       "env": {
         "SLOG_LOGGER_FOLDER_PATH": "${workspaceFolder}/log",
         "FILE_MANAGER_SERVICE_FILES_PATH": "${workspaceFolder}/static",

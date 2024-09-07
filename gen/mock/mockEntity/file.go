@@ -129,7 +129,7 @@ func (_c *File_Delete_Call) RunAndReturn(run func(context.Context, string) error
 }
 
 // GetByID provides a mock function with given fields: ctx, id
-func (_m *File) GetByID(ctx context.Context, id string) (model.FileInfo, []byte, error) {
+func (_m *File) GetByID(ctx context.Context, id string) (model.FileInfo, model.FileContent, error) {
 	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
@@ -137,9 +137,9 @@ func (_m *File) GetByID(ctx context.Context, id string) (model.FileInfo, []byte,
 	}
 
 	var r0 model.FileInfo
-	var r1 []byte
+	var r1 model.FileContent
 	var r2 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (model.FileInfo, []byte, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (model.FileInfo, model.FileContent, error)); ok {
 		return rf(ctx, id)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string) model.FileInfo); ok {
@@ -148,12 +148,10 @@ func (_m *File) GetByID(ctx context.Context, id string) (model.FileInfo, []byte,
 		r0 = ret.Get(0).(model.FileInfo)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string) []byte); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string) model.FileContent); ok {
 		r1 = rf(ctx, id)
 	} else {
-		if ret.Get(1) != nil {
-			r1 = ret.Get(1).([]byte)
-		}
+		r1 = ret.Get(1).(model.FileContent)
 	}
 
 	if rf, ok := ret.Get(2).(func(context.Context, string) error); ok {
@@ -184,12 +182,12 @@ func (_c *File_GetByID_Call) Run(run func(ctx context.Context, id string)) *File
 	return _c
 }
 
-func (_c *File_GetByID_Call) Return(_a0 model.FileInfo, _a1 []byte, _a2 error) *File_GetByID_Call {
+func (_c *File_GetByID_Call) Return(_a0 model.FileInfo, _a1 model.FileContent, _a2 error) *File_GetByID_Call {
 	_c.Call.Return(_a0, _a1, _a2)
 	return _c
 }
 
-func (_c *File_GetByID_Call) RunAndReturn(run func(context.Context, string) (model.FileInfo, []byte, error)) *File_GetByID_Call {
+func (_c *File_GetByID_Call) RunAndReturn(run func(context.Context, string) (model.FileInfo, model.FileContent, error)) *File_GetByID_Call {
 	_c.Call.Return(run)
 	return _c
 }

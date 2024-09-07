@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/abc-valera/netsly-golang/internal/core/global"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
@@ -21,17 +21,16 @@ type IJoke interface {
 }
 
 type joke struct {
-	command command.IJoke
+	IDependency
+
 	query.IJoke
 }
 
-func NewJoke(
-	command command.IJoke,
-	query query.IJoke,
-) IJoke {
+func newJoke(dep IDependency) IJoke {
 	return joke{
-		command: command,
-		IJoke:   query,
+		IDependency: dep,
+
+		IJoke: dep.Q().Joke,
 	}
 }
 
@@ -52,15 +51,13 @@ func (e joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, er
 		return model.Joke{}, err
 	}
 
-	return e.command.Create(ctx, command.JokeCreateRequest{
-		Joke: model.Joke{
-			ID:          uuid.New().String(),
-			Title:       req.Title,
-			Text:        req.Text,
-			Explanation: req.Explanation,
-			CreatedAt:   time.Now(),
-		},
-		UserID: req.UserID,
+	return e.C().Joke.Create(ctx, model.Joke{
+		ID:          uuid.New().String(),
+		Title:       req.Title,
+		Text:        req.Text,
+		Explanation: req.Explanation,
+		CreatedAt:   time.Now(),
+		UserID:      req.UserID,
 	})
 }
 
@@ -79,11 +76,16 @@ func (e joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) 
 		return model.Joke{}, err
 	}
 
-	return e.command.Update(ctx, jokeID, command.JokeUpdateRequest{
-		Title:       req.Title,
-		Text:        req.Text,
-		Explanation: req.Explanation,
-	})
+	return e.C().Joke.Update(
+		ctx,
+		model.Joke{ID: jokeID},
+		command.JokeUpdateRequest{
+			UpdatedAt: time.Now(),
+
+			Title:       req.Title,
+			Text:        req.Text,
+			Explanation: req.Explanation,
+		})
 }
 
 func (e joke) Delete(ctx context.Context, jokeID string) error {
@@ -95,5 +97,5 @@ func (e joke) Delete(ctx context.Context, jokeID string) error {
 		return err
 	}
 
-	return e.command.Delete(ctx, jokeID)
+	return e.C().Joke.Delete(ctx, model.Joke{ID: jokeID})
 }
