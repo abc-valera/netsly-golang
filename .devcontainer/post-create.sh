@@ -7,9 +7,6 @@ echo "Running post-create script 🛠️"
 # Install all the tools that weren't installed earlier
 go install mvdan.cc/gofumpt@latest
 
-# Turn on git hooks for the project
-git config --local core.hooksPath .githooks
-
 # Install all the dependencies
 echo "Downloading tools and dependencies 📦 (It can take some time...)"
 go mod download
@@ -27,6 +24,13 @@ docker pull redocly/cli
 
 # Create docker network
 docker network create netsly-network
+
+# Turn on git hooks for the project
+git config --local core.hooksPath .githooks
+
+# Create .env files
+cp env/.env.example env/.env.dev
+cp test/.env.example test/.env
 
 echo "Workspace initialized 🚀"
 echo "You can start coding now! 👨‍💻 / 👩‍💻"

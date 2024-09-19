@@ -4,7 +4,6 @@ import (
 	"flag"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/application"
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
@@ -20,9 +19,6 @@ import (
 )
 
 func main() {
-	// Set the timezone to UTC
-	time.Local = time.UTC
-
 	// Get cli flags for the entrypoint
 	entrypoint := flag.String("entrypoint", "webApp", "Port flag specifies the application presentation to be run: webApp, jsonApi, grpcApi")
 	flag.Parse()
