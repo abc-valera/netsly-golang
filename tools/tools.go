@@ -7,6 +7,9 @@
 package tools
 
 import (
+	// go air is used for hot reloading the application.
+	_ "github.com/air-verse/air"
+
 	// mockery is used for generating mocks for interfaces.
 	_ "github.com/vektra/mockery/v2"
 )

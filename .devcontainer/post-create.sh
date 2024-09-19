@@ -16,6 +16,7 @@ go mod download
 
 # Install project tools
 export GOBIN=$PWD/bin
+go install github.com/air-verse/air
 go install github.com/vektra/mockery/v2
 
 npm install --save-dev prettier prettier-plugin-go-template prettier-plugin-tailwindcss

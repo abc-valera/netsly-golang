@@ -5,10 +5,12 @@ package.json
 
 # Binaries
 bin/
-build/
 
 # Test files
 test/tmp
+
+# Temporary files
+tmp
 
 # Env files
 .env*

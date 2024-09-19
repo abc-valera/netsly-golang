@@ -6,38 +6,24 @@ dotenv: ["env/.env.dev"]
 
 tasks:
   entrypoint:jsonApi:
-    cmds:
-      - go build -o build/netsly cmd/main.go
-      - ./build/netsly -entrypoint jsonApi
+    cmd: ./bin/air -c build/.air.toml -- -entrypoint jsonApi
 
   entrypoint:webApp:
-    cmds:
-      - go build -o build/netsly cmd/main.go
-      - ./build/netsly -entrypoint webApp
+    cmd: ./bin/air -c build/.air.toml -- -entrypoint webApp
 
   entrypoint:grpcApi:
-    cmds:
-      - go build -o build/netsly cmd/main.go
-      - ./build/netsly -entrypoint grpcApi
+    cmd: ./bin/air -c build/.air.toml -- -entrypoint grpcApi
 
   entrypoint:seed:
     cmds:
-      - go build -o build/netsly cmd/main.go
-      - ./build/netsly -entrypoint seed
+      - go build -o bin/netsly cmd/main.go
+      - ./bin/netsly -entrypoint seed
 
   test:unit:
     cmd: go test ./internal/application/ -count=1
 
   test:integration:
-    cmds:
-      - task: test:integration:entity
-      - task: test:integration:service
-
-  test:integration:entity:
-    cmd: go test ./test/entity -count=1
-
-  test:integration:service:
-    cmd: go test ./test/service -count=1
+    cmd: go test ./test -count=1
 
   generate:domain:mocks:
     cmd: ./bin/mockery --config gen/mock/mockery.yaml

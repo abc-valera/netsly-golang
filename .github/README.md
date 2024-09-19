@@ -25,6 +25,7 @@ The following architecture sketch describes the relationships between the layers
 The following list describes technologies used in the project:
 
 - All the main code is written in Golang.
+- [Air](https://github.com/air-verse/air) is used for live-reloading.
 - For configuration `.env` files are used.
 - The project is containerized and can be run with Docker.
 - Makefiles are not used in the project. [Task](https://taskfile.dev/) is used as a task runner.
