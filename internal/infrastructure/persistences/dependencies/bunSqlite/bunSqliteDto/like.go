@@ -29,8 +29,8 @@ func NewLike(like model.Like) Like {
 
 func (dto Like) ToDomain() model.Like {
 	return model.Like{
-		CreatedAt: dto.CreatedAt,
-		DeletedAt: dto.DeletedAt,
+		CreatedAt: dto.CreatedAt.Local(),
+		DeletedAt: dto.DeletedAt.Local(),
 
 		UserID: dto.UserID,
 		JokeID: dto.JokeID,

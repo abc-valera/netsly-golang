@@ -46,7 +46,7 @@ func (e roomMember) Create(ctx context.Context, req RoomMemberCreateRequest) (mo
 	}
 
 	return e.C().RoomMember.Create(ctx, model.RoomMember{
-		CreatedAt: time.Now(),
+		CreatedAt: time.Now().Truncate(time.Millisecond),
 		UserID:    req.UserID,
 		RoomID:    req.RoomID,
 	})

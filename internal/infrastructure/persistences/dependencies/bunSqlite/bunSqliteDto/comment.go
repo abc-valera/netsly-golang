@@ -54,9 +54,9 @@ func (dto Comment) ToDomain() model.Comment {
 	return model.Comment{
 		ID:        dto.ID,
 		Text:      dto.Text,
-		CreatedAt: dto.CreatedAt,
-		UpdatedAt: dto.UpdatedAt,
-		DeletedAt: dto.DeletedAt,
+		CreatedAt: dto.CreatedAt.Local(),
+		UpdatedAt: dto.UpdatedAt.Local(),
+		DeletedAt: dto.DeletedAt.Local(),
 
 		UserID: dto.UserID,
 		JokeID: dto.JokeID,

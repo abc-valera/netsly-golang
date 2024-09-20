@@ -56,7 +56,7 @@ func (e joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, er
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation,
-		CreatedAt:   time.Now(),
+		CreatedAt:   time.Now().Truncate(time.Millisecond),
 		UserID:      req.UserID,
 	})
 }
@@ -80,7 +80,7 @@ func (e joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) 
 		ctx,
 		model.Joke{ID: jokeID},
 		command.JokeUpdateRequest{
-			UpdatedAt: time.Now(),
+			UpdatedAt: time.Now().Truncate(time.Millisecond),
 
 			Title:       req.Title,
 			Text:        req.Text,

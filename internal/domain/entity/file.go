@@ -14,7 +14,7 @@ import (
 )
 
 type IFile interface {
-	Create(ctx context.Context, req FileCreateRequest) (model.FileInfo, error)
+	Create(ctx context.Context, req FileCreateRequest) (FileCreateResponse, error)
 	Update(ctx context.Context, id string, req FileUpdateRequest) error
 	Delete(ctx context.Context, id string) error
 
@@ -38,18 +38,23 @@ type FileCreateRequest struct {
 	FileContent []byte
 }
 
-func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo, error) {
+type FileCreateResponse struct {
+	FileInfo    model.FileInfo
+	FileContent model.FileContent
+}
+
+func (e file) Create(ctx context.Context, req FileCreateRequest) (FileCreateResponse, error) {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
 
 	if err := global.Validate().Struct(req); err != nil {
-		return model.FileInfo{}, err
+		return FileCreateResponse{}, err
 	}
 
 	size := len(req.FileContent)
 	if size > 32000000 {
-		return model.FileInfo{}, coderr.NewCodeMessage(coderr.CodeInvalidArgument, "File content size is too large")
+		return FileCreateResponse{}, coderr.NewCodeMessage(coderr.CodeInvalidArgument, "File content size is too large")
 	}
 
 	var returnFileInfo model.FileInfo
@@ -64,7 +69,7 @@ func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo
 			Name:      req.Name,
 			Type:      req.Type,
 			Size:      size,
-			CreatedAt: time.Now(),
+			CreatedAt: time.Now().Truncate(time.Millisecond),
 		})
 		if err != nil {
 			return err
@@ -82,10 +87,13 @@ func (e file) Create(ctx context.Context, req FileCreateRequest) (model.FileInfo
 	}
 
 	if err := e.RunInTX(ctx, txFunc); err != nil {
-		return model.FileInfo{}, err
+		return FileCreateResponse{}, err
 	}
 
-	return returnFileInfo, nil
+	return FileCreateResponse{
+		FileInfo:    returnFileInfo,
+		FileContent: model.FileContent{ID: returnFileInfo.ID, Content: req.FileContent},
+	}, nil
 }
 
 type FileUpdateRequest struct {
@@ -106,7 +114,7 @@ func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) erro
 			ctx,
 			model.FileInfo{ID: id},
 			command.FileInfoUpdateRequest{
-				UpdatedAt: time.Now(),
+				UpdatedAt: time.Now().Truncate(time.Millisecond),
 
 				Name: req.Name,
 			}); err != nil {

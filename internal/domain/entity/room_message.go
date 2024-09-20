@@ -53,7 +53,7 @@ func (e roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (
 	return e.C().RoomMessage.Create(ctx, model.RoomMessage{
 		ID:        uuid.New().String(),
 		Text:      req.Text,
-		CreatedAt: time.Now(),
+		CreatedAt: time.Now().Truncate(time.Millisecond),
 		UserID:    req.UserID,
 		RoomID:    req.RoomID,
 	})
@@ -76,7 +76,7 @@ func (e roomMessage) Update(ctx context.Context, id string, req RoomMessageUpdat
 		ctx,
 		model.RoomMessage{ID: id},
 		command.RoomMessageUpdateRequest{
-			UpdatedAt: time.Now(),
+			UpdatedAt: time.Now().Truncate(time.Millisecond),
 
 			Text: req.Text,
 		})

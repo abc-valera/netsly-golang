@@ -25,22 +25,22 @@ func (_m *File) EXPECT() *File_Expecter {
 }
 
 // Create provides a mock function with given fields: ctx, req
-func (_m *File) Create(ctx context.Context, req entity.FileCreateRequest) (model.FileInfo, error) {
+func (_m *File) Create(ctx context.Context, req entity.FileCreateRequest) (entity.FileCreateResponse, error) {
 	ret := _m.Called(ctx, req)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
 	}
 
-	var r0 model.FileInfo
+	var r0 entity.FileCreateResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, entity.FileCreateRequest) (model.FileInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.FileCreateRequest) (entity.FileCreateResponse, error)); ok {
 		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, entity.FileCreateRequest) model.FileInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.FileCreateRequest) entity.FileCreateResponse); ok {
 		r0 = rf(ctx, req)
 	} else {
-		r0 = ret.Get(0).(model.FileInfo)
+		r0 = ret.Get(0).(entity.FileCreateResponse)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, entity.FileCreateRequest) error); ok {
@@ -71,12 +71,12 @@ func (_c *File_Create_Call) Run(run func(ctx context.Context, req entity.FileCre
 	return _c
 }
 
-func (_c *File_Create_Call) Return(_a0 model.FileInfo, _a1 error) *File_Create_Call {
+func (_c *File_Create_Call) Return(_a0 entity.FileCreateResponse, _a1 error) *File_Create_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *File_Create_Call) RunAndReturn(run func(context.Context, entity.FileCreateRequest) (model.FileInfo, error)) *File_Create_Call {
+func (_c *File_Create_Call) RunAndReturn(run func(context.Context, entity.FileCreateRequest) (entity.FileCreateResponse, error)) *File_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }

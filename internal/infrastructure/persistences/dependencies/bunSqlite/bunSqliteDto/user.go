@@ -75,9 +75,9 @@ func (dto User) ToDomain() model.User {
 		HashedPassword: dto.HashedPassword,
 		Fullname:       dto.Fullname,
 		Status:         dto.Status,
-		UpdatedAt:      dto.UpdatedAt,
-		CreatedAt:      dto.CreatedAt,
-		DeletedAt:      dto.DeletedAt,
+		CreatedAt:      dto.CreatedAt.Local(),
+		UpdatedAt:      dto.UpdatedAt.Local(),
+		DeletedAt:      dto.DeletedAt.Local(),
 	}
 }
 

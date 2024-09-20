@@ -53,7 +53,7 @@ func (e comment) Create(ctx context.Context, req CommentCreateRequest) (model.Co
 	return e.C().Comment.Create(ctx, model.Comment{
 		ID:        uuid.New().String(),
 		Text:      req.Text,
-		CreatedAt: time.Now(),
+		CreatedAt: time.Now().Truncate(time.Millisecond),
 		UserID:    req.UserID,
 		JokeID:    req.JokeID,
 	})
@@ -76,7 +76,7 @@ func (e comment) Update(ctx context.Context, commentID string, req CommentUpdate
 		ctx,
 		model.Comment{ID: commentID},
 		command.CommentUpdateRequest{
-			UpdatedAt: time.Now(),
+			UpdatedAt: time.Now().Truncate(time.Millisecond),
 
 			Text: req.Text,
 		})

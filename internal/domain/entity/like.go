@@ -46,7 +46,7 @@ func (e like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, er
 	}
 
 	return e.C().Like.Create(ctx, model.Like{
-		CreatedAt: time.Now(),
+		CreatedAt: time.Now().Truncate(time.Millisecond),
 		UserID:    req.UserID,
 		JokeID:    req.JokeID,
 	})

@@ -60,7 +60,7 @@ func (e room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 			ID:            uuid.NewString(),
 			Name:          req.Name,
 			Description:   req.Description,
-			CreatedAt:     time.Now(),
+			CreatedAt:     time.Now().Truncate(time.Millisecond),
 			CreatorUserID: req.CreatorUserID,
 		})
 		if err != nil {
@@ -103,7 +103,7 @@ func (e room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) 
 		ctx,
 		model.Room{ID: roomID},
 		command.RoomUpdateRequest{
-			UpdatedAt: time.Now(),
+			UpdatedAt: time.Now().Truncate(time.Millisecond),
 
 			Description: req.Description,
 		})

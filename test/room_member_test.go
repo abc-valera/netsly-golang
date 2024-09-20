@@ -1,16 +1,17 @@
-package entity_test
+package test
 
 import (
 	"testing"
 )
 
-func TestRoomMemberEntity(t *testing.T) {
-	t.Run("Create", func(t *testing.T) {
-	})
+func TestRoomMemberCreate(t *testing.T) {
+	t.Skip("unimplemented")
+}
 
-	t.Run("Update", func(t *testing.T) {
-	})
+func TestRoomMemberUpdate(t *testing.T) {
+	t.Skip("unimplemented")
+}
 
-	t.Run("Delete", func(t *testing.T) {
-	})
+func TestRoomMemberDelete(t *testing.T) {
+	t.Skip("unimplemented")
 }

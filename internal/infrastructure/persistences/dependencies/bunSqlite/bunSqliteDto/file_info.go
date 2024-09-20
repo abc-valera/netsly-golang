@@ -54,9 +54,9 @@ func (dto FileInfo) ToDomain() model.FileInfo {
 		Name:      dto.Name,
 		Type:      dto.Type,
 		Size:      dto.Size,
-		CreatedAt: dto.CreatedAt,
-		UpdatedAt: dto.UpdatedAt,
-		DeletedAt: dto.DeletedAt,
+		CreatedAt: dto.CreatedAt.Local(),
+		UpdatedAt: dto.UpdatedAt.Local(),
+		DeletedAt: dto.DeletedAt.Local(),
 	}
 }
 

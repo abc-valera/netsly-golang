@@ -28,9 +28,9 @@ func NewRoom(room model.Room) Room {
 		ID:          room.ID,
 		Name:        room.Name,
 		Description: room.Description,
-		CreatedAt:   room.CreatedAt,
-		UpdatedAt:   room.UpdatedAt,
-		DeletedAt:   room.DeletedAt,
+		CreatedAt:   room.CreatedAt.Local(),
+		UpdatedAt:   room.UpdatedAt.Local(),
+		DeletedAt:   room.DeletedAt.Local(),
 
 		CreatorUserID: room.CreatorUserID,
 	}

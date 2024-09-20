@@ -67,7 +67,7 @@ func (e user) Create(ctx context.Context, req UserCreateRequest) (model.User, er
 		HashedPassword: hashedPassword,
 		Fullname:       req.Fullname,
 		Status:         req.Status,
-		CreatedAt:      time.Now(),
+		CreatedAt:      time.Now().Truncate(time.Millisecond),
 	})
 }
 
@@ -87,7 +87,7 @@ func (e user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 	}
 
 	updateReq := command.UserUpdateRequest{
-		UpdatedAt: time.Now(),
+		UpdatedAt: time.Now().Truncate(time.Millisecond),
 
 		HashedPassword: nil,
 		Fullname:       req.Fullname,

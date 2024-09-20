@@ -68,9 +68,9 @@ func (dto Joke) ToDomain() model.Joke {
 		Title:       dto.Title,
 		Text:        dto.Text,
 		Explanation: dto.Explanation,
-		CreatedAt:   dto.CreatedAt,
-		UpdatedAt:   dto.UpdatedAt,
-		DeletedAt:   dto.DeletedAt,
+		CreatedAt:   dto.CreatedAt.Local(),
+		UpdatedAt:   dto.UpdatedAt.Local(),
+		DeletedAt:   dto.DeletedAt.Local(),
 
 		UserID: dto.UserID,
 	}

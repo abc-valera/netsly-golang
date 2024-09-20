@@ -1,4 +1,4 @@
-package entity_test
+package test
 
 import (
 	"bytes"
@@ -18,10 +18,14 @@ import (
 	"go.opentelemetry.io/otel/trace/noop"
 )
 
-// NewTest initializes the context, assertations and entities for the test and
-// should be called at the beginning of each test function.
+// NewTest initializes the test environment for a single test.
 //
-// Note, that each test function runs in a separate transaction.
+// The NewTest function should be called at the beginning of every test function,
+// shouldn't be used unside the subtests.
+//
+// Note, that we want to run each test in a separate transaction,
+// and rollback that transaction at the end of the test.
+// That is done to ensure that the tests are isolated from each other.
 var NewTest func(t *testing.T) (context.Context, *require.Assertions, entity.Entities)
 
 // testsFilesFolder is the folder where the files generated during the tests are stored.
@@ -64,6 +68,8 @@ func TestMain(m *testing.M) {
 			coderr.Fatal(err)
 		}
 	}
+	// Defer the cleanup
+	defer os.RemoveAll(testsFilesFolder)
 
 	// Init Services
 	services := services.NewServices()
@@ -71,17 +77,18 @@ func TestMain(m *testing.M) {
 	// Init DB and check if Commands and Queries are valid
 	db := persistences.NewDB()
 
-	// Init Entities
-	entities := entity.NewEntities(entity.NewDependency(db, services))
-
-	// Seed the persistence layer
-	coderr.NoErr(Seed(entities))
-
 	// Initialize the newTest function.
+	//
+	// The NewTest function should be called at the beginning of every test function,
+	// shouldn't be used unside the subtests.
+	//
 	// Note, that we want to run each test in a separate transaction,
 	// and rollback that transaction at the end of the test.
 	// That is done to ensure that the tests are isolated from each other.
 	NewTest = func(t *testing.T) (context.Context, *require.Assertions, entity.Entities) {
+		// Make sure to run tests in parallel
+		t.Parallel()
+
 		tx, err := db.BeginTX(context.Background())
 		require.NoError(t, err)
 
@@ -93,11 +100,5 @@ func TestMain(m *testing.M) {
 	}
 
 	// Run the tests
-	code := m.Run()
-
-	// Run the cleanup
-	os.RemoveAll(testsFilesFolder)
-
-	// End the test suite
-	os.Exit(code)
+	m.Run()
 }

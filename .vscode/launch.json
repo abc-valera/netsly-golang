@@ -10,8 +10,8 @@
       "program": "${workspaceFolder}/cmd",
       "envFile": "${workspaceFolder}/env/.env.dev",
       "env": {
-        "GORM_SQLITE_FOLDER_PATH": "${workspaceFolder}/internal/infra/local/gormSqlite",
-        // "BOILER_SQLITE_FOLDER_PATH": "${workspaceFolder}/infra/local/boilerSqlite",
+        // "GORM_SQLITE_FOLDER_PATH": "${workspaceFolder}/internal/infra/local/gormSqlite",
+        "BUN_SQLITE_FOLDER_PATH": "${workspaceFolder}/internal/infra/local/bunSqlite",
         "LOCAL_FILE_SAVER_FOLDER_PATH": "${workspaceFolder}/infra/local/localFileSaver",
 
         "SLOG_LOGGER_FOLDER_PATH": "${workspaceFolder}/infra/local/slogLogger"
