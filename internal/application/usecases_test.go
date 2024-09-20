@@ -14,10 +14,13 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	// Init global variables that are used in the usecase
-	// (generally we don't want to mock it, just use noop variants and make sure it's not null)
-	global.InitLog(loggerNop.New())
-	global.InitTracer(noop.NewTracerProvider().Tracer("testing"))
+	// Init global variables. Note, thatgenerally we don't want to mock it,
+	// just use noop variants and make sure it's not null.
+	global.Init(
+		global.ModeProduction,
+		noop.NewTracerProvider().Tracer("testing"),
+		loggerNop.New(),
+	)
 
 	os.Exit(m.Run())
 }

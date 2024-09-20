@@ -5,37 +5,39 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"time"
 
 	"go.opentelemetry.io/otel/trace"
 )
 
 // global contains global variables (singletons) that are used across the application.
 
-var (
-	appModeGlobal   Mode
-	appModeInitOnce sync.Once
-)
+var initOnce sync.Once
 
-func InitMode(mode Mode) {
-	appModeInitOnce.Do(func() {
-		appModeGlobal = mode
+func Init(
+	appMode Mode,
+	tracer trace.Tracer,
+	log ILogger,
+) {
+	initOnce.Do(func() {
+		// Set the timezone to UTC
+		time.Local = time.UTC
+
+		// Set the global variables
+		appModeGlobal = appMode
+		tracerGlobal = tracer
+		logGlobal = log
+		validateGlobal = newValidator()
 	})
 }
+
+var appModeGlobal Mode
 
 func IsProduction() bool {
 	return appModeGlobal == ModeProduction
 }
 
-var (
-	tracerGlobal   trace.Tracer
-	tracerInitOnce sync.Once
-)
-
-func InitTracer(tracer trace.Tracer) {
-	tracerInitOnce.Do(func() {
-		tracerGlobal = tracer
-	})
-}
+var tracerGlobal trace.Tracer
 
 func Tracer() trace.Tracer {
 	return tracerGlobal
@@ -51,22 +53,13 @@ func NewSpan(ctx context.Context) (context.Context, trace.Span) {
 	return tracerGlobal.Start(ctx, funcName)
 }
 
-var (
-	logGlobal   ILogger
-	logInitOnce sync.Once
-)
-
-func InitLog(logger ILogger) {
-	logInitOnce.Do(func() {
-		logGlobal = logger
-	})
-}
+var logGlobal ILogger
 
 func Log() ILogger {
 	return logGlobal
 }
 
-var validateGlobal IValidator = newValidator()
+var validateGlobal IValidator
 
 func Validate() IValidator {
 	return validateGlobal

@@ -2,7 +2,6 @@ package globals
 
 import (
 	"os"
-	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
@@ -16,9 +15,6 @@ import (
 )
 
 func New(entrypoint string) {
-	// Set the timezone to UTC
-	time.Local = time.UTC
-
 	var mode global.Mode
 	switch appMode := env.Load("APP_MODE"); appMode {
 	case "production", "prod":
@@ -51,9 +47,9 @@ func New(entrypoint string) {
 		coderr.Fatal("Invalid Trace Exporter implementation provided: " + otelTraceExporterService)
 	}
 
-	global.InitMode(mode)
-	global.InitLog(logger)
-	global.InitTracer(coderr.Must(
-		global.NewTracer(otelTraceExporter, "netsly."+entrypoint),
-	))
+	global.Init(
+		mode,
+		coderr.Must(global.NewTracer(otelTraceExporter, "netsly."+entrypoint)),
+		logger,
+	)
 }

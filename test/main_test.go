@@ -8,12 +8,14 @@ import (
 	"text/template"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
-	"github.com/abc-valera/netsly-golang/internal/infrastructure/globals"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/globals/logger/loggerNop"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/services"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel/trace/noop"
 )
 
 // NewTest initializes the context, assertations and entities for the test and
@@ -29,12 +31,13 @@ const testsFilesFolder = "./tmp"
 // It is responsible for setting up the infrastructure for the test environment.
 // You can change the infrastructure you want to test.
 func TestMain(m *testing.M) {
-	// Set the Global Environment and init the Global Layer
-	os.Setenv("APP_MODE", "production")
-	os.Setenv("OTEL_TRACE_EXPORTER", "nop")
-	os.Setenv("LOGGER_SERVICE", "nop")
-
-	globals.New("testing")
+	// Init global variables. Note, that generally we don't want to mock it,
+	// just use noop variants and make sure it's not null.
+	global.Init(
+		global.ModeProduction,
+		noop.NewTracerProvider().Tracer("testing"),
+		loggerNop.New(),
+	)
 
 	// Set the environment for the Persistence and Service layers.
 	// For that read the environment variables from the .env file,
