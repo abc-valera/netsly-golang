@@ -1,0 +1,7 @@
+// Here the workspace settings are stored.
+// Currently, it only activates the Revive linter using the config file from the project.
+{
+  "go.lintTool": "revive",
+  "go.lintOnSave": "workspace",
+  "go.lintFlags": ["-config", "./config/revive.toml"]
+}

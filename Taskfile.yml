@@ -6,13 +6,13 @@ dotenv: ["env/.env.dev"]
 
 tasks:
   entrypoint:jsonApi:
-    cmd: ./bin/air -c build/.air.toml -- -entrypoint jsonApi
+    cmd: ./bin/air -c config/air.toml -- -entrypoint jsonApi
 
   entrypoint:webApp:
-    cmd: ./bin/air -c build/.air.toml -- -entrypoint webApp
+    cmd: ./bin/air -c config/air.toml -- -entrypoint webApp
 
   entrypoint:grpcApi:
-    cmd: ./bin/air -c build/.air.toml -- -entrypoint grpcApi
+    cmd: ./bin/air -c config/air.toml -- -entrypoint grpcApi
 
   entrypoint:seed:
     cmds:

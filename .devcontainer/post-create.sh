@@ -10,13 +10,14 @@ go install mvdan.cc/gofumpt@latest
 # Install all the dependencies
 echo "Downloading tools and dependencies 📦 (It can take some time...)"
 go mod download
+npm install --save-dev prettier prettier-plugin-go-template prettier-plugin-tailwindcss
 
 # Install project tools
 export GOBIN=$PWD/bin
 go install github.com/air-verse/air
+go install github.com/golangci/golangci-lint/cmd/golangci-lint
+go install github.com/mgechev/revive
 go install github.com/vektra/mockery/v2
-
-npm install --save-dev prettier prettier-plugin-go-template prettier-plugin-tailwindcss
 
 # Pull docker images
 echo "Pulling docker images 🐳 (It can take even more time.....)"
