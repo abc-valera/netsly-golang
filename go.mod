@@ -13,7 +13,6 @@ require (
 	github.com/golangci/golangci-lint v1.61.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.1
-	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-sqlite3 v1.14.23
 	github.com/mgechev/revive v1.3.9
 	github.com/ogen-go/ogen v1.1.0
@@ -33,6 +32,7 @@ require (
 	google.golang.org/grpc v1.66.0
 	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.11
+	mvdan.cc/gofumpt v0.7.0
 )
 
 require (
@@ -220,7 +220,6 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20240725223205-93522f1f2a9f // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	honnef.co/go/tools v0.5.1 // indirect
-	mvdan.cc/gofumpt v0.7.0 // indirect
 	mvdan.cc/unparam v0.0.0-20240528143540-8a5130ca722f // indirect
 )
 

@@ -1,11 +1,9 @@
 package test
 
 import (
-	"bytes"
 	"context"
 	"os"
 	"testing"
-	"text/template"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
@@ -13,7 +11,6 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/globals/logger/loggerNop"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/services"
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace/noop"
 )
@@ -28,9 +25,6 @@ import (
 // That is done to ensure that the tests are isolated from each other.
 var NewTest func(t *testing.T) (context.Context, *require.Assertions, entity.Entities)
 
-// testsFilesFolder is the folder where the files generated during the tests are stored.
-const testsFilesFolder = "./tmp"
-
 // TestMain is the entry point for the test suite.
 // It is responsible for setting up the infrastructure for the test environment.
 // You can change the infrastructure you want to test.
@@ -43,33 +37,21 @@ func TestMain(m *testing.M) {
 		loggerNop.New(),
 	)
 
-	// Set the environment for the Persistence and Service layers.
-	// For that read the environment variables from the .env file,
-	// then create the directory for the temporary test infrastructure,
-	// and finally initialize the Persistence and Service layers.
-
-	// Create a text template with the content of the .env file
-	var buf bytes.Buffer
-	coderr.NoErr(coderr.Must(template.New(".env").ParseFiles(".env")).Execute(&buf, map[string]string{
-		"testInfraFolder": testsFilesFolder,
-	}))
-	// Parse and set the environment variables
-	for key, value := range coderr.Must(godotenv.Parse(&buf)) {
-		os.Setenv(key, value)
-	}
+	// Get the path to the directory where the test files will be stored
+	testFilesFolderPath := os.Getenv("TEST_FILES_FOLDER_PATH")
 
 	// Create a directory for temporary test files.
 	// If the directory already exists, delete it and create a new one.
-	if err := os.Mkdir(testsFilesFolder, 0o755); err != nil {
+	if err := os.Mkdir(testFilesFolderPath, 0o755); err != nil {
 		if os.IsExist(err) {
-			coderr.NoErr(os.RemoveAll(testsFilesFolder))
-			coderr.NoErr(os.Mkdir(testsFilesFolder, 0o755))
+			coderr.NoErr(os.RemoveAll(testFilesFolderPath))
+			coderr.NoErr(os.Mkdir(testFilesFolderPath, 0o755))
 		} else {
 			coderr.Fatal(err)
 		}
 	}
 	// Defer the cleanup
-	defer os.RemoveAll(testsFilesFolder)
+	defer os.RemoveAll(testFilesFolderPath)
 
 	// Init Services
 	services := services.NewServices()
