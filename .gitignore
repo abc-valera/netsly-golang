@@ -6,15 +6,12 @@ package.json
 # Binaries
 bin/
 
-# Test files
-test/tmp
-
 # Temporary files
-tmp
+tmp/
 
 # Env files
-.env*
-!.env.example
+*.env
+!.example.*.env
 
 # Local infrastructure files
 infra/local/*

@@ -1,0 +1,28 @@
+#!/usr/bin/bash
+
+# TODO: maybe use patterns from conventionalcommits.org
+
+# Define commit message types:
+# Here:
+# - DOCS: Documentation only changes
+# - FEATURE: A new feature
+# - FIX: A bug fix
+# - REFACTOR: An internal change of existing functionality
+# - STYLE: Changes that do not affect the meaning of the code
+# - TEST: Added/refactored the tests
+commit_types="(DOCS|FEATURE|FIX|REFACTOR|STYLE|TEST)"
+
+# Regex for a conventional commit message:
+convetional_commit_regex="^${commit_types}:.{1,75}$"
+
+# Get the commit message from the temporary created file
+commit_message=$(cat "$1")
+
+# Check the message.
+if [[ "$commit_message" =~ $convetional_commit_regex ]]; then
+    exit 0
+fi
+
+echo "Invalid commit message. Check the .githooks/commit-msg file for the commit message format."
+
+exit 1

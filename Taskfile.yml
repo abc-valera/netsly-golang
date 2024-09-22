@@ -2,31 +2,33 @@
 
 version: "3"
 
-dotenv: ["env/.env.dev"]
-
 tasks:
   entrypoint:jsonApi:
+    dotenv: ["env/dev.env"]
     cmd: ./bin/air -c config/air.toml -- -entrypoint jsonApi
 
   entrypoint:webApp:
     cmd: ./bin/air -c config/air.toml -- -entrypoint webApp
 
   entrypoint:grpcApi:
+    dotenv: ["env/dev.env"]
     cmd: ./bin/air -c config/air.toml -- -entrypoint grpcApi
 
   entrypoint:seed:
+    dotenv: ["env/dev.env"]
     cmds:
       - go build -o bin/netsly cmd/main.go
       - ./bin/netsly -entrypoint seed
 
   test:unit:
-    cmd: go test ./internal/application/ -count=1
+    cmd: go test ./internal/application/ -count=1 -timeout 2s
 
   test:integration:
-    cmd: go test ./test -count=1
+    dotenv: ["env/test.env"]
+    cmd: go test ./test -count=1 -timeout 5s
 
   generate:domain:mocks:
-    cmd: ./bin/mockery --config gen/mock/mockery.yaml
+    cmd: ./bin/mockery --config gen/mock/mockery.yaml --log-level "error"
 
   generate:presentation:jsonApi:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory

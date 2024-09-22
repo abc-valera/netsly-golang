@@ -7,12 +7,13 @@
 package tools
 
 import (
-	// go air is used for hot reloading the application
-	_ "github.com/air-verse/air"
-
-	// linters
+	// linters and formatters
 	_ "github.com/golangci/golangci-lint/cmd/golangci-lint"
 	_ "github.com/mgechev/revive"
+	_ "mvdan.cc/gofumpt"
+
+	// go air is used for hot reloading the application
+	_ "github.com/air-verse/air"
 
 	// mockery is used for generating mocks for interfaces
 	_ "github.com/vektra/mockery/v2"

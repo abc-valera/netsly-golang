@@ -4,9 +4,6 @@
 
 echo "Running post-create script 🛠️"
 
-# Install all the tools that weren't installed earlier
-go install mvdan.cc/gofumpt@latest
-
 # Install all the dependencies
 echo "Downloading tools and dependencies 📦 (It can take some time...)"
 go mod download
@@ -14,9 +11,10 @@ npm install --save-dev prettier prettier-plugin-go-template prettier-plugin-tail
 
 # Install project tools
 export GOBIN=$PWD/bin
-go install github.com/air-verse/air
 go install github.com/golangci/golangci-lint/cmd/golangci-lint
 go install github.com/mgechev/revive
+go install mvdan.cc/gofumpt
+go install github.com/air-verse/air
 go install github.com/vektra/mockery/v2
 
 # Pull docker images
@@ -30,8 +28,8 @@ docker network create netsly-network
 git config --local core.hooksPath .githooks
 
 # Create .env files
-cp env/.env.example env/.env.dev
-cp test/.env.example test/.env
+cp env/.example.dev.env env/dev.env
+cp env/.example.test.env env/test.env
 
 echo "Workspace initialized 🚀"
 echo "You can start coding now! 👨‍💻 / 👩‍💻"
