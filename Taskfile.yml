@@ -28,7 +28,7 @@ tasks:
     cmd: go test ./test -count=1 -timeout 5s
 
   generate:domain:mocks:
-    cmd: ./bin/mockery --config gen/mock/mockery.yaml --log-level "error"
+    cmd: ./bin/mockery --config config/mockery.yaml --log-level "error"
 
   generate:presentation:jsonApi:main:
     desc: Generate docs and code for the HTTP presentation from the OpenAPI spec directory
