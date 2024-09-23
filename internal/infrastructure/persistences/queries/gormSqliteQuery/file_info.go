@@ -8,7 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteDto"
-	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrutil"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrors"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/queries/gormSqliteQuery/gormSelector"
 	"gorm.io/gorm"
 )
@@ -29,7 +29,7 @@ func (q fileInfo) GetByID(ctx context.Context, id string) (model.FileInfo, error
 
 	var fileInfo gormSqliteDto.FileInfo
 	res := q.db.Where("id = ?", id).First(&fileInfo)
-	return fileInfo.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return fileInfo.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q fileInfo) GetAll(ctx context.Context, selector selector.Selector) (model.FileInfos, error) {
@@ -39,5 +39,5 @@ func (q fileInfo) GetAll(ctx context.Context, selector selector.Selector) (model
 	var fileInfos gormSqliteDto.FileInfos
 	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
 		Find(&fileInfos)
-	return fileInfos.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return fileInfos.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }

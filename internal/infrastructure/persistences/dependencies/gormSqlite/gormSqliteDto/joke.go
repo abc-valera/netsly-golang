@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 )
 
 type Joke struct {
@@ -31,22 +30,6 @@ func NewJoke(joke model.Joke) Joke {
 		DeletedAt:   joke.DeletedAt,
 		UserID:      joke.UserID,
 	}
-}
-
-func NewJokeUpdate(joke Joke, req command.JokeUpdateRequest) Joke {
-	joke.UpdatedAt = req.UpdatedAt
-
-	if req.Title != nil {
-		joke.Title = *req.Title
-	}
-	if req.Text != nil {
-		joke.Text = *req.Text
-	}
-	if req.Explanation != nil {
-		joke.Explanation = *req.Explanation
-	}
-
-	return joke
 }
 
 func (dto Joke) ToDomain() model.Joke {

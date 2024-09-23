@@ -8,14 +8,14 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
-	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 )
 
 type IFile interface {
-	Create(ctx context.Context, req FileCreateRequest) (FileCreateResponse, error)
-	Update(ctx context.Context, id string, req FileUpdateRequest) error
+	CreateForJoke(ctx context.Context, jokeID string, req FileCreateRequest) (FileCreateResponse, error)
+	CreateForRoom(ctx context.Context, roomID string, req FileCreateRequest) (FileCreateResponse, error)
+	Update(ctx context.Context, id string, req FileUpdateRequest) (model.FileInfo, error)
 	Delete(ctx context.Context, id string) error
 
 	GetByID(ctx context.Context, id string) (model.FileInfo, model.FileContent, error)
@@ -31,54 +31,23 @@ func newFile(dep IDependency) IFile {
 	}
 }
 
-type FileCreateRequest struct {
-	Name string         `validate:"min=1,max=256"`
-	Type model.FileType `validate:"enum"`
-
-	FileContent []byte
-}
-
-type FileCreateResponse struct {
-	FileInfo    model.FileInfo
-	FileContent model.FileContent
-}
-
-func (e file) Create(ctx context.Context, req FileCreateRequest) (FileCreateResponse, error) {
-	var span trace.Span
-	ctx, span = global.NewSpan(ctx)
-	defer span.End()
-
-	if err := global.Validate().Struct(req); err != nil {
-		return FileCreateResponse{}, err
-	}
-
-	size := len(req.FileContent)
-	if size > 32000000 {
-		return FileCreateResponse{}, coderr.NewCodeMessage(coderr.CodeInvalidArgument, "File content size is too large")
-	}
-
-	var returnFileInfo model.FileInfo
+func (e file) CreateForJoke(ctx context.Context, jokeID string, req FileCreateRequest) (FileCreateResponse, error) {
+	var resp FileCreateResponse
 	txFunc := func(
 		ctx context.Context,
 		txC command.Commands,
 		txQ query.Queries,
 		txE Entities,
 	) error {
-		fileInfo, err := txC.FileInfo.Create(ctx, model.FileInfo{
-			ID:        uuid.New().String(),
-			Name:      req.Name,
-			Type:      req.Type,
-			Size:      size,
-			CreatedAt: time.Now().Truncate(time.Millisecond),
-		})
+		var err error
+		resp, err = e.create(ctx, req, txC)
 		if err != nil {
 			return err
 		}
-		returnFileInfo = fileInfo
 
-		if _, err := txC.FileContent.Create(ctx, model.FileContent{
-			ID:      fileInfo.ID,
-			Content: req.FileContent,
+		if err := txC.FileInfoJoke.Create(ctx, model.FileInfoJoke{
+			FileInfoID: resp.FileInfo.ID,
+			JokeID:     jokeID,
 		}); err != nil {
 			return err
 		}
@@ -90,9 +59,81 @@ func (e file) Create(ctx context.Context, req FileCreateRequest) (FileCreateResp
 		return FileCreateResponse{}, err
 	}
 
+	return resp, nil
+}
+
+func (e file) CreateForRoom(ctx context.Context, roomID string, req FileCreateRequest) (FileCreateResponse, error) {
+	var resp FileCreateResponse
+	txFunc := func(
+		ctx context.Context,
+		txC command.Commands,
+		txQ query.Queries,
+		txE Entities,
+	) error {
+		var err error
+		resp, err = e.create(ctx, req, txC)
+		if err != nil {
+			return err
+		}
+
+		if err := txC.FileInfoRoom.Create(ctx, model.FileInfoRoom{
+			FileInfoID: resp.FileInfo.ID,
+			RoomID:     roomID,
+		}); err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	if err := e.RunInTX(ctx, txFunc); err != nil {
+		return FileCreateResponse{}, err
+	}
+
+	return resp, nil
+}
+
+type FileCreateRequest struct {
+	FileName    string         `validate:"required,max=128"`
+	FileType    model.FileType `validate:"enum"`
+	FileContent []byte         `validate:"required,max=32000000"`
+}
+
+type FileCreateResponse struct {
+	FileInfo    model.FileInfo
+	FileContent model.FileContent
+}
+
+// create creates a FileInfo and FileContent
+func (file) create(ctx context.Context, req FileCreateRequest, commands command.Commands) (FileCreateResponse, error) {
+	if err := global.Validate().Struct(req); err != nil {
+		return FileCreateResponse{}, err
+	}
+
+	fileInfo := model.FileInfo{
+		ID:        uuid.NewString(),
+		Name:      req.FileName,
+		Type:      req.FileType,
+		Size:      len(req.FileContent),
+		CreatedAt: time.Now().Truncate(time.Millisecond).Local(),
+	}
+
+	fileContent := model.FileContent{
+		ID:      fileInfo.ID,
+		Content: req.FileContent,
+	}
+
+	if err := commands.FileInfo.Create(ctx, fileInfo); err != nil {
+		return FileCreateResponse{}, err
+	}
+
+	if err := commands.FileContent.Create(ctx, fileContent); err != nil {
+		return FileCreateResponse{}, err
+	}
+
 	return FileCreateResponse{
-		FileInfo:    returnFileInfo,
-		FileContent: model.FileContent{ID: returnFileInfo.ID, Content: req.FileContent},
+		FileInfo:    fileInfo,
+		FileContent: fileContent,
 	}, nil
 }
 
@@ -100,29 +141,31 @@ type FileUpdateRequest struct {
 	Name *string `validate:"omitempty,min=1,max=256"`
 }
 
-func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) error {
+func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) (model.FileInfo, error) {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
 
 	if err := global.Validate().Struct(req); err != nil {
-		return err
+		return model.FileInfo{}, err
 	}
+
+	fileInfo, err := e.Q().FileInfo.GetByID(ctx, id)
+	if err != nil {
+		return model.FileInfo{}, err
+	}
+
+	fileInfo.UpdatedAt = time.Now().Truncate(time.Millisecond).Local()
 
 	if req.Name != nil {
-		if _, err := e.C().FileInfo.Update(
-			ctx,
-			model.FileInfo{ID: id},
-			command.FileInfoUpdateRequest{
-				UpdatedAt: time.Now().Truncate(time.Millisecond),
-
-				Name: req.Name,
-			}); err != nil {
-			return err
-		}
+		fileInfo.Name = *req.Name
 	}
 
-	return nil
+	if err := e.C().FileInfo.Update(ctx, fileInfo); err != nil {
+		return model.FileInfo{}, err
+	}
+
+	return fileInfo, nil
 }
 
 func (e file) Delete(ctx context.Context, id string) error {

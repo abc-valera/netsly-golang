@@ -2,8 +2,8 @@
 // To instantiate the struct the DTOs need to be defined.
 //
 // Package provides the following structs:
-//   - CreateUpdateDelete[BaseModel any, UpdateModel any, BunModel domainable[BaseModel]]
-//   - CreateDelete[BaseModel any, BunModel domainable[BaseModel]]
+//   - CreateUpdateDelete[DomainModel any, UpdateModel any, BunModel domainable[DomainModel]]
+//   - CreateDelete[DomainModel any, BunModel domainable[DomainModel]]
 //
 // Where:
 //   - Base Model is the domain model
@@ -11,86 +11,62 @@
 //   - BunModel is the model used for bun orm
 //
 // Also these structs needs to be provided:
-//   - dto func(BaseModel) BunModel
+//   - dto func(DomainModel) BunModel
 //   - dtoUpdate func(UpdateModel) (BunModel, []string)
 package bunSqliteCommand
 
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteErrutil"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteErrors"
 	"github.com/uptrace/bun"
 )
 
-type createUpdateDelete[BaseModel, UpdateModel any, BunModel domainable[BaseModel]] struct {
-	create[BaseModel, BunModel]
-	update[BaseModel, UpdateModel, BunModel]
-	delete[BaseModel, BunModel]
-}
-
-func NewCreateUpdateDelete[BaseModel, UpdateModel any, BunModel domainable[BaseModel]](
+func New[DomainModel, BunModel any](
 	db bun.IDB,
-	dto func(BaseModel) BunModel,
-	dtoUpdate func(BaseModel, UpdateModel) (BunModel, []string),
-) createUpdateDelete[BaseModel, UpdateModel, BunModel] {
-	return createUpdateDelete[BaseModel, UpdateModel, BunModel]{
-		create[BaseModel, BunModel]{db, dto},
-		update[BaseModel, UpdateModel, BunModel]{db, dtoUpdate},
-		delete[BaseModel, BunModel]{db, dto},
+	dto func(DomainModel) BunModel,
+) command.ICreateUpdateDelete[DomainModel] {
+	return struct {
+		create[DomainModel, BunModel]
+		update[DomainModel, BunModel]
+		delete[DomainModel, BunModel]
+	}{
+		create[DomainModel, BunModel]{db, dto},
+		update[DomainModel, BunModel]{db, dto},
+		delete[DomainModel, BunModel]{db, dto},
 	}
 }
 
-type createDelete[BaseModel any, BunModel domainable[BaseModel]] struct {
-	create[BaseModel, BunModel]
-	delete[BaseModel, BunModel]
+type create[DomainModel, BunModel any] struct {
+	db  bun.IDB
+	dto func(DomainModel) BunModel
 }
 
-func NewCreateDelete[BaseModel any, BunModel domainable[BaseModel]](
-	db bun.IDB,
-	dto func(BaseModel) BunModel,
-) createDelete[BaseModel, BunModel] {
-	return createDelete[BaseModel, BunModel]{
-		create[BaseModel, BunModel]{db, dto},
-		delete[BaseModel, BunModel]{db, dto},
-	}
-}
-
-type create[BaseModel any, BunModel domainable[BaseModel]] struct {
-	db bun.IDB
-
-	dto func(BaseModel) BunModel
-}
-
-func (c create[BaseModel, BunModel]) Create(ctx context.Context, model BaseModel) (BaseModel, error) {
-	bunModel := c.dto(model)
+func (c create[DomainModel, BunModel]) Create(ctx context.Context, req DomainModel) error {
+	bunModel := c.dto(req)
 	res, err := c.db.NewInsert().Model(&bunModel).Exec(ctx)
-	return bunModel.ToDomain(), bunSqliteErrutil.HandleCommandResult(res, err)
+	return bunSqliteErrors.HandleCommandResult(res, err)
 }
 
-type update[BaseModel, UpdateModel any, BunModel domainable[BaseModel]] struct {
-	db bun.IDB
-
-	dto func(BaseModel, UpdateModel) (BunModel, []string)
+type update[DomainModel, BunModel any] struct {
+	db  bun.IDB
+	dto func(DomainModel) BunModel
 }
 
-func (u update[BaseModel, UpdateModel, BunModel]) Update(ctx context.Context, ids BaseModel, updateModel UpdateModel) (BaseModel, error) {
-	bunModel, columns := u.dto(ids, updateModel)
-	res, err := u.db.NewUpdate().Model(&bunModel).Column(columns...).WherePK().Exec(ctx)
-	return bunModel.ToDomain(), bunSqliteErrutil.HandleCommandResult(res, err)
+func (u update[DomainModel, BunModel]) Update(ctx context.Context, req DomainModel) error {
+	bunModel := u.dto(req)
+	res, err := u.db.NewUpdate().Model(&bunModel).WherePK().Exec(ctx)
+	return bunSqliteErrors.HandleCommandResult(res, err)
 }
 
-type delete[BaseModel any, BunModel domainable[BaseModel]] struct {
-	db bun.IDB
-
-	dto func(BaseModel) BunModel
+type delete[DomainModel, BunModel any] struct {
+	db  bun.IDB
+	dto func(DomainModel) BunModel
 }
 
-func (d delete[BaseModel, BunModel]) Delete(ctx context.Context, model BaseModel) error {
-	bunModel := d.dto(model)
+func (d delete[DomainModel, BunModel]) Delete(ctx context.Context, req DomainModel) error {
+	bunModel := d.dto(req)
 	res, err := d.db.NewDelete().Model(&bunModel).WherePK().Exec(ctx)
-	return bunSqliteErrutil.HandleCommandResult(res, err)
-}
-
-type domainable[BaseModel any] interface {
-	ToDomain() BaseModel
+	return bunSqliteErrors.HandleCommandResult(res, err)
 }

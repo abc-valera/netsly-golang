@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/uptrace/bun"
 )
 
@@ -28,28 +27,12 @@ func NewRoom(room model.Room) Room {
 		ID:          room.ID,
 		Name:        room.Name,
 		Description: room.Description,
-		CreatedAt:   room.CreatedAt.Local(),
-		UpdatedAt:   room.UpdatedAt.Local(),
-		DeletedAt:   room.DeletedAt.Local(),
+		CreatedAt:   room.CreatedAt,
+		UpdatedAt:   room.UpdatedAt,
+		DeletedAt:   room.DeletedAt,
 
 		CreatorUserID: room.CreatorUserID,
 	}
-}
-
-func NewRoomUpdate(ids model.Room, req command.RoomUpdateRequest) (Room, []string) {
-	room := Room{
-		ID: ids.ID,
-	}
-	var columns []string
-
-	room.UpdatedAt = req.UpdatedAt
-	columns = append(columns, "updated_at")
-	if req.Description != nil {
-		room.Description = *req.Description
-		columns = append(columns, "description")
-	}
-
-	return room, columns
 }
 
 func (dto Room) ToDomain() model.Room {
@@ -60,6 +43,8 @@ func (dto Room) ToDomain() model.Room {
 		CreatedAt:   dto.CreatedAt,
 		UpdatedAt:   dto.UpdatedAt,
 		DeletedAt:   dto.DeletedAt,
+
+		CreatorUserID: dto.CreatorUserID,
 	}
 }
 

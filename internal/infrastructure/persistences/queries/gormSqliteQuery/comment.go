@@ -8,7 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteDto"
-	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrutil"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrors"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/queries/gormSqliteQuery/gormSelector"
 	"gorm.io/gorm"
 )
@@ -29,7 +29,7 @@ func (q comment) GetByID(ctx context.Context, id string) (model.Comment, error) 
 
 	var comment gormSqliteDto.Comment
 	res := q.db.Where("id = ?", id).First(&comment)
-	return comment.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return comment.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q comment) GetAllByJokeID(ctx context.Context, jokeID string, selector selector.Selector) (model.Comments, error) {
@@ -40,5 +40,5 @@ func (q comment) GetAllByJokeID(ctx context.Context, jokeID string, selector sel
 	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
 		Where("joke_id = ?", jokeID).
 		Find(&comments)
-	return comments.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return comments.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }

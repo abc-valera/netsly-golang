@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 )
 
 type Room struct {
@@ -29,16 +28,6 @@ func NewRoom(room model.Room) Room {
 		DeletedAt:     room.DeletedAt,
 		CreatorUserID: room.CreatorUserID,
 	}
-}
-
-func NewRoomUpdate(room Room, req command.RoomUpdateRequest) Room {
-	room.UpdatedAt = req.UpdatedAt
-
-	if req.Description != nil {
-		room.Description = *req.Description
-	}
-
-	return room
 }
 
 func (dto Room) ToDomain() model.Room {

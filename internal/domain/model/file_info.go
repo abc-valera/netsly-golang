@@ -18,6 +18,16 @@ type FileInfo struct {
 	DeletedAt time.Time
 }
 
+type FileInfoJoke struct {
+	FileInfoID string
+	JokeID     string
+}
+
+type FileInfoRoom struct {
+	FileInfoID string
+	RoomID     string
+}
+
 type FileInfos []FileInfo
 
 type FileType int
@@ -38,20 +48,4 @@ const (
 
 func (t FileType) IsValid() bool {
 	return t > 0 && t < fileTypeEnd
-}
-
-func FileTypeIsText(t FileType) bool {
-	return t == FileTypeTXT
-}
-
-func FileTypeIsImage(t FileType) bool {
-	return t == FileTypePNG || t == FileTypeJPEG
-}
-
-func FileTypeIsAudio(t FileType) bool {
-	return t == FileTypeMP3
-}
-
-func FileTypeIsVideo(t FileType) bool {
-	return t == FileTypeMP4
 }

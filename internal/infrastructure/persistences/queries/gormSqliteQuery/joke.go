@@ -8,7 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteDto"
-	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrutil"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrors"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/queries/gormSqliteQuery/gormSelector"
 	"gorm.io/gorm"
 )
@@ -29,7 +29,7 @@ func (q joke) GetByID(ctx context.Context, id string) (model.Joke, error) {
 
 	var joke gormSqliteDto.Joke
 	res := q.db.Where("id = ?", id).First(&joke)
-	return joke.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return joke.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q joke) SearchAllByTitle(ctx context.Context, keyword string, selector selector.Selector) (model.Jokes, error) {
@@ -40,7 +40,7 @@ func (q joke) SearchAllByTitle(ctx context.Context, keyword string, selector sel
 	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
 		Where("title LIKE ?", "%"+keyword+"%").
 		Find(&jokes)
-	return jokes.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return jokes.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q joke) GetAllByUserID(ctx context.Context, userID string, selector selector.Selector) (model.Jokes, error) {
@@ -51,5 +51,5 @@ func (q joke) GetAllByUserID(ctx context.Context, userID string, selector select
 	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
 		Where("user_id = ?", userID).
 		Find(&jokes)
-	return jokes.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return jokes.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }

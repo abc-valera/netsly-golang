@@ -38,6 +38,13 @@ func main() {
 	// Init usecases
 	usecases := application.NewUsecases(application.NewDependency(db, services))
 
+	// Check if all layers are initialized correctly
+	coderr.NoErr(coderr.CheckIfStructHasEmptyFields(db.Commands()))
+	coderr.NoErr(coderr.CheckIfStructHasEmptyFields(db.Queries()))
+	coderr.NoErr(coderr.CheckIfStructHasEmptyFields(services))
+	coderr.NoErr(coderr.CheckIfStructHasEmptyFields(entities))
+	coderr.NoErr(coderr.CheckIfStructHasEmptyFields(usecases))
+
 	// Init server functions
 	var serverStart, serverGracefulStop func()
 

@@ -49,24 +49,23 @@ func (e room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 		return model.Room{}, err
 	}
 
-	var returnRoom model.Room
+	room := model.Room{
+		ID:            uuid.NewString(),
+		Name:          req.Name,
+		Description:   req.Description,
+		CreatedAt:     time.Now().Truncate(time.Millisecond).Local(),
+		CreatorUserID: req.CreatorUserID,
+	}
+
 	txFunc := func(
 		ctx context.Context,
 		txC command.Commands,
 		txQ query.Queries,
 		txE Entities,
 	) error {
-		room, err := txC.Room.Create(ctx, model.Room{
-			ID:            uuid.NewString(),
-			Name:          req.Name,
-			Description:   req.Description,
-			CreatedAt:     time.Now().Truncate(time.Millisecond),
-			CreatorUserID: req.CreatorUserID,
-		})
-		if err != nil {
+		if err := txC.Room.Create(ctx, room); err != nil {
 			return err
 		}
-		returnRoom = room
 
 		if _, err := txE.RoomMember.Create(ctx, RoomMemberCreateRequest{
 			UserID: req.CreatorUserID,
@@ -82,7 +81,7 @@ func (e room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 		return model.Room{}, err
 	}
 
-	return returnRoom, nil
+	return room, nil
 }
 
 type RoomUpdateRequest struct {
@@ -99,24 +98,32 @@ func (e room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) 
 		return model.Room{}, err
 	}
 
-	return e.C().Room.Update(
-		ctx,
-		model.Room{ID: roomID},
-		command.RoomUpdateRequest{
-			UpdatedAt: time.Now().Truncate(time.Millisecond),
+	room, err := e.Q().Room.GetByID(ctx, roomID)
+	if err != nil {
+		return model.Room{}, err
+	}
 
-			Description: req.Description,
-		})
+	room.UpdatedAt = time.Now().Truncate(time.Millisecond).Local()
+
+	if req.Name != nil {
+		room.Name = *req.Name
+	}
+
+	if req.Description != nil {
+		room.Description = *req.Description
+	}
+
+	if err := e.C().Room.Update(ctx, room); err != nil {
+		return model.Room{}, err
+	}
+
+	return room, nil
 }
 
 func (e room) Delete(ctx context.Context, roomID string) error {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
-
-	if err := global.Validate().Var(roomID, "uuid"); err != nil {
-		return err
-	}
 
 	return e.C().Room.Delete(ctx, model.Room{ID: roomID})
 }

@@ -1,9 +1,9 @@
 // Here the workspace settings are stored.
-// Currently, it only activates the Revive linter using the config file from the project.
 {
-  "[go]": {
-    "editor.defaultFormatter": "golang.go"
-  },
+  // Testing configuration
+  "go.testEnvFile": "${workspaceFolder}/env/test.env",
+  "go.testFlags": ["-count=1"],
+  "go.testTimeout": "5s",
 
   // Gofumpt formatter settings
   "go.useLanguageServer": true,

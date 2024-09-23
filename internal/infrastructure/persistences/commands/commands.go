@@ -21,25 +21,29 @@ func New(dep Dependency) command.Commands {
 	var commands command.Commands
 
 	if dep := dep.GormSqlite; dep != nil {
-		commands.User = gormSqliteCommand.NewCreateUpdateDelete(dep, gormSqliteDto.NewUser, gormSqliteDto.NewUserUpdate)
-		commands.Joke = gormSqliteCommand.NewCreateUpdateDelete(dep, gormSqliteDto.NewJoke, gormSqliteDto.NewJokeUpdate)
-		commands.Like = gormSqliteCommand.NewCreateDelete(dep, gormSqliteDto.NewLike)
-		commands.Comment = gormSqliteCommand.NewCreateUpdateDelete(dep, gormSqliteDto.NewComment, gormSqliteDto.NewCommentUpdate)
-		commands.Room = gormSqliteCommand.NewCreateUpdateDelete(dep, gormSqliteDto.NewRoom, gormSqliteDto.NewRoomUpdate)
-		commands.RoomMember = gormSqliteCommand.NewCreateDelete(dep, gormSqliteDto.NewRoomMember)
-		commands.RoomMessage = gormSqliteCommand.NewCreateUpdateDelete(dep, gormSqliteDto.NewRoomMessage, gormSqliteDto.NewRoomMessageUpdate)
-		commands.FileInfo = gormSqliteCommand.NewCreateUpdateDelete(dep, gormSqliteDto.NewFileInfo, gormSqliteDto.NewFileInfoUpdate)
+		commands.User = gormSqliteCommand.New(dep, gormSqliteDto.NewUser)
+		commands.Joke = gormSqliteCommand.New(dep, gormSqliteDto.NewJoke)
+		commands.Like = gormSqliteCommand.New(dep, gormSqliteDto.NewLike)
+		commands.Comment = gormSqliteCommand.New(dep, gormSqliteDto.NewComment)
+		commands.Room = gormSqliteCommand.New(dep, gormSqliteDto.NewRoom)
+		commands.RoomMember = gormSqliteCommand.New(dep, gormSqliteDto.NewRoomMember)
+		commands.RoomMessage = gormSqliteCommand.New(dep, gormSqliteDto.NewRoomMessage)
+		commands.FileInfo = gormSqliteCommand.New(dep, gormSqliteDto.NewFileInfo)
+		commands.FileInfoJoke = gormSqliteCommand.New(dep, gormSqliteDto.NewFileInfoJoke)
+		commands.FileInfoRoom = gormSqliteCommand.New(dep, gormSqliteDto.NewFileInfoRoom)
 	}
 
 	if dep := dep.BunSqlite; dep != nil {
-		commands.User = bunSqliteCommand.NewCreateUpdateDelete(dep, bunSqliteDto.NewUser, bunSqliteDto.NewUserUpdate)
-		commands.Joke = bunSqliteCommand.NewCreateUpdateDelete(dep, bunSqliteDto.NewJoke, bunSqliteDto.NewJokeUpdate)
-		commands.Like = bunSqliteCommand.NewCreateDelete(dep, bunSqliteDto.NewLike)
-		commands.Comment = bunSqliteCommand.NewCreateUpdateDelete(dep, bunSqliteDto.NewComment, bunSqliteDto.NewCommentUpdate)
-		commands.Room = bunSqliteCommand.NewCreateUpdateDelete(dep, bunSqliteDto.NewRoom, bunSqliteDto.NewRoomUpdate)
-		commands.RoomMember = bunSqliteCommand.NewCreateDelete(dep, bunSqliteDto.NewRoomMember)
-		commands.RoomMessage = bunSqliteCommand.NewCreateUpdateDelete(dep, bunSqliteDto.NewRoomMessage, bunSqliteDto.NewRoomMessageUpdate)
-		commands.FileInfo = bunSqliteCommand.NewCreateUpdateDelete(dep, bunSqliteDto.NewFileInfo, bunSqliteDto.NewFileInfoUpdate)
+		commands.User = bunSqliteCommand.New(dep, bunSqliteDto.NewUser)
+		commands.Joke = bunSqliteCommand.New(dep, bunSqliteDto.NewJoke)
+		commands.Like = bunSqliteCommand.New(dep, bunSqliteDto.NewLike)
+		commands.Comment = bunSqliteCommand.New(dep, bunSqliteDto.NewComment)
+		commands.Room = bunSqliteCommand.New(dep, bunSqliteDto.NewRoom)
+		commands.RoomMember = bunSqliteCommand.New(dep, bunSqliteDto.NewRoomMember)
+		commands.RoomMessage = bunSqliteCommand.New(dep, bunSqliteDto.NewRoomMessage)
+		commands.FileInfo = bunSqliteCommand.New(dep, bunSqliteDto.NewFileInfo)
+		commands.FileInfoJoke = bunSqliteCommand.New(dep, bunSqliteDto.NewFileInfoJoke)
+		commands.FileInfoRoom = bunSqliteCommand.New(dep, bunSqliteDto.NewFileInfoRoom)
 	}
 
 	if dep.LocalFileSaver != "" {

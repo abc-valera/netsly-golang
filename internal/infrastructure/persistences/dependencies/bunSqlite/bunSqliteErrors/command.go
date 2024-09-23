@@ -1,4 +1,4 @@
-package bunSqliteErrutil
+package bunSqliteErrors
 
 import (
 	"database/sql"

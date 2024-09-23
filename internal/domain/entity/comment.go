@@ -6,7 +6,6 @@ import (
 
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
@@ -50,13 +49,19 @@ func (e comment) Create(ctx context.Context, req CommentCreateRequest) (model.Co
 		return model.Comment{}, err
 	}
 
-	return e.C().Comment.Create(ctx, model.Comment{
+	comment := model.Comment{
 		ID:        uuid.New().String(),
 		Text:      req.Text,
-		CreatedAt: time.Now().Truncate(time.Millisecond),
+		CreatedAt: time.Now().Truncate(time.Millisecond).Local(),
 		UserID:    req.UserID,
 		JokeID:    req.JokeID,
-	})
+	}
+
+	if err := e.C().Comment.Create(ctx, comment); err != nil {
+		return model.Comment{}, err
+	}
+
+	return comment, nil
 }
 
 type CommentUpdateRequest struct {
@@ -72,24 +77,28 @@ func (e comment) Update(ctx context.Context, commentID string, req CommentUpdate
 		return model.Comment{}, err
 	}
 
-	return e.C().Comment.Update(
-		ctx,
-		model.Comment{ID: commentID},
-		command.CommentUpdateRequest{
-			UpdatedAt: time.Now().Truncate(time.Millisecond),
+	comment, err := e.Q().Comment.GetByID(ctx, commentID)
+	if err != nil {
+		return model.Comment{}, err
+	}
 
-			Text: req.Text,
-		})
+	comment.UpdatedAt = time.Now().Truncate(time.Millisecond).Local()
+
+	if req.Text != nil {
+		comment.Text = *req.Text
+	}
+
+	if err := e.C().Comment.Update(ctx, comment); err != nil {
+		return model.Comment{}, err
+	}
+
+	return comment, nil
 }
 
 func (e comment) Delete(ctx context.Context, commentID string) error {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
-
-	if err := global.Validate().Var(commentID, "uuid"); err != nil {
-		return err
-	}
 
 	return e.C().Comment.Delete(ctx, model.Comment{ID: commentID})
 }

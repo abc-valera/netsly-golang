@@ -17,8 +17,5 @@ func NewServices() service.Services {
 		coderr.Fatal("Invalid Email Sender implementation provided: " + emailerService)
 	}
 
-	// Check if the services are valid
-	coderr.NoErr(coderr.CheckIfStructHasEmptyFields(services))
-
 	return services
 }

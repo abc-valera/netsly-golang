@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/uptrace/bun"
 )
 
@@ -43,30 +42,6 @@ func NewUser(user model.User) User {
 	}
 }
 
-func NewUserUpdate(ids model.User, req command.UserUpdateRequest) (User, []string) {
-	user := User{
-		ID: ids.ID,
-	}
-	var columns []string
-
-	user.UpdatedAt = req.UpdatedAt
-	columns = append(columns, "updated_at")
-	if req.HashedPassword != nil {
-		user.HashedPassword = *req.HashedPassword
-		columns = append(columns, "hashed_password")
-	}
-	if req.Fullname != nil {
-		user.Fullname = *req.Fullname
-		columns = append(columns, "fullname")
-	}
-	if req.Status != nil {
-		user.Status = *req.Status
-		columns = append(columns, "status")
-	}
-
-	return user, columns
-}
-
 func (dto User) ToDomain() model.User {
 	return model.User{
 		ID:             dto.ID,
@@ -75,9 +50,9 @@ func (dto User) ToDomain() model.User {
 		HashedPassword: dto.HashedPassword,
 		Fullname:       dto.Fullname,
 		Status:         dto.Status,
-		CreatedAt:      dto.CreatedAt.Local(),
-		UpdatedAt:      dto.UpdatedAt.Local(),
-		DeletedAt:      dto.DeletedAt.Local(),
+		CreatedAt:      dto.CreatedAt,
+		UpdatedAt:      dto.UpdatedAt,
+		DeletedAt:      dto.DeletedAt,
 	}
 }
 

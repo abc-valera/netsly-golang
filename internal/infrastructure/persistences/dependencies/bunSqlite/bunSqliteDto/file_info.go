@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/uptrace/bun"
 )
 
@@ -32,31 +31,43 @@ func NewFileInfo(fileInfo model.FileInfo) FileInfo {
 	}
 }
 
-func NewFileInfoUpdate(ids model.FileInfo, req command.FileInfoUpdateRequest) (FileInfo, []string) {
-	fileInfo := FileInfo{
-		ID: ids.ID,
-	}
-	var columns []string
-
-	fileInfo.UpdatedAt = req.UpdatedAt
-	columns = append(columns, "updated_at")
-	if req.Name != nil {
-		fileInfo.Name = *req.Name
-		columns = append(columns, "name")
-	}
-
-	return fileInfo, columns
-}
-
 func (dto FileInfo) ToDomain() model.FileInfo {
 	return model.FileInfo{
 		ID:        dto.ID,
 		Name:      dto.Name,
 		Type:      dto.Type,
 		Size:      dto.Size,
-		CreatedAt: dto.CreatedAt.Local(),
-		UpdatedAt: dto.UpdatedAt.Local(),
-		DeletedAt: dto.DeletedAt.Local(),
+		CreatedAt: dto.CreatedAt,
+		UpdatedAt: dto.UpdatedAt,
+		DeletedAt: dto.DeletedAt,
+	}
+}
+
+type FileInfoJoke struct {
+	bun.BaseModel `bun:"table:file_info_joke"`
+
+	FileInfoID string `bun:"file_info_id,pk,type:uuid"`
+	JokeID     string `bun:"joke_id,pk,type:uuid"`
+}
+
+func NewFileInfoJoke(fileInfoJoke model.FileInfoJoke) FileInfoJoke {
+	return FileInfoJoke{
+		FileInfoID: fileInfoJoke.FileInfoID,
+		JokeID:     fileInfoJoke.JokeID,
+	}
+}
+
+type FileInfoRoom struct {
+	bun.BaseModel `bun:"table:file_info_room"`
+
+	FileInfoID string `bun:"file_info_id,pk,type:uuid"`
+	RoomID     string `bun:"room_id,pk,type:uuid"`
+}
+
+func NewFileInfoRoom(fileInfoRoom model.FileInfoRoom) FileInfoRoom {
+	return FileInfoRoom{
+		FileInfoID: fileInfoRoom.FileInfoID,
+		RoomID:     fileInfoRoom.RoomID,
 	}
 }
 

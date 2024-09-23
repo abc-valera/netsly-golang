@@ -45,21 +45,23 @@ func (e roomMember) Create(ctx context.Context, req RoomMemberCreateRequest) (mo
 		return model.RoomMember{}, err
 	}
 
-	return e.C().RoomMember.Create(ctx, model.RoomMember{
-		CreatedAt: time.Now().Truncate(time.Millisecond),
+	roomMember := model.RoomMember{
+		CreatedAt: time.Now().Truncate(time.Millisecond).Local(),
 		UserID:    req.UserID,
 		RoomID:    req.RoomID,
-	})
+	}
+
+	if err := e.C().RoomMember.Create(ctx, roomMember); err != nil {
+		return model.RoomMember{}, err
+	}
+
+	return roomMember, nil
 }
 
 func (e roomMember) Delete(ctx context.Context, roomID, userID string) error {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
-
-	if err := global.Validate().Var(roomID, "uuid"); err != nil {
-		return err
-	}
 
 	return e.C().RoomMember.Delete(ctx, model.RoomMember{UserID: userID, RoomID: roomID})
 }

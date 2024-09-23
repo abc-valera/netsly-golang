@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/uptrace/bun"
 )
 
@@ -38,39 +37,15 @@ func NewJoke(joke model.Joke) Joke {
 	}
 }
 
-func NewJokeUpdate(ids model.Joke, req command.JokeUpdateRequest) (Joke, []string) {
-	joke := Joke{
-		ID: ids.ID,
-	}
-	var columns []string
-
-	joke.UpdatedAt = req.UpdatedAt
-	columns = append(columns, "updated_at")
-	if req.Title != nil {
-		joke.Title = *req.Title
-		columns = append(columns, "title")
-	}
-	if req.Text != nil {
-		joke.Text = *req.Text
-		columns = append(columns, "text")
-	}
-	if req.Explanation != nil {
-		joke.Explanation = *req.Explanation
-		columns = append(columns, "explanation")
-	}
-
-	return joke, columns
-}
-
 func (dto Joke) ToDomain() model.Joke {
 	return model.Joke{
 		ID:          dto.ID,
 		Title:       dto.Title,
 		Text:        dto.Text,
 		Explanation: dto.Explanation,
-		CreatedAt:   dto.CreatedAt.Local(),
-		UpdatedAt:   dto.UpdatedAt.Local(),
-		DeletedAt:   dto.DeletedAt.Local(),
+		CreatedAt:   dto.CreatedAt,
+		UpdatedAt:   dto.UpdatedAt,
+		DeletedAt:   dto.DeletedAt,
 
 		UserID: dto.UserID,
 	}

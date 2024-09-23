@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/uptrace/bun"
 )
 
@@ -34,29 +33,13 @@ func NewComment(comment model.Comment) Comment {
 	}
 }
 
-func NewCommentUpdate(ids model.Comment, req command.CommentUpdateRequest) (Comment, []string) {
-	comment := Comment{
-		ID: ids.ID,
-	}
-	var columns []string
-
-	comment.UpdatedAt = req.UpdatedAt
-	columns = append(columns, "updated_at")
-	if req.Text != nil {
-		comment.Text = *req.Text
-		columns = append(columns, "text")
-	}
-
-	return comment, columns
-}
-
 func (dto Comment) ToDomain() model.Comment {
 	return model.Comment{
 		ID:        dto.ID,
 		Text:      dto.Text,
-		CreatedAt: dto.CreatedAt.Local(),
-		UpdatedAt: dto.UpdatedAt.Local(),
-		DeletedAt: dto.DeletedAt.Local(),
+		CreatedAt: dto.CreatedAt,
+		UpdatedAt: dto.UpdatedAt,
+		DeletedAt: dto.DeletedAt,
 
 		UserID: dto.UserID,
 		JokeID: dto.JokeID,

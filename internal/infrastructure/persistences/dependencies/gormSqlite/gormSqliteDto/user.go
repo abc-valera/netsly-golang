@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 )
 
 type User struct {
@@ -37,22 +36,6 @@ func NewUser(user model.User) User {
 		UpdatedAt:      user.UpdatedAt,
 		DeletedAt:      user.DeletedAt,
 	}
-}
-
-func NewUserUpdate(user User, req command.UserUpdateRequest) User {
-	user.UpdatedAt = req.UpdatedAt
-
-	if req.HashedPassword != nil {
-		user.HashedPassword = *req.HashedPassword
-	}
-	if req.Fullname != nil {
-		user.Fullname = *req.Fullname
-	}
-	if req.Status != nil {
-		user.Status = *req.Status
-	}
-
-	return user
 }
 
 func (dto User) ToDomain() model.User {

@@ -45,24 +45,23 @@ func (e like) Create(ctx context.Context, req LikeCreateRequest) (model.Like, er
 		return model.Like{}, err
 	}
 
-	return e.C().Like.Create(ctx, model.Like{
-		CreatedAt: time.Now().Truncate(time.Millisecond),
+	like := model.Like{
+		CreatedAt: time.Now().Truncate(time.Millisecond).Local(),
 		UserID:    req.UserID,
 		JokeID:    req.JokeID,
-	})
+	}
+
+	if err := e.C().Like.Create(ctx, like); err != nil {
+		return model.Like{}, err
+	}
+
+	return like, nil
 }
 
 func (e like) Delete(ctx context.Context, userID string, jokeID string) error {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
-
-	if err := global.Validate().Var(userID, "required,uuid"); err != nil {
-		return err
-	}
-	if err := global.Validate().Var(jokeID, "required,uuid"); err != nil {
-		return err
-	}
 
 	return e.C().Like.Delete(ctx, model.Like{UserID: userID, JokeID: jokeID})
 }

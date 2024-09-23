@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/uptrace/bun"
 )
 
@@ -34,29 +33,16 @@ func NewRoomMessage(roomMessage model.RoomMessage) RoomMessage {
 	}
 }
 
-func NewRoomMessageUpdate(ids model.RoomMessage, req command.RoomMessageUpdateRequest) (RoomMessage, []string) {
-	roomMessage := RoomMessage{
-		ID: ids.ID,
-	}
-	var columns []string
-
-	roomMessage.UpdatedAt = req.UpdatedAt
-	columns = append(columns, "updated_at")
-	if req.Text != nil {
-		roomMessage.Text = *req.Text
-		columns = append(columns, "text")
-	}
-
-	return roomMessage, columns
-}
-
 func (dto RoomMessage) ToDomain() model.RoomMessage {
 	return model.RoomMessage{
 		ID:        dto.ID,
 		Text:      dto.Text,
-		CreatedAt: dto.CreatedAt.Local(),
-		UpdatedAt: dto.UpdatedAt.Local(),
-		DeletedAt: dto.DeletedAt.Local(),
+		CreatedAt: dto.CreatedAt,
+		UpdatedAt: dto.UpdatedAt,
+		DeletedAt: dto.DeletedAt,
+
+		UserID: dto.UserID,
+		RoomID: dto.RoomID,
 	}
 }
 

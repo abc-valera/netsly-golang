@@ -7,7 +7,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteDto"
-	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteErrutil"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteErrors"
 	"github.com/uptrace/bun"
 )
 
@@ -24,11 +24,11 @@ func NewRoomMember(db bun.IDB) query.IRoomMember {
 func (q roomMember) GetByIDs(ctx context.Context, userID string, roomID string) (model.RoomMember, error) {
 	roomMember := bunSqliteDto.RoomMember{}
 	err := q.db.NewSelect().Model(&roomMember).Where("user_id = ? AND room_id = ?", userID, roomID).Scan(ctx)
-	return roomMember.ToDomain(), bunSqliteErrutil.HandleQueryResult(err)
+	return roomMember.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
 func (q roomMember) GetAllByRoomID(ctx context.Context, roomID string, selector selector.Selector) (model.RoomMembers, error) {
 	roomMembers := bunSqliteDto.RoomMembers{}
 	err := q.db.NewSelect().Model(&roomMembers).Where("room_id = ?", roomID).Scan(ctx)
-	return roomMembers.ToDomain(), bunSqliteErrutil.HandleQueryResult(err)
+	return roomMembers.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }

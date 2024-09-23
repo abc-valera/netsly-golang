@@ -14,48 +14,45 @@ type fileContent struct {
 	filesPath string
 }
 
-func New(filesPath string) command.IFileContent {
+func New(filesPath string) command.ICreateUpdateDelete[model.FileContent] {
 	return &fileContent{
 		filesPath: filesPath,
 	}
 }
 
-func (c fileContent) Create(ctx context.Context, req model.FileContent) (model.FileContent, error) {
+func (c fileContent) Create(ctx context.Context, req model.FileContent) error {
 	_, span := global.NewSpan(ctx)
 	defer span.End()
 
 	newFile, err := os.Create(c.filesPath + "/" + req.ID)
 	if err != nil {
-		return model.FileContent{}, coderr.NewInternalErr(err)
+		return coderr.NewInternalErr(err)
 	}
 	defer newFile.Close()
 
 	if _, err := newFile.Write(req.Content); err != nil {
-		return model.FileContent{}, coderr.NewInternalErr(err)
+		return coderr.NewInternalErr(err)
 	}
 
-	return req, nil
+	return nil
 }
 
-func (c fileContent) Update(ctx context.Context, ids model.FileContent, req command.FileContentUpdateRequest) (model.FileContent, error) {
+func (c fileContent) Update(ctx context.Context, req model.FileContent) error {
 	_, span := global.NewSpan(ctx)
 	defer span.End()
 
-	if err := c.Delete(ctx, ids); err != nil {
-		return model.FileContent{}, err
+	if err := c.Delete(ctx, req); err != nil {
+		return err
 	}
 
-	return c.Create(ctx, model.FileContent{
-		ID:      ids.ID,
-		Content: req.Content,
-	})
+	return c.Create(ctx, req)
 }
 
-func (c fileContent) Delete(ctx context.Context, ids model.FileContent) error {
+func (c fileContent) Delete(ctx context.Context, req model.FileContent) error {
 	_, span := global.NewSpan(ctx)
 	defer span.End()
 
-	if err := os.Remove(c.filesPath + "/" + ids.ID); err != nil {
+	if err := os.Remove(c.filesPath + "/" + req.ID); err != nil {
 		if os.IsNotExist(err) {
 			return model.ErrFileContentNotFound
 		}

@@ -8,7 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteDto"
-	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrutil"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrors"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/queries/gormSqliteQuery/gormSelector"
 	"gorm.io/gorm"
 )
@@ -29,7 +29,7 @@ func (q roomMember) GetByIDs(ctx context.Context, userID string, roomID string) 
 
 	var roomMember gormSqliteDto.RoomMember
 	res := q.db.Where("user_id = ? AND room_id = ?", userID, roomID).First(&roomMember)
-	return roomMember.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return roomMember.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q roomMember) GetAllByRoomID(ctx context.Context, roomID string, selector selector.Selector) (model.RoomMembers, error) {
@@ -40,5 +40,5 @@ func (q roomMember) GetAllByRoomID(ctx context.Context, roomID string, selector 
 	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
 		Where("room_id = ?", roomID).
 		Find(&roomMembers)
-	return roomMembers.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return roomMembers.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }

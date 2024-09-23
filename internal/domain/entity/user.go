@@ -6,7 +6,6 @@ import (
 
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
@@ -60,15 +59,21 @@ func (e user) Create(ctx context.Context, req UserCreateRequest) (model.User, er
 
 	span.AddEvent("Hashing Password End")
 
-	return e.C().User.Create(ctx, model.User{
+	user := model.User{
 		ID:             uuid.New().String(),
 		Username:       req.Username,
 		Email:          req.Email,
 		HashedPassword: hashedPassword,
 		Fullname:       req.Fullname,
 		Status:         req.Status,
-		CreatedAt:      time.Now().Truncate(time.Millisecond),
-	})
+		CreatedAt:      time.Now().Truncate(time.Millisecond).Local(),
+	}
+
+	if err := e.C().User.Create(ctx, user); err != nil {
+		return model.User{}, err
+	}
+
+	return user, nil
 }
 
 type UserUpdateRequest struct {
@@ -86,13 +91,12 @@ func (e user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 		return model.User{}, err
 	}
 
-	updateReq := command.UserUpdateRequest{
-		UpdatedAt: time.Now().Truncate(time.Millisecond),
-
-		HashedPassword: nil,
-		Fullname:       req.Fullname,
-		Status:         req.Status,
+	user, err := e.GetByID(ctx, userID)
+	if err != nil {
+		return model.User{}, err
 	}
+
+	user.UpdatedAt = time.Now().Truncate(time.Millisecond).Local()
 
 	if req.Password != nil {
 		span.AddEvent("Hashing Password Start")
@@ -101,16 +105,24 @@ func (e user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 		if err != nil {
 			return model.User{}, err
 		}
-		updateReq.HashedPassword = &hashedPassword
+		user.HashedPassword = hashedPassword
 
 		span.AddEvent("Hashing Password End")
 	}
 
-	return e.C().User.Update(
-		ctx,
-		model.User{ID: userID},
-		updateReq,
-	)
+	if req.Fullname != nil {
+		user.Fullname = *req.Fullname
+	}
+
+	if req.Status != nil {
+		user.Status = *req.Status
+	}
+
+	if err := e.C().User.Update(ctx, user); err != nil {
+		return model.User{}, err
+	}
+
+	return user, nil
 }
 
 type UserDeleteRequest struct {

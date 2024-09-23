@@ -6,7 +6,6 @@ import (
 
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
@@ -50,13 +49,19 @@ func (e roomMessage) Create(ctx context.Context, req RoomMessageCreateRequest) (
 		return model.RoomMessage{}, err
 	}
 
-	return e.C().RoomMessage.Create(ctx, model.RoomMessage{
+	roomMessage := model.RoomMessage{
 		ID:        uuid.New().String(),
 		Text:      req.Text,
-		CreatedAt: time.Now().Truncate(time.Millisecond),
+		CreatedAt: time.Now().Truncate(time.Millisecond).Local(),
 		UserID:    req.UserID,
 		RoomID:    req.RoomID,
-	})
+	}
+
+	if err := e.C().RoomMessage.Create(ctx, roomMessage); err != nil {
+		return model.RoomMessage{}, err
+	}
+
+	return roomMessage, nil
 }
 
 type RoomMessageUpdateRequest struct {
@@ -72,24 +77,28 @@ func (e roomMessage) Update(ctx context.Context, id string, req RoomMessageUpdat
 		return model.RoomMessage{}, err
 	}
 
-	return e.C().RoomMessage.Update(
-		ctx,
-		model.RoomMessage{ID: id},
-		command.RoomMessageUpdateRequest{
-			UpdatedAt: time.Now().Truncate(time.Millisecond),
+	roomMessage, err := e.Q().RoomMessage.GetByID(ctx, id)
+	if err != nil {
+		return model.RoomMessage{}, err
+	}
 
-			Text: req.Text,
-		})
+	roomMessage.UpdatedAt = time.Now().Truncate(time.Millisecond).Local()
+
+	if req.Text != nil {
+		roomMessage.Text = *req.Text
+	}
+
+	if err := e.C().RoomMessage.Update(ctx, roomMessage); err != nil {
+		return model.RoomMessage{}, err
+	}
+
+	return roomMessage, nil
 }
 
 func (e roomMessage) Delete(ctx context.Context, id string) error {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
-
-	if err := global.Validate().Var(id, "uuid"); err != nil {
-		return err
-	}
 
 	return e.C().RoomMessage.Delete(ctx, model.RoomMessage{ID: id})
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteDto"
-	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrutil"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrors"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/queries/gormSqliteQuery/gormSelector"
 	"gorm.io/gorm"
 )
@@ -29,7 +29,7 @@ func (q user) GetByID(ctx context.Context, id string) (model.User, error) {
 
 	var user gormSqliteDto.User
 	res := q.db.Where("id = ?", id).First(&user)
-	return user.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return user.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q user) GetByUsername(ctx context.Context, username string) (model.User, error) {
@@ -38,7 +38,7 @@ func (q user) GetByUsername(ctx context.Context, username string) (model.User, e
 
 	var user gormSqliteDto.User
 	res := q.db.WithContext(ctx).Where("username = ?", username).First(&user)
-	return user.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return user.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q user) GetByEmail(ctx context.Context, email string) (model.User, error) {
@@ -47,7 +47,7 @@ func (q user) GetByEmail(ctx context.Context, email string) (model.User, error) 
 
 	var user gormSqliteDto.User
 	res := q.db.WithContext(ctx).Where("email = ?", email).First(&user)
-	return user.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return user.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q user) SearchAllByUsername(ctx context.Context, keyword string, selector selector.Selector) (model.Users, error) {
@@ -58,5 +58,5 @@ func (q user) SearchAllByUsername(ctx context.Context, keyword string, selector 
 	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
 		Where("username LIKE ?", "%"+keyword+"%").
 		Find(&users)
-	return users.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return users.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }

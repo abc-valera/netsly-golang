@@ -32,8 +32,8 @@ func NewRoomMember(member model.RoomMember) RoomMember {
 
 func (dto RoomMember) ToDomain() model.RoomMember {
 	return model.RoomMember{
-		CreatedAt: dto.CreatedAt.Local(),
-		DeletedAt: dto.DeletedAt.Local(),
+		CreatedAt: dto.CreatedAt,
+		DeletedAt: dto.DeletedAt,
 
 		UserID: dto.UserID,
 		RoomID: dto.RoomID,

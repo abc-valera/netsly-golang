@@ -24,27 +24,27 @@ func (_m *File) EXPECT() *File_Expecter {
 	return &File_Expecter{mock: &_m.Mock}
 }
 
-// Create provides a mock function with given fields: ctx, req
-func (_m *File) Create(ctx context.Context, req entity.FileCreateRequest) (entity.FileCreateResponse, error) {
-	ret := _m.Called(ctx, req)
+// CreateForJoke provides a mock function with given fields: ctx, jokeID, req
+func (_m *File) CreateForJoke(ctx context.Context, jokeID string, req entity.FileCreateRequest) (entity.FileCreateResponse, error) {
+	ret := _m.Called(ctx, jokeID, req)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Create")
+		panic("no return value specified for CreateForJoke")
 	}
 
 	var r0 entity.FileCreateResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, entity.FileCreateRequest) (entity.FileCreateResponse, error)); ok {
-		return rf(ctx, req)
+	if rf, ok := ret.Get(0).(func(context.Context, string, entity.FileCreateRequest) (entity.FileCreateResponse, error)); ok {
+		return rf(ctx, jokeID, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, entity.FileCreateRequest) entity.FileCreateResponse); ok {
-		r0 = rf(ctx, req)
+	if rf, ok := ret.Get(0).(func(context.Context, string, entity.FileCreateRequest) entity.FileCreateResponse); ok {
+		r0 = rf(ctx, jokeID, req)
 	} else {
 		r0 = ret.Get(0).(entity.FileCreateResponse)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, entity.FileCreateRequest) error); ok {
-		r1 = rf(ctx, req)
+	if rf, ok := ret.Get(1).(func(context.Context, string, entity.FileCreateRequest) error); ok {
+		r1 = rf(ctx, jokeID, req)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -52,31 +52,90 @@ func (_m *File) Create(ctx context.Context, req entity.FileCreateRequest) (entit
 	return r0, r1
 }
 
-// File_Create_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Create'
-type File_Create_Call struct {
+// File_CreateForJoke_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateForJoke'
+type File_CreateForJoke_Call struct {
 	*mock.Call
 }
 
-// Create is a helper method to define mock.On call
+// CreateForJoke is a helper method to define mock.On call
 //   - ctx context.Context
+//   - jokeID string
 //   - req entity.FileCreateRequest
-func (_e *File_Expecter) Create(ctx interface{}, req interface{}) *File_Create_Call {
-	return &File_Create_Call{Call: _e.mock.On("Create", ctx, req)}
+func (_e *File_Expecter) CreateForJoke(ctx interface{}, jokeID interface{}, req interface{}) *File_CreateForJoke_Call {
+	return &File_CreateForJoke_Call{Call: _e.mock.On("CreateForJoke", ctx, jokeID, req)}
 }
 
-func (_c *File_Create_Call) Run(run func(ctx context.Context, req entity.FileCreateRequest)) *File_Create_Call {
+func (_c *File_CreateForJoke_Call) Run(run func(ctx context.Context, jokeID string, req entity.FileCreateRequest)) *File_CreateForJoke_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(entity.FileCreateRequest))
+		run(args[0].(context.Context), args[1].(string), args[2].(entity.FileCreateRequest))
 	})
 	return _c
 }
 
-func (_c *File_Create_Call) Return(_a0 entity.FileCreateResponse, _a1 error) *File_Create_Call {
+func (_c *File_CreateForJoke_Call) Return(_a0 entity.FileCreateResponse, _a1 error) *File_CreateForJoke_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *File_Create_Call) RunAndReturn(run func(context.Context, entity.FileCreateRequest) (entity.FileCreateResponse, error)) *File_Create_Call {
+func (_c *File_CreateForJoke_Call) RunAndReturn(run func(context.Context, string, entity.FileCreateRequest) (entity.FileCreateResponse, error)) *File_CreateForJoke_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateForRoom provides a mock function with given fields: ctx, roomID, req
+func (_m *File) CreateForRoom(ctx context.Context, roomID string, req entity.FileCreateRequest) (entity.FileCreateResponse, error) {
+	ret := _m.Called(ctx, roomID, req)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateForRoom")
+	}
+
+	var r0 entity.FileCreateResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, entity.FileCreateRequest) (entity.FileCreateResponse, error)); ok {
+		return rf(ctx, roomID, req)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, entity.FileCreateRequest) entity.FileCreateResponse); ok {
+		r0 = rf(ctx, roomID, req)
+	} else {
+		r0 = ret.Get(0).(entity.FileCreateResponse)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, entity.FileCreateRequest) error); ok {
+		r1 = rf(ctx, roomID, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// File_CreateForRoom_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateForRoom'
+type File_CreateForRoom_Call struct {
+	*mock.Call
+}
+
+// CreateForRoom is a helper method to define mock.On call
+//   - ctx context.Context
+//   - roomID string
+//   - req entity.FileCreateRequest
+func (_e *File_Expecter) CreateForRoom(ctx interface{}, roomID interface{}, req interface{}) *File_CreateForRoom_Call {
+	return &File_CreateForRoom_Call{Call: _e.mock.On("CreateForRoom", ctx, roomID, req)}
+}
+
+func (_c *File_CreateForRoom_Call) Run(run func(ctx context.Context, roomID string, req entity.FileCreateRequest)) *File_CreateForRoom_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(entity.FileCreateRequest))
+	})
+	return _c
+}
+
+func (_c *File_CreateForRoom_Call) Return(_a0 entity.FileCreateResponse, _a1 error) *File_CreateForRoom_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *File_CreateForRoom_Call) RunAndReturn(run func(context.Context, string, entity.FileCreateRequest) (entity.FileCreateResponse, error)) *File_CreateForRoom_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -193,21 +252,31 @@ func (_c *File_GetByID_Call) RunAndReturn(run func(context.Context, string) (mod
 }
 
 // Update provides a mock function with given fields: ctx, id, req
-func (_m *File) Update(ctx context.Context, id string, req entity.FileUpdateRequest) error {
+func (_m *File) Update(ctx context.Context, id string, req entity.FileUpdateRequest) (model.FileInfo, error) {
 	ret := _m.Called(ctx, id, req)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, entity.FileUpdateRequest) error); ok {
+	var r0 model.FileInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, entity.FileUpdateRequest) (model.FileInfo, error)); ok {
+		return rf(ctx, id, req)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, entity.FileUpdateRequest) model.FileInfo); ok {
 		r0 = rf(ctx, id, req)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(model.FileInfo)
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string, entity.FileUpdateRequest) error); ok {
+		r1 = rf(ctx, id, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // File_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
@@ -230,12 +299,12 @@ func (_c *File_Update_Call) Run(run func(ctx context.Context, id string, req ent
 	return _c
 }
 
-func (_c *File_Update_Call) Return(_a0 error) *File_Update_Call {
-	_c.Call.Return(_a0)
+func (_c *File_Update_Call) Return(_a0 model.FileInfo, _a1 error) *File_Update_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *File_Update_Call) RunAndReturn(run func(context.Context, string, entity.FileUpdateRequest) error) *File_Update_Call {
+func (_c *File_Update_Call) RunAndReturn(run func(context.Context, string, entity.FileUpdateRequest) (model.FileInfo, error)) *File_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 )
 
 type FileInfo struct {
@@ -29,16 +28,6 @@ func NewFileInfo(fileInfo model.FileInfo) FileInfo {
 	}
 }
 
-func NewFileInfoUpdate(fileInfo FileInfo, req command.FileInfoUpdateRequest) FileInfo {
-	fileInfo.UpdatedAt = req.UpdatedAt
-
-	if req.Name != nil {
-		fileInfo.Name = *req.Name
-	}
-
-	return fileInfo
-}
-
 func (dto FileInfo) ToDomain() model.FileInfo {
 	return model.FileInfo{
 		ID:        dto.ID,
@@ -48,6 +37,30 @@ func (dto FileInfo) ToDomain() model.FileInfo {
 		CreatedAt: dto.CreatedAt,
 		UpdatedAt: dto.UpdatedAt,
 		DeletedAt: dto.DeletedAt,
+	}
+}
+
+type FileInfoJoke struct {
+	FileInfoID string `gorm:"primaryKey;not null"`
+	JokeID     string `gorm:"primaryKey;not null"`
+}
+
+func NewFileInfoJoke(fileInfoJoke model.FileInfoJoke) FileInfoJoke {
+	return FileInfoJoke{
+		FileInfoID: fileInfoJoke.FileInfoID,
+		JokeID:     fileInfoJoke.JokeID,
+	}
+}
+
+type FileInfoRoom struct {
+	FileInfoID string `gorm:"primaryKey;not null"`
+	RoomID     string `gorm:"primaryKey;not null"`
+}
+
+func NewFileInfoRoom(fileInfoRoom model.FileInfoRoom) FileInfoRoom {
+	return FileInfoRoom{
+		FileInfoID: fileInfoRoom.FileInfoID,
+		RoomID:     fileInfoRoom.RoomID,
 	}
 }
 

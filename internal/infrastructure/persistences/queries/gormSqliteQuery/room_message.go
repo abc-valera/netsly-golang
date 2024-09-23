@@ -8,7 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteDto"
-	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrutil"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrors"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/queries/gormSqliteQuery/gormSelector"
 	"gorm.io/gorm"
 )
@@ -29,7 +29,7 @@ func (q roomMessage) GetByID(ctx context.Context, id string) (model.RoomMessage,
 
 	var roomMessage gormSqliteDto.RoomMessage
 	res := q.db.Where("id = ?", id).First(&roomMessage)
-	return roomMessage.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return roomMessage.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q roomMessage) SearchAllByText(ctx context.Context, keyword string, selector selector.Selector) (model.RoomMessages, error) {
@@ -40,7 +40,7 @@ func (q roomMessage) SearchAllByText(ctx context.Context, keyword string, select
 	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
 		Where("text LIKE ?", "%"+keyword+"%").
 		Find(&roomMessages)
-	return roomMessages.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return roomMessages.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q roomMessage) GetAllByRoomID(ctx context.Context, roomID string, selector selector.Selector) (model.RoomMessages, error) {
@@ -51,5 +51,5 @@ func (q roomMessage) GetAllByRoomID(ctx context.Context, roomID string, selector
 	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
 		Where("room_id = ?", roomID).
 		Find(&roomMessages)
-	return roomMessages.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return roomMessages.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }

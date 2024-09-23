@@ -1,4 +1,4 @@
-package bunSqliteErrutil
+package bunSqliteErrors
 
 import "github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 

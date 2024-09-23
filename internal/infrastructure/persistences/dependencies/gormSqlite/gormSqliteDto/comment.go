@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 )
 
 type Comment struct {
@@ -28,16 +27,6 @@ func NewComment(comment model.Comment) Comment {
 		UserID:    comment.UserID,
 		JokeID:    comment.JokeID,
 	}
-}
-
-func NewCommentUpdate(comment Comment, req command.CommentUpdateRequest) Comment {
-	comment.UpdatedAt = req.UpdatedAt
-
-	if req.Text != nil {
-		comment.Text = *req.Text
-	}
-
-	return comment
 }
 
 func (dto Comment) ToDomain() model.Comment {

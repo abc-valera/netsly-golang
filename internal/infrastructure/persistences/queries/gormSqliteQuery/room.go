@@ -8,7 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteDto"
-	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrutil"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrors"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/queries/gormSqliteQuery/gormSelector"
 	"gorm.io/gorm"
 )
@@ -29,7 +29,7 @@ func (q room) GetByID(ctx context.Context, id string) (model.Room, error) {
 
 	var room gormSqliteDto.Room
 	res := q.db.Where("id = ?", id).First(&room)
-	return room.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return room.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q room) GetByName(ctx context.Context, name string) (model.Room, error) {
@@ -38,7 +38,7 @@ func (q room) GetByName(ctx context.Context, name string) (model.Room, error) {
 
 	var room gormSqliteDto.Room
 	res := q.db.WithContext(ctx).Where("name = ?", name).First(&room)
-	return room.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return room.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q room) SearchAllByName(ctx context.Context, keyword string, selector selector.Selector) (model.Rooms, error) {
@@ -49,7 +49,7 @@ func (q room) SearchAllByName(ctx context.Context, keyword string, selector sele
 	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
 		Where("name LIKE ?", "%"+keyword+"%").
 		Find(&rooms)
-	return rooms.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return rooms.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
 func (q room) GetAllByUserID(ctx context.Context, userID string, selector selector.Selector) (model.Rooms, error) {
@@ -60,5 +60,5 @@ func (q room) GetAllByUserID(ctx context.Context, userID string, selector select
 	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
 		Where("user_id = ?", userID).
 		Find(&rooms)
-	return rooms.ToDomain(), gormSqliteErrutil.HandleQueryResult(res)
+	return rooms.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }

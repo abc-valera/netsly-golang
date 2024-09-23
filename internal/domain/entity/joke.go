@@ -6,7 +6,6 @@ import (
 
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
@@ -51,14 +50,20 @@ func (e joke) Create(ctx context.Context, req JokeCreateRequest) (model.Joke, er
 		return model.Joke{}, err
 	}
 
-	return e.C().Joke.Create(ctx, model.Joke{
+	joke := model.Joke{
 		ID:          uuid.New().String(),
 		Title:       req.Title,
 		Text:        req.Text,
 		Explanation: req.Explanation,
-		CreatedAt:   time.Now().Truncate(time.Millisecond),
+		CreatedAt:   time.Now().Truncate(time.Millisecond).Local(),
 		UserID:      req.UserID,
-	})
+	}
+
+	if err := e.C().Joke.Create(ctx, joke); err != nil {
+		return model.Joke{}, err
+	}
+
+	return joke, nil
 }
 
 type JokeUpdateRequest struct {
@@ -76,26 +81,36 @@ func (e joke) Update(ctx context.Context, jokeID string, req JokeUpdateRequest) 
 		return model.Joke{}, err
 	}
 
-	return e.C().Joke.Update(
-		ctx,
-		model.Joke{ID: jokeID},
-		command.JokeUpdateRequest{
-			UpdatedAt: time.Now().Truncate(time.Millisecond),
+	joke, err := e.Q().Joke.GetByID(ctx, jokeID)
+	if err != nil {
+		return model.Joke{}, err
+	}
 
-			Title:       req.Title,
-			Text:        req.Text,
-			Explanation: req.Explanation,
-		})
+	joke.UpdatedAt = time.Now().Truncate(time.Millisecond).Local()
+
+	if req.Title != nil {
+		joke.Title = *req.Title
+	}
+
+	if req.Text != nil {
+		joke.Text = *req.Text
+	}
+
+	if req.Explanation != nil {
+		joke.Explanation = *req.Explanation
+	}
+
+	if err := e.C().Joke.Update(ctx, joke); err != nil {
+		return model.Joke{}, err
+	}
+
+	return joke, nil
 }
 
 func (e joke) Delete(ctx context.Context, jokeID string) error {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
-
-	if err := global.Validate().Var(jokeID, "uuid"); err != nil {
-		return err
-	}
 
 	return e.C().Joke.Delete(ctx, model.Joke{ID: jokeID})
 }
