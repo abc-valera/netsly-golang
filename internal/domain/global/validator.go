@@ -48,13 +48,13 @@ func (v validate) Struct(s interface{}) error {
 					returnErr,
 				)
 				break // Note: not sure if this is the best way to handle multiple errors
-			} else {
-				returnErr = errors.Join(
-					v.createFormattedError(e.Field(), e.Tag()),
-					returnErr,
-				)
-				break // Note: not sure if this is the best way to handle multiple errors
 			}
+
+			returnErr = errors.Join(
+				v.createFormattedError(e.Field(), e.Tag()),
+				returnErr,
+			)
+			break // Note: not sure if this is the best way to handle multiple errors
 		}
 		return returnErr
 	}
