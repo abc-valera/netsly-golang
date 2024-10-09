@@ -9,6 +9,6 @@ import (
 
 type IJoke interface {
 	GetByID(ctx context.Context, id string) (model.Joke, error)
-	GetAllByUserID(ctx context.Context, userID string, selector selector.Selector) (model.Jokes, error)
-	SearchAllByTitle(ctx context.Context, keyword string, selector selector.Selector) (model.Jokes, error)
+	GetAllByUserID(ctx context.Context, userID string, s selector.Selector) (model.Jokes, error)
+	SearchAllByTitle(ctx context.Context, keyword string, s selector.Selector) (model.Jokes, error)
 }

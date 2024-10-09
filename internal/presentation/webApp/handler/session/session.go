@@ -3,6 +3,8 @@ package session
 import (
 	"context"
 	"net/http"
+
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 )
 
 type ContextKey string
@@ -16,5 +18,11 @@ func SetUserID(r *http.Request, userID string) *http.Request {
 }
 
 func GetUserID(r *http.Request) string {
-	return r.Context().Value(UserIDKey).(string)
+	// TODO: do this in a separate function: webAppContexts.GetUserID
+	id, ok := r.Context().Value(UserIDKey).(string)
+	if !ok {
+		global.Log().Error("failed to get user id from context")
+		return ""
+	}
+	return id
 }

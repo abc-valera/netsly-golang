@@ -54,36 +54,40 @@ func New(slogLoggerFolderPath string) global.ILogger {
 	}
 }
 
-func (l slogLogger) Trace(msg string, vals ...interface{}) {
+func (l slogLogger) Trace(msg string, vals ...any) {
 	l.stdoutLogger.Log(context.Background(), levelTrace, msg, vals...)
 	l.fileLogger.Log(context.Background(), levelTrace, msg, vals...)
 }
 
-func (l slogLogger) Debug(msg string, vals ...interface{}) {
+func (l slogLogger) Debug(msg string, vals ...any) {
 	l.stdoutLogger.Debug(msg, vals...)
 	l.fileLogger.Debug(msg, vals...)
 }
 
-func (l slogLogger) Info(msg string, vals ...interface{}) {
+func (l slogLogger) Info(msg string, vals ...any) {
 	l.stdoutLogger.Info(msg, vals...)
 	l.fileLogger.Info(msg, vals...)
 }
 
-func (l slogLogger) Warn(msg string, vals ...interface{}) {
+func (l slogLogger) Warn(msg string, vals ...any) {
 	l.stdoutLogger.Warn(msg, vals...)
 	l.fileLogger.Warn(msg, vals...)
 }
 
-func (l slogLogger) Error(msg string, vals ...interface{}) {
+func (l slogLogger) Error(msg string, vals ...any) {
 	l.stdoutLogger.Error(msg, vals...)
 	l.fileLogger.Error(msg, vals...)
 }
 
 var handlerOptions = slog.HandlerOptions{
 	Level: levelTrace,
-	ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+	ReplaceAttr: func(_ []string, a slog.Attr) slog.Attr {
 		if a.Key == slog.LevelKey {
-			level := a.Value.Any().(slog.Level)
+			level, ok := a.Value.Any().(slog.Level)
+			if !ok {
+				return a
+			}
+
 			levelLabel, exists := levelNames[level]
 			if !exists {
 				levelLabel = level.String()

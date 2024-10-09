@@ -13,7 +13,7 @@ func New() service.IEmailer {
 	return &dummyEmailer{}
 }
 
-func (d dummyEmailer) SendEmail(e service.EmailSendRequest) error {
+func (dummyEmailer) SendEmail(e service.EmailSendRequest) error {
 	// Sending email
 	time.Sleep(500 * time.Millisecond)
 

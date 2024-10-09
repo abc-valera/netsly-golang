@@ -25,22 +25,22 @@ func NewErrorHandler(templateFS fs.FS) Error {
 	}
 }
 
-func (h Error) Error401Get(w http.ResponseWriter, r *http.Request) error {
+func (h Error) Error401Get(w http.ResponseWriter, _ *http.Request) error {
 	w.WriteHeader(http.StatusUnauthorized)
 	return h.error401.Render(w, nil)
 }
 
-func (h Error) Error403Get(w http.ResponseWriter, r *http.Request) error {
+func (h Error) Error403Get(w http.ResponseWriter, _ *http.Request) error {
 	w.WriteHeader(http.StatusForbidden)
 	return h.error403.Render(w, nil)
 }
 
-func (h Error) Error404Get(w http.ResponseWriter, r *http.Request) error {
+func (h Error) Error404Get(w http.ResponseWriter, _ *http.Request) error {
 	w.WriteHeader(http.StatusNotFound)
 	return h.error404.Render(w, nil)
 }
 
-func (h Error) Error500Get(w http.ResponseWriter, r *http.Request) error {
+func (h Error) Error500Get(w http.ResponseWriter, _ *http.Request) error {
 	w.WriteHeader(http.StatusInternalServerError)
 	if err := h.error500.Render(w, nil); err != nil {
 		global.Log().Error("Error500Get", "err", err.Error())

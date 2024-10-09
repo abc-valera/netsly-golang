@@ -8,6 +8,6 @@ import (
 )
 
 type ILike interface {
-	GetAllByJokeID(ctx context.Context, jokeID string, selector selector.Selector) (model.Likes, error)
+	GetAllByJokeID(ctx context.Context, jokeID string, s selector.Selector) (model.Likes, error)
 	CountByJokeID(ctx context.Context, jokeID string) (int, error)
 }

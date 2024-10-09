@@ -18,7 +18,7 @@ var staticFiles embed.FS
 
 func newRouter(
 	r *chi.Mux,
-	services service.Services,
+	_ service.Services,
 	handlers handler.Handlers,
 ) {
 	// Static files (before middleware)
@@ -33,7 +33,7 @@ func newRouter(
 		)
 
 		// 404 handler
-		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		r.NotFound(func(w http.ResponseWriter, _ *http.Request) {
 			w.WriteHeader(404)
 			w.Header().Set("HX-Redirect", "/error/404")
 		})

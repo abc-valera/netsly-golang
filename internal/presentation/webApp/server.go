@@ -25,7 +25,6 @@ var templateEmbedFS embed.FS
 func NewServer(
 	port string,
 	templatePath string,
-	staticPath string,
 
 	services service.Services,
 	entities entity.Entities,

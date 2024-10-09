@@ -4,26 +4,44 @@ confidence = 0.8
 errorCode = 0
 warningCode = 0
 
-# [rule.blank-imports]
-[rule.context-as-argument]
-[rule.context-keys-type]
-[rule.dot-imports]
-[rule.error-return]
-[rule.error-strings]
-[rule.error-naming]
-# [rule.exported]
-[rule.increment-decrement]
-# [rule.var-naming]
-[rule.var-declaration]
-# [rule.package-comments]
-[rule.range]
-[rule.receiver-naming]
-[rule.time-naming]
-[rule.unexported-return]
-[rule.indent-error-flow]
-[rule.errorf]
-[rule.empty-block]
-[rule.superfluous-else]
+enableAllRules = true
+
+# Configure import blacklists for different layers
+# [imports-blacklist]
+#   arguments =["crypto/md5", "crypto/sha1"]
+
+[rule.add-constant] # Maybe enable it
+  Disabled = true
+[rule.argument-limit]
+    Disabled = true
+[rule.deep-exit] # Maybe enable it
+    Disabled = true
+[rule.redefines-builtin-id]
+    Disabled = true
+[rule.function-result-limit]
+    Disabled = true
+[rule.blank-imports]
+    Disabled = true
+[rule.import-alias-naming]
+    Disabled = true
+[rule.cognitive-complexity]
+    Disabled = true
+[rule.cyclomatic]
+    Disabled = true
+[rule.exported]
+    Disabled = true
+[rule.import-shadowing]
+    Disabled = true
+[rule.var-naming]
+    Disabled = true
+[rule.package-comments]
+    Disabled = true
+[rule.line-length-limit]
+    Disabled = true
+[rule.function-length]
+    Disabled = true
+[rule.unhandled-error]    # Maybe enable it
+    Disabled = true
+    arguments = ["fmt.*"]
 # [rule.unused-parameter]
-[rule.unreachable-code]
-# [rule.redefines-builtin-id]
+#     Disabled = true

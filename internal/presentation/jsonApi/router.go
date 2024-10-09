@@ -13,9 +13,9 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/service"
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/auth"
-	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/errutil"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/handler"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/middleware"
+	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/restErrors"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/ws"
 )
 
@@ -28,7 +28,7 @@ func newHttpHandler(
 	refreshTokenDuration time.Duration,
 
 	entities entity.Entities,
-	services service.Services,
+	_ service.Services,
 	usecases application.Usecases,
 ) http.Handler {
 	// Init router
@@ -45,7 +45,7 @@ func newHttpHandler(
 	{
 		// Init handlers (implementations of ogen interfaces)
 		ogenHandler := &struct {
-			errutil.Handler
+			restErrors.Handler
 			handler.SignHandler
 			handler.MeHandler
 			handler.MeJokesHandler
@@ -56,7 +56,7 @@ func newHttpHandler(
 			handler.MeRooms
 			handler.Rooms
 		}{
-			Handler:           errutil.NewHandler(),
+			Handler:           restErrors.NewHandler(),
 			SignHandler:       handler.NewSignHandler(authManager, usecases.SignUsecase),
 			MeHandler:         handler.NewMeHandler(entities.User),
 			MeJokesHandler:    handler.NewMeJokesHandler(entities.Joke),
@@ -91,7 +91,6 @@ func newHttpHandler(
 		// Init ws manager
 		wsManager := ws.NewManager(
 			authManager,
-			services,
 		)
 
 		// WS routes

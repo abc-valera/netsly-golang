@@ -53,7 +53,6 @@ func main() {
 		serverStart, serverGracefulStop = webApp.NewServer(
 			env.Load("WEB_APP_PORT"),
 			env.Load("WEB_APP_TEMPLATE_PATH"),
-			env.Load("STATIC_PATH"),
 			services,
 			entities,
 			usecases,
@@ -71,7 +70,6 @@ func main() {
 	case "grpcApi":
 		serverStart, serverGracefulStop = grpcApi.RunServer(
 			env.Load("GRPC_API_PORT"),
-			env.Load("STATIC_PATH"),
 			services,
 			usecases,
 		)

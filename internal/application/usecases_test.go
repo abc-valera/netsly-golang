@@ -57,7 +57,7 @@ func NewMockDependency(t *testing.T) MockDependency {
 	}
 }
 
-func (m MockDependency) BeginTX(ctx context.Context) (IDependencyTX, error) {
+func (m MockDependency) BeginTX(_ context.Context) (IDependencyTX, error) {
 	return MockTX{
 		MockDependency: m,
 	}, nil
@@ -84,7 +84,7 @@ type MockTX struct {
 
 var _ IDependencyTX = (*MockTX)(nil)
 
-func (m MockTX) BeginTX(ctx context.Context) (IDependencyTX, error) {
+func (m MockTX) BeginTX(_ context.Context) (IDependencyTX, error) {
 	return m, nil
 }
 
@@ -99,11 +99,11 @@ func (m MockTX) E() entity.Entities {
 	return m.MockEntities.ToDomain()
 }
 
-func (m MockTX) Commit() error {
+func (MockTX) Commit() error {
 	return nil
 }
 
-func (m MockTX) Rollback() error {
+func (MockTX) Rollback() error {
 	return nil
 }
 

@@ -9,5 +9,5 @@ import (
 
 type IFileInfo interface {
 	GetByID(ctx context.Context, id string) (model.FileInfo, error)
-	GetAll(ctx context.Context, selector selector.Selector) (model.FileInfos, error)
+	GetAll(ctx context.Context, s selector.Selector) (model.FileInfos, error)
 }

@@ -27,7 +27,7 @@ func (q comment) GetByID(ctx context.Context, id string) (model.Comment, error) 
 	return comment.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
-func (q comment) GetAllByJokeID(ctx context.Context, jokeID string, selector selector.Selector) (model.Comments, error) {
+func (q comment) GetAllByJokeID(ctx context.Context, jokeID string, s selector.Selector) (model.Comments, error) {
 	comments := bunSqliteDto.Comments{}
 	err := q.db.NewSelect().Model(&comments).Where("joke_id = ?", jokeID).Scan(ctx)
 	return comments.ToDomain(), bunSqliteErrors.HandleQueryResult(err)

@@ -52,7 +52,7 @@ func (u signUsecase) SignUp(ctx context.Context, req SignUpRequest) (model.User,
 	defer span.End()
 
 	var user model.User
-	txFunc := func(ctx context.Context, txE entity.Entities, txU Usecases) error {
+	txFunc := func(ctx context.Context, txE entity.Entities, _ Usecases) error {
 		createdUser, err := txE.User.Create(ctx, entity.UserCreateRequest{
 			Username: req.Username,
 			Email:    req.Email,

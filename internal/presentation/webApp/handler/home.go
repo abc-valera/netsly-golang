@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
+	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler/session"
@@ -35,7 +36,11 @@ func NewHome(
 }
 
 func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
-	userID := r.Context().Value(session.UserIDKey).(string)
+	// TODO: do this in a separate function: webAppContexts.GetUserID
+	userID, ok := r.Context().Value(session.UserIDKey).(string)
+	if !ok {
+		global.Log().Error("failed to get user id from context")
+	}
 
 	user, err := h.user.GetByID(r.Context(), userID)
 	if err != nil {

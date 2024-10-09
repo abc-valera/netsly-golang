@@ -9,6 +9,6 @@ import (
 
 type IRoomMessage interface {
 	GetByID(ctx context.Context, id string) (model.RoomMessage, error)
-	GetAllByRoomID(ctx context.Context, roomID string, selector selector.Selector) (model.RoomMessages, error)
-	SearchAllByText(ctx context.Context, keyword string, selector selector.Selector) (model.RoomMessages, error)
+	GetAllByRoomID(ctx context.Context, roomID string, s selector.Selector) (model.RoomMessages, error)
+	SearchAllByText(ctx context.Context, keyword string, s selector.Selector) (model.RoomMessages, error)
 }

@@ -36,8 +36,8 @@ func (e file) CreateForJoke(ctx context.Context, jokeID string, req FileCreateRe
 	txFunc := func(
 		ctx context.Context,
 		txC command.Commands,
-		txQ query.Queries,
-		txE Entities,
+		_ query.Queries,
+		_ Entities,
 	) error {
 		var err error
 		resp, err = e.create(ctx, req, txC)
@@ -45,14 +45,10 @@ func (e file) CreateForJoke(ctx context.Context, jokeID string, req FileCreateRe
 			return err
 		}
 
-		if err := txC.FileInfoJoke.Create(ctx, model.FileInfoJoke{
+		return txC.FileInfoJoke.Create(ctx, model.FileInfoJoke{
 			FileInfoID: resp.FileInfo.ID,
 			JokeID:     jokeID,
-		}); err != nil {
-			return err
-		}
-
-		return nil
+		})
 	}
 
 	if err := e.RunInTX(ctx, txFunc); err != nil {
@@ -67,8 +63,8 @@ func (e file) CreateForRoom(ctx context.Context, roomID string, req FileCreateRe
 	txFunc := func(
 		ctx context.Context,
 		txC command.Commands,
-		txQ query.Queries,
-		txE Entities,
+		_ query.Queries,
+		_ Entities,
 	) error {
 		var err error
 		resp, err = e.create(ctx, req, txC)
@@ -76,14 +72,10 @@ func (e file) CreateForRoom(ctx context.Context, roomID string, req FileCreateRe
 			return err
 		}
 
-		if err := txC.FileInfoRoom.Create(ctx, model.FileInfoRoom{
+		return txC.FileInfoRoom.Create(ctx, model.FileInfoRoom{
 			FileInfoID: resp.FileInfo.ID,
 			RoomID:     roomID,
-		}); err != nil {
-			return err
-		}
-
-		return nil
+		})
 	}
 
 	if err := e.RunInTX(ctx, txFunc); err != nil {
@@ -176,18 +168,14 @@ func (e file) Delete(ctx context.Context, id string) error {
 	txFunc := func(
 		ctx context.Context,
 		txC command.Commands,
-		txQ query.Queries,
-		txE Entities,
+		_ query.Queries,
+		_ Entities,
 	) error {
 		if err := txC.FileInfo.Delete(ctx, model.FileInfo{ID: id}); err != nil {
 			return err
 		}
 
-		if err := txC.FileContent.Delete(ctx, model.FileContent{ID: id}); err != nil {
-			return err
-		}
-
-		return nil
+		return txC.FileContent.Delete(ctx, model.FileContent{ID: id})
 	}
 
 	return e.RunInTX(ctx, txFunc)

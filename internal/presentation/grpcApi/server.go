@@ -15,9 +15,7 @@ import (
 
 func RunServer(
 	port string,
-	staicPath string,
-
-	services service.Services,
+	_ service.Services,
 	usecases application.Usecases,
 ) (
 	serverStart func(),

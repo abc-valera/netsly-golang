@@ -9,5 +9,5 @@ import (
 
 type IRoomMember interface {
 	GetByIDs(ctx context.Context, userID, roomID string) (model.RoomMember, error)
-	GetAllByRoomID(ctx context.Context, roomID string, selector selector.Selector) (model.RoomMembers, error)
+	GetAllByRoomID(ctx context.Context, roomID string, s selector.Selector) (model.RoomMembers, error)
 }

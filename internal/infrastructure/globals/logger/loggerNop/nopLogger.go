@@ -10,20 +10,20 @@ func New() global.ILogger {
 	return &nopLogger{}
 }
 
-func (l nopLogger) Trace(msg string, vals ...interface{}) {
+func (nopLogger) Trace(_ string, _ ...any) {
 }
 
-func (l nopLogger) Debug(msg string, vals ...interface{}) {
+func (nopLogger) Debug(_ string, _ ...any) {
 }
 
-func (l nopLogger) Info(msg string, vals ...interface{}) {
+func (nopLogger) Info(_ string, _ ...any) {
 }
 
-func (l nopLogger) Warn(msg string, vals ...interface{}) {
+func (nopLogger) Warn(_ string, _ ...any) {
 }
 
-func (l nopLogger) Error(msg string, vals ...interface{}) {
+func (nopLogger) Error(_ string, _ ...any) {
 }
 
-func (l nopLogger) Fatal(msg string, vals ...interface{}) {
+func (nopLogger) Fatal(_ string, _ ...any) {
 }

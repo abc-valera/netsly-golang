@@ -27,7 +27,7 @@ func (q roomMember) GetByIDs(ctx context.Context, userID string, roomID string) 
 	return roomMember.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
-func (q roomMember) GetAllByRoomID(ctx context.Context, roomID string, selector selector.Selector) (model.RoomMembers, error) {
+func (q roomMember) GetAllByRoomID(ctx context.Context, roomID string, s selector.Selector) (model.RoomMembers, error) {
 	roomMembers := bunSqliteDto.RoomMembers{}
 	err := q.db.NewSelect().Model(&roomMembers).Where("room_id = ?", roomID).Scan(ctx)
 	return roomMembers.ToDomain(), bunSqliteErrors.HandleQueryResult(err)

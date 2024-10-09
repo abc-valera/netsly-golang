@@ -6,7 +6,7 @@ import (
 )
 
 // Fatal stops program execution
-func Fatal(data ...interface{}) {
+func Fatal(data ...any) {
 	fmt.Print(caller(2), "fatal: ")
 	fmt.Println(data...)
 	os.Exit(1)

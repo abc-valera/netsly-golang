@@ -50,7 +50,7 @@ type argon2idPassworder struct {
 	IDependency
 }
 
-func (pm argon2idPassworder) HashPassword(password string) (string, error) {
+func (argon2idPassworder) HashPassword(password string) (string, error) {
 	// Generate a cryptographically secure random salt.
 	salt, err := generateRandomBytes(saltLength)
 	if err != nil {
@@ -71,7 +71,7 @@ func (pm argon2idPassworder) HashPassword(password string) (string, error) {
 	return encodedHash, nil
 }
 
-func (pm argon2idPassworder) CheckPassword(password, encodedHash string) error {
+func (argon2idPassworder) CheckPassword(password, encodedHash string) error {
 	// Extract the parameters, salt and derived key from the encoded password hash.
 	salt, hash, err := decodeHash(encodedHash)
 	if err != nil {

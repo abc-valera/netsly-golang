@@ -27,7 +27,7 @@ func (q fileInfo) GetByID(ctx context.Context, id string) (model.FileInfo, error
 	return fileInfo.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
-func (q fileInfo) GetAll(ctx context.Context, selector selector.Selector) (model.FileInfos, error) {
+func (q fileInfo) GetAll(ctx context.Context, s selector.Selector) (model.FileInfos, error) {
 	fileInfos := bunSqliteDto.FileInfos{}
 	err := q.db.NewSelect().Model(&fileInfos).Scan(ctx)
 	return fileInfos.ToDomain(), bunSqliteErrors.HandleQueryResult(err)

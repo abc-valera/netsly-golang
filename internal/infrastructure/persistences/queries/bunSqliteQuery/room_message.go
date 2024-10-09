@@ -27,13 +27,13 @@ func (q roomMessage) GetByID(ctx context.Context, id string) (model.RoomMessage,
 	return roomMessage.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
-func (q roomMessage) GetAllByRoomID(ctx context.Context, roomID string, selector selector.Selector) (model.RoomMessages, error) {
+func (q roomMessage) GetAllByRoomID(ctx context.Context, roomID string, s selector.Selector) (model.RoomMessages, error) {
 	roomMessages := bunSqliteDto.RoomMessages{}
 	err := q.db.NewSelect().Model(&roomMessages).Where("room_id = ?", roomID).Scan(ctx)
 	return roomMessages.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
-func (q roomMessage) SearchAllByText(ctx context.Context, keyword string, selector selector.Selector) (model.RoomMessages, error) {
+func (q roomMessage) SearchAllByText(ctx context.Context, keyword string, s selector.Selector) (model.RoomMessages, error) {
 	roomMessages := bunSqliteDto.RoomMessages{}
 	err := q.db.NewSelect().Model(&roomMessages).Where("text LIKE ?", "%"+keyword+"%").Scan(ctx)
 	return roomMessages.ToDomain(), bunSqliteErrors.HandleQueryResult(err)

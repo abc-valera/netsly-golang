@@ -26,7 +26,7 @@ func NewSign(templateFS fs.FS, signUsecase application.ISignUsecase) Sign {
 	}
 }
 
-func (h Sign) SignGet(w http.ResponseWriter, r *http.Request) error {
+func (h Sign) SignGet(w http.ResponseWriter, _ *http.Request) error {
 	return h.signIndex.Render(w, nil)
 }
 

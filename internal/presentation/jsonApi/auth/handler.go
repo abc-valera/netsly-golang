@@ -17,7 +17,7 @@ func NewHandler(authManager Manager) Handler {
 	}
 }
 
-func (h Handler) HandleBearerAuth(ctx context.Context, operationName string, t ogen.BearerAuth) (context.Context, error) {
+func (h Handler) HandleBearerAuth(ctx context.Context, _ string, t ogen.BearerAuth) (context.Context, error) {
 	payload, err := h.authManager.VerifyToken(t.Token)
 	if err != nil {
 		return ctx, err

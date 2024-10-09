@@ -33,13 +33,13 @@ func (q room) GetByName(ctx context.Context, name string) (model.Room, error) {
 	return room.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
-func (q room) GetAllByUserID(ctx context.Context, userID string, selector selector.Selector) (model.Rooms, error) {
+func (q room) GetAllByUserID(ctx context.Context, userID string, s selector.Selector) (model.Rooms, error) {
 	rooms := bunSqliteDto.Rooms{}
 	err := q.db.NewSelect().Model(&rooms).Where("user_id = ?", userID).Scan(ctx)
 	return rooms.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
-func (q room) SearchAllByName(ctx context.Context, keyword string, selector selector.Selector) (model.Rooms, error) {
+func (q room) SearchAllByName(ctx context.Context, keyword string, s selector.Selector) (model.Rooms, error) {
 	rooms := bunSqliteDto.Rooms{}
 	err := q.db.NewSelect().Model(&rooms).Where("name LIKE ?", "%"+keyword+"%").Scan(ctx)
 	return rooms.ToDomain(), bunSqliteErrors.HandleQueryResult(err)

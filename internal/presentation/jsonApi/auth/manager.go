@@ -85,7 +85,7 @@ func (m Manager) VerifyToken(tokenString string) (Payload, error) {
 	_, err := jwt.ParseWithClaims(
 		tokenString,
 		&claims,
-		func(token *jwt.Token) (interface{}, error) {
+		func(_ *jwt.Token) (any, error) {
 			return []byte(m.signKey), nil
 		},
 	)

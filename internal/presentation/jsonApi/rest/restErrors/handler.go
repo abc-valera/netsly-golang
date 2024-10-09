@@ -1,4 +1,4 @@
-package errutil
+package restErrors
 
 import (
 	"context"
@@ -14,7 +14,7 @@ func NewHandler() Handler {
 	return Handler{}
 }
 
-func (h Handler) NewError(ctx context.Context, err error) *ogen.CodeErrorStatusCode {
+func (Handler) NewError(_ context.Context, err error) *ogen.CodeErrorStatusCode {
 	var codeError ogen.CodeError
 	if coderr.ErrorCode(err) == coderr.CodeInternal {
 		codeError = ogen.CodeError{

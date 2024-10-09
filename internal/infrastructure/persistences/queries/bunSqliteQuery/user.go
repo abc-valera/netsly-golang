@@ -45,7 +45,7 @@ func (q user) GetByEmail(ctx context.Context, email string) (model.User, error) 
 	return bunUser.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
-func (q user) SearchAllByUsername(ctx context.Context, keyword string, selector selector.Selector) (model.Users, error) {
+func (q user) SearchAllByUsername(ctx context.Context, keyword string, s selector.Selector) (model.Users, error) {
 	bunUsers := bunSqliteDto.Users{}
 	err := q.db.NewSelect().Model(&bunUsers).Where("username LIKE ?", "%"+keyword+"%").Scan(ctx)
 	return bunUsers.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
