@@ -12,12 +12,7 @@ type ISelectorHelper interface {
 }
 
 func NewDomainSelector(params ISelectorHelper) selector.Selector {
-	order := selector.OrderDesc
-	if params.GetOrder().Value == ogen.Order(selector.OrderAsc) {
-		order = selector.OrderAsc
-	}
 	return selector.Selector{
-		Order:  order,
 		Limit:  uint(params.GetLimit().Value),
 		Offset: uint(params.GetOffset().Value),
 	}

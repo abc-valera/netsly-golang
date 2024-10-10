@@ -15,7 +15,6 @@ func Seed(entities entity.Entities) {
 	ctx := context.Background()
 
 	params := selector.Selector{
-		Order: "asc",
 		Limit: 100,
 	}
 

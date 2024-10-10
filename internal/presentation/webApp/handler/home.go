@@ -51,7 +51,6 @@ func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
 		r.Context(),
 		userID,
 		selector.Selector{
-			Order:  "desc",
 			Limit:  5,
 			Offset: 0,
 		},
@@ -71,7 +70,6 @@ func (h Home) HomePartialJokesGet(w http.ResponseWriter, r *http.Request) error 
 		context.Background(),
 		session.GetUserID(r),
 		selector.Selector{
-			Order:  "desc",
 			Limit:  5,
 			Offset: 0,
 		},

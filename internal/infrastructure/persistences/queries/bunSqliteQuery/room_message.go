@@ -8,6 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteDto"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteErrors"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/queries/bunSqliteQuery/bunSqliteSelector"
 	"github.com/uptrace/bun"
 )
 
@@ -29,12 +30,12 @@ func (q roomMessage) GetByID(ctx context.Context, id string) (model.RoomMessage,
 
 func (q roomMessage) GetAllByRoomID(ctx context.Context, roomID string, s selector.Selector) (model.RoomMessages, error) {
 	roomMessages := bunSqliteDto.RoomMessages{}
-	err := q.db.NewSelect().Model(&roomMessages).Where("room_id = ?", roomID).Scan(ctx)
+	err := bunSqliteSelector.NewSelect(q.db, s).Model(&roomMessages).Where("room_id = ?", roomID).Scan(ctx)
 	return roomMessages.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
 func (q roomMessage) SearchAllByText(ctx context.Context, keyword string, s selector.Selector) (model.RoomMessages, error) {
 	roomMessages := bunSqliteDto.RoomMessages{}
-	err := q.db.NewSelect().Model(&roomMessages).Where("text LIKE ?", "%"+keyword+"%").Scan(ctx)
+	err := bunSqliteSelector.NewSelect(q.db, s).Model(&roomMessages).Where("text LIKE ?", "%"+keyword+"%").Scan(ctx)
 	return roomMessages.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }

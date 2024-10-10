@@ -8,6 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteDto"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteErrors"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/queries/bunSqliteQuery/bunSqliteSelector"
 	"github.com/uptrace/bun"
 )
 
@@ -29,6 +30,6 @@ func (q fileInfo) GetByID(ctx context.Context, id string) (model.FileInfo, error
 
 func (q fileInfo) GetAll(ctx context.Context, s selector.Selector) (model.FileInfos, error) {
 	fileInfos := bunSqliteDto.FileInfos{}
-	err := q.db.NewSelect().Model(&fileInfos).Scan(ctx)
+	err := bunSqliteSelector.NewSelect(q.db, s).Model(&fileInfos).Scan(ctx)
 	return fileInfos.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }

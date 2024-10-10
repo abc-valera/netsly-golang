@@ -8,6 +8,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteDto"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteErrors"
+	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/queries/bunSqliteQuery/bunSqliteSelector"
 	"github.com/uptrace/bun"
 )
 
@@ -29,6 +30,9 @@ func (q comment) GetByID(ctx context.Context, id string) (model.Comment, error) 
 
 func (q comment) GetAllByJokeID(ctx context.Context, jokeID string, s selector.Selector) (model.Comments, error) {
 	comments := bunSqliteDto.Comments{}
-	err := q.db.NewSelect().Model(&comments).Where("joke_id = ?", jokeID).Scan(ctx)
+	err := bunSqliteSelector.NewSelect(q.db, s).
+		Model(&comments).
+		Where("joke_id = ?", jokeID).
+		Scan(ctx)
 	return comments.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
