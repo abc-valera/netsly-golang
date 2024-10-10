@@ -1,6 +1,10 @@
 package test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
 
 func TestPassworderHashPassword(t *testing.T) {
 	_, r, entities := NewTest(t)
@@ -14,22 +18,22 @@ func TestPassworderHashPassword(t *testing.T) {
 }
 
 func TestPassworderCheckPassword(t *testing.T) {
-	_, r, entities := NewTest(t)
+	_, _, entities := NewTest(t)
 
 	t.Run("Success", func(t *testing.T) {
 		testPassword := "testPassword"
 
 		hash, err := entities.Passworder.HashPassword(testPassword)
-		r.NoError(err)
+		require.NoError(t, err)
 
 		err = entities.Passworder.CheckPassword(testPassword, hash)
-		r.NoError(err)
+		require.NoError(t, err)
 	})
 	t.Run("Failure", func(t *testing.T) {
 		hash, err := entities.Passworder.HashPassword("testPassword")
-		r.NoError(err)
+		require.NoError(t, err)
 
 		err = entities.Passworder.CheckPassword("anotherTestPassword", hash)
-		r.Error(err)
+		require.Error(t, err)
 	})
 }
