@@ -30,7 +30,7 @@ type sendErrorPayload struct {
 	ErrorMessage string `json:"error_message"`
 }
 
-func (h Error) HandleError(err error, currentClient client.Client) {
+func (Error) HandleError(err error, currentClient client.Client) {
 	send, _ := json.Marshal(sendErrorPayload{
 		ErrorMessage: err.Error(),
 	})

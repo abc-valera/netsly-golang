@@ -49,7 +49,7 @@ func Logger(next http.Handler) http.Handler {
 			wrapped.status = 200
 		}
 
-		logMsg := []interface{}{
+		logMsg := []any{
 			"status", wrapped.status,
 			"method", r.Method,
 			"path", r.URL.EscapedPath(),

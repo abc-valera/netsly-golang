@@ -15,7 +15,7 @@ var (
 	websocketUpgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
-		CheckOrigin:     func(r *http.Request) bool { return true },
+		CheckOrigin:     func(_ *http.Request) bool { return true },
 	}
 
 	readLimit int64 = 1024
@@ -97,7 +97,7 @@ func NewClient(w http.ResponseWriter, r *http.Request, authManager auth.Manager)
 	}()
 
 	// Set Pong handler to update the read deadline
-	conn.SetPongHandler(func(appData string) error {
+	conn.SetPongHandler(func(_ string) error {
 		return conn.SetReadDeadline(time.Now().Add(pongWait))
 	})
 

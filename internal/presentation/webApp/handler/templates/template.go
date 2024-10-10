@@ -11,10 +11,10 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
-type Data map[string]interface{}
+type Data map[string]any
 
 type ITemplate interface {
-	Render(w http.ResponseWriter, data interface{}) error
+	Render(w http.ResponseWriter, data any) error
 }
 
 // prodTemplate is a wrapper for template.prodTemplate.
@@ -54,7 +54,7 @@ func newProdTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 }
 
 // Render executes the template with the given data.
-func (t prodTemplate) Render(wr http.ResponseWriter, data interface{}) error {
+func (t prodTemplate) Render(wr http.ResponseWriter, data any) error {
 	if t.tmpl == nil {
 		return coderr.NewInternalErr(fmt.Errorf("template is nil"))
 	}
@@ -89,7 +89,7 @@ func newDevTemplate(fs fs.FS, filenames ...string) (ITemplate, error) {
 	}, nil
 }
 
-func (t devTemplate) Render(wr http.ResponseWriter, data interface{}) error {
+func (t devTemplate) Render(wr http.ResponseWriter, data any) error {
 	tmpl, err := template.ParseFS(t.fs, t.filenames...)
 	if err != nil {
 		return coderr.NewInternalErr(err)
