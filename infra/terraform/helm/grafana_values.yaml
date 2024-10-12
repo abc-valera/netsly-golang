@@ -1,2 +1,5 @@
 adminUser: admin
 adminPassword: admin
+#
+# To access Grafana dashboard, run the following command:
+# kubectl port-forward -n monitoring services/grafana 3000:80

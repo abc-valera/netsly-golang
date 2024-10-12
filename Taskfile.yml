@@ -82,7 +82,7 @@ tasks:
       terraform apply
 
   infrastructure:terraform:down:
-    cmd: terraform destroy -auto-approve
+    cmd: cd infra/terraform && terraform destroy -auto-approve
 
   other:run_evans:
     cmds:
