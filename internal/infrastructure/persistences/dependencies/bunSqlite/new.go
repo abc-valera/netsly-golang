@@ -1,19 +1,17 @@
 package bunSqlite
 
-// Note, that we don't import sqlite driver here
-// because it is already imported in the gormSqlite/new.go file.
-
 import (
 	"context"
 	"database/sql"
 	"os"
+	"regexp"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteDto"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
 
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/mattn/go-sqlite3"
 )
 
 // New creates a new sqlite database connection and migrates all models
@@ -25,6 +23,21 @@ func New(bunSqliteFolderPath string) (*bun.DB, error) {
 		}
 	}
 
+	// Register custom functions before opening the database connection
+	sql.Register(
+		"sqlite3_with_regexp",
+		&sqlite3.SQLiteDriver{
+			ConnectHook: func(conn *sqlite3.SQLiteConn) error {
+				return conn.RegisterFunc(
+					"regexp",
+					func(re, s string) (bool, error) {
+						return regexp.MatchString(re, s)
+					},
+					true,
+				)
+			},
+		})
+
 	// Initialize the database
 	//
 	// Consider the following:
@@ -32,7 +45,7 @@ func New(bunSqliteFolderPath string) (*bun.DB, error) {
 	// - Set busy timeout, so concurrent writers wait on each other instead of erroring immediately
 	// - Enable foreign key checks
 	sqlDB, err := sql.Open(
-		"sqlite3",
+		"sqlite3_with_regexp",
 		bunSqliteFolderPath+"/sqlite.db"+"?_journal=WAL&_timeout=5000&_foreign_keys=true",
 	)
 	if err != nil {

@@ -130,9 +130,9 @@ func (_c *Room_Delete_Call) RunAndReturn(run func(context.Context, string) error
 	return _c
 }
 
-// GetAllByUserID provides a mock function with given fields: ctx, userID, _a2
-func (_m *Room) GetAllByUserID(ctx context.Context, userID string, _a2 selector.Selector) (model.Rooms, error) {
-	ret := _m.Called(ctx, userID, _a2)
+// GetAllByUserID provides a mock function with given fields: ctx, userID, s
+func (_m *Room) GetAllByUserID(ctx context.Context, userID string, s selector.Selector) (model.Rooms, error) {
+	ret := _m.Called(ctx, userID, s)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAllByUserID")
@@ -141,10 +141,10 @@ func (_m *Room) GetAllByUserID(ctx context.Context, userID string, _a2 selector.
 	var r0 model.Rooms
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) (model.Rooms, error)); ok {
-		return rf(ctx, userID, _a2)
+		return rf(ctx, userID, s)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) model.Rooms); ok {
-		r0 = rf(ctx, userID, _a2)
+		r0 = rf(ctx, userID, s)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(model.Rooms)
@@ -152,7 +152,7 @@ func (_m *Room) GetAllByUserID(ctx context.Context, userID string, _a2 selector.
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, selector.Selector) error); ok {
-		r1 = rf(ctx, userID, _a2)
+		r1 = rf(ctx, userID, s)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -168,12 +168,12 @@ type Room_GetAllByUserID_Call struct {
 // GetAllByUserID is a helper method to define mock.On call
 //   - ctx context.Context
 //   - userID string
-//   - _a2 selector.Selector
-func (_e *Room_Expecter) GetAllByUserID(ctx interface{}, userID interface{}, _a2 interface{}) *Room_GetAllByUserID_Call {
-	return &Room_GetAllByUserID_Call{Call: _e.mock.On("GetAllByUserID", ctx, userID, _a2)}
+//   - s selector.Selector
+func (_e *Room_Expecter) GetAllByUserID(ctx interface{}, userID interface{}, s interface{}) *Room_GetAllByUserID_Call {
+	return &Room_GetAllByUserID_Call{Call: _e.mock.On("GetAllByUserID", ctx, userID, s)}
 }
 
-func (_c *Room_GetAllByUserID_Call) Run(run func(ctx context.Context, userID string, _a2 selector.Selector)) *Room_GetAllByUserID_Call {
+func (_c *Room_GetAllByUserID_Call) Run(run func(ctx context.Context, userID string, s selector.Selector)) *Room_GetAllByUserID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})
@@ -304,9 +304,9 @@ func (_c *Room_GetByName_Call) RunAndReturn(run func(context.Context, string) (m
 	return _c
 }
 
-// SearchAllByName provides a mock function with given fields: ctx, keyword, _a2
-func (_m *Room) SearchAllByName(ctx context.Context, keyword string, _a2 selector.Selector) (model.Rooms, error) {
-	ret := _m.Called(ctx, keyword, _a2)
+// SearchAllByName provides a mock function with given fields: ctx, keyword, s
+func (_m *Room) SearchAllByName(ctx context.Context, keyword string, s selector.Selector) (model.Rooms, error) {
+	ret := _m.Called(ctx, keyword, s)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SearchAllByName")
@@ -315,10 +315,10 @@ func (_m *Room) SearchAllByName(ctx context.Context, keyword string, _a2 selecto
 	var r0 model.Rooms
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) (model.Rooms, error)); ok {
-		return rf(ctx, keyword, _a2)
+		return rf(ctx, keyword, s)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) model.Rooms); ok {
-		r0 = rf(ctx, keyword, _a2)
+		r0 = rf(ctx, keyword, s)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(model.Rooms)
@@ -326,7 +326,7 @@ func (_m *Room) SearchAllByName(ctx context.Context, keyword string, _a2 selecto
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, selector.Selector) error); ok {
-		r1 = rf(ctx, keyword, _a2)
+		r1 = rf(ctx, keyword, s)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -342,12 +342,12 @@ type Room_SearchAllByName_Call struct {
 // SearchAllByName is a helper method to define mock.On call
 //   - ctx context.Context
 //   - keyword string
-//   - _a2 selector.Selector
-func (_e *Room_Expecter) SearchAllByName(ctx interface{}, keyword interface{}, _a2 interface{}) *Room_SearchAllByName_Call {
-	return &Room_SearchAllByName_Call{Call: _e.mock.On("SearchAllByName", ctx, keyword, _a2)}
+//   - s selector.Selector
+func (_e *Room_Expecter) SearchAllByName(ctx interface{}, keyword interface{}, s interface{}) *Room_SearchAllByName_Call {
+	return &Room_SearchAllByName_Call{Call: _e.mock.On("SearchAllByName", ctx, keyword, s)}
 }
 
-func (_c *Room_SearchAllByName_Call) Run(run func(ctx context.Context, keyword string, _a2 selector.Selector)) *Room_SearchAllByName_Call {
+func (_c *Room_SearchAllByName_Call) Run(run func(ctx context.Context, keyword string, s selector.Selector)) *Room_SearchAllByName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})

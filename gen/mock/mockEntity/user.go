@@ -131,6 +131,65 @@ func (_c *User_Delete_Call) RunAndReturn(run func(context.Context, string, entit
 	return _c
 }
 
+// GetAll provides a mock function with given fields: ctx, s
+func (_m *User) GetAll(ctx context.Context, s selector.Selector) (model.Users, error) {
+	ret := _m.Called(ctx, s)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetAll")
+	}
+
+	var r0 model.Users
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, selector.Selector) (model.Users, error)); ok {
+		return rf(ctx, s)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, selector.Selector) model.Users); ok {
+		r0 = rf(ctx, s)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(model.Users)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, selector.Selector) error); ok {
+		r1 = rf(ctx, s)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// User_GetAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetAll'
+type User_GetAll_Call struct {
+	*mock.Call
+}
+
+// GetAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - s selector.Selector
+func (_e *User_Expecter) GetAll(ctx interface{}, s interface{}) *User_GetAll_Call {
+	return &User_GetAll_Call{Call: _e.mock.On("GetAll", ctx, s)}
+}
+
+func (_c *User_GetAll_Call) Run(run func(ctx context.Context, s selector.Selector)) *User_GetAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(selector.Selector))
+	})
+	return _c
+}
+
+func (_c *User_GetAll_Call) Return(_a0 model.Users, _a1 error) *User_GetAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *User_GetAll_Call) RunAndReturn(run func(context.Context, selector.Selector) (model.Users, error)) *User_GetAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetByEmail provides a mock function with given fields: ctx, email
 func (_m *User) GetByEmail(ctx context.Context, email string) (model.User, error) {
 	ret := _m.Called(ctx, email)
@@ -298,66 +357,6 @@ func (_c *User_GetByUsername_Call) Return(_a0 model.User, _a1 error) *User_GetBy
 }
 
 func (_c *User_GetByUsername_Call) RunAndReturn(run func(context.Context, string) (model.User, error)) *User_GetByUsername_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// SearchAllByUsername provides a mock function with given fields: ctx, keyword, _a2
-func (_m *User) SearchAllByUsername(ctx context.Context, keyword string, _a2 selector.Selector) (model.Users, error) {
-	ret := _m.Called(ctx, keyword, _a2)
-
-	if len(ret) == 0 {
-		panic("no return value specified for SearchAllByUsername")
-	}
-
-	var r0 model.Users
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) (model.Users, error)); ok {
-		return rf(ctx, keyword, _a2)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) model.Users); ok {
-		r0 = rf(ctx, keyword, _a2)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(model.Users)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string, selector.Selector) error); ok {
-		r1 = rf(ctx, keyword, _a2)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// User_SearchAllByUsername_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SearchAllByUsername'
-type User_SearchAllByUsername_Call struct {
-	*mock.Call
-}
-
-// SearchAllByUsername is a helper method to define mock.On call
-//   - ctx context.Context
-//   - keyword string
-//   - _a2 selector.Selector
-func (_e *User_Expecter) SearchAllByUsername(ctx interface{}, keyword interface{}, _a2 interface{}) *User_SearchAllByUsername_Call {
-	return &User_SearchAllByUsername_Call{Call: _e.mock.On("SearchAllByUsername", ctx, keyword, _a2)}
-}
-
-func (_c *User_SearchAllByUsername_Call) Run(run func(ctx context.Context, keyword string, _a2 selector.Selector)) *User_SearchAllByUsername_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
-	})
-	return _c
-}
-
-func (_c *User_SearchAllByUsername_Call) Return(_a0 model.Users, _a1 error) *User_SearchAllByUsername_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *User_SearchAllByUsername_Call) RunAndReturn(run func(context.Context, string, selector.Selector) (model.Users, error)) *User_SearchAllByUsername_Call {
 	_c.Call.Return(run)
 	return _c
 }

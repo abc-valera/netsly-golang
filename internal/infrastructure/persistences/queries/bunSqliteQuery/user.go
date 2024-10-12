@@ -2,7 +2,6 @@ package bunSqliteQuery
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
@@ -29,8 +28,6 @@ func (q user) GetByID(ctx context.Context, id string) (model.User, error) {
 
 	user := bunUser.ToDomain()
 
-	fmt.Println(bunUser.ToDomain())
-
 	return user, bunSqliteErrors.HandleQueryResult(err)
 }
 
@@ -46,8 +43,8 @@ func (q user) GetByEmail(ctx context.Context, email string) (model.User, error) 
 	return bunUser.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
-func (q user) SearchAllByUsername(ctx context.Context, keyword string, s selector.Selector) (model.Users, error) {
+func (q user) GetAll(ctx context.Context, s selector.Selector) (model.Users, error) {
 	bunUsers := bunSqliteDto.Users{}
-	err := bunSqliteSelector.NewSelect(q.db, s).Model(&bunUsers).Where("username LIKE ?", "%"+keyword+"%").Scan(ctx)
+	err := bunSqliteSelector.NewSelectQuery(q.db, s).Model(&bunUsers).Scan(ctx)
 	return bunUsers.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }

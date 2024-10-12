@@ -29,6 +29,6 @@ func (q like) CountByJokeID(ctx context.Context, jokeID string) (int, error) {
 
 func (q like) GetAllByJokeID(ctx context.Context, jokeID string, s selector.Selector) (model.Likes, error) {
 	likes := bunSqliteDto.Likes{}
-	err := bunSqliteSelector.NewSelect(q.db, s).Model(&likes).Where("joke_id = ?", jokeID).Scan(ctx)
+	err := bunSqliteSelector.NewSelectQuery(q.db, s).Model(&likes).Where("joke_id = ?", jokeID).Scan(ctx)
 	return likes.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }

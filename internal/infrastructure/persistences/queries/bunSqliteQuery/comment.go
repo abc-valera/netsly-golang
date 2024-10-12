@@ -30,7 +30,7 @@ func (q comment) GetByID(ctx context.Context, id string) (model.Comment, error) 
 
 func (q comment) GetAllByJokeID(ctx context.Context, jokeID string, s selector.Selector) (model.Comments, error) {
 	comments := bunSqliteDto.Comments{}
-	err := bunSqliteSelector.NewSelect(q.db, s).
+	err := bunSqliteSelector.NewSelectQuery(q.db, s).
 		Model(&comments).
 		Where("joke_id = ?", jokeID).
 		Scan(ctx)

@@ -30,12 +30,12 @@ func (q joke) GetByID(ctx context.Context, id string) (model.Joke, error) {
 
 func (q joke) GetAllByUserID(ctx context.Context, userID string, s selector.Selector) (model.Jokes, error) {
 	jokes := bunSqliteDto.Jokes{}
-	err := bunSqliteSelector.NewSelect(q.db, s).Model(&jokes).Where("user_id = ?", userID).Scan(ctx)
+	err := bunSqliteSelector.NewSelectQuery(q.db, s).Model(&jokes).Where("user_id = ?", userID).Scan(ctx)
 	return jokes.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
 func (q joke) SearchAllByTitle(ctx context.Context, keyword string, s selector.Selector) (model.Jokes, error) {
 	jokes := bunSqliteDto.Jokes{}
-	err := bunSqliteSelector.NewSelect(q.db, s).Model(&jokes).Where("title LIKE ?", "%"+keyword+"%").Scan(ctx)
+	err := bunSqliteSelector.NewSelectQuery(q.db, s).Model(&jokes).Where("title LIKE ?", "%"+keyword+"%").Scan(ctx)
 	return jokes.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }

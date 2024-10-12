@@ -131,9 +131,9 @@ func (_c *RoomMember_Delete_Call) RunAndReturn(run func(context.Context, string,
 	return _c
 }
 
-// GetAllByRoomID provides a mock function with given fields: ctx, roomID, _a2
-func (_m *RoomMember) GetAllByRoomID(ctx context.Context, roomID string, _a2 selector.Selector) (model.RoomMembers, error) {
-	ret := _m.Called(ctx, roomID, _a2)
+// GetAllByRoomID provides a mock function with given fields: ctx, roomID, s
+func (_m *RoomMember) GetAllByRoomID(ctx context.Context, roomID string, s selector.Selector) (model.RoomMembers, error) {
+	ret := _m.Called(ctx, roomID, s)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAllByRoomID")
@@ -142,10 +142,10 @@ func (_m *RoomMember) GetAllByRoomID(ctx context.Context, roomID string, _a2 sel
 	var r0 model.RoomMembers
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) (model.RoomMembers, error)); ok {
-		return rf(ctx, roomID, _a2)
+		return rf(ctx, roomID, s)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) model.RoomMembers); ok {
-		r0 = rf(ctx, roomID, _a2)
+		r0 = rf(ctx, roomID, s)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(model.RoomMembers)
@@ -153,7 +153,7 @@ func (_m *RoomMember) GetAllByRoomID(ctx context.Context, roomID string, _a2 sel
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, selector.Selector) error); ok {
-		r1 = rf(ctx, roomID, _a2)
+		r1 = rf(ctx, roomID, s)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -169,12 +169,12 @@ type RoomMember_GetAllByRoomID_Call struct {
 // GetAllByRoomID is a helper method to define mock.On call
 //   - ctx context.Context
 //   - roomID string
-//   - _a2 selector.Selector
-func (_e *RoomMember_Expecter) GetAllByRoomID(ctx interface{}, roomID interface{}, _a2 interface{}) *RoomMember_GetAllByRoomID_Call {
-	return &RoomMember_GetAllByRoomID_Call{Call: _e.mock.On("GetAllByRoomID", ctx, roomID, _a2)}
+//   - s selector.Selector
+func (_e *RoomMember_Expecter) GetAllByRoomID(ctx interface{}, roomID interface{}, s interface{}) *RoomMember_GetAllByRoomID_Call {
+	return &RoomMember_GetAllByRoomID_Call{Call: _e.mock.On("GetAllByRoomID", ctx, roomID, s)}
 }
 
-func (_c *RoomMember_GetAllByRoomID_Call) Run(run func(ctx context.Context, roomID string, _a2 selector.Selector)) *RoomMember_GetAllByRoomID_Call {
+func (_c *RoomMember_GetAllByRoomID_Call) Run(run func(ctx context.Context, roomID string, s selector.Selector)) *RoomMember_GetAllByRoomID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})

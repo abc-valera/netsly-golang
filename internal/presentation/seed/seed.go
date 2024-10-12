@@ -58,7 +58,7 @@ func Seed(entities entity.Entities) {
 	for _, user := range userCreateReqs {
 		coderr.Must(entities.User.Create(ctx, user))
 	}
-	users := coderr.Must(entities.User.SearchAllByUsername(ctx, "", params))
+	users := coderr.Must(entities.User.GetAll(ctx, params))
 
 	jokeCreateReqs := []entity.JokeCreateRequest{
 		{

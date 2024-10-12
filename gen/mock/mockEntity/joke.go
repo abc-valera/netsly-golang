@@ -130,9 +130,9 @@ func (_c *Joke_Delete_Call) RunAndReturn(run func(context.Context, string) error
 	return _c
 }
 
-// GetAllByUserID provides a mock function with given fields: ctx, userID, _a2
-func (_m *Joke) GetAllByUserID(ctx context.Context, userID string, _a2 selector.Selector) (model.Jokes, error) {
-	ret := _m.Called(ctx, userID, _a2)
+// GetAllByUserID provides a mock function with given fields: ctx, userID, s
+func (_m *Joke) GetAllByUserID(ctx context.Context, userID string, s selector.Selector) (model.Jokes, error) {
+	ret := _m.Called(ctx, userID, s)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAllByUserID")
@@ -141,10 +141,10 @@ func (_m *Joke) GetAllByUserID(ctx context.Context, userID string, _a2 selector.
 	var r0 model.Jokes
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) (model.Jokes, error)); ok {
-		return rf(ctx, userID, _a2)
+		return rf(ctx, userID, s)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) model.Jokes); ok {
-		r0 = rf(ctx, userID, _a2)
+		r0 = rf(ctx, userID, s)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(model.Jokes)
@@ -152,7 +152,7 @@ func (_m *Joke) GetAllByUserID(ctx context.Context, userID string, _a2 selector.
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, selector.Selector) error); ok {
-		r1 = rf(ctx, userID, _a2)
+		r1 = rf(ctx, userID, s)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -168,12 +168,12 @@ type Joke_GetAllByUserID_Call struct {
 // GetAllByUserID is a helper method to define mock.On call
 //   - ctx context.Context
 //   - userID string
-//   - _a2 selector.Selector
-func (_e *Joke_Expecter) GetAllByUserID(ctx interface{}, userID interface{}, _a2 interface{}) *Joke_GetAllByUserID_Call {
-	return &Joke_GetAllByUserID_Call{Call: _e.mock.On("GetAllByUserID", ctx, userID, _a2)}
+//   - s selector.Selector
+func (_e *Joke_Expecter) GetAllByUserID(ctx interface{}, userID interface{}, s interface{}) *Joke_GetAllByUserID_Call {
+	return &Joke_GetAllByUserID_Call{Call: _e.mock.On("GetAllByUserID", ctx, userID, s)}
 }
 
-func (_c *Joke_GetAllByUserID_Call) Run(run func(ctx context.Context, userID string, _a2 selector.Selector)) *Joke_GetAllByUserID_Call {
+func (_c *Joke_GetAllByUserID_Call) Run(run func(ctx context.Context, userID string, s selector.Selector)) *Joke_GetAllByUserID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})
@@ -247,9 +247,9 @@ func (_c *Joke_GetByID_Call) RunAndReturn(run func(context.Context, string) (mod
 	return _c
 }
 
-// SearchAllByTitle provides a mock function with given fields: ctx, keyword, _a2
-func (_m *Joke) SearchAllByTitle(ctx context.Context, keyword string, _a2 selector.Selector) (model.Jokes, error) {
-	ret := _m.Called(ctx, keyword, _a2)
+// SearchAllByTitle provides a mock function with given fields: ctx, keyword, s
+func (_m *Joke) SearchAllByTitle(ctx context.Context, keyword string, s selector.Selector) (model.Jokes, error) {
+	ret := _m.Called(ctx, keyword, s)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SearchAllByTitle")
@@ -258,10 +258,10 @@ func (_m *Joke) SearchAllByTitle(ctx context.Context, keyword string, _a2 select
 	var r0 model.Jokes
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) (model.Jokes, error)); ok {
-		return rf(ctx, keyword, _a2)
+		return rf(ctx, keyword, s)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, selector.Selector) model.Jokes); ok {
-		r0 = rf(ctx, keyword, _a2)
+		r0 = rf(ctx, keyword, s)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(model.Jokes)
@@ -269,7 +269,7 @@ func (_m *Joke) SearchAllByTitle(ctx context.Context, keyword string, _a2 select
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, selector.Selector) error); ok {
-		r1 = rf(ctx, keyword, _a2)
+		r1 = rf(ctx, keyword, s)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -285,12 +285,12 @@ type Joke_SearchAllByTitle_Call struct {
 // SearchAllByTitle is a helper method to define mock.On call
 //   - ctx context.Context
 //   - keyword string
-//   - _a2 selector.Selector
-func (_e *Joke_Expecter) SearchAllByTitle(ctx interface{}, keyword interface{}, _a2 interface{}) *Joke_SearchAllByTitle_Call {
-	return &Joke_SearchAllByTitle_Call{Call: _e.mock.On("SearchAllByTitle", ctx, keyword, _a2)}
+//   - s selector.Selector
+func (_e *Joke_Expecter) SearchAllByTitle(ctx interface{}, keyword interface{}, s interface{}) *Joke_SearchAllByTitle_Call {
+	return &Joke_SearchAllByTitle_Call{Call: _e.mock.On("SearchAllByTitle", ctx, keyword, s)}
 }
 
-func (_c *Joke_SearchAllByTitle_Call) Run(run func(ctx context.Context, keyword string, _a2 selector.Selector)) *Joke_SearchAllByTitle_Call {
+func (_c *Joke_SearchAllByTitle_Call) Run(run func(ctx context.Context, keyword string, s selector.Selector)) *Joke_SearchAllByTitle_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(selector.Selector))
 	})

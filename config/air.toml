@@ -11,7 +11,7 @@ tmp_dir = "tmp"
   bin = "./bin/netsly"
 
   # Delay before trigger build after file change
-  delay = 1000 # ms
+  delay = 2000 # ms
 
   # Send Interrupt signal before killing process
   send_interrupt = true

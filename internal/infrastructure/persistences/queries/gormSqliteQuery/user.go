@@ -50,13 +50,11 @@ func (q user) GetByEmail(ctx context.Context, email string) (model.User, error) 
 	return user.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }
 
-func (q user) SearchAllByUsername(ctx context.Context, keyword string, selector selector.Selector) (model.Users, error) {
+func (q user) GetAll(ctx context.Context, s selector.Selector) (model.Users, error) {
 	_, span := global.NewSpan(ctx)
 	defer span.End()
 
 	var users gormSqliteDto.Users
-	res := gormSelector.WithSelector(q.db, selector).WithContext(ctx).
-		Where("username LIKE ?", "%"+keyword+"%").
-		Find(&users)
+	res := gormSelector.WithSelector(q.db, s).Find(&users)
 	return users.ToDomain(), gormSqliteErrors.HandleQueryResult(res)
 }

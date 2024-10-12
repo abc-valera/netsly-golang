@@ -30,12 +30,12 @@ func (q roomMessage) GetByID(ctx context.Context, id string) (model.RoomMessage,
 
 func (q roomMessage) GetAllByRoomID(ctx context.Context, roomID string, s selector.Selector) (model.RoomMessages, error) {
 	roomMessages := bunSqliteDto.RoomMessages{}
-	err := bunSqliteSelector.NewSelect(q.db, s).Model(&roomMessages).Where("room_id = ?", roomID).Scan(ctx)
+	err := bunSqliteSelector.NewSelectQuery(q.db, s).Model(&roomMessages).Where("room_id = ?", roomID).Scan(ctx)
 	return roomMessages.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
 
 func (q roomMessage) SearchAllByText(ctx context.Context, keyword string, s selector.Selector) (model.RoomMessages, error) {
 	roomMessages := bunSqliteDto.RoomMessages{}
-	err := bunSqliteSelector.NewSelect(q.db, s).Model(&roomMessages).Where("text LIKE ?", "%"+keyword+"%").Scan(ctx)
+	err := bunSqliteSelector.NewSelectQuery(q.db, s).Model(&roomMessages).Where("text LIKE ?", "%"+keyword+"%").Scan(ctx)
 	return roomMessages.ToDomain(), bunSqliteErrors.HandleQueryResult(err)
 }
