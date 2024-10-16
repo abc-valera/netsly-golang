@@ -8,7 +8,7 @@ import (
 )
 
 type Room struct {
-	bun.BaseModel `bun:"table:rooms"`
+	bun.BaseModel
 
 	ID          string    `bun:"id,pk,type:uuid"`
 	Name        string    `bun:",unique,notnull"`

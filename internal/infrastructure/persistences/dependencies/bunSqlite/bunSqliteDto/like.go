@@ -8,7 +8,7 @@ import (
 )
 
 type Like struct {
-	bun.BaseModel `bun:"table:likes"`
+	bun.BaseModel
 
 	CreatedAt time.Time `bun:",notnull"`
 	DeletedAt time.Time `bun:",notnull"`

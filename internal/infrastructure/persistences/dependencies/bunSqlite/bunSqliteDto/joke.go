@@ -8,7 +8,7 @@ import (
 )
 
 type Joke struct {
-	bun.BaseModel `bun:"table:jokes"`
+	bun.BaseModel
 
 	ID          string    `bun:"id,pk,type:uuid"`
 	Title       string    `bun:",unique,notnull"`

@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	bun.BaseModel `bun:"table:users"`
+	bun.BaseModel
 
 	ID             string    `bun:"id,pk,type:uuid"`
 	Username       string    `bun:",unique,notnull"`

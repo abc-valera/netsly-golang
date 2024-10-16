@@ -8,7 +8,7 @@ import (
 )
 
 type RoomMessage struct {
-	bun.BaseModel `bun:"table:room_messages"`
+	bun.BaseModel
 
 	ID        string    `bun:"id,pk,type:uuid"`
 	Text      string    `bun:",notnull"`

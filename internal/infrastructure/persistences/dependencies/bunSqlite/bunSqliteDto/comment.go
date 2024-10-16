@@ -8,7 +8,7 @@ import (
 )
 
 type Comment struct {
-	bun.BaseModel `bun:"table:comments"`
+	bun.BaseModel
 
 	ID        string    `bun:"id,pk,type:uuid"`
 	Text      string    `bun:",notnull"`

@@ -8,7 +8,7 @@ import (
 )
 
 type FileInfo struct {
-	bun.BaseModel `bun:"table:file_infos"`
+	bun.BaseModel
 
 	ID        string         `bun:"id,pk,type:uuid"`
 	Name      string         `bun:",unique,notnull"`

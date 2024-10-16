@@ -10,7 +10,7 @@ import (
 // RoomMember is a struct that represents a chat member entity.
 // Technically, it's a many-to-many relationship between Room and User entities.
 type RoomMember struct {
-	bun.BaseModel `bun:"table:room_members"`
+	bun.BaseModel
 
 	CreatedAt time.Time `bun:",notnull"`
 	DeletedAt time.Time `bun:",notnull"`
