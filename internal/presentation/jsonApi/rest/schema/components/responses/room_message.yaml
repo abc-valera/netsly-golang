@@ -1,5 +1,0 @@
-description: Room message
-content:
-  application/json:
-    schema:
-      $ref: "../schemas/room_message.yaml"

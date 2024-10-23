@@ -18,5 +18,3 @@ type Room struct {
 
 	CreatorUserID string
 }
-
-type Rooms []Room

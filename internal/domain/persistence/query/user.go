@@ -1,15 +1,8 @@
 package query
 
 import (
-	"context"
-
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/queryGeneric"
 )
 
-type IUser interface {
-	GetByID(ctx context.Context, id string) (model.User, error)
-	GetByUsername(ctx context.Context, username string) (model.User, error)
-	GetByEmail(ctx context.Context, email string) (model.User, error)
-	GetAll(ctx context.Context, s selector.Selector) (model.Users, error)
-}
+type IUser queryGeneric.IGetOneGetMany[model.User]

@@ -27,7 +27,6 @@ func (s *BearerAuth) SetToken(val string) {
 	s.Token = val
 }
 
-// Ref: #/components/schemas/code_error
 type CodeError struct {
 	Code         CodeErrorCode `json:"code"`
 	ErrorMessage string        `json:"error_message"`
@@ -148,79 +147,6 @@ func (s *CodeErrorStatusCode) SetResponse(val CodeError) {
 	s.Response = val
 }
 
-// Ref: #/components/schemas/comment
-type Comment struct {
-	ID        string    `json:"id"`
-	UserID    string    `json:"user_id"`
-	JokeID    string    `json:"joke_id"`
-	Text      string    `json:"text"`
-	CreatedAt time.Time `json:"createdAt"`
-}
-
-// GetID returns the value of ID.
-func (s *Comment) GetID() string {
-	return s.ID
-}
-
-// GetUserID returns the value of UserID.
-func (s *Comment) GetUserID() string {
-	return s.UserID
-}
-
-// GetJokeID returns the value of JokeID.
-func (s *Comment) GetJokeID() string {
-	return s.JokeID
-}
-
-// GetText returns the value of Text.
-func (s *Comment) GetText() string {
-	return s.Text
-}
-
-// GetCreatedAt returns the value of CreatedAt.
-func (s *Comment) GetCreatedAt() time.Time {
-	return s.CreatedAt
-}
-
-// SetID sets the value of ID.
-func (s *Comment) SetID(val string) {
-	s.ID = val
-}
-
-// SetUserID sets the value of UserID.
-func (s *Comment) SetUserID(val string) {
-	s.UserID = val
-}
-
-// SetJokeID sets the value of JokeID.
-func (s *Comment) SetJokeID(val string) {
-	s.JokeID = val
-}
-
-// SetText sets the value of Text.
-func (s *Comment) SetText(val string) {
-	s.Text = val
-}
-
-// SetCreatedAt sets the value of CreatedAt.
-func (s *Comment) SetCreatedAt(val time.Time) {
-	s.CreatedAt = val
-}
-
-type Comments struct {
-	Comments []Comment `json:"comments"`
-}
-
-// GetComments returns the value of Comments.
-func (s *Comments) GetComments() []Comment {
-	return s.Comments
-}
-
-// SetComments sets the value of Comments.
-func (s *Comments) SetComments(val []Comment) {
-	s.Comments = val
-}
-
 // Ref: #/components/schemas/joke
 type Joke struct {
 	ID          string    `json:"id"`
@@ -291,102 +217,106 @@ func (s *Joke) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-type Jokes struct {
-	Jokes []Joke `json:"jokes"`
-}
+type Jokes []Joke
 
-// GetJokes returns the value of Jokes.
-func (s *Jokes) GetJokes() []Joke {
-	return s.Jokes
-}
+// JokesDelNoContent is response for JokesDel operation.
+type JokesDelNoContent struct{}
 
-// SetJokes sets the value of Jokes.
-func (s *Jokes) SetJokes(val []Joke) {
-	s.Jokes = val
-}
-
-// MeChatRoomsJoinPostCreated is response for MeChatRoomsJoinPost operation.
-type MeChatRoomsJoinPostCreated struct{}
-
-type MeChatRoomsJoinPostReq struct {
-	ID string `json:"id"`
-}
-
-// GetID returns the value of ID.
-func (s *MeChatRoomsJoinPostReq) GetID() string {
-	return s.ID
-}
-
-// SetID sets the value of ID.
-func (s *MeChatRoomsJoinPostReq) SetID(val string) {
-	s.ID = val
-}
-
-// MeCommentsDelNoContent is response for MeCommentsDel operation.
-type MeCommentsDelNoContent struct{}
-
-type MeCommentsDelReq struct {
-	CommentID string `json:"comment_id"`
-}
-
-// GetCommentID returns the value of CommentID.
-func (s *MeCommentsDelReq) GetCommentID() string {
-	return s.CommentID
-}
-
-// SetCommentID sets the value of CommentID.
-func (s *MeCommentsDelReq) SetCommentID(val string) {
-	s.CommentID = val
-}
-
-type MeCommentsPostReq struct {
+type JokesDelReq struct {
 	JokeID string `json:"joke_id"`
-	Text   string `json:"text"`
 }
 
 // GetJokeID returns the value of JokeID.
-func (s *MeCommentsPostReq) GetJokeID() string {
+func (s *JokesDelReq) GetJokeID() string {
 	return s.JokeID
 }
 
-// GetText returns the value of Text.
-func (s *MeCommentsPostReq) GetText() string {
-	return s.Text
-}
-
 // SetJokeID sets the value of JokeID.
-func (s *MeCommentsPostReq) SetJokeID(val string) {
+func (s *JokesDelReq) SetJokeID(val string) {
 	s.JokeID = val
 }
 
-// SetText sets the value of Text.
-func (s *MeCommentsPostReq) SetText(val string) {
-	s.Text = val
+type JokesPostReq struct {
+	Title       string    `json:"title"`
+	Text        string    `json:"text"`
+	Explanation OptString `json:"explanation"`
 }
 
-type MeCommentsPutReq struct {
-	CommentID string    `json:"comment_id"`
-	Text      OptString `json:"text"`
-}
-
-// GetCommentID returns the value of CommentID.
-func (s *MeCommentsPutReq) GetCommentID() string {
-	return s.CommentID
+// GetTitle returns the value of Title.
+func (s *JokesPostReq) GetTitle() string {
+	return s.Title
 }
 
 // GetText returns the value of Text.
-func (s *MeCommentsPutReq) GetText() OptString {
+func (s *JokesPostReq) GetText() string {
 	return s.Text
 }
 
-// SetCommentID sets the value of CommentID.
-func (s *MeCommentsPutReq) SetCommentID(val string) {
-	s.CommentID = val
+// GetExplanation returns the value of Explanation.
+func (s *JokesPostReq) GetExplanation() OptString {
+	return s.Explanation
+}
+
+// SetTitle sets the value of Title.
+func (s *JokesPostReq) SetTitle(val string) {
+	s.Title = val
 }
 
 // SetText sets the value of Text.
-func (s *MeCommentsPutReq) SetText(val OptString) {
+func (s *JokesPostReq) SetText(val string) {
 	s.Text = val
+}
+
+// SetExplanation sets the value of Explanation.
+func (s *JokesPostReq) SetExplanation(val OptString) {
+	s.Explanation = val
+}
+
+type JokesPutReq struct {
+	JokeID      string    `json:"joke_id"`
+	Title       OptString `json:"title"`
+	Text        OptString `json:"text"`
+	Explanation OptString `json:"explanation"`
+}
+
+// GetJokeID returns the value of JokeID.
+func (s *JokesPutReq) GetJokeID() string {
+	return s.JokeID
+}
+
+// GetTitle returns the value of Title.
+func (s *JokesPutReq) GetTitle() OptString {
+	return s.Title
+}
+
+// GetText returns the value of Text.
+func (s *JokesPutReq) GetText() OptString {
+	return s.Text
+}
+
+// GetExplanation returns the value of Explanation.
+func (s *JokesPutReq) GetExplanation() OptString {
+	return s.Explanation
+}
+
+// SetJokeID sets the value of JokeID.
+func (s *JokesPutReq) SetJokeID(val string) {
+	s.JokeID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *JokesPutReq) SetTitle(val OptString) {
+	s.Title = val
+}
+
+// SetText sets the value of Text.
+func (s *JokesPutReq) SetText(val OptString) {
+	s.Text = val
+}
+
+// SetExplanation sets the value of Explanation.
+func (s *JokesPutReq) SetExplanation(val OptString) {
+	s.Explanation = val
 }
 
 // MeDelNoContent is response for MeDel operation.
@@ -404,140 +334,6 @@ func (s *MeDelReq) GetPassword() string {
 // SetPassword sets the value of Password.
 func (s *MeDelReq) SetPassword(val string) {
 	s.Password = val
-}
-
-// MeJokesDelNoContent is response for MeJokesDel operation.
-type MeJokesDelNoContent struct{}
-
-type MeJokesDelReq struct {
-	JokeID string `json:"joke_id"`
-}
-
-// GetJokeID returns the value of JokeID.
-func (s *MeJokesDelReq) GetJokeID() string {
-	return s.JokeID
-}
-
-// SetJokeID sets the value of JokeID.
-func (s *MeJokesDelReq) SetJokeID(val string) {
-	s.JokeID = val
-}
-
-type MeJokesPostReq struct {
-	Title       string    `json:"title"`
-	Text        string    `json:"text"`
-	Explanation OptString `json:"explanation"`
-}
-
-// GetTitle returns the value of Title.
-func (s *MeJokesPostReq) GetTitle() string {
-	return s.Title
-}
-
-// GetText returns the value of Text.
-func (s *MeJokesPostReq) GetText() string {
-	return s.Text
-}
-
-// GetExplanation returns the value of Explanation.
-func (s *MeJokesPostReq) GetExplanation() OptString {
-	return s.Explanation
-}
-
-// SetTitle sets the value of Title.
-func (s *MeJokesPostReq) SetTitle(val string) {
-	s.Title = val
-}
-
-// SetText sets the value of Text.
-func (s *MeJokesPostReq) SetText(val string) {
-	s.Text = val
-}
-
-// SetExplanation sets the value of Explanation.
-func (s *MeJokesPostReq) SetExplanation(val OptString) {
-	s.Explanation = val
-}
-
-type MeJokesPutReq struct {
-	JokeID      string    `json:"joke_id"`
-	Title       OptString `json:"title"`
-	Text        OptString `json:"text"`
-	Explanation OptString `json:"explanation"`
-}
-
-// GetJokeID returns the value of JokeID.
-func (s *MeJokesPutReq) GetJokeID() string {
-	return s.JokeID
-}
-
-// GetTitle returns the value of Title.
-func (s *MeJokesPutReq) GetTitle() OptString {
-	return s.Title
-}
-
-// GetText returns the value of Text.
-func (s *MeJokesPutReq) GetText() OptString {
-	return s.Text
-}
-
-// GetExplanation returns the value of Explanation.
-func (s *MeJokesPutReq) GetExplanation() OptString {
-	return s.Explanation
-}
-
-// SetJokeID sets the value of JokeID.
-func (s *MeJokesPutReq) SetJokeID(val string) {
-	s.JokeID = val
-}
-
-// SetTitle sets the value of Title.
-func (s *MeJokesPutReq) SetTitle(val OptString) {
-	s.Title = val
-}
-
-// SetText sets the value of Text.
-func (s *MeJokesPutReq) SetText(val OptString) {
-	s.Text = val
-}
-
-// SetExplanation sets the value of Explanation.
-func (s *MeJokesPutReq) SetExplanation(val OptString) {
-	s.Explanation = val
-}
-
-// MeLikesDelNoContent is response for MeLikesDel operation.
-type MeLikesDelNoContent struct{}
-
-type MeLikesDelReq struct {
-	JokeID string `json:"joke_id"`
-}
-
-// GetJokeID returns the value of JokeID.
-func (s *MeLikesDelReq) GetJokeID() string {
-	return s.JokeID
-}
-
-// SetJokeID sets the value of JokeID.
-func (s *MeLikesDelReq) SetJokeID(val string) {
-	s.JokeID = val
-}
-
-// MeLikesPostCreated is response for MeLikesPost operation.
-type MeLikesPostCreated struct{}
-
-type MeLikesPostReq struct {
-	JokeID string `json:"joke_id"`
-}
-
-// GetJokeID returns the value of JokeID.
-func (s *MeLikesPostReq) GetJokeID() string {
-	return s.JokeID
-}
-
-// SetJokeID sets the value of JokeID.
-func (s *MeLikesPostReq) SetJokeID(val string) {
-	s.JokeID = val
 }
 
 type MePutReq struct {
@@ -574,84 +370,6 @@ func (s *MePutReq) SetFullname(val OptString) {
 // SetStatus sets the value of Status.
 func (s *MePutReq) SetStatus(val OptString) {
 	s.Status = val
-}
-
-// MeRoomsDeleteNoContent is response for MeRoomsDelete operation.
-type MeRoomsDeleteNoContent struct{}
-
-type MeRoomsDeleteReq struct {
-	ID string `json:"id"`
-}
-
-// GetID returns the value of ID.
-func (s *MeRoomsDeleteReq) GetID() string {
-	return s.ID
-}
-
-// SetID sets the value of ID.
-func (s *MeRoomsDeleteReq) SetID(val string) {
-	s.ID = val
-}
-
-type MeRoomsPostReq struct {
-	Name        string    `json:"name"`
-	Description OptString `json:"description"`
-}
-
-// GetName returns the value of Name.
-func (s *MeRoomsPostReq) GetName() string {
-	return s.Name
-}
-
-// GetDescription returns the value of Description.
-func (s *MeRoomsPostReq) GetDescription() OptString {
-	return s.Description
-}
-
-// SetName sets the value of Name.
-func (s *MeRoomsPostReq) SetName(val string) {
-	s.Name = val
-}
-
-// SetDescription sets the value of Description.
-func (s *MeRoomsPostReq) SetDescription(val OptString) {
-	s.Description = val
-}
-
-type MeRoomsPutReq struct {
-	ID          string    `json:"id"`
-	Name        OptString `json:"name"`
-	Description OptString `json:"description"`
-}
-
-// GetID returns the value of ID.
-func (s *MeRoomsPutReq) GetID() string {
-	return s.ID
-}
-
-// GetName returns the value of Name.
-func (s *MeRoomsPutReq) GetName() OptString {
-	return s.Name
-}
-
-// GetDescription returns the value of Description.
-func (s *MeRoomsPutReq) GetDescription() OptString {
-	return s.Description
-}
-
-// SetID sets the value of ID.
-func (s *MeRoomsPutReq) SetID(val string) {
-	s.ID = val
-}
-
-// SetName sets the value of Name.
-func (s *MeRoomsPutReq) SetName(val OptString) {
-	s.Name = val
-}
-
-// SetDescription sets the value of Description.
-func (s *MeRoomsPutReq) SetDescription(val OptString) {
-	s.Description = val
 }
 
 // NewOptInt returns new OptInt with value set to v.
@@ -694,52 +412,6 @@ func (o OptInt) Get() (v int, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptInt) Or(d int) int {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptOrder returns new OptOrder with value set to v.
-func NewOptOrder(v Order) OptOrder {
-	return OptOrder{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptOrder is optional Order.
-type OptOrder struct {
-	Value Order
-	Set   bool
-}
-
-// IsSet returns true if OptOrder was set.
-func (o OptOrder) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptOrder) Reset() {
-	var v Order
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptOrder) SetTo(v Order) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptOrder) Get() (v Order, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptOrder) Or(d Order) Order {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -790,230 +462,6 @@ func (o OptString) Or(d string) string {
 		return v
 	}
 	return d
-}
-
-// Ref: #/components/schemas/order
-type Order string
-
-const (
-	OrderAsc  Order = "asc"
-	OrderDesc Order = "desc"
-)
-
-// AllValues returns all Order values.
-func (Order) AllValues() []Order {
-	return []Order{
-		OrderAsc,
-		OrderDesc,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s Order) MarshalText() ([]byte, error) {
-	switch s {
-	case OrderAsc:
-		return []byte(s), nil
-	case OrderDesc:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *Order) UnmarshalText(data []byte) error {
-	switch Order(data) {
-	case OrderAsc:
-		*s = OrderAsc
-		return nil
-	case OrderDesc:
-		*s = OrderDesc
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
-}
-
-type QuerySelectParams struct {
-	Order  OptOrder `json:"order"`
-	Limit  OptInt   `json:"limit"`
-	Offset OptInt   `json:"offset"`
-}
-
-// GetOrder returns the value of Order.
-func (s *QuerySelectParams) GetOrder() OptOrder {
-	return s.Order
-}
-
-// GetLimit returns the value of Limit.
-func (s *QuerySelectParams) GetLimit() OptInt {
-	return s.Limit
-}
-
-// GetOffset returns the value of Offset.
-func (s *QuerySelectParams) GetOffset() OptInt {
-	return s.Offset
-}
-
-// SetOrder sets the value of Order.
-func (s *QuerySelectParams) SetOrder(val OptOrder) {
-	s.Order = val
-}
-
-// SetLimit sets the value of Limit.
-func (s *QuerySelectParams) SetLimit(val OptInt) {
-	s.Limit = val
-}
-
-// SetOffset sets the value of Offset.
-func (s *QuerySelectParams) SetOffset(val OptInt) {
-	s.Offset = val
-}
-
-// Ref: #/components/schemas/room
-type Room struct {
-	ID            string    `json:"id"`
-	CreatorUserID string    `json:"creator_user_id"`
-	Name          string    `json:"name"`
-	Description   OptString `json:"description"`
-	CreatedAt     time.Time `json:"created_at"`
-}
-
-// GetID returns the value of ID.
-func (s *Room) GetID() string {
-	return s.ID
-}
-
-// GetCreatorUserID returns the value of CreatorUserID.
-func (s *Room) GetCreatorUserID() string {
-	return s.CreatorUserID
-}
-
-// GetName returns the value of Name.
-func (s *Room) GetName() string {
-	return s.Name
-}
-
-// GetDescription returns the value of Description.
-func (s *Room) GetDescription() OptString {
-	return s.Description
-}
-
-// GetCreatedAt returns the value of CreatedAt.
-func (s *Room) GetCreatedAt() time.Time {
-	return s.CreatedAt
-}
-
-// SetID sets the value of ID.
-func (s *Room) SetID(val string) {
-	s.ID = val
-}
-
-// SetCreatorUserID sets the value of CreatorUserID.
-func (s *Room) SetCreatorUserID(val string) {
-	s.CreatorUserID = val
-}
-
-// SetName sets the value of Name.
-func (s *Room) SetName(val string) {
-	s.Name = val
-}
-
-// SetDescription sets the value of Description.
-func (s *Room) SetDescription(val OptString) {
-	s.Description = val
-}
-
-// SetCreatedAt sets the value of CreatedAt.
-func (s *Room) SetCreatedAt(val time.Time) {
-	s.CreatedAt = val
-}
-
-// Ref: #/components/schemas/room_message
-type RoomMessage struct {
-	ID        string    `json:"id"`
-	RoomID    string    `json:"room_id"`
-	UserID    string    `json:"user_id"`
-	Text      string    `json:"text"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
-// GetID returns the value of ID.
-func (s *RoomMessage) GetID() string {
-	return s.ID
-}
-
-// GetRoomID returns the value of RoomID.
-func (s *RoomMessage) GetRoomID() string {
-	return s.RoomID
-}
-
-// GetUserID returns the value of UserID.
-func (s *RoomMessage) GetUserID() string {
-	return s.UserID
-}
-
-// GetText returns the value of Text.
-func (s *RoomMessage) GetText() string {
-	return s.Text
-}
-
-// GetCreatedAt returns the value of CreatedAt.
-func (s *RoomMessage) GetCreatedAt() time.Time {
-	return s.CreatedAt
-}
-
-// SetID sets the value of ID.
-func (s *RoomMessage) SetID(val string) {
-	s.ID = val
-}
-
-// SetRoomID sets the value of RoomID.
-func (s *RoomMessage) SetRoomID(val string) {
-	s.RoomID = val
-}
-
-// SetUserID sets the value of UserID.
-func (s *RoomMessage) SetUserID(val string) {
-	s.UserID = val
-}
-
-// SetText sets the value of Text.
-func (s *RoomMessage) SetText(val string) {
-	s.Text = val
-}
-
-// SetCreatedAt sets the value of CreatedAt.
-func (s *RoomMessage) SetCreatedAt(val time.Time) {
-	s.CreatedAt = val
-}
-
-type RoomMessages struct {
-	RoomMessages []RoomMessage `json:"room_messages"`
-}
-
-// GetRoomMessages returns the value of RoomMessages.
-func (s *RoomMessages) GetRoomMessages() []RoomMessage {
-	return s.RoomMessages
-}
-
-// SetRoomMessages sets the value of RoomMessages.
-func (s *RoomMessages) SetRoomMessages(val []RoomMessage) {
-	s.RoomMessages = val
-}
-
-type Rooms struct {
-	Rooms []Room `json:"rooms"`
-}
-
-// GetRooms returns the value of Rooms.
-func (s *Rooms) GetRooms() []Room {
-	return s.Rooms
-}
-
-// SetRooms sets the value of Rooms.
-func (s *Rooms) SetRooms(val []Room) {
-	s.Rooms = val
 }
 
 type SignInPostOK struct {

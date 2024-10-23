@@ -36,21 +36,3 @@ func (dto Like) ToDomain() model.Like {
 		JokeID: dto.JokeID,
 	}
 }
-
-type Likes []Like
-
-func NewLikes(likes model.Likes) Likes {
-	dtos := make(Likes, 0, len(likes))
-	for _, like := range likes {
-		dtos = append(dtos, NewLike(like))
-	}
-	return dtos
-}
-
-func (dtos Likes) ToDomain() model.Likes {
-	likes := make(model.Likes, 0, len(dtos))
-	for _, like := range dtos {
-		likes = append(likes, like.ToDomain())
-	}
-	return likes
-}

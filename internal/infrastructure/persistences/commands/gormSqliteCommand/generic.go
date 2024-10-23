@@ -3,7 +3,7 @@ package gormSqliteCommand
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command/commandGeneric"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/gormSqlite/gormSqliteErrors"
 	"gorm.io/gorm"
 )
@@ -11,7 +11,7 @@ import (
 func New[DomainModel, GormModel any](
 	db *gorm.DB,
 	dto func(DomainModel) GormModel,
-) command.ICreateUpdateDelete[DomainModel] {
+) commandGeneric.ICreateUpdateDelete[DomainModel] {
 	return struct {
 		create[DomainModel, GormModel]
 		update[DomainModel, GormModel]

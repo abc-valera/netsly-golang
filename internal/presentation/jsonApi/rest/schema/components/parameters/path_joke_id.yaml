@@ -1,6 +1,0 @@
-name: joke_id
-in: path
-description: ID of the joke
-required: true
-schema:
-  type: string

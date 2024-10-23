@@ -40,7 +40,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r)
 		return
 	}
-	args := [1]string{}
 
 	// Static code generated router with unwrapped path search.
 	switch {
@@ -61,56 +60,27 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			switch elem[0] {
-			case 'c': // Prefix: "comments/"
+			case 'j': // Prefix: "jokes"
 				origElem := elem
-				if l := len("comments/"); len(elem) >= l && elem[0:l] == "comments/" {
+				if l := len("jokes"); len(elem) >= l && elem[0:l] == "jokes" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
-				// Param: "joke_id"
-				// Leaf parameter
-				args[0] = elem
-				elem = ""
-
 				if len(elem) == 0 {
 					// Leaf node.
 					switch r.Method {
+					case "DELETE":
+						s.handleJokesDelRequest([0]string{}, elemIsEscaped, w, r)
 					case "GET":
-						s.handleCommentsByJokeIDGetRequest([1]string{
-							args[0],
-						}, elemIsEscaped, w, r)
+						s.handleJokesGetRequest([0]string{}, elemIsEscaped, w, r)
+					case "POST":
+						s.handleJokesPostRequest([0]string{}, elemIsEscaped, w, r)
+					case "PUT":
+						s.handleJokesPutRequest([0]string{}, elemIsEscaped, w, r)
 					default:
-						s.notAllowed(w, r, "GET")
-					}
-
-					return
-				}
-
-				elem = origElem
-			case 'l': // Prefix: "likes/"
-				origElem := elem
-				if l := len("likes/"); len(elem) >= l && elem[0:l] == "likes/" {
-					elem = elem[l:]
-				} else {
-					break
-				}
-
-				// Param: "joke_id"
-				// Leaf parameter
-				args[0] = elem
-				elem = ""
-
-				if len(elem) == 0 {
-					// Leaf node.
-					switch r.Method {
-					case "GET":
-						s.handleLikesByJokeIDGetRequest([1]string{
-							args[0],
-						}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, "GET")
+						s.notAllowed(w, r, "DELETE,GET,POST,PUT")
 					}
 
 					return
@@ -126,6 +96,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 
 				if len(elem) == 0 {
+					// Leaf node.
 					switch r.Method {
 					case "DELETE":
 						s.handleMeDelRequest([0]string{}, elemIsEscaped, w, r)
@@ -138,194 +109,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					}
 
 					return
-				}
-				switch elem[0] {
-				case '/': // Prefix: "/"
-					origElem := elem
-					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					if len(elem) == 0 {
-						break
-					}
-					switch elem[0] {
-					case 'c': // Prefix: "comments"
-						origElem := elem
-						if l := len("comments"); len(elem) >= l && elem[0:l] == "comments" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch r.Method {
-							case "DELETE":
-								s.handleMeCommentsDelRequest([0]string{}, elemIsEscaped, w, r)
-							case "POST":
-								s.handleMeCommentsPostRequest([0]string{}, elemIsEscaped, w, r)
-							case "PUT":
-								s.handleMeCommentsPutRequest([0]string{}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, "DELETE,POST,PUT")
-							}
-
-							return
-						}
-
-						elem = origElem
-					case 'j': // Prefix: "jokes"
-						origElem := elem
-						if l := len("jokes"); len(elem) >= l && elem[0:l] == "jokes" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch r.Method {
-							case "DELETE":
-								s.handleMeJokesDelRequest([0]string{}, elemIsEscaped, w, r)
-							case "GET":
-								s.handleMeJokesGetRequest([0]string{}, elemIsEscaped, w, r)
-							case "POST":
-								s.handleMeJokesPostRequest([0]string{}, elemIsEscaped, w, r)
-							case "PUT":
-								s.handleMeJokesPutRequest([0]string{}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, "DELETE,GET,POST,PUT")
-							}
-
-							return
-						}
-
-						elem = origElem
-					case 'l': // Prefix: "likes"
-						origElem := elem
-						if l := len("likes"); len(elem) >= l && elem[0:l] == "likes" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch r.Method {
-							case "DELETE":
-								s.handleMeLikesDelRequest([0]string{}, elemIsEscaped, w, r)
-							case "POST":
-								s.handleMeLikesPostRequest([0]string{}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, "DELETE,POST")
-							}
-
-							return
-						}
-
-						elem = origElem
-					case 'r': // Prefix: "rooms"
-						origElem := elem
-						if l := len("rooms"); len(elem) >= l && elem[0:l] == "rooms" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							switch r.Method {
-							case "DELETE":
-								s.handleMeRoomsDeleteRequest([0]string{}, elemIsEscaped, w, r)
-							case "GET":
-								s.handleMeRoomsGetRequest([0]string{}, elemIsEscaped, w, r)
-							case "POST":
-								s.handleMeRoomsPostRequest([0]string{}, elemIsEscaped, w, r)
-							case "PUT":
-								s.handleMeRoomsPutRequest([0]string{}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, "DELETE,GET,POST,PUT")
-							}
-
-							return
-						}
-						switch elem[0] {
-						case '/': // Prefix: "/join"
-							origElem := elem
-							if l := len("/join"); len(elem) >= l && elem[0:l] == "/join" {
-								elem = elem[l:]
-							} else {
-								break
-							}
-
-							if len(elem) == 0 {
-								// Leaf node.
-								switch r.Method {
-								case "POST":
-									s.handleMeChatRoomsJoinPostRequest([0]string{}, elemIsEscaped, w, r)
-								default:
-									s.notAllowed(w, r, "POST")
-								}
-
-								return
-							}
-
-							elem = origElem
-						}
-
-						elem = origElem
-					}
-
-					elem = origElem
-				}
-
-				elem = origElem
-			case 'r': // Prefix: "rooms/"
-				origElem := elem
-				if l := len("rooms/"); len(elem) >= l && elem[0:l] == "rooms/" {
-					elem = elem[l:]
-				} else {
-					break
-				}
-
-				// Param: "room_id"
-				// Match until "/"
-				idx := strings.IndexByte(elem, '/')
-				if idx < 0 {
-					idx = len(elem)
-				}
-				args[0] = elem[:idx]
-				elem = elem[idx:]
-
-				if len(elem) == 0 {
-					break
-				}
-				switch elem[0] {
-				case '/': // Prefix: "/messages"
-					origElem := elem
-					if l := len("/messages"); len(elem) >= l && elem[0:l] == "/messages" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					if len(elem) == 0 {
-						// Leaf node.
-						switch r.Method {
-						case "GET":
-							s.handleMeRoomsIdMessagesGetRequest([1]string{
-								args[0],
-							}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, "GET")
-						}
-
-						return
-					}
-
-					elem = origElem
 				}
 
 				elem = origElem
@@ -422,7 +205,7 @@ type Route struct {
 	operationID string
 	pathPattern string
 	count       int
-	args        [1]string
+	args        [0]string
 }
 
 // Name returns ogen operation name.
@@ -502,59 +285,48 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				break
 			}
 			switch elem[0] {
-			case 'c': // Prefix: "comments/"
+			case 'j': // Prefix: "jokes"
 				origElem := elem
-				if l := len("comments/"); len(elem) >= l && elem[0:l] == "comments/" {
+				if l := len("jokes"); len(elem) >= l && elem[0:l] == "jokes" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
-				// Param: "joke_id"
-				// Leaf parameter
-				args[0] = elem
-				elem = ""
-
 				if len(elem) == 0 {
 					// Leaf node.
 					switch method {
-					case "GET":
-						r.name = "CommentsByJokeIDGet"
-						r.summary = "Returns comments of the joke"
-						r.operationID = "CommentsByJokeIDGet"
-						r.pathPattern = "/comments/{joke_id}"
+					case "DELETE":
+						r.name = "JokesDel"
+						r.summary = "Deletes joke for current user"
+						r.operationID = "JokesDel"
+						r.pathPattern = "/jokes"
 						r.args = args
-						r.count = 1
+						r.count = 0
 						return r, true
-					default:
-						return
-					}
-				}
-
-				elem = origElem
-			case 'l': // Prefix: "likes/"
-				origElem := elem
-				if l := len("likes/"); len(elem) >= l && elem[0:l] == "likes/" {
-					elem = elem[l:]
-				} else {
-					break
-				}
-
-				// Param: "joke_id"
-				// Leaf parameter
-				args[0] = elem
-				elem = ""
-
-				if len(elem) == 0 {
-					// Leaf node.
-					switch method {
 					case "GET":
-						r.name = "LikesByJokeIDGet"
-						r.summary = "Counts likes of the joke"
-						r.operationID = "LikesByJokeIDGet"
-						r.pathPattern = "/likes/{joke_id}"
+						r.name = "JokesGet"
+						r.summary = "Returns jokes of the current user"
+						r.operationID = "JokesGet"
+						r.pathPattern = "/jokes"
 						r.args = args
-						r.count = 1
+						r.count = 0
+						return r, true
+					case "POST":
+						r.name = "JokesPost"
+						r.summary = "Creates a new joke for current user"
+						r.operationID = "JokesPost"
+						r.pathPattern = "/jokes"
+						r.args = args
+						r.count = 0
+						return r, true
+					case "PUT":
+						r.name = "JokesPut"
+						r.summary = "Updates joke for current user"
+						r.operationID = "JokesPut"
+						r.pathPattern = "/jokes"
+						r.args = args
+						r.count = 0
 						return r, true
 					default:
 						return
@@ -571,6 +343,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 
 				if len(elem) == 0 {
+					// Leaf node.
 					switch method {
 					case "DELETE":
 						r.name = "MeDel"
@@ -599,270 +372,6 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					default:
 						return
 					}
-				}
-				switch elem[0] {
-				case '/': // Prefix: "/"
-					origElem := elem
-					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					if len(elem) == 0 {
-						break
-					}
-					switch elem[0] {
-					case 'c': // Prefix: "comments"
-						origElem := elem
-						if l := len("comments"); len(elem) >= l && elem[0:l] == "comments" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch method {
-							case "DELETE":
-								r.name = "MeCommentsDel"
-								r.summary = "Deletes a comment of the current user"
-								r.operationID = "MeCommentsDel"
-								r.pathPattern = "/me/comments"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "POST":
-								r.name = "MeCommentsPost"
-								r.summary = "Creates a comment for the current user and the current joke"
-								r.operationID = "MeCommentsPost"
-								r.pathPattern = "/me/comments"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "PUT":
-								r.name = "MeCommentsPut"
-								r.summary = "Updates a comment of the current user"
-								r.operationID = "MeCommentsPut"
-								r.pathPattern = "/me/comments"
-								r.args = args
-								r.count = 0
-								return r, true
-							default:
-								return
-							}
-						}
-
-						elem = origElem
-					case 'j': // Prefix: "jokes"
-						origElem := elem
-						if l := len("jokes"); len(elem) >= l && elem[0:l] == "jokes" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch method {
-							case "DELETE":
-								r.name = "MeJokesDel"
-								r.summary = "Deletes joke for current user"
-								r.operationID = "MeJokesDel"
-								r.pathPattern = "/me/jokes"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "GET":
-								r.name = "MeJokesGet"
-								r.summary = "Returns jokes of the current user"
-								r.operationID = "MeJokesGet"
-								r.pathPattern = "/me/jokes"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "POST":
-								r.name = "MeJokesPost"
-								r.summary = "Creates a new joke for current user"
-								r.operationID = "MeJokesPost"
-								r.pathPattern = "/me/jokes"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "PUT":
-								r.name = "MeJokesPut"
-								r.summary = "Updates joke for current user"
-								r.operationID = "MeJokesPut"
-								r.pathPattern = "/me/jokes"
-								r.args = args
-								r.count = 0
-								return r, true
-							default:
-								return
-							}
-						}
-
-						elem = origElem
-					case 'l': // Prefix: "likes"
-						origElem := elem
-						if l := len("likes"); len(elem) >= l && elem[0:l] == "likes" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch method {
-							case "DELETE":
-								r.name = "MeLikesDel"
-								r.summary = "Deletes a like of the current user"
-								r.operationID = "MeLikesDel"
-								r.pathPattern = "/me/likes"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "POST":
-								r.name = "MeLikesPost"
-								r.summary = "Creates a like for a joke for the current user"
-								r.operationID = "MeLikesPost"
-								r.pathPattern = "/me/likes"
-								r.args = args
-								r.count = 0
-								return r, true
-							default:
-								return
-							}
-						}
-
-						elem = origElem
-					case 'r': // Prefix: "rooms"
-						origElem := elem
-						if l := len("rooms"); len(elem) >= l && elem[0:l] == "rooms" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							switch method {
-							case "DELETE":
-								r.name = "MeRoomsDelete"
-								r.summary = "Deletes room"
-								r.operationID = "MeRoomsDelete"
-								r.pathPattern = "/me/rooms"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "GET":
-								r.name = "MeRoomsGet"
-								r.summary = "Returns rooms current user is a member of"
-								r.operationID = "MeRoomsGet"
-								r.pathPattern = "/me/rooms"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "POST":
-								r.name = "MeRoomsPost"
-								r.summary = "Creates a new room"
-								r.operationID = "MeRoomsPost"
-								r.pathPattern = "/me/rooms"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "PUT":
-								r.name = "MeRoomsPut"
-								r.summary = "Updates room"
-								r.operationID = "MeRoomsPut"
-								r.pathPattern = "/me/rooms"
-								r.args = args
-								r.count = 0
-								return r, true
-							default:
-								return
-							}
-						}
-						switch elem[0] {
-						case '/': // Prefix: "/join"
-							origElem := elem
-							if l := len("/join"); len(elem) >= l && elem[0:l] == "/join" {
-								elem = elem[l:]
-							} else {
-								break
-							}
-
-							if len(elem) == 0 {
-								// Leaf node.
-								switch method {
-								case "POST":
-									r.name = "MeChatRoomsJoinPost"
-									r.summary = "Join room"
-									r.operationID = "MeChatRoomsJoinPost"
-									r.pathPattern = "/me/rooms/join"
-									r.args = args
-									r.count = 0
-									return r, true
-								default:
-									return
-								}
-							}
-
-							elem = origElem
-						}
-
-						elem = origElem
-					}
-
-					elem = origElem
-				}
-
-				elem = origElem
-			case 'r': // Prefix: "rooms/"
-				origElem := elem
-				if l := len("rooms/"); len(elem) >= l && elem[0:l] == "rooms/" {
-					elem = elem[l:]
-				} else {
-					break
-				}
-
-				// Param: "room_id"
-				// Match until "/"
-				idx := strings.IndexByte(elem, '/')
-				if idx < 0 {
-					idx = len(elem)
-				}
-				args[0] = elem[:idx]
-				elem = elem[idx:]
-
-				if len(elem) == 0 {
-					break
-				}
-				switch elem[0] {
-				case '/': // Prefix: "/messages"
-					origElem := elem
-					if l := len("/messages"); len(elem) >= l && elem[0:l] == "/messages" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					if len(elem) == 0 {
-						// Leaf node.
-						switch method {
-						case "GET":
-							r.name = "MeRoomsIdMessagesGet"
-							r.summary = "Retrieve messages from a room"
-							r.operationID = "MeRoomsIdMessagesGet"
-							r.pathPattern = "/rooms/{room_id}/messages"
-							r.args = args
-							r.count = 1
-							return r, true
-						default:
-							return
-						}
-					}
-
-					elem = origElem
 				}
 
 				elem = origElem

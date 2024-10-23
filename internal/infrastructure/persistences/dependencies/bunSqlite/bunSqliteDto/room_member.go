@@ -15,9 +15,9 @@ type RoomMember struct {
 	CreatedAt time.Time `bun:",notnull"`
 	DeletedAt time.Time `bun:",notnull"`
 
-	UserID   string       `bun:",pk,notnull"`
-	RoomID   string       `bun:",pk,notnull"`
-	Messages RoomMessages `bun:"rel:has-many,join:user_id=user_id,join:room_id=room_id"`
+	UserID   string        `bun:",pk,notnull"`
+	RoomID   string        `bun:",pk,notnull"`
+	Messages []RoomMessage `bun:"rel:has-many,join:user_id=user_id,join:room_id=room_id"`
 }
 
 func NewRoomMember(member model.RoomMember) RoomMember {
@@ -38,22 +38,4 @@ func (dto RoomMember) ToDomain() model.RoomMember {
 		UserID: dto.UserID,
 		RoomID: dto.RoomID,
 	}
-}
-
-type RoomMembers []RoomMember
-
-func NewRoomMembers(members model.RoomMembers) RoomMembers {
-	dtos := make(RoomMembers, 0, len(members))
-	for _, member := range members {
-		dtos = append(dtos, NewRoomMember(member))
-	}
-	return dtos
-}
-
-func (dtos RoomMembers) ToDomain() model.RoomMembers {
-	members := make(model.RoomMembers, 0, len(dtos))
-	for _, member := range dtos {
-		members = append(members, member.ToDomain())
-	}
-	return members
 }

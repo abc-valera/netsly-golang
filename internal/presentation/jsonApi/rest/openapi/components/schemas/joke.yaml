@@ -1,0 +1,28 @@
+title: Joke
+type: object
+properties:
+  id:
+    type: string
+    example: 48690945-c3f9-45b4-9045-c6bcfb898f20
+  userID:
+    type: string
+    example: 71582145-caf9-45b4-9045-caf971582145
+  title:
+    type: string
+    example: Example Joke
+  text:
+    type: string
+    example: Something Funny
+  explanation:
+    type: string
+    example: Ahh.. Don't you get it?
+  createdAt:
+    type: string
+    format: date-time
+    example: 2021-08-01T00:00:00Z
+required:
+  - id
+  - userID
+  - title
+  - text
+  - createdAt

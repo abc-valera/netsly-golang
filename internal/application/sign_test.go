@@ -7,6 +7,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestSignUsecase(t *testing.T) {
@@ -60,7 +61,10 @@ func TestSignUsecase(t *testing.T) {
 			HashedPassword: "test_password_hashed",
 		}
 
-		dep.MockEntities.User.EXPECT().GetByEmail(instrumentedContext, req.Email).Return(expected, nil)
+		// TODO: remade this
+		dep.MockEntities.User.EXPECT().
+			GetOne(instrumentedContext, mock.AnythingOfType("filter.Option[github.com/abc-valera/netsly-golang/internal/domain/model.User]")).
+			Return(expected, nil)
 
 		dep.MockEntities.Passworder.EXPECT().CheckPassword(req.Password, expected.HashedPassword).Return(nil)
 

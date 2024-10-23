@@ -18,7 +18,7 @@ package bunSqliteCommand
 import (
 	"context"
 
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command/commandGeneric"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/persistences/dependencies/bunSqlite/bunSqliteErrors"
 	"github.com/uptrace/bun"
 )
@@ -26,7 +26,7 @@ import (
 func New[DomainModel, BunModel any](
 	db bun.IDB,
 	dto func(DomainModel) BunModel,
-) command.ICreateUpdateDelete[DomainModel] {
+) commandGeneric.ICreateUpdateDelete[DomainModel] {
 	return struct {
 		create[DomainModel, BunModel]
 		update[DomainModel, BunModel]

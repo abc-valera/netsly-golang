@@ -1,0 +1,43 @@
+post:
+  operationId: SignInPost
+  summary: Performs user authentication
+  tags:
+    - sign
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+              example: example@example.com
+            password:
+              type: string
+              example: qwerty123
+          required:
+            - email
+            - password
+  responses:
+    200:
+      description: Registration was successful
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user_response:
+                $ref: ../components/schemas/user.yaml
+              access_token:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+              refresh_token:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+            required:
+              - user_response
+              - access_token
+              - refresh_token
+    default:
+      $ref: ../components/responses/code_error.yaml

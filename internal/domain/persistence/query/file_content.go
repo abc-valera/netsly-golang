@@ -1,11 +1,8 @@
 package query
 
 import (
-	"context"
-
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/queryGeneric"
 )
 
-type IFileContent interface {
-	GetByID(ctx context.Context, fileID string) (model.FileContent, error)
-}
+type IFileContent queryGeneric.IGetOne[model.FileContent]

@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/abc-valera/netsly-golang/gen/mock/mockEntity"
+	"github.com/abc-valera/netsly-golang/gen/mocks"
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/globals/logger/loggerNop"
@@ -108,32 +108,32 @@ func (MockTX) Rollback() error {
 }
 
 type MockEntities struct {
-	User        *mockEntity.User
-	Joke        *mockEntity.Joke
-	Like        *mockEntity.Like
-	Comment     *mockEntity.Comment
-	Room        *mockEntity.Room
-	RoomMember  *mockEntity.RoomMember
-	RoomMessage *mockEntity.RoomMessage
-	File        *mockEntity.File
+	User        *mocks.User
+	Joke        *mocks.Joke
+	Like        *mocks.Like
+	Comment     *mocks.Comment
+	Room        *mocks.Room
+	RoomMember  *mocks.RoomMember
+	RoomMessage *mocks.RoomMessage
+	File        *mocks.File
 
-	Passworder *mockEntity.Passworder
-	Emailer    *mockEntity.Emailer
+	Passworder *mocks.Passworder
+	Emailer    *mocks.Emailer
 }
 
 func NewMockEntities(t *testing.T) MockEntities {
 	return MockEntities{
-		User:        mockEntity.NewUser(t),
-		Joke:        mockEntity.NewJoke(t),
-		Like:        mockEntity.NewLike(t),
-		Comment:     mockEntity.NewComment(t),
-		Room:        mockEntity.NewRoom(t),
-		RoomMember:  mockEntity.NewRoomMember(t),
-		RoomMessage: mockEntity.NewRoomMessage(t),
-		File:        mockEntity.NewFile(t),
+		User:        mocks.NewUser(t),
+		Joke:        mocks.NewJoke(t),
+		Like:        mocks.NewLike(t),
+		Comment:     mocks.NewComment(t),
+		Room:        mocks.NewRoom(t),
+		RoomMember:  mocks.NewRoomMember(t),
+		RoomMessage: mocks.NewRoomMessage(t),
+		File:        mocks.NewFile(t),
 
-		Passworder: mockEntity.NewPassworder(t),
-		Emailer:    mockEntity.NewEmailer(t),
+		Passworder: mocks.NewPassworder(t),
+		Emailer:    mocks.NewEmailer(t),
 	}
 }
 

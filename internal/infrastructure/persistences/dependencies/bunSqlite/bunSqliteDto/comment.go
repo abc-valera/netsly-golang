@@ -45,21 +45,3 @@ func (dto Comment) ToDomain() model.Comment {
 		JokeID: dto.JokeID,
 	}
 }
-
-type Comments []Comment
-
-func NewComments(comments model.Comments) Comments {
-	dtos := make(Comments, 0, len(comments))
-	for _, comment := range comments {
-		dtos = append(dtos, NewComment(comment))
-	}
-	return dtos
-}
-
-func (dtos Comments) ToDomain() model.Comments {
-	comments := make(model.Comments, 0, len(dtos))
-	for _, comment := range dtos {
-		comments = append(comments, comment.ToDomain())
-	}
-	return comments
-}

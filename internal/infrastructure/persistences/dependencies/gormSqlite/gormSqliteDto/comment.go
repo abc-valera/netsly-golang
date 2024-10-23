@@ -43,7 +43,7 @@ func (dto Comment) ToDomain() model.Comment {
 
 type Comments []Comment
 
-func NewComments(domainComments model.Comments) Comments {
+func NewComments(domainComments []model.Comment) Comments {
 	var comments Comments
 	for _, domainComment := range domainComments {
 		comments = append(comments, NewComment(domainComment))
@@ -51,8 +51,8 @@ func NewComments(domainComments model.Comments) Comments {
 	return comments
 }
 
-func (dtos Comments) ToDomain() model.Comments {
-	var domainComments model.Comments
+func (dtos Comments) ToDomain() []model.Comment {
+	var domainComments []model.Comment
 	for _, dto := range dtos {
 		domainComments = append(domainComments, dto.ToDomain())
 	}

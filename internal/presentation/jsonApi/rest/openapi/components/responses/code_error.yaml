@@ -1,0 +1,23 @@
+description: General Error
+content:
+  application/json:
+    schema:
+      type: object
+      title: CodeError
+      properties:
+        code:
+          type: string
+          enum:
+            - unauthenticated
+            - invalid_argument
+            - not_found
+            - already_exists
+            - permission_denied
+            - internal
+          example: internal
+        error_message:
+          type: string
+          example: Internal error occurred
+      required:
+        - code
+        - error_message

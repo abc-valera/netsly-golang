@@ -21,8 +21,6 @@ type User struct {
 	DeletedAt      time.Time
 }
 
-type Users []User
-
 type UserMood int
 
 const (

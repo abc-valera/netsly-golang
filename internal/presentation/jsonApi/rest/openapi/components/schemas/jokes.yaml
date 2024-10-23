@@ -1,0 +1,4 @@
+type: array
+title: Jokes
+items:
+  $ref: joke.yaml

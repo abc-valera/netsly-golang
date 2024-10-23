@@ -8,5 +8,3 @@ type FileContent struct {
 	ID      string
 	Content []byte
 }
-
-type FileContents []FileContent

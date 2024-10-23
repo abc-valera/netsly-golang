@@ -41,13 +41,13 @@ tasks:
     cmd: docker run --rm -v ${PWD}:/spec:Z
       redocly/cli bundle
       -o /spec/gen/openapi/openapi.yaml
-      /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
+      /spec/internal/presentation/jsonApi/rest/openapi/openapi.yaml
 
   generate:presentation:jsonApi:rest:docs:
     cmd: docker run --rm -v ${PWD}:/spec:Z
       redocly/cli build-docs
       -o /spec/internal/presentation/jsonApi/static/docs/rest.html
-      /spec/internal/presentation/jsonApi/rest/schema/openapi.yaml
+      /spec/internal/presentation/jsonApi/rest/openapi/openapi.yaml
 
   generate:presentation:jsonApi:rest:code:
     cmd: go generate gen/ogen/generate.go

@@ -1,0 +1,39 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Netsly API
+  termsOfService: https://github.com/abc-valera/netsly-golang
+  contact:
+    email: zoocity14@gmail.com
+    url: https://github.com/abc-valera/netsly-golang
+  description: API for the Netsly social network
+externalDocs:
+  description: Learn more about the project.
+  url: https://github.com/abc-valera/netsly-golang
+servers:
+  - url: http://localhost:3010/api/v1
+    description: Local development server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+  - name: sign
+    description: Sessions Management
+  - name: me
+    description: User Profile Settings
+  - name: jokes
+    description: Jokes operations
+paths:
+  /sign/up:
+    $ref: paths/sign_up.yaml
+  /sign/in:
+    $ref: paths/sign_in.yaml
+  /sign/refresh:
+    $ref: paths/sign_refresh.yaml
+  /me:
+    $ref: paths/me.yaml
+  /jokes:
+    $ref: paths/jokes.yaml

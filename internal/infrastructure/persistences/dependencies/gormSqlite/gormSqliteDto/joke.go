@@ -47,7 +47,7 @@ func (dto Joke) ToDomain() model.Joke {
 
 type Jokes []Joke
 
-func NewJokes(domainJokes model.Jokes) Jokes {
+func NewJokes(domainJokes []model.Joke) Jokes {
 	var jokes Jokes
 	for _, domainJoke := range domainJokes {
 		jokes = append(jokes, NewJoke(domainJoke))
@@ -55,8 +55,8 @@ func NewJokes(domainJokes model.Jokes) Jokes {
 	return jokes
 }
 
-func (dtos Jokes) ToDomain() model.Jokes {
-	var domainJokes model.Jokes
+func (dtos Jokes) ToDomain() []model.Joke {
+	var domainJokes []model.Joke
 	for _, dto := range dtos {
 		domainJokes = append(domainJokes, dto.ToDomain())
 	}

@@ -17,5 +17,3 @@ type RoomMember struct {
 	UserID string
 	RoomID string
 }
-
-type RoomMembers []RoomMember

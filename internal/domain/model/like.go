@@ -15,5 +15,3 @@ type Like struct {
 	UserID string
 	JokeID string
 }
-
-type Likes []Like

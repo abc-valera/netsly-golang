@@ -66,7 +66,7 @@ func NewFileInfoRoom(fileInfoRoom model.FileInfoRoom) FileInfoRoom {
 
 type FileInfos []FileInfo
 
-func NewFileInfos(domainFileInfos model.FileInfos) FileInfos {
+func NewFileInfos(domainFileInfos []model.FileInfo) FileInfos {
 	var fileInfos FileInfos
 	for _, domainFileInfo := range domainFileInfos {
 		fileInfos = append(fileInfos, NewFileInfo(domainFileInfo))
@@ -74,8 +74,8 @@ func NewFileInfos(domainFileInfos model.FileInfos) FileInfos {
 	return fileInfos
 }
 
-func (dtos FileInfos) ToDomain() model.FileInfos {
-	var domainFileInfos model.FileInfos
+func (dtos FileInfos) ToDomain() []model.FileInfo {
+	var domainFileInfos []model.FileInfo
 	for _, dto := range dtos {
 		domainFileInfos = append(domainFileInfos, dto.ToDomain())
 	}

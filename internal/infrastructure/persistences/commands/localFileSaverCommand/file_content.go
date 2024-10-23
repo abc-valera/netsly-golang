@@ -6,7 +6,7 @@ import (
 
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command/commandGeneric"
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
@@ -14,7 +14,7 @@ type fileContent struct {
 	filesPath string
 }
 
-func New(filesPath string) command.ICreateUpdateDelete[model.FileContent] {
+func New(filesPath string) commandGeneric.ICreateUpdateDelete[model.FileContent] {
 	return &fileContent{
 		filesPath: filesPath,
 	}

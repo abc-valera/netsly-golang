@@ -15,8 +15,8 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func (s *Server) decodeMeChatRoomsJoinPostRequest(r *http.Request) (
-	req *MeChatRoomsJoinPostReq,
+func (s *Server) decodeJokesDelRequest(r *http.Request) (
+	req *JokesDelReq,
 	close func() error,
 	rerr error,
 ) {
@@ -55,7 +55,7 @@ func (s *Server) decodeMeChatRoomsJoinPostRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request MeChatRoomsJoinPostReq
+		var request JokesDelReq
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -78,8 +78,8 @@ func (s *Server) decodeMeChatRoomsJoinPostRequest(r *http.Request) (
 	}
 }
 
-func (s *Server) decodeMeCommentsDelRequest(r *http.Request) (
-	req *MeCommentsDelReq,
+func (s *Server) decodeJokesPostRequest(r *http.Request) (
+	req *JokesPostReq,
 	close func() error,
 	rerr error,
 ) {
@@ -118,7 +118,7 @@ func (s *Server) decodeMeCommentsDelRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request MeCommentsDelReq
+		var request JokesPostReq
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -141,8 +141,8 @@ func (s *Server) decodeMeCommentsDelRequest(r *http.Request) (
 	}
 }
 
-func (s *Server) decodeMeCommentsPostRequest(r *http.Request) (
-	req *MeCommentsPostReq,
+func (s *Server) decodeJokesPutRequest(r *http.Request) (
+	req *JokesPutReq,
 	close func() error,
 	rerr error,
 ) {
@@ -181,70 +181,7 @@ func (s *Server) decodeMeCommentsPostRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request MeCommentsPostReq
-		if err := func() error {
-			if err := request.Decode(d); err != nil {
-				return err
-			}
-			if err := d.Skip(); err != io.EOF {
-				return errors.New("unexpected trailing data")
-			}
-			return nil
-		}(); err != nil {
-			err = &ogenerrors.DecodeBodyError{
-				ContentType: ct,
-				Body:        buf,
-				Err:         err,
-			}
-			return req, close, err
-		}
-		return &request, close, nil
-	default:
-		return req, close, validate.InvalidContentType(ct)
-	}
-}
-
-func (s *Server) decodeMeCommentsPutRequest(r *http.Request) (
-	req *MeCommentsPutReq,
-	close func() error,
-	rerr error,
-) {
-	var closers []func() error
-	close = func() error {
-		var merr error
-		// Close in reverse order, to match defer behavior.
-		for i := len(closers) - 1; i >= 0; i-- {
-			c := closers[i]
-			merr = multierr.Append(merr, c())
-		}
-		return merr
-	}
-	defer func() {
-		if rerr != nil {
-			rerr = multierr.Append(rerr, close())
-		}
-	}()
-	ct, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if err != nil {
-		return req, close, errors.Wrap(err, "parse media type")
-	}
-	switch {
-	case ct == "application/json":
-		if r.ContentLength == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-		buf, err := io.ReadAll(r.Body)
-		if err != nil {
-			return req, close, err
-		}
-
-		if len(buf) == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-
-		d := jx.DecodeBytes(buf)
-
-		var request MeCommentsPutReq
+		var request JokesPutReq
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -330,321 +267,6 @@ func (s *Server) decodeMeDelRequest(r *http.Request) (
 	}
 }
 
-func (s *Server) decodeMeJokesDelRequest(r *http.Request) (
-	req *MeJokesDelReq,
-	close func() error,
-	rerr error,
-) {
-	var closers []func() error
-	close = func() error {
-		var merr error
-		// Close in reverse order, to match defer behavior.
-		for i := len(closers) - 1; i >= 0; i-- {
-			c := closers[i]
-			merr = multierr.Append(merr, c())
-		}
-		return merr
-	}
-	defer func() {
-		if rerr != nil {
-			rerr = multierr.Append(rerr, close())
-		}
-	}()
-	ct, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if err != nil {
-		return req, close, errors.Wrap(err, "parse media type")
-	}
-	switch {
-	case ct == "application/json":
-		if r.ContentLength == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-		buf, err := io.ReadAll(r.Body)
-		if err != nil {
-			return req, close, err
-		}
-
-		if len(buf) == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-
-		d := jx.DecodeBytes(buf)
-
-		var request MeJokesDelReq
-		if err := func() error {
-			if err := request.Decode(d); err != nil {
-				return err
-			}
-			if err := d.Skip(); err != io.EOF {
-				return errors.New("unexpected trailing data")
-			}
-			return nil
-		}(); err != nil {
-			err = &ogenerrors.DecodeBodyError{
-				ContentType: ct,
-				Body:        buf,
-				Err:         err,
-			}
-			return req, close, err
-		}
-		return &request, close, nil
-	default:
-		return req, close, validate.InvalidContentType(ct)
-	}
-}
-
-func (s *Server) decodeMeJokesPostRequest(r *http.Request) (
-	req *MeJokesPostReq,
-	close func() error,
-	rerr error,
-) {
-	var closers []func() error
-	close = func() error {
-		var merr error
-		// Close in reverse order, to match defer behavior.
-		for i := len(closers) - 1; i >= 0; i-- {
-			c := closers[i]
-			merr = multierr.Append(merr, c())
-		}
-		return merr
-	}
-	defer func() {
-		if rerr != nil {
-			rerr = multierr.Append(rerr, close())
-		}
-	}()
-	ct, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if err != nil {
-		return req, close, errors.Wrap(err, "parse media type")
-	}
-	switch {
-	case ct == "application/json":
-		if r.ContentLength == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-		buf, err := io.ReadAll(r.Body)
-		if err != nil {
-			return req, close, err
-		}
-
-		if len(buf) == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-
-		d := jx.DecodeBytes(buf)
-
-		var request MeJokesPostReq
-		if err := func() error {
-			if err := request.Decode(d); err != nil {
-				return err
-			}
-			if err := d.Skip(); err != io.EOF {
-				return errors.New("unexpected trailing data")
-			}
-			return nil
-		}(); err != nil {
-			err = &ogenerrors.DecodeBodyError{
-				ContentType: ct,
-				Body:        buf,
-				Err:         err,
-			}
-			return req, close, err
-		}
-		return &request, close, nil
-	default:
-		return req, close, validate.InvalidContentType(ct)
-	}
-}
-
-func (s *Server) decodeMeJokesPutRequest(r *http.Request) (
-	req *MeJokesPutReq,
-	close func() error,
-	rerr error,
-) {
-	var closers []func() error
-	close = func() error {
-		var merr error
-		// Close in reverse order, to match defer behavior.
-		for i := len(closers) - 1; i >= 0; i-- {
-			c := closers[i]
-			merr = multierr.Append(merr, c())
-		}
-		return merr
-	}
-	defer func() {
-		if rerr != nil {
-			rerr = multierr.Append(rerr, close())
-		}
-	}()
-	ct, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if err != nil {
-		return req, close, errors.Wrap(err, "parse media type")
-	}
-	switch {
-	case ct == "application/json":
-		if r.ContentLength == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-		buf, err := io.ReadAll(r.Body)
-		if err != nil {
-			return req, close, err
-		}
-
-		if len(buf) == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-
-		d := jx.DecodeBytes(buf)
-
-		var request MeJokesPutReq
-		if err := func() error {
-			if err := request.Decode(d); err != nil {
-				return err
-			}
-			if err := d.Skip(); err != io.EOF {
-				return errors.New("unexpected trailing data")
-			}
-			return nil
-		}(); err != nil {
-			err = &ogenerrors.DecodeBodyError{
-				ContentType: ct,
-				Body:        buf,
-				Err:         err,
-			}
-			return req, close, err
-		}
-		return &request, close, nil
-	default:
-		return req, close, validate.InvalidContentType(ct)
-	}
-}
-
-func (s *Server) decodeMeLikesDelRequest(r *http.Request) (
-	req *MeLikesDelReq,
-	close func() error,
-	rerr error,
-) {
-	var closers []func() error
-	close = func() error {
-		var merr error
-		// Close in reverse order, to match defer behavior.
-		for i := len(closers) - 1; i >= 0; i-- {
-			c := closers[i]
-			merr = multierr.Append(merr, c())
-		}
-		return merr
-	}
-	defer func() {
-		if rerr != nil {
-			rerr = multierr.Append(rerr, close())
-		}
-	}()
-	ct, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if err != nil {
-		return req, close, errors.Wrap(err, "parse media type")
-	}
-	switch {
-	case ct == "application/json":
-		if r.ContentLength == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-		buf, err := io.ReadAll(r.Body)
-		if err != nil {
-			return req, close, err
-		}
-
-		if len(buf) == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-
-		d := jx.DecodeBytes(buf)
-
-		var request MeLikesDelReq
-		if err := func() error {
-			if err := request.Decode(d); err != nil {
-				return err
-			}
-			if err := d.Skip(); err != io.EOF {
-				return errors.New("unexpected trailing data")
-			}
-			return nil
-		}(); err != nil {
-			err = &ogenerrors.DecodeBodyError{
-				ContentType: ct,
-				Body:        buf,
-				Err:         err,
-			}
-			return req, close, err
-		}
-		return &request, close, nil
-	default:
-		return req, close, validate.InvalidContentType(ct)
-	}
-}
-
-func (s *Server) decodeMeLikesPostRequest(r *http.Request) (
-	req *MeLikesPostReq,
-	close func() error,
-	rerr error,
-) {
-	var closers []func() error
-	close = func() error {
-		var merr error
-		// Close in reverse order, to match defer behavior.
-		for i := len(closers) - 1; i >= 0; i-- {
-			c := closers[i]
-			merr = multierr.Append(merr, c())
-		}
-		return merr
-	}
-	defer func() {
-		if rerr != nil {
-			rerr = multierr.Append(rerr, close())
-		}
-	}()
-	ct, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if err != nil {
-		return req, close, errors.Wrap(err, "parse media type")
-	}
-	switch {
-	case ct == "application/json":
-		if r.ContentLength == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-		buf, err := io.ReadAll(r.Body)
-		if err != nil {
-			return req, close, err
-		}
-
-		if len(buf) == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-
-		d := jx.DecodeBytes(buf)
-
-		var request MeLikesPostReq
-		if err := func() error {
-			if err := request.Decode(d); err != nil {
-				return err
-			}
-			if err := d.Skip(); err != io.EOF {
-				return errors.New("unexpected trailing data")
-			}
-			return nil
-		}(); err != nil {
-			err = &ogenerrors.DecodeBodyError{
-				ContentType: ct,
-				Body:        buf,
-				Err:         err,
-			}
-			return req, close, err
-		}
-		return &request, close, nil
-	default:
-		return req, close, validate.InvalidContentType(ct)
-	}
-}
-
 func (s *Server) decodeMePutRequest(r *http.Request) (
 	req *MePutReq,
 	close func() error,
@@ -686,195 +308,6 @@ func (s *Server) decodeMePutRequest(r *http.Request) (
 		d := jx.DecodeBytes(buf)
 
 		var request MePutReq
-		if err := func() error {
-			if err := request.Decode(d); err != nil {
-				return err
-			}
-			if err := d.Skip(); err != io.EOF {
-				return errors.New("unexpected trailing data")
-			}
-			return nil
-		}(); err != nil {
-			err = &ogenerrors.DecodeBodyError{
-				ContentType: ct,
-				Body:        buf,
-				Err:         err,
-			}
-			return req, close, err
-		}
-		return &request, close, nil
-	default:
-		return req, close, validate.InvalidContentType(ct)
-	}
-}
-
-func (s *Server) decodeMeRoomsDeleteRequest(r *http.Request) (
-	req *MeRoomsDeleteReq,
-	close func() error,
-	rerr error,
-) {
-	var closers []func() error
-	close = func() error {
-		var merr error
-		// Close in reverse order, to match defer behavior.
-		for i := len(closers) - 1; i >= 0; i-- {
-			c := closers[i]
-			merr = multierr.Append(merr, c())
-		}
-		return merr
-	}
-	defer func() {
-		if rerr != nil {
-			rerr = multierr.Append(rerr, close())
-		}
-	}()
-	ct, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if err != nil {
-		return req, close, errors.Wrap(err, "parse media type")
-	}
-	switch {
-	case ct == "application/json":
-		if r.ContentLength == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-		buf, err := io.ReadAll(r.Body)
-		if err != nil {
-			return req, close, err
-		}
-
-		if len(buf) == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-
-		d := jx.DecodeBytes(buf)
-
-		var request MeRoomsDeleteReq
-		if err := func() error {
-			if err := request.Decode(d); err != nil {
-				return err
-			}
-			if err := d.Skip(); err != io.EOF {
-				return errors.New("unexpected trailing data")
-			}
-			return nil
-		}(); err != nil {
-			err = &ogenerrors.DecodeBodyError{
-				ContentType: ct,
-				Body:        buf,
-				Err:         err,
-			}
-			return req, close, err
-		}
-		return &request, close, nil
-	default:
-		return req, close, validate.InvalidContentType(ct)
-	}
-}
-
-func (s *Server) decodeMeRoomsPostRequest(r *http.Request) (
-	req *MeRoomsPostReq,
-	close func() error,
-	rerr error,
-) {
-	var closers []func() error
-	close = func() error {
-		var merr error
-		// Close in reverse order, to match defer behavior.
-		for i := len(closers) - 1; i >= 0; i-- {
-			c := closers[i]
-			merr = multierr.Append(merr, c())
-		}
-		return merr
-	}
-	defer func() {
-		if rerr != nil {
-			rerr = multierr.Append(rerr, close())
-		}
-	}()
-	ct, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if err != nil {
-		return req, close, errors.Wrap(err, "parse media type")
-	}
-	switch {
-	case ct == "application/json":
-		if r.ContentLength == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-		buf, err := io.ReadAll(r.Body)
-		if err != nil {
-			return req, close, err
-		}
-
-		if len(buf) == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-
-		d := jx.DecodeBytes(buf)
-
-		var request MeRoomsPostReq
-		if err := func() error {
-			if err := request.Decode(d); err != nil {
-				return err
-			}
-			if err := d.Skip(); err != io.EOF {
-				return errors.New("unexpected trailing data")
-			}
-			return nil
-		}(); err != nil {
-			err = &ogenerrors.DecodeBodyError{
-				ContentType: ct,
-				Body:        buf,
-				Err:         err,
-			}
-			return req, close, err
-		}
-		return &request, close, nil
-	default:
-		return req, close, validate.InvalidContentType(ct)
-	}
-}
-
-func (s *Server) decodeMeRoomsPutRequest(r *http.Request) (
-	req *MeRoomsPutReq,
-	close func() error,
-	rerr error,
-) {
-	var closers []func() error
-	close = func() error {
-		var merr error
-		// Close in reverse order, to match defer behavior.
-		for i := len(closers) - 1; i >= 0; i-- {
-			c := closers[i]
-			merr = multierr.Append(merr, c())
-		}
-		return merr
-	}
-	defer func() {
-		if rerr != nil {
-			rerr = multierr.Append(rerr, close())
-		}
-	}()
-	ct, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if err != nil {
-		return req, close, errors.Wrap(err, "parse media type")
-	}
-	switch {
-	case ct == "application/json":
-		if r.ContentLength == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-		buf, err := io.ReadAll(r.Body)
-		if err != nil {
-			return req, close, err
-		}
-
-		if len(buf) == 0 {
-			return req, close, validate.ErrBodyRequired
-		}
-
-		d := jx.DecodeBytes(buf)
-
-		var request MeRoomsPutReq
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err

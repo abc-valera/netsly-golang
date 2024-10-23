@@ -1,0 +1,74 @@
+get:
+  operationId: MeGet
+  summary: Returns current user profile
+  tags:
+    - me
+  security:
+    - bearerAuth: []
+  responses:
+    200:
+      description: Current user
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/user.yaml
+    default:
+      $ref: ../components/responses/code_error.yaml
+put:
+  operationId: MePut
+  summary: Updates current user profile
+  tags:
+    - me
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Data to update the current user profile
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            password:
+              type: string
+              example: 123456
+            fullname:
+              type: string
+              example: John Doe
+            status:
+              type: string
+              example: active
+  responses:
+    201:
+      description: Updated user profile
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/user.yaml
+    default:
+      $ref: ../components/responses/code_error.yaml
+delete:
+  operationId: MeDel
+  summary: Deletes current user profile
+  tags:
+    - me
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Data to delete the current user profile
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            password:
+              type: string
+              example: 123456
+          required:
+            - password
+  responses:
+    204:
+      description: Successful deletion
+    default:
+      $ref: ../components/responses/code_error.yaml

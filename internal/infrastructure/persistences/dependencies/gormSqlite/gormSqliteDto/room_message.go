@@ -42,7 +42,7 @@ func (dto RoomMessage) ToDomain() model.RoomMessage {
 
 type RoomMessages []RoomMessage
 
-func NewRoomMessages(domainRoomMessages model.RoomMessages) RoomMessages {
+func NewRoomMessages(domainRoomMessages []model.RoomMessage) RoomMessages {
 	var roomMessages RoomMessages
 	for _, domainRoomMessage := range domainRoomMessages {
 		roomMessages = append(roomMessages, NewRoomMessage(domainRoomMessage))
@@ -50,8 +50,8 @@ func NewRoomMessages(domainRoomMessages model.RoomMessages) RoomMessages {
 	return roomMessages
 }
 
-func (dtos RoomMessages) ToDomain() model.RoomMessages {
-	var domainRoomMessages model.RoomMessages
+func (dtos RoomMessages) ToDomain() []model.RoomMessage {
+	var domainRoomMessages []model.RoomMessage
 	for _, dto := range dtos {
 		domainRoomMessages = append(domainRoomMessages, dto.ToDomain())
 	}

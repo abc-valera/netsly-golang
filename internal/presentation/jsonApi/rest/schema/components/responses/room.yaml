@@ -1,5 +1,0 @@
-description: Place for discussing the humour
-content:
-  application/json:
-    schema:
-      $ref: "../schemas/room.yaml"

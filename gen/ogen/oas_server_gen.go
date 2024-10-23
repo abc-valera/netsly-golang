@@ -8,42 +8,30 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
-	// CommentsByJokeIDGet implements CommentsByJokeIDGet operation.
+	// JokesDel implements JokesDel operation.
 	//
-	// Returns comments of the joke.
+	// Deletes joke for current user.
 	//
-	// GET /comments/{joke_id}
-	CommentsByJokeIDGet(ctx context.Context, params CommentsByJokeIDGetParams) (*Comments, error)
-	// LikesByJokeIDGet implements LikesByJokeIDGet operation.
+	// DELETE /jokes
+	JokesDel(ctx context.Context, req *JokesDelReq) error
+	// JokesGet implements JokesGet operation.
 	//
-	// Counts likes of the joke.
+	// Returns jokes of the current user.
 	//
-	// GET /likes/{joke_id}
-	LikesByJokeIDGet(ctx context.Context, params LikesByJokeIDGetParams) (int, error)
-	// MeChatRoomsJoinPost implements MeChatRoomsJoinPost operation.
+	// GET /jokes
+	JokesGet(ctx context.Context, params JokesGetParams) (Jokes, error)
+	// JokesPost implements JokesPost operation.
 	//
-	// Join room.
+	// Creates a new joke for current user.
 	//
-	// POST /me/rooms/join
-	MeChatRoomsJoinPost(ctx context.Context, req *MeChatRoomsJoinPostReq) error
-	// MeCommentsDel implements MeCommentsDel operation.
+	// POST /jokes
+	JokesPost(ctx context.Context, req *JokesPostReq) (*Joke, error)
+	// JokesPut implements JokesPut operation.
 	//
-	// Deletes a comment of the current user.
+	// Updates joke for current user.
 	//
-	// DELETE /me/comments
-	MeCommentsDel(ctx context.Context, req *MeCommentsDelReq) error
-	// MeCommentsPost implements MeCommentsPost operation.
-	//
-	// Creates a comment for the current user and the current joke.
-	//
-	// POST /me/comments
-	MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) (*Comment, error)
-	// MeCommentsPut implements MeCommentsPut operation.
-	//
-	// Updates a comment of the current user.
-	//
-	// PUT /me/comments
-	MeCommentsPut(ctx context.Context, req *MeCommentsPutReq) (*Comment, error)
+	// PUT /jokes
+	JokesPut(ctx context.Context, req *JokesPutReq) (*Joke, error)
 	// MeDel implements MeDel operation.
 	//
 	// Deletes current user profile.
@@ -56,78 +44,12 @@ type Handler interface {
 	//
 	// GET /me
 	MeGet(ctx context.Context) (*User, error)
-	// MeJokesDel implements MeJokesDel operation.
-	//
-	// Deletes joke for current user.
-	//
-	// DELETE /me/jokes
-	MeJokesDel(ctx context.Context, req *MeJokesDelReq) error
-	// MeJokesGet implements MeJokesGet operation.
-	//
-	// Returns jokes of the current user.
-	//
-	// GET /me/jokes
-	MeJokesGet(ctx context.Context, params MeJokesGetParams) (*Jokes, error)
-	// MeJokesPost implements MeJokesPost operation.
-	//
-	// Creates a new joke for current user.
-	//
-	// POST /me/jokes
-	MeJokesPost(ctx context.Context, req *MeJokesPostReq) (*Joke, error)
-	// MeJokesPut implements MeJokesPut operation.
-	//
-	// Updates joke for current user.
-	//
-	// PUT /me/jokes
-	MeJokesPut(ctx context.Context, req *MeJokesPutReq) (*Joke, error)
-	// MeLikesDel implements MeLikesDel operation.
-	//
-	// Deletes a like of the current user.
-	//
-	// DELETE /me/likes
-	MeLikesDel(ctx context.Context, req *MeLikesDelReq) error
-	// MeLikesPost implements MeLikesPost operation.
-	//
-	// Creates a like for a joke for the current user.
-	//
-	// POST /me/likes
-	MeLikesPost(ctx context.Context, req *MeLikesPostReq) error
 	// MePut implements MePut operation.
 	//
 	// Updates current user profile.
 	//
 	// PUT /me
 	MePut(ctx context.Context, req *MePutReq) (*User, error)
-	// MeRoomsDelete implements MeRoomsDelete operation.
-	//
-	// Deletes room.
-	//
-	// DELETE /me/rooms
-	MeRoomsDelete(ctx context.Context, req *MeRoomsDeleteReq) error
-	// MeRoomsGet implements MeRoomsGet operation.
-	//
-	// Returns rooms current user is a member of.
-	//
-	// GET /me/rooms
-	MeRoomsGet(ctx context.Context, params MeRoomsGetParams) (*Rooms, error)
-	// MeRoomsIdMessagesGet implements MeRoomsIdMessagesGet operation.
-	//
-	// Retrieve messages from a room.
-	//
-	// GET /rooms/{room_id}/messages
-	MeRoomsIdMessagesGet(ctx context.Context, params MeRoomsIdMessagesGetParams) (*RoomMessages, error)
-	// MeRoomsPost implements MeRoomsPost operation.
-	//
-	// Creates a new room.
-	//
-	// POST /me/rooms
-	MeRoomsPost(ctx context.Context, req *MeRoomsPostReq) (*Room, error)
-	// MeRoomsPut implements MeRoomsPut operation.
-	//
-	// Updates room.
-	//
-	// PUT /me/rooms
-	MeRoomsPut(ctx context.Context, req *MeRoomsPutReq) (*Room, error)
 	// SignInPost implements SignInPost operation.
 	//
 	// Performs user authentication.

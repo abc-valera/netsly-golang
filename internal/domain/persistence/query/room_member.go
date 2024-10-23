@@ -1,13 +1,8 @@
 package query
 
 import (
-	"context"
-
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/queryGeneric"
 )
 
-type IRoomMember interface {
-	GetByIDs(ctx context.Context, userID, roomID string) (model.RoomMember, error)
-	GetAllByRoomID(ctx context.Context, roomID string, s selector.Selector) (model.RoomMembers, error)
-}
+type IRoomMember queryGeneric.IGetOneGetMany[model.RoomMember]

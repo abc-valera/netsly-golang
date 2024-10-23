@@ -8,6 +8,8 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
+
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -98,7 +100,7 @@ func (e room) Update(ctx context.Context, roomID string, req RoomUpdateRequest) 
 		return model.Room{}, err
 	}
 
-	room, err := e.Q().Room.GetByID(ctx, roomID)
+	room, err := e.Q().Room.GetOne(ctx, filter.By(model.Room{ID: roomID}))
 	if err != nil {
 		return model.Room{}, err
 	}

@@ -28,8 +28,6 @@ type FileInfoRoom struct {
 	RoomID     string
 }
 
-type FileInfos []FileInfo
-
 type FileType int
 
 const (

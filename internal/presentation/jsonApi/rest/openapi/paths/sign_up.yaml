@@ -1,0 +1,30 @@
+post:
+  operationId: SignUpPost
+  summary: Performs user registration
+  tags:
+    - sign
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+              example: example-username
+            email:
+              type: string
+              example: example@example.com
+            password:
+              type: string
+              example: qwerty123
+          required:
+            - username
+            - email
+            - password
+  responses:
+    201:
+      description: Successful operation
+    default:
+      $ref: ../components/responses/code_error.yaml

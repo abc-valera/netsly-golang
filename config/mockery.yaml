@@ -9,7 +9,7 @@ disable-version-string: True
 packages:
   github.com/abc-valera/netsly-golang/internal/domain/entity:
     config:
-      outpkg: "mockEntity"
-      dir: "gen/mock/mockEntity"
+      outpkg: "mocks"
+      dir: "gen/mocks"
       include-regex: ".*"
       exclude-regex: "IDependency"

@@ -7,6 +7,7 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -77,7 +78,7 @@ func (e comment) Update(ctx context.Context, commentID string, req CommentUpdate
 		return model.Comment{}, err
 	}
 
-	comment, err := e.Q().Comment.GetByID(ctx, commentID)
+	comment, err := e.Q().Comment.GetOne(ctx, filter.By(model.Comment{ID: commentID}))
 	if err != nil {
 		return model.Comment{}, err
 	}

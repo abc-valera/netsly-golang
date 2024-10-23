@@ -1,0 +1,27 @@
+title: User
+type: object
+properties:
+  id:
+    type: string
+    example: 48690945-c3f9-45b4-9045-c6bcfb898f20
+  username:
+    type: string
+    example: example-username
+  email:
+    type: string
+    example: example@example.com
+  fullname:
+    type: string
+    example: John Doe
+  status:
+    type: string
+    example: Making humor
+  created_at:
+    type: string
+    format: date-time
+    example: 2021-08-01T00:00:00Z
+required:
+  - id
+  - username
+  - email
+  - created_at

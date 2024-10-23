@@ -54,7 +54,7 @@ func (dto User) ToDomain() model.User {
 
 type Users []User
 
-func NewUsers(users model.Users) Users {
+func NewUsers(users []model.User) Users {
 	var dtos Users
 	for _, user := range users {
 		dtos = append(dtos, NewUser(user))
@@ -62,8 +62,8 @@ func NewUsers(users model.Users) Users {
 	return dtos
 }
 
-func (dtos Users) ToDomain() model.Users {
-	var domainUsers model.Users
+func (dtos Users) ToDomain() []model.User {
+	var domainUsers []model.User
 	for _, user := range dtos {
 		domainUsers = append(domainUsers, user.ToDomain())
 	}

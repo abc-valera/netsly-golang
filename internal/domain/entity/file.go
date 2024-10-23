@@ -8,6 +8,8 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
+
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -142,7 +144,7 @@ func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) (mod
 		return model.FileInfo{}, err
 	}
 
-	fileInfo, err := e.Q().FileInfo.GetByID(ctx, id)
+	fileInfo, err := e.Q().FileInfo.GetOne(ctx, filter.By(model.FileInfo{ID: id}))
 	if err != nil {
 		return model.FileInfo{}, err
 	}
@@ -186,12 +188,12 @@ func (e file) GetByID(ctx context.Context, id string) (model.FileInfo, model.Fil
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
 
-	fileInfo, err := e.Q().FileInfo.GetByID(ctx, id)
+	fileInfo, err := e.Q().FileInfo.GetOne(ctx, filter.By(model.FileInfo{ID: id}))
 	if err != nil {
 		return model.FileInfo{}, model.FileContent{}, err
 	}
 
-	fileContent, err := e.Q().FileContent.GetByID(ctx, id)
+	fileContent, err := e.Q().FileContent.GetOne(ctx, filter.By(model.FileContent{ID: id}))
 	if err != nil {
 		return model.FileInfo{}, model.FileContent{}, err
 	}

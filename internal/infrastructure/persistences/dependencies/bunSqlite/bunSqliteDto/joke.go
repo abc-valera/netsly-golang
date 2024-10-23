@@ -18,9 +18,9 @@ type Joke struct {
 	UpdatedAt   time.Time `bun:",notnull"`
 	DeletedAt   time.Time `bun:",notnull"`
 
-	UserID   string   `bun:",notnull"`
-	Likes    Likes    `bun:"rel:has-many,join:id=joke_id"`
-	Comments Comments `bun:"rel:has-many,join:id=joke_id"`
+	UserID   string    `bun:",notnull"`
+	Likes    []Like    `bun:"rel:has-many,join:id=joke_id"`
+	Comments []Comment `bun:"rel:has-many,join:id=joke_id"`
 }
 
 func NewJoke(joke model.Joke) Joke {
@@ -49,22 +49,4 @@ func (dto Joke) ToDomain() model.Joke {
 
 		UserID: dto.UserID,
 	}
-}
-
-type Jokes []Joke
-
-func NewJokes(jokes model.Jokes) Jokes {
-	dtos := make(Jokes, 0, len(jokes))
-	for _, joke := range jokes {
-		dtos = append(dtos, NewJoke(joke))
-	}
-	return dtos
-}
-
-func (dtos Jokes) ToDomain() model.Jokes {
-	jokes := make(model.Jokes, 0, len(dtos))
-	for _, joke := range dtos {
-		jokes = append(jokes, joke.ToDomain())
-	}
-	return jokes
 }

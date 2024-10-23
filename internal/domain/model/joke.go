@@ -19,5 +19,3 @@ type Joke struct {
 
 	UserID string
 }
-
-type Jokes []Joke

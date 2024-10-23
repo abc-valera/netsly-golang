@@ -16,10 +16,10 @@ func NewJoke(joke model.Joke) *ogen.Joke {
 	}
 }
 
-func NewJokes(jokes model.Jokes) *ogen.Jokes {
-	var res []ogen.Joke
-	for _, joke := range jokes {
-		res = append(res, *NewJoke(joke))
+func NewJokes(domainJokes []model.Joke) ogen.Jokes {
+	var jokes ogen.Jokes
+	for _, joke := range domainJokes {
+		jokes = append(jokes, *NewJoke(joke))
 	}
-	return &ogen.Jokes{Jokes: res}
+	return jokes
 }

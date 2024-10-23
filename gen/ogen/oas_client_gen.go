@@ -12,7 +12,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
-	semconv "go.opentelemetry.io/otel/semconv/v1.19.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ogen-go/ogen/conv"
@@ -24,42 +24,30 @@ import (
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
-	// CommentsByJokeIDGet invokes CommentsByJokeIDGet operation.
+	// JokesDel invokes JokesDel operation.
 	//
-	// Returns comments of the joke.
+	// Deletes joke for current user.
 	//
-	// GET /comments/{joke_id}
-	CommentsByJokeIDGet(ctx context.Context, params CommentsByJokeIDGetParams) (*Comments, error)
-	// LikesByJokeIDGet invokes LikesByJokeIDGet operation.
+	// DELETE /jokes
+	JokesDel(ctx context.Context, request *JokesDelReq) error
+	// JokesGet invokes JokesGet operation.
 	//
-	// Counts likes of the joke.
+	// Returns jokes of the current user.
 	//
-	// GET /likes/{joke_id}
-	LikesByJokeIDGet(ctx context.Context, params LikesByJokeIDGetParams) (int, error)
-	// MeChatRoomsJoinPost invokes MeChatRoomsJoinPost operation.
+	// GET /jokes
+	JokesGet(ctx context.Context, params JokesGetParams) (Jokes, error)
+	// JokesPost invokes JokesPost operation.
 	//
-	// Join room.
+	// Creates a new joke for current user.
 	//
-	// POST /me/rooms/join
-	MeChatRoomsJoinPost(ctx context.Context, request *MeChatRoomsJoinPostReq) error
-	// MeCommentsDel invokes MeCommentsDel operation.
+	// POST /jokes
+	JokesPost(ctx context.Context, request *JokesPostReq) (*Joke, error)
+	// JokesPut invokes JokesPut operation.
 	//
-	// Deletes a comment of the current user.
+	// Updates joke for current user.
 	//
-	// DELETE /me/comments
-	MeCommentsDel(ctx context.Context, request *MeCommentsDelReq) error
-	// MeCommentsPost invokes MeCommentsPost operation.
-	//
-	// Creates a comment for the current user and the current joke.
-	//
-	// POST /me/comments
-	MeCommentsPost(ctx context.Context, request *MeCommentsPostReq) (*Comment, error)
-	// MeCommentsPut invokes MeCommentsPut operation.
-	//
-	// Updates a comment of the current user.
-	//
-	// PUT /me/comments
-	MeCommentsPut(ctx context.Context, request *MeCommentsPutReq) (*Comment, error)
+	// PUT /jokes
+	JokesPut(ctx context.Context, request *JokesPutReq) (*Joke, error)
 	// MeDel invokes MeDel operation.
 	//
 	// Deletes current user profile.
@@ -72,78 +60,12 @@ type Invoker interface {
 	//
 	// GET /me
 	MeGet(ctx context.Context) (*User, error)
-	// MeJokesDel invokes MeJokesDel operation.
-	//
-	// Deletes joke for current user.
-	//
-	// DELETE /me/jokes
-	MeJokesDel(ctx context.Context, request *MeJokesDelReq) error
-	// MeJokesGet invokes MeJokesGet operation.
-	//
-	// Returns jokes of the current user.
-	//
-	// GET /me/jokes
-	MeJokesGet(ctx context.Context, params MeJokesGetParams) (*Jokes, error)
-	// MeJokesPost invokes MeJokesPost operation.
-	//
-	// Creates a new joke for current user.
-	//
-	// POST /me/jokes
-	MeJokesPost(ctx context.Context, request *MeJokesPostReq) (*Joke, error)
-	// MeJokesPut invokes MeJokesPut operation.
-	//
-	// Updates joke for current user.
-	//
-	// PUT /me/jokes
-	MeJokesPut(ctx context.Context, request *MeJokesPutReq) (*Joke, error)
-	// MeLikesDel invokes MeLikesDel operation.
-	//
-	// Deletes a like of the current user.
-	//
-	// DELETE /me/likes
-	MeLikesDel(ctx context.Context, request *MeLikesDelReq) error
-	// MeLikesPost invokes MeLikesPost operation.
-	//
-	// Creates a like for a joke for the current user.
-	//
-	// POST /me/likes
-	MeLikesPost(ctx context.Context, request *MeLikesPostReq) error
 	// MePut invokes MePut operation.
 	//
 	// Updates current user profile.
 	//
 	// PUT /me
 	MePut(ctx context.Context, request *MePutReq) (*User, error)
-	// MeRoomsDelete invokes MeRoomsDelete operation.
-	//
-	// Deletes room.
-	//
-	// DELETE /me/rooms
-	MeRoomsDelete(ctx context.Context, request *MeRoomsDeleteReq) error
-	// MeRoomsGet invokes MeRoomsGet operation.
-	//
-	// Returns rooms current user is a member of.
-	//
-	// GET /me/rooms
-	MeRoomsGet(ctx context.Context, params MeRoomsGetParams) (*Rooms, error)
-	// MeRoomsIdMessagesGet invokes MeRoomsIdMessagesGet operation.
-	//
-	// Retrieve messages from a room.
-	//
-	// GET /rooms/{room_id}/messages
-	MeRoomsIdMessagesGet(ctx context.Context, params MeRoomsIdMessagesGetParams) (*RoomMessages, error)
-	// MeRoomsPost invokes MeRoomsPost operation.
-	//
-	// Creates a new room.
-	//
-	// POST /me/rooms
-	MeRoomsPost(ctx context.Context, request *MeRoomsPostReq) (*Room, error)
-	// MeRoomsPut invokes MeRoomsPut operation.
-	//
-	// Updates room.
-	//
-	// PUT /me/rooms
-	MeRoomsPut(ctx context.Context, request *MeRoomsPutReq) (*Room, error)
 	// SignInPost invokes SignInPost operation.
 	//
 	// Performs user authentication.
@@ -218,21 +140,21 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
-// CommentsByJokeIDGet invokes CommentsByJokeIDGet operation.
+// JokesDel invokes JokesDel operation.
 //
-// Returns comments of the joke.
+// Deletes joke for current user.
 //
-// GET /comments/{joke_id}
-func (c *Client) CommentsByJokeIDGet(ctx context.Context, params CommentsByJokeIDGetParams) (*Comments, error) {
-	res, err := c.sendCommentsByJokeIDGet(ctx, params)
-	return res, err
+// DELETE /jokes
+func (c *Client) JokesDel(ctx context.Context, request *JokesDelReq) error {
+	_, err := c.sendJokesDel(ctx, request)
+	return err
 }
 
-func (c *Client) sendCommentsByJokeIDGet(ctx context.Context, params CommentsByJokeIDGetParams) (res *Comments, err error) {
+func (c *Client) sendJokesDel(ctx context.Context, request *JokesDelReq) (res *JokesDelNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("CommentsByJokeIDGet"),
-		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/comments/{joke_id}"),
+		otelogen.OperationID("JokesDel"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.HTTPRouteKey.String("/jokes"),
 	}
 
 	// Run stopwatch.
@@ -247,7 +169,7 @@ func (c *Client) sendCommentsByJokeIDGet(ctx context.Context, params CommentsByJ
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "CommentsByJokeIDGet",
+	ctx, span := c.cfg.Tracer.Start(ctx, "JokesDel",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -264,40 +186,150 @@ func (c *Client) sendCommentsByJokeIDGet(ctx context.Context, params CommentsByJ
 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/comments/"
-	{
-		// Encode "joke_id" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "joke_id",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.StringToString(params.JokeID))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
+	var pathParts [1]string
+	pathParts[0] = "/jokes"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
 	}
+	if err := encodeJokesDelRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, "JokesDel", r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeJokesDelResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// JokesGet invokes JokesGet operation.
+//
+// Returns jokes of the current user.
+//
+// GET /jokes
+func (c *Client) JokesGet(ctx context.Context, params JokesGetParams) (Jokes, error) {
+	res, err := c.sendJokesGet(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendJokesGet(ctx context.Context, params JokesGetParams) (res Jokes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("JokesGet"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/jokes"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, "JokesGet",
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/jokes"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "selector" parameter.
+		// Encode "limit" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "selector",
+			Name:    "limit",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return params.Selector.EncodeURI(e)
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "offset" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Offset.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
 		}); err != nil {
 			return res, errors.Wrap(err, "encode query")
 		}
@@ -310,6 +342,39 @@ func (c *Client) sendCommentsByJokeIDGet(ctx context.Context, params CommentsByJ
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, "JokesGet", r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -318,7 +383,7 @@ func (c *Client) sendCommentsByJokeIDGet(ctx context.Context, params CommentsByJ
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeCommentsByJokeIDGetResponse(resp)
+	result, err := decodeJokesGetResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -326,21 +391,21 @@ func (c *Client) sendCommentsByJokeIDGet(ctx context.Context, params CommentsByJ
 	return result, nil
 }
 
-// LikesByJokeIDGet invokes LikesByJokeIDGet operation.
+// JokesPost invokes JokesPost operation.
 //
-// Counts likes of the joke.
+// Creates a new joke for current user.
 //
-// GET /likes/{joke_id}
-func (c *Client) LikesByJokeIDGet(ctx context.Context, params LikesByJokeIDGetParams) (int, error) {
-	res, err := c.sendLikesByJokeIDGet(ctx, params)
+// POST /jokes
+func (c *Client) JokesPost(ctx context.Context, request *JokesPostReq) (*Joke, error) {
+	res, err := c.sendJokesPost(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendLikesByJokeIDGet(ctx context.Context, params LikesByJokeIDGetParams) (res int, err error) {
+func (c *Client) sendJokesPost(ctx context.Context, request *JokesPostReq) (res *Joke, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("LikesByJokeIDGet"),
-		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/likes/{joke_id}"),
+		otelogen.OperationID("JokesPost"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/jokes"),
 	}
 
 	// Run stopwatch.
@@ -355,97 +420,7 @@ func (c *Client) sendLikesByJokeIDGet(ctx context.Context, params LikesByJokeIDG
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "LikesByJokeIDGet",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/likes/"
-	{
-		// Encode "joke_id" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "joke_id",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.StringToString(params.JokeID))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeLikesByJokeIDGetResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeChatRoomsJoinPost invokes MeChatRoomsJoinPost operation.
-//
-// Join room.
-//
-// POST /me/rooms/join
-func (c *Client) MeChatRoomsJoinPost(ctx context.Context, request *MeChatRoomsJoinPostReq) error {
-	_, err := c.sendMeChatRoomsJoinPost(ctx, request)
-	return err
-}
-
-func (c *Client) sendMeChatRoomsJoinPost(ctx context.Context, request *MeChatRoomsJoinPostReq) (res *MeChatRoomsJoinPostCreated, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeChatRoomsJoinPost"),
-		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/me/rooms/join"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeChatRoomsJoinPost",
+	ctx, span := c.cfg.Tracer.Start(ctx, "JokesPost",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -463,7 +438,7 @@ func (c *Client) sendMeChatRoomsJoinPost(ctx context.Context, request *MeChatRoo
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/me/rooms/join"
+	pathParts[0] = "/jokes"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -471,7 +446,7 @@ func (c *Client) sendMeChatRoomsJoinPost(ctx context.Context, request *MeChatRoo
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeMeChatRoomsJoinPostRequest(request, r); err != nil {
+	if err := encodeJokesPostRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -480,7 +455,7 @@ func (c *Client) sendMeChatRoomsJoinPost(ctx context.Context, request *MeChatRoo
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeChatRoomsJoinPost", r); {
+			switch err := c.securityBearerAuth(ctx, "JokesPost", r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -516,7 +491,7 @@ func (c *Client) sendMeChatRoomsJoinPost(ctx context.Context, request *MeChatRoo
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeMeChatRoomsJoinPostResponse(resp)
+	result, err := decodeJokesPostResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -524,129 +499,21 @@ func (c *Client) sendMeChatRoomsJoinPost(ctx context.Context, request *MeChatRoo
 	return result, nil
 }
 
-// MeCommentsDel invokes MeCommentsDel operation.
+// JokesPut invokes JokesPut operation.
 //
-// Deletes a comment of the current user.
+// Updates joke for current user.
 //
-// DELETE /me/comments
-func (c *Client) MeCommentsDel(ctx context.Context, request *MeCommentsDelReq) error {
-	_, err := c.sendMeCommentsDel(ctx, request)
-	return err
-}
-
-func (c *Client) sendMeCommentsDel(ctx context.Context, request *MeCommentsDelReq) (res *MeCommentsDelNoContent, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeCommentsDel"),
-		semconv.HTTPMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/me/comments"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeCommentsDel",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/comments"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "DELETE", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeCommentsDelRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeCommentsDel", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeCommentsDelResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeCommentsPost invokes MeCommentsPost operation.
-//
-// Creates a comment for the current user and the current joke.
-//
-// POST /me/comments
-func (c *Client) MeCommentsPost(ctx context.Context, request *MeCommentsPostReq) (*Comment, error) {
-	res, err := c.sendMeCommentsPost(ctx, request)
+// PUT /jokes
+func (c *Client) JokesPut(ctx context.Context, request *JokesPutReq) (*Joke, error) {
+	res, err := c.sendJokesPut(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPostReq) (res *Comment, err error) {
+func (c *Client) sendJokesPut(ctx context.Context, request *JokesPutReq) (res *Joke, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeCommentsPost"),
-		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/me/comments"),
+		otelogen.OperationID("JokesPut"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
+		semconv.HTTPRouteKey.String("/jokes"),
 	}
 
 	// Run stopwatch.
@@ -661,7 +528,7 @@ func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPost
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeCommentsPost",
+	ctx, span := c.cfg.Tracer.Start(ctx, "JokesPut",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -679,115 +546,7 @@ func (c *Client) sendMeCommentsPost(ctx context.Context, request *MeCommentsPost
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/me/comments"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeCommentsPostRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeCommentsPost", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeCommentsPostResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeCommentsPut invokes MeCommentsPut operation.
-//
-// Updates a comment of the current user.
-//
-// PUT /me/comments
-func (c *Client) MeCommentsPut(ctx context.Context, request *MeCommentsPutReq) (*Comment, error) {
-	res, err := c.sendMeCommentsPut(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendMeCommentsPut(ctx context.Context, request *MeCommentsPutReq) (res *Comment, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeCommentsPut"),
-		semconv.HTTPMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/me/comments"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeCommentsPut",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/comments"
+	pathParts[0] = "/jokes"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -795,7 +554,7 @@ func (c *Client) sendMeCommentsPut(ctx context.Context, request *MeCommentsPutRe
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeMeCommentsPutRequest(request, r); err != nil {
+	if err := encodeJokesPutRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -804,7 +563,7 @@ func (c *Client) sendMeCommentsPut(ctx context.Context, request *MeCommentsPutRe
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeCommentsPut", r); {
+			switch err := c.securityBearerAuth(ctx, "JokesPut", r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -840,7 +599,7 @@ func (c *Client) sendMeCommentsPut(ctx context.Context, request *MeCommentsPutRe
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeMeCommentsPutResponse(resp)
+	result, err := decodeJokesPutResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -861,7 +620,7 @@ func (c *Client) MeDel(ctx context.Context, request *MeDelReq) error {
 func (c *Client) sendMeDel(ctx context.Context, request *MeDelReq) (res *MeDelNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MeDel"),
-		semconv.HTTPMethodKey.String("DELETE"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/me"),
 	}
 
@@ -969,7 +728,7 @@ func (c *Client) MeGet(ctx context.Context) (*User, error) {
 func (c *Client) sendMeGet(ctx context.Context) (res *User, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MeGet"),
-		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/me"),
 	}
 
@@ -1061,669 +820,6 @@ func (c *Client) sendMeGet(ctx context.Context) (res *User, err error) {
 	return result, nil
 }
 
-// MeJokesDel invokes MeJokesDel operation.
-//
-// Deletes joke for current user.
-//
-// DELETE /me/jokes
-func (c *Client) MeJokesDel(ctx context.Context, request *MeJokesDelReq) error {
-	_, err := c.sendMeJokesDel(ctx, request)
-	return err
-}
-
-func (c *Client) sendMeJokesDel(ctx context.Context, request *MeJokesDelReq) (res *MeJokesDelNoContent, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeJokesDel"),
-		semconv.HTTPMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/me/jokes"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeJokesDel",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/jokes"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "DELETE", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeJokesDelRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeJokesDel", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeJokesDelResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeJokesGet invokes MeJokesGet operation.
-//
-// Returns jokes of the current user.
-//
-// GET /me/jokes
-func (c *Client) MeJokesGet(ctx context.Context, params MeJokesGetParams) (*Jokes, error) {
-	res, err := c.sendMeJokesGet(ctx, params)
-	return res, err
-}
-
-func (c *Client) sendMeJokesGet(ctx context.Context, params MeJokesGetParams) (res *Jokes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeJokesGet"),
-		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/me/jokes"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeJokesGet",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/jokes"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeQueryParams"
-	q := uri.NewQueryEncoder()
-	{
-		// Encode "selector" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "selector",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return params.Selector.EncodeURI(e)
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	u.RawQuery = q.Values().Encode()
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeJokesGet", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeJokesGetResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeJokesPost invokes MeJokesPost operation.
-//
-// Creates a new joke for current user.
-//
-// POST /me/jokes
-func (c *Client) MeJokesPost(ctx context.Context, request *MeJokesPostReq) (*Joke, error) {
-	res, err := c.sendMeJokesPost(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendMeJokesPost(ctx context.Context, request *MeJokesPostReq) (res *Joke, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeJokesPost"),
-		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/me/jokes"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeJokesPost",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/jokes"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeJokesPostRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeJokesPost", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeJokesPostResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeJokesPut invokes MeJokesPut operation.
-//
-// Updates joke for current user.
-//
-// PUT /me/jokes
-func (c *Client) MeJokesPut(ctx context.Context, request *MeJokesPutReq) (*Joke, error) {
-	res, err := c.sendMeJokesPut(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendMeJokesPut(ctx context.Context, request *MeJokesPutReq) (res *Joke, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeJokesPut"),
-		semconv.HTTPMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/me/jokes"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeJokesPut",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/jokes"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "PUT", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeJokesPutRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeJokesPut", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeJokesPutResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeLikesDel invokes MeLikesDel operation.
-//
-// Deletes a like of the current user.
-//
-// DELETE /me/likes
-func (c *Client) MeLikesDel(ctx context.Context, request *MeLikesDelReq) error {
-	_, err := c.sendMeLikesDel(ctx, request)
-	return err
-}
-
-func (c *Client) sendMeLikesDel(ctx context.Context, request *MeLikesDelReq) (res *MeLikesDelNoContent, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeLikesDel"),
-		semconv.HTTPMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/me/likes"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeLikesDel",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/likes"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "DELETE", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeLikesDelRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeLikesDel", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeLikesDelResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeLikesPost invokes MeLikesPost operation.
-//
-// Creates a like for a joke for the current user.
-//
-// POST /me/likes
-func (c *Client) MeLikesPost(ctx context.Context, request *MeLikesPostReq) error {
-	_, err := c.sendMeLikesPost(ctx, request)
-	return err
-}
-
-func (c *Client) sendMeLikesPost(ctx context.Context, request *MeLikesPostReq) (res *MeLikesPostCreated, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeLikesPost"),
-		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/me/likes"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeLikesPost",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/likes"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeLikesPostRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeLikesPost", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeLikesPostResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // MePut invokes MePut operation.
 //
 // Updates current user profile.
@@ -1737,7 +833,7 @@ func (c *Client) MePut(ctx context.Context, request *MePutReq) (*User, error) {
 func (c *Client) sendMePut(ctx context.Context, request *MePutReq) (res *User, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("MePut"),
-		semconv.HTTPMethodKey.String("PUT"),
+		semconv.HTTPRequestMethodKey.String("PUT"),
 		semconv.HTTPRouteKey.String("/me"),
 	}
 
@@ -1832,595 +928,6 @@ func (c *Client) sendMePut(ctx context.Context, request *MePutReq) (res *User, e
 	return result, nil
 }
 
-// MeRoomsDelete invokes MeRoomsDelete operation.
-//
-// Deletes room.
-//
-// DELETE /me/rooms
-func (c *Client) MeRoomsDelete(ctx context.Context, request *MeRoomsDeleteReq) error {
-	_, err := c.sendMeRoomsDelete(ctx, request)
-	return err
-}
-
-func (c *Client) sendMeRoomsDelete(ctx context.Context, request *MeRoomsDeleteReq) (res *MeRoomsDeleteNoContent, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeRoomsDelete"),
-		semconv.HTTPMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/me/rooms"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeRoomsDelete",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/rooms"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "DELETE", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeRoomsDeleteRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeRoomsDelete", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeRoomsDeleteResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeRoomsGet invokes MeRoomsGet operation.
-//
-// Returns rooms current user is a member of.
-//
-// GET /me/rooms
-func (c *Client) MeRoomsGet(ctx context.Context, params MeRoomsGetParams) (*Rooms, error) {
-	res, err := c.sendMeRoomsGet(ctx, params)
-	return res, err
-}
-
-func (c *Client) sendMeRoomsGet(ctx context.Context, params MeRoomsGetParams) (res *Rooms, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeRoomsGet"),
-		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/me/rooms"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeRoomsGet",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/rooms"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeQueryParams"
-	q := uri.NewQueryEncoder()
-	{
-		// Encode "selector" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "selector",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return params.Selector.EncodeURI(e)
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	u.RawQuery = q.Values().Encode()
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeRoomsGet", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeRoomsGetResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeRoomsIdMessagesGet invokes MeRoomsIdMessagesGet operation.
-//
-// Retrieve messages from a room.
-//
-// GET /rooms/{room_id}/messages
-func (c *Client) MeRoomsIdMessagesGet(ctx context.Context, params MeRoomsIdMessagesGetParams) (*RoomMessages, error) {
-	res, err := c.sendMeRoomsIdMessagesGet(ctx, params)
-	return res, err
-}
-
-func (c *Client) sendMeRoomsIdMessagesGet(ctx context.Context, params MeRoomsIdMessagesGetParams) (res *RoomMessages, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeRoomsIdMessagesGet"),
-		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/rooms/{room_id}/messages"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeRoomsIdMessagesGet",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [3]string
-	pathParts[0] = "/rooms/"
-	{
-		// Encode "room_id" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "room_id",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.StringToString(params.RoomID))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
-	pathParts[2] = "/messages"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeQueryParams"
-	q := uri.NewQueryEncoder()
-	{
-		// Encode "selector" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "selector",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return params.Selector.EncodeURI(e)
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	u.RawQuery = q.Values().Encode()
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeRoomsIdMessagesGet", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeRoomsIdMessagesGetResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeRoomsPost invokes MeRoomsPost operation.
-//
-// Creates a new room.
-//
-// POST /me/rooms
-func (c *Client) MeRoomsPost(ctx context.Context, request *MeRoomsPostReq) (*Room, error) {
-	res, err := c.sendMeRoomsPost(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendMeRoomsPost(ctx context.Context, request *MeRoomsPostReq) (res *Room, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeRoomsPost"),
-		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/me/rooms"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeRoomsPost",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/rooms"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeRoomsPostRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeRoomsPost", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeRoomsPostResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// MeRoomsPut invokes MeRoomsPut operation.
-//
-// Updates room.
-//
-// PUT /me/rooms
-func (c *Client) MeRoomsPut(ctx context.Context, request *MeRoomsPutReq) (*Room, error) {
-	res, err := c.sendMeRoomsPut(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendMeRoomsPut(ctx context.Context, request *MeRoomsPutReq) (res *Room, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("MeRoomsPut"),
-		semconv.HTTPMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/me/rooms"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "MeRoomsPut",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/me/rooms"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "PUT", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeMeRoomsPutRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, "MeRoomsPut", r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeMeRoomsPutResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // SignInPost invokes SignInPost operation.
 //
 // Performs user authentication.
@@ -2434,7 +941,7 @@ func (c *Client) SignInPost(ctx context.Context, request *SignInPostReq) (*SignI
 func (c *Client) sendSignInPost(ctx context.Context, request *SignInPostReq) (res *SignInPostOK, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("SignInPost"),
-		semconv.HTTPMethodKey.String("POST"),
+		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign/in"),
 	}
 
@@ -2509,7 +1016,7 @@ func (c *Client) SignRefreshPost(ctx context.Context, request *SignRefreshPostRe
 func (c *Client) sendSignRefreshPost(ctx context.Context, request *SignRefreshPostReq) (res *SignRefreshPostOK, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("SignRefreshPost"),
-		semconv.HTTPMethodKey.String("POST"),
+		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign/refresh"),
 	}
 
@@ -2584,7 +1091,7 @@ func (c *Client) SignUpPost(ctx context.Context, request *SignUpPostReq) error {
 func (c *Client) sendSignUpPost(ctx context.Context, request *SignUpPostReq) (res *SignUpPostCreated, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("SignUpPost"),
-		semconv.HTTPMethodKey.String("POST"),
+		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/sign/up"),
 	}
 

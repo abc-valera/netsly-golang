@@ -34,7 +34,7 @@ func (dto RoomMember) ToDomain() model.RoomMember {
 
 type RoomMembers []RoomMember
 
-func NewRoomMembers(domainRoomMembers model.RoomMembers) RoomMembers {
+func NewRoomMembers(domainRoomMembers []model.RoomMember) RoomMembers {
 	var roomMembers RoomMembers
 	for _, domainRoomMember := range domainRoomMembers {
 		roomMembers = append(roomMembers, NewRoomMember(domainRoomMember))
@@ -42,8 +42,8 @@ func NewRoomMembers(domainRoomMembers model.RoomMembers) RoomMembers {
 	return roomMembers
 }
 
-func (dtos RoomMembers) ToDomain() model.RoomMembers {
-	var domainRoomMembers model.RoomMembers
+func (dtos RoomMembers) ToDomain() []model.RoomMember {
+	var domainRoomMembers []model.RoomMember
 	for _, dto := range dtos {
 		domainRoomMembers = append(domainRoomMembers, dto.ToDomain())
 	}

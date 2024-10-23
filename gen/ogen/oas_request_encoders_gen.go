@@ -11,8 +11,8 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
-func encodeMeChatRoomsJoinPostRequest(
-	req *MeChatRoomsJoinPostReq,
+func encodeJokesDelRequest(
+	req *JokesDelReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -25,8 +25,8 @@ func encodeMeChatRoomsJoinPostRequest(
 	return nil
 }
 
-func encodeMeCommentsDelRequest(
-	req *MeCommentsDelReq,
+func encodeJokesPostRequest(
+	req *JokesPostReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -39,22 +39,8 @@ func encodeMeCommentsDelRequest(
 	return nil
 }
 
-func encodeMeCommentsPostRequest(
-	req *MeCommentsPostReq,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeMeCommentsPutRequest(
-	req *MeCommentsPutReq,
+func encodeJokesPutRequest(
+	req *JokesPutReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -81,120 +67,8 @@ func encodeMeDelRequest(
 	return nil
 }
 
-func encodeMeJokesDelRequest(
-	req *MeJokesDelReq,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeMeJokesPostRequest(
-	req *MeJokesPostReq,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeMeJokesPutRequest(
-	req *MeJokesPutReq,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeMeLikesDelRequest(
-	req *MeLikesDelReq,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeMeLikesPostRequest(
-	req *MeLikesPostReq,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
 func encodeMePutRequest(
 	req *MePutReq,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeMeRoomsDeleteRequest(
-	req *MeRoomsDeleteReq,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeMeRoomsPostRequest(
-	req *MeRoomsPostReq,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeMeRoomsPutRequest(
-	req *MeRoomsPutReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

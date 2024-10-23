@@ -7,7 +7,9 @@ import (
 
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
+	"github.com/abc-valera/netsly-golang/internal/domain/model"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
+	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/selector"
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler/session"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler/templates"
@@ -42,18 +44,17 @@ func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
 		global.Log().Error("failed to get user id from context")
 	}
 
-	user, err := h.user.GetByID(r.Context(), userID)
+	user, err := h.user.GetOne(
+		r.Context(),
+		filter.By(model.User{ID: userID}),
+	)
 	if err != nil {
 		return err
 	}
 
-	jokes, err := h.joke.GetAllByUserID(
+	jokes, err := h.joke.GetMany(
 		r.Context(),
-		userID,
-		selector.Selector{
-			Limit:  5,
-			Offset: 0,
-		},
+		selector.WithFilter(model.Joke{UserID: userID}),
 	)
 	if err != nil {
 		return err
@@ -66,13 +67,9 @@ func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h Home) HomePartialJokesGet(w http.ResponseWriter, r *http.Request) error {
-	jokes, err := h.joke.GetAllByUserID(
+	jokes, err := h.joke.GetMany(
 		context.Background(),
-		session.GetUserID(r),
-		selector.Selector{
-			Limit:  5,
-			Offset: 0,
-		},
+		selector.WithFilter(model.Joke{UserID: session.GetUserID(r)}),
 	)
 	if err != nil {
 		return err

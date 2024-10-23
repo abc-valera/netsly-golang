@@ -1,5 +1,0 @@
-description: General Error
-content:
-  application/json:
-    schema:
-      $ref: "../schemas/code_error.yaml"

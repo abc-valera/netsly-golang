@@ -48,24 +48,12 @@ func newHttpHandler(
 			restErrors.Handler
 			handler.SignHandler
 			handler.MeHandler
-			handler.MeJokesHandler
-			handler.MeCommentsHandler
-			handler.MeLikesHandler
-			handler.CommentsHandler
-			handler.LikesHandler
-			handler.MeRooms
-			handler.Rooms
+			handler.JokesHandler
 		}{
-			Handler:           restErrors.NewHandler(),
-			SignHandler:       handler.NewSignHandler(authManager, usecases.SignUsecase),
-			MeHandler:         handler.NewMeHandler(entities.User),
-			MeJokesHandler:    handler.NewMeJokesHandler(entities.Joke),
-			MeCommentsHandler: handler.NewMeCommentsHandler(entities.Comment),
-			MeLikesHandler:    handler.NewMeLikesHandler(entities.Like),
-			MeRooms:           handler.NewMeRooms(entities.Room, entities.RoomMember),
-			CommentsHandler:   handler.NewCommentsHandler(entities.Comment),
-			LikesHandler:      handler.NewLikesHandler(entities.Like),
-			Rooms:             handler.NewRooms(entities.RoomMessage),
+			Handler:      restErrors.NewHandler(),
+			SignHandler:  handler.NewSignHandler(authManager, usecases.SignUsecase),
+			MeHandler:    handler.NewMeHandler(entities.User),
+			JokesHandler: handler.NewJokesHandler(entities.Joke),
 		}
 
 		// Init security handler

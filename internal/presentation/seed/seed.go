@@ -5,7 +5,6 @@ import (
 
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/selector"
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 )
 
@@ -13,10 +12,6 @@ import (
 // Stops the program execution if an error occurs.
 func Seed(entities entity.Entities) {
 	ctx := context.Background()
-
-	params := selector.Selector{
-		Limit: 100,
-	}
 
 	userCreateReqs := []entity.UserCreateRequest{
 		{
@@ -58,7 +53,7 @@ func Seed(entities entity.Entities) {
 	for _, user := range userCreateReqs {
 		coderr.Must(entities.User.Create(ctx, user))
 	}
-	users := coderr.Must(entities.User.GetAll(ctx, params))
+	users := coderr.Must(entities.User.GetMany(ctx))
 
 	jokeCreateReqs := []entity.JokeCreateRequest{
 		{
@@ -125,7 +120,7 @@ func Seed(entities entity.Entities) {
 	for _, joke := range jokeCreateReqs {
 		coderr.Must(entities.Joke.Create(ctx, joke))
 	}
-	jokes := coderr.Must(entities.Joke.SearchAllByTitle(ctx, "", params))
+	jokes := coderr.Must(entities.Joke.GetMany(ctx))
 
 	likeCreateReqs := []entity.LikeCreateRequest{
 		{
@@ -349,7 +344,7 @@ func Seed(entities entity.Entities) {
 	for _, room := range roomCreateReqs {
 		coderr.Must(entities.Room.Create(ctx, room))
 	}
-	rooms := coderr.Must(entities.Room.SearchAllByName(ctx, "", params))
+	rooms := coderr.Must(entities.Room.GetMany(ctx))
 
 	roomMembersReqs := []entity.RoomMemberCreateRequest{
 		{

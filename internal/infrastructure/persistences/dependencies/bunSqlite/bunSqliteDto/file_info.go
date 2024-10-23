@@ -70,21 +70,3 @@ func NewFileInfoRoom(fileInfoRoom model.FileInfoRoom) FileInfoRoom {
 		RoomID:     fileInfoRoom.RoomID,
 	}
 }
-
-type FileInfos []FileInfo
-
-func NewFileInfos(fileInfos model.FileInfos) FileInfos {
-	dtos := make(FileInfos, 0, len(fileInfos))
-	for _, fileInfo := range fileInfos {
-		dtos = append(dtos, NewFileInfo(fileInfo))
-	}
-	return dtos
-}
-
-func (dtos FileInfos) ToDomain() model.FileInfos {
-	fileInfos := make(model.FileInfos, 0, len(dtos))
-	for _, fileInfo := range dtos {
-		fileInfos = append(fileInfos, fileInfo.ToDomain())
-	}
-	return fileInfos
-}

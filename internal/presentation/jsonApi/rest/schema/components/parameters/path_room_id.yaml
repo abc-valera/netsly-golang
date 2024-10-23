@@ -1,6 +1,0 @@
-name: room_id
-in: path
-description: ID of the room
-required: true
-schema:
-  type: string

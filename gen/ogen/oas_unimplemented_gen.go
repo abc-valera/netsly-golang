@@ -13,57 +13,39 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
-// CommentsByJokeIDGet implements CommentsByJokeIDGet operation.
+// JokesDel implements JokesDel operation.
 //
-// Returns comments of the joke.
+// Deletes joke for current user.
 //
-// GET /comments/{joke_id}
-func (UnimplementedHandler) CommentsByJokeIDGet(ctx context.Context, params CommentsByJokeIDGetParams) (r *Comments, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// LikesByJokeIDGet implements LikesByJokeIDGet operation.
-//
-// Counts likes of the joke.
-//
-// GET /likes/{joke_id}
-func (UnimplementedHandler) LikesByJokeIDGet(ctx context.Context, params LikesByJokeIDGetParams) (r int, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// MeChatRoomsJoinPost implements MeChatRoomsJoinPost operation.
-//
-// Join room.
-//
-// POST /me/rooms/join
-func (UnimplementedHandler) MeChatRoomsJoinPost(ctx context.Context, req *MeChatRoomsJoinPostReq) error {
+// DELETE /jokes
+func (UnimplementedHandler) JokesDel(ctx context.Context, req *JokesDelReq) error {
 	return ht.ErrNotImplemented
 }
 
-// MeCommentsDel implements MeCommentsDel operation.
+// JokesGet implements JokesGet operation.
 //
-// Deletes a comment of the current user.
+// Returns jokes of the current user.
 //
-// DELETE /me/comments
-func (UnimplementedHandler) MeCommentsDel(ctx context.Context, req *MeCommentsDelReq) error {
-	return ht.ErrNotImplemented
-}
-
-// MeCommentsPost implements MeCommentsPost operation.
-//
-// Creates a comment for the current user and the current joke.
-//
-// POST /me/comments
-func (UnimplementedHandler) MeCommentsPost(ctx context.Context, req *MeCommentsPostReq) (r *Comment, _ error) {
+// GET /jokes
+func (UnimplementedHandler) JokesGet(ctx context.Context, params JokesGetParams) (r Jokes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
-// MeCommentsPut implements MeCommentsPut operation.
+// JokesPost implements JokesPost operation.
 //
-// Updates a comment of the current user.
+// Creates a new joke for current user.
 //
-// PUT /me/comments
-func (UnimplementedHandler) MeCommentsPut(ctx context.Context, req *MeCommentsPutReq) (r *Comment, _ error) {
+// POST /jokes
+func (UnimplementedHandler) JokesPost(ctx context.Context, req *JokesPostReq) (r *Joke, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// JokesPut implements JokesPut operation.
+//
+// Updates joke for current user.
+//
+// PUT /jokes
+func (UnimplementedHandler) JokesPut(ctx context.Context, req *JokesPutReq) (r *Joke, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -85,111 +67,12 @@ func (UnimplementedHandler) MeGet(ctx context.Context) (r *User, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
-// MeJokesDel implements MeJokesDel operation.
-//
-// Deletes joke for current user.
-//
-// DELETE /me/jokes
-func (UnimplementedHandler) MeJokesDel(ctx context.Context, req *MeJokesDelReq) error {
-	return ht.ErrNotImplemented
-}
-
-// MeJokesGet implements MeJokesGet operation.
-//
-// Returns jokes of the current user.
-//
-// GET /me/jokes
-func (UnimplementedHandler) MeJokesGet(ctx context.Context, params MeJokesGetParams) (r *Jokes, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// MeJokesPost implements MeJokesPost operation.
-//
-// Creates a new joke for current user.
-//
-// POST /me/jokes
-func (UnimplementedHandler) MeJokesPost(ctx context.Context, req *MeJokesPostReq) (r *Joke, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// MeJokesPut implements MeJokesPut operation.
-//
-// Updates joke for current user.
-//
-// PUT /me/jokes
-func (UnimplementedHandler) MeJokesPut(ctx context.Context, req *MeJokesPutReq) (r *Joke, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// MeLikesDel implements MeLikesDel operation.
-//
-// Deletes a like of the current user.
-//
-// DELETE /me/likes
-func (UnimplementedHandler) MeLikesDel(ctx context.Context, req *MeLikesDelReq) error {
-	return ht.ErrNotImplemented
-}
-
-// MeLikesPost implements MeLikesPost operation.
-//
-// Creates a like for a joke for the current user.
-//
-// POST /me/likes
-func (UnimplementedHandler) MeLikesPost(ctx context.Context, req *MeLikesPostReq) error {
-	return ht.ErrNotImplemented
-}
-
 // MePut implements MePut operation.
 //
 // Updates current user profile.
 //
 // PUT /me
 func (UnimplementedHandler) MePut(ctx context.Context, req *MePutReq) (r *User, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// MeRoomsDelete implements MeRoomsDelete operation.
-//
-// Deletes room.
-//
-// DELETE /me/rooms
-func (UnimplementedHandler) MeRoomsDelete(ctx context.Context, req *MeRoomsDeleteReq) error {
-	return ht.ErrNotImplemented
-}
-
-// MeRoomsGet implements MeRoomsGet operation.
-//
-// Returns rooms current user is a member of.
-//
-// GET /me/rooms
-func (UnimplementedHandler) MeRoomsGet(ctx context.Context, params MeRoomsGetParams) (r *Rooms, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// MeRoomsIdMessagesGet implements MeRoomsIdMessagesGet operation.
-//
-// Retrieve messages from a room.
-//
-// GET /rooms/{room_id}/messages
-func (UnimplementedHandler) MeRoomsIdMessagesGet(ctx context.Context, params MeRoomsIdMessagesGetParams) (r *RoomMessages, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// MeRoomsPost implements MeRoomsPost operation.
-//
-// Creates a new room.
-//
-// POST /me/rooms
-func (UnimplementedHandler) MeRoomsPost(ctx context.Context, req *MeRoomsPostReq) (r *Room, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
-// MeRoomsPut implements MeRoomsPut operation.
-//
-// Updates room.
-//
-// PUT /me/rooms
-func (UnimplementedHandler) MeRoomsPut(ctx context.Context, req *MeRoomsPutReq) (r *Room, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

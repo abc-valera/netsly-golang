@@ -18,5 +18,3 @@ type Comment struct {
 	UserID string
 	JokeID string
 }
-
-type Comments []Comment

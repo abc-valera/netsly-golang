@@ -45,21 +45,3 @@ func (dto RoomMessage) ToDomain() model.RoomMessage {
 		RoomID: dto.RoomID,
 	}
 }
-
-type RoomMessages []RoomMessage
-
-func NewRoomMessages(roomMessages model.RoomMessages) RoomMessages {
-	dtos := make(RoomMessages, 0, len(roomMessages))
-	for _, roomMessage := range roomMessages {
-		dtos = append(dtos, NewRoomMessage(roomMessage))
-	}
-	return dtos
-}
-
-func (dtos RoomMessages) ToDomain() model.RoomMessages {
-	messages := make(model.RoomMessages, 0, len(dtos))
-	for _, message := range dtos {
-		messages = append(messages, message.ToDomain())
-	}
-	return messages
-}

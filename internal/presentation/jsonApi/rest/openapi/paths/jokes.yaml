@@ -1,0 +1,118 @@
+get:
+  operationId: JokesGet
+  summary: Returns jokes of the current user
+  tags:
+    - jokes
+  parameters:
+    $ref: ../components/parameters/paging.yaml
+  security:
+    - bearerAuth: []
+  responses:
+    200:
+      description: Your jokes
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/jokes.yaml
+    default:
+      $ref: ../components/responses/code_error.yaml
+post:
+  operationId: JokesPost
+  summary: Creates a new joke for current user
+  tags:
+    - jokes
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Data to create a new joke for current user
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              example: Joke title
+            text:
+              type: string
+              example: Joke text
+            explanation:
+              type: string
+              example: Joke explanation
+          required:
+            - user_id
+            - title
+            - text
+  responses:
+    201:
+      description: Created Joke
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/joke.yaml
+    default:
+      $ref: ../components/responses/code_error.yaml
+put:
+  operationId: JokesPut
+  summary: Updates joke for current user
+  tags:
+    - jokes
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Data to update the joke for current user
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            joke_id:
+              type: string
+              example: 48690945-c3f9-45b4-9045-c6bcfb898f20
+            title:
+              type: string
+              example: Joke title
+            text:
+              type: string
+              example: Joke text
+            explanation:
+              type: string
+              example: Joke explanation
+          required:
+            - joke_id
+  responses:
+    201:
+      description: Updated Joke
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/joke.yaml
+    default:
+      $ref: ../components/responses/code_error.yaml
+delete:
+  operationId: JokesDel
+  summary: Deletes joke for current user
+  tags:
+    - jokes
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Data to delete the joke for current user
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            joke_id:
+              type: string
+              example: 48690945-c3f9-45b4-9045-c6bcfb898f20
+          required:
+            - joke_id
+  responses:
+    204:
+      description: Joke deleted
+    default:
+      $ref: ../components/responses/code_error.yaml

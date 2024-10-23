@@ -13,49 +13,14 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
-func encodeCommentsByJokeIDGetResponse(response *Comments, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
-
-	e := new(jx.Encoder)
-	response.Encode(e)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
-	}
-
-	return nil
-}
-
-func encodeLikesByJokeIDGetResponse(response int, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
-
-	e := new(jx.Encoder)
-	e.Int(response)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
-	}
-
-	return nil
-}
-
-func encodeMeChatRoomsJoinPostResponse(response *MeChatRoomsJoinPostCreated, w http.ResponseWriter, span trace.Span) error {
-	w.WriteHeader(201)
-	span.SetStatus(codes.Ok, http.StatusText(201))
-
-	return nil
-}
-
-func encodeMeCommentsDelResponse(response *MeCommentsDelNoContent, w http.ResponseWriter, span trace.Span) error {
+func encodeJokesDelResponse(response *JokesDelNoContent, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(204)
 	span.SetStatus(codes.Ok, http.StatusText(204))
 
 	return nil
 }
 
-func encodeMeCommentsPostResponse(response *Comment, w http.ResponseWriter, span trace.Span) error {
+func encodeJokesGetResponse(response Jokes, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -69,10 +34,24 @@ func encodeMeCommentsPostResponse(response *Comment, w http.ResponseWriter, span
 	return nil
 }
 
-func encodeMeCommentsPutResponse(response *Comment, w http.ResponseWriter, span trace.Span) error {
+func encodeJokesPostResponse(response *Joke, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
+	w.WriteHeader(201)
+	span.SetStatus(codes.Ok, http.StatusText(201))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeJokesPutResponse(response *Joke, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
+	span.SetStatus(codes.Ok, http.StatusText(201))
 
 	e := new(jx.Encoder)
 	response.Encode(e)
@@ -104,133 +83,7 @@ func encodeMeGetResponse(response *User, w http.ResponseWriter, span trace.Span)
 	return nil
 }
 
-func encodeMeJokesDelResponse(response *MeJokesDelNoContent, w http.ResponseWriter, span trace.Span) error {
-	w.WriteHeader(204)
-	span.SetStatus(codes.Ok, http.StatusText(204))
-
-	return nil
-}
-
-func encodeMeJokesGetResponse(response *Jokes, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
-
-	e := new(jx.Encoder)
-	response.Encode(e)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
-	}
-
-	return nil
-}
-
-func encodeMeJokesPostResponse(response *Joke, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(201)
-	span.SetStatus(codes.Ok, http.StatusText(201))
-
-	e := new(jx.Encoder)
-	response.Encode(e)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
-	}
-
-	return nil
-}
-
-func encodeMeJokesPutResponse(response *Joke, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(201)
-	span.SetStatus(codes.Ok, http.StatusText(201))
-
-	e := new(jx.Encoder)
-	response.Encode(e)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
-	}
-
-	return nil
-}
-
-func encodeMeLikesDelResponse(response *MeLikesDelNoContent, w http.ResponseWriter, span trace.Span) error {
-	w.WriteHeader(204)
-	span.SetStatus(codes.Ok, http.StatusText(204))
-
-	return nil
-}
-
-func encodeMeLikesPostResponse(response *MeLikesPostCreated, w http.ResponseWriter, span trace.Span) error {
-	w.WriteHeader(201)
-	span.SetStatus(codes.Ok, http.StatusText(201))
-
-	return nil
-}
-
 func encodeMePutResponse(response *User, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(201)
-	span.SetStatus(codes.Ok, http.StatusText(201))
-
-	e := new(jx.Encoder)
-	response.Encode(e)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
-	}
-
-	return nil
-}
-
-func encodeMeRoomsDeleteResponse(response *MeRoomsDeleteNoContent, w http.ResponseWriter, span trace.Span) error {
-	w.WriteHeader(204)
-	span.SetStatus(codes.Ok, http.StatusText(204))
-
-	return nil
-}
-
-func encodeMeRoomsGetResponse(response *Rooms, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
-
-	e := new(jx.Encoder)
-	response.Encode(e)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
-	}
-
-	return nil
-}
-
-func encodeMeRoomsIdMessagesGetResponse(response *RoomMessages, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
-
-	e := new(jx.Encoder)
-	response.Encode(e)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
-	}
-
-	return nil
-}
-
-func encodeMeRoomsPostResponse(response *Room, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(201)
-	span.SetStatus(codes.Ok, http.StatusText(201))
-
-	e := new(jx.Encoder)
-	response.Encode(e)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
-	}
-
-	return nil
-}
-
-func encodeMeRoomsPutResponse(response *Room, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(201)
 	span.SetStatus(codes.Ok, http.StatusText(201))

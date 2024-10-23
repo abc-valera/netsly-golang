@@ -18,5 +18,3 @@ type RoomMessage struct {
 	UserID string
 	RoomID string
 }
-
-type RoomMessages []RoomMessage

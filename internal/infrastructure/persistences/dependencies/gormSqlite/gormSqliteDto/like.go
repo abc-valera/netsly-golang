@@ -33,7 +33,7 @@ func (dto Like) ToDomain() model.Like {
 
 type Likes []Like
 
-func NewLikes(domainLikes model.Likes) Likes {
+func NewLikes(domainLikes []model.Like) Likes {
 	var likes Likes
 	for _, domainLike := range domainLikes {
 		likes = append(likes, NewLike(domainLike))
@@ -41,8 +41,8 @@ func NewLikes(domainLikes model.Likes) Likes {
 	return likes
 }
 
-func (dtos Likes) ToDomain() model.Likes {
-	var domainLikes model.Likes
+func (dtos Likes) ToDomain() []model.Like {
+	var domainLikes []model.Like
 	for _, dto := range dtos {
 		domainLikes = append(domainLikes, dto.ToDomain())
 	}

@@ -1,42 +1,33 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
-  version: 0.1.0
+  version: 1.0.0
   title: Netsly API
   termsOfService: https://github.com/abc-valera/netsly-golang
   contact:
     email: zoocity14@gmail.com
     url: https://github.com/abc-valera/netsly-golang
-  description: API for Netsly social network
+  description: API for the Netsly social network
 servers:
   - url: http://localhost:3010/api/v1
-    description: Development server
+    description: Local development server
 tags:
   - name: sign
-    description: Everything about managing user sessions
+    description: Sessions Management
   - name: me
-    description: Everything about managing current user profile
-  - name: rooms
-    description: Everything about managing rooms
-  - name: users
-    description: Everything about searching users
+    description: User Profile Settings
   - name: jokes
-    description: Everything about searching jokes
-  - name: comments
-    description: Everything about searching comments
-  - name: likes
-    description: Everything about counting likes
+    description: Jokes operations
 externalDocs:
   description: Learn more about the project.
   url: https://github.com/abc-valera/netsly-golang
 paths:
   /sign/up:
     post:
+      operationId: SignUpPost
+      summary: Performs user registration
       tags:
         - sign
-      summary: Performs user registration
-      operationId: SignUpPost
       requestBody:
-        description: Data to add new user to the social network
         required: true
         content:
           application/json:
@@ -45,13 +36,13 @@ paths:
               properties:
                 username:
                   type: string
-                  example: user1
+                  example: example-username
                 email:
                   type: string
-                  example: user1@gmail.com
+                  example: example@example.com
                 password:
                   type: string
-                  example: qwerty
+                  example: qwerty123
               required:
                 - username
                 - email
@@ -63,12 +54,11 @@ paths:
           $ref: '#/components/responses/code_error'
   /sign/in:
     post:
+      operationId: SignInPost
+      summary: Performs user authentication
       tags:
         - sign
-      summary: Performs user authentication
-      operationId: SignInPost
       requestBody:
-        description: Data to perform sign in to the social network
         required: true
         content:
           application/json:
@@ -77,16 +67,16 @@ paths:
               properties:
                 email:
                   type: string
-                  example: user1@gmail.com
+                  example: example@example.com
                 password:
                   type: string
-                  example: qwerty
+                  example: qwerty123
               required:
                 - email
                 - password
       responses:
         '200':
-          description: Successful operation
+          description: Registration was successful
           content:
             application/json:
               schema:
@@ -108,12 +98,11 @@ paths:
           $ref: '#/components/responses/code_error'
   /sign/refresh:
     post:
+      operationId: SignRefreshPost
+      summary: Exchanges a refresh token for an access token
       tags:
         - sign
-      summary: Exchanges a refresh token for an access token
-      operationId: SignRefreshPost
       requestBody:
-        description: Refresh token
         required: true
         content:
           application/json:
@@ -127,7 +116,7 @@ paths:
                 - refresh_token
       responses:
         '200':
-          description: Successful operation
+          description: New access token
           content:
             application/json:
               schema:
@@ -142,22 +131,26 @@ paths:
           $ref: '#/components/responses/code_error'
   /me:
     get:
+      operationId: MeGet
+      summary: Returns current user profile
       tags:
         - me
-      summary: Returns current user profile
-      operationId: MeGet
       security:
         - bearerAuth: []
       responses:
         '200':
-          $ref: '#/components/responses/user'
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
         default:
           $ref: '#/components/responses/code_error'
     put:
+      operationId: MePut
+      summary: Updates current user profile
       tags:
         - me
-      summary: Updates current user profile
-      operationId: MePut
       security:
         - bearerAuth: []
       requestBody:
@@ -170,7 +163,7 @@ paths:
               properties:
                 password:
                   type: string
-                  example: '123456'
+                  example: 123456
                 fullname:
                   type: string
                   example: John Doe
@@ -179,14 +172,18 @@ paths:
                   example: active
       responses:
         '201':
-          $ref: '#/components/responses/user'
+          description: Updated user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
         default:
           $ref: '#/components/responses/code_error'
     delete:
+      operationId: MeDel
+      summary: Deletes current user profile
       tags:
         - me
-      summary: Deletes current user profile
-      operationId: MeDel
       security:
         - bearerAuth: []
       requestBody:
@@ -199,34 +196,47 @@ paths:
               properties:
                 password:
                   type: string
-                  example: '123456'
+                  example: 123456
               required:
                 - password
       responses:
         '204':
-          description: Successful operation
+          description: Successful deletion
         default:
           $ref: '#/components/responses/code_error'
-  /me/jokes:
+  /jokes:
     get:
-      tags:
-        - me
+      operationId: JokesGet
       summary: Returns jokes of the current user
-      operationId: MeJokesGet
+      tags:
+        - jokes
       parameters:
-        - $ref: '#/components/parameters/query_select_params'
+        - name: limit
+          in: query
+          description: Number of items returned. If not specified, all instances are returned.
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Number of items to skip.
+          schema:
+            type: integer
       security:
         - bearerAuth: []
       responses:
         '200':
-          $ref: '#/components/responses/jokes'
+          description: Your jokes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/jokes'
         default:
           $ref: '#/components/responses/code_error'
     post:
-      tags:
-        - me
+      operationId: JokesPost
       summary: Creates a new joke for current user
-      operationId: MeJokesPost
+      tags:
+        - jokes
       security:
         - bearerAuth: []
       requestBody:
@@ -252,14 +262,18 @@ paths:
                 - text
       responses:
         '201':
-          $ref: '#/components/responses/joke'
+          description: Created Joke
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/joke'
         default:
           $ref: '#/components/responses/code_error'
     put:
-      tags:
-        - me
+      operationId: JokesPut
       summary: Updates joke for current user
-      operationId: MeJokesPut
+      tags:
+        - jokes
       security:
         - bearerAuth: []
       requestBody:
@@ -286,14 +300,18 @@ paths:
                 - joke_id
       responses:
         '201':
-          $ref: '#/components/responses/joke'
+          description: Updated Joke
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/joke'
         default:
           $ref: '#/components/responses/code_error'
     delete:
-      tags:
-        - me
+      operationId: JokesDel
       summary: Deletes joke for current user
-      operationId: MeJokesDel
+      tags:
+        - jokes
       security:
         - bearerAuth: []
       requestBody:
@@ -314,343 +332,40 @@ paths:
           description: Joke deleted
         default:
           $ref: '#/components/responses/code_error'
-  /me/comments:
-    post:
-      tags:
-        - me
-      summary: Creates a comment for the current user and the current joke
-      operationId: MeCommentsPost
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Create Comment Request
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                joke_id:
-                  type: string
-                  example: '1'
-                text:
-                  type: string
-                  example: Text of comment 1
-              required:
-                - user_id
-                - joke_id
-                - text
-      responses:
-        '200':
-          $ref: '#/components/responses/comment'
-        default:
-          $ref: '#/components/responses/code_error'
-    put:
-      tags:
-        - me
-      summary: Updates a comment of the current user
-      operationId: MeCommentsPut
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Update Comment Request
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                comment_id:
-                  type: string
-                  example: '1'
-                text:
-                  type: string
-                  example: Text of comment 1
-              required:
-                - comment_id
-      responses:
-        '200':
-          $ref: '#/components/responses/comment'
-        default:
-          $ref: '#/components/responses/code_error'
-    delete:
-      tags:
-        - me
-      summary: Deletes a comment of the current user
-      operationId: MeCommentsDel
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Delete Comment Request
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                comment_id:
-                  type: string
-                  example: '1'
-              required:
-                - comment_id
-      responses:
-        '204':
-          description: Comment deleted
-        default:
-          $ref: '#/components/responses/code_error'
-  /me/likes:
-    post:
-      tags:
-        - me
-      summary: Creates a like for a joke for the current user
-      operationId: MeLikesPost
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Data to create a like for a joke for the current user
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                joke_id:
-                  type: string
-                  example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-              required:
-                - joke_id
-      responses:
-        '201':
-          description: Like created
-        default:
-          $ref: '#/components/responses/code_error'
-    delete:
-      tags:
-        - me
-      summary: Deletes a like of the current user
-      operationId: MeLikesDel
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Data to delete a like of the current user
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                joke_id:
-                  type: string
-                  example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-              required:
-                - joke_id
-      responses:
-        '204':
-          description: Like deleted
-        default:
-          $ref: '#/components/responses/code_error'
-  /me/rooms:
-    get:
-      tags:
-        - me
-        - rooms
-      summary: Returns rooms current user is a member of
-      operationId: MeRoomsGet
-      parameters:
-        - $ref: '#/components/parameters/query_select_params'
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          $ref: '#/components/responses/rooms'
-        default:
-          $ref: '#/components/responses/code_error'
-    post:
-      tags:
-        - me
-      summary: Creates a new room
-      operationId: MeRoomsPost
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Data to create a new room
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: My Room
-                description:
-                  type: string
-                  example: This is my room
-              required:
-                - name
-      responses:
-        '201':
-          $ref: '#/components/responses/room'
-        default:
-          $ref: '#/components/responses/code_error'
-    put:
-      tags:
-        - me
-      summary: Updates room
-      operationId: MeRoomsPut
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Data to update the room
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-                name:
-                  type: string
-                  example: My Room
-                description:
-                  type: string
-                  example: This is my room
-              required:
-                - id
-      responses:
-        '201':
-          $ref: '#/components/responses/room'
-        default:
-          $ref: '#/components/responses/code_error'
-    delete:
-      tags:
-        - me
-      summary: Deletes room
-      operationId: MeRoomsDelete
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Data to delete the room
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-              required:
-                - id
-      responses:
-        '204':
-          description: Room deleted
-        default:
-          $ref: '#/components/responses/code_error'
-  /me/rooms/join:
-    post:
-      tags:
-        - me
-        - rooms
-      summary: Join room
-      operationId: MeChatRoomsJoinPost
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Data to join room
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-              required:
-                - id
-      responses:
-        '201':
-          description: Joined room
-        default:
-          $ref: '#/components/responses/code_error'
-  /rooms/{room_id}/messages:
-    get:
-      tags:
-        - me
-        - rooms
-      summary: Retrieve messages from a room
-      operationId: MeRoomsIdMessagesGet
-      parameters:
-        - $ref: '#/components/parameters/path_room_id'
-        - $ref: '#/components/parameters/query_select_params'
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          $ref: '#/components/responses/room_messages'
-        default:
-          $ref: '#/components/responses/code_error'
-  /comments/{joke_id}:
-    get:
-      tags:
-        - comments
-      summary: Returns comments of the joke
-      operationId: CommentsByJokeIDGet
-      parameters:
-        - $ref: '#/components/parameters/path_joke_id'
-        - $ref: '#/components/parameters/query_select_params'
-      responses:
-        '200':
-          $ref: '#/components/responses/comments'
-        default:
-          $ref: '#/components/responses/code_error'
-  /likes/{joke_id}:
-    get:
-      tags:
-        - likes
-      summary: Counts likes of the joke
-      operationId: LikesByJokeIDGet
-      parameters:
-        - $ref: '#/components/parameters/path_joke_id'
-      responses:
-        '200':
-          description: Count of likes
-          content:
-            application/json:
-              schema:
-                type: integer
-                minimum: 0
-        default:
-          $ref: '#/components/responses/code_error'
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-  schemas:
+  responses:
     code_error:
-      type: object
-      title: CodeError
-      properties:
-        code:
-          type: string
-          enum:
-            - unauthenticated
-            - invalid_argument
-            - not_found
-            - already_exists
-            - permission_denied
-            - internal
-        error_message:
-          type: string
-      required:
-        - code
-        - error_message
+      description: General Error
+      content:
+        application/json:
+          schema:
+            type: object
+            title: CodeError
+            properties:
+              code:
+                type: string
+                enum:
+                  - unauthenticated
+                  - invalid_argument
+                  - not_found
+                  - already_exists
+                  - permission_denied
+                  - internal
+                example: internal
+              error_message:
+                type: string
+                example: Internal error occurred
+            required:
+              - code
+              - error_message
+  schemas:
     user:
+      title: User
       type: object
       properties:
         id:
@@ -658,16 +373,16 @@ components:
           example: 48690945-c3f9-45b4-9045-c6bcfb898f20
         username:
           type: string
-          example: user1
+          example: example-username
         email:
           type: string
-          example: user1@gmail.com
+          example: example@example.com
         fullname:
           type: string
-          example: User 1
+          example: John Doe
         status:
           type: string
-          example: Just coding
+          example: Making humor
         created_at:
           type: string
           format: date-time
@@ -677,28 +392,25 @@ components:
         - username
         - email
         - created_at
-    order:
-      type: string
-      name: order
-      enum:
-        - asc
-        - desc
     joke:
+      title: Joke
       type: object
       properties:
         id:
           type: string
+          example: 48690945-c3f9-45b4-9045-c6bcfb898f20
         userID:
           type: string
+          example: 71582145-caf9-45b4-9045-caf971582145
         title:
           type: string
-          example: Joke 1
+          example: Example Joke
         text:
           type: string
-          example: Text of joke 1
+          example: Something Funny
         explanation:
           type: string
-          example: Explanation of joke 1
+          example: Ahh.. Don't you get it?
         createdAt:
           type: string
           format: date-time
@@ -709,188 +421,8 @@ components:
         - title
         - text
         - createdAt
-    comment:
-      type: object
-      properties:
-        id:
-          type: string
-        user_id:
-          type: string
-        joke_id:
-          type: string
-        text:
-          type: string
-          example: Text of comment 1
-        createdAt:
-          type: string
-          format: date-time
-          example: '2021-08-01T00:00:00Z'
-      required:
-        - id
-        - user_id
-        - joke_id
-        - text
-        - createdAt
-    room:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-        creator_user_id:
-          type: string
-          example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-        name:
-          type: string
-          example: Funny Dad Jokes
-        description:
-          type: string
-          example: A place to share the best dad jokes
-        created_at:
-          type: string
-          format: date-time
-          example: '2021-08-01T00:00:00Z'
-      required:
-        - id
-        - creator_user_id
-        - name
-        - created_at
-    room_message:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-        room_id:
-          type: string
-          example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-        user_id:
-          type: string
-          example: 48690945-c3f9-45b4-9045-c6bcfb898f20
-        text:
-          type: string
-          example: Hello, world!
-        created_at:
-          type: string
-          format: date-time
-          example: '2021-08-01T00:00:00Z'
-      required:
-        - id
-        - room_id
-        - user_id
-        - text
-        - created_at
-  responses:
-    code_error:
-      description: General Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/code_error'
-    user:
-      description: User profile
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/user'
     jokes:
-      description: Array of jokes
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              jokes:
-                type: array
-                items:
-                  $ref: '#/components/schemas/joke'
-            required:
-              - jokes
-    joke:
-      description: Joke
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/joke'
-    comment:
-      description: Comment
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/comment'
-    rooms:
-      description: List of rooms
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              rooms:
-                type: array
-                items:
-                  $ref: '#/components/schemas/room'
-            required:
-              - rooms
-    room:
-      description: Place for discussing the humour
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/room'
-    room_messages:
-      description: List of room messages
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              room_messages:
-                type: array
-                items:
-                  $ref: '#/components/schemas/room_message'
-            required:
-              - room_messages
-    comments:
-      description: Array of comments
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              comments:
-                type: array
-                items:
-                  $ref: '#/components/schemas/comment'
-            required:
-              - comments
-  parameters:
-    query_select_params:
-      name: selector
-      in: query
-      description: fields to specify select parameters
-      required: true
-      schema:
-        type: object
-        properties:
-          order:
-            $ref: '#/components/schemas/order'
-          limit:
-            type: integer
-            minimum: 0
-          offset:
-            type: integer
-            minimum: 0
-    path_room_id:
-      name: room_id
-      in: path
-      description: ID of the room
-      required: true
-      schema:
-        type: string
-    path_joke_id:
-      name: joke_id
-      in: path
-      description: ID of the joke
-      required: true
-      schema:
-        type: string
+      type: array
+      title: Jokes
+      items:
+        $ref: '#/components/schemas/joke'
