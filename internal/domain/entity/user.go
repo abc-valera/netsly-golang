@@ -7,7 +7,6 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
 
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
@@ -93,7 +92,7 @@ func (e user) Update(ctx context.Context, userID string, req UserUpdateRequest) 
 		return model.User{}, err
 	}
 
-	user, err := e.GetOne(ctx, filter.By(model.User{ID: userID}))
+	user, err := e.Get(ctx, model.User{ID: userID})
 	if err != nil {
 		return model.User{}, err
 	}
@@ -140,7 +139,7 @@ func (e user) Delete(ctx context.Context, userID string, req UserDeleteRequest) 
 		return err
 	}
 
-	user, err := e.GetOne(ctx, filter.By(model.User{ID: userID}))
+	user, err := e.Get(ctx, model.User{ID: userID})
 	if err != nil {
 		return err
 	}

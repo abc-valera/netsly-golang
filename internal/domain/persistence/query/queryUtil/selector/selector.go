@@ -1,53 +1,53 @@
+// selector package contains abstractions over the common database operations.
 package selector
 
-import (
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/order"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/paging"
-)
-
-type Selector[DomainModel any] struct {
-	Paging  paging.Paging
-	Filters []filter.Filter[DomainModel]
-	Order   order.Order[DomainModel]
+type Selector[Model any] struct {
+	Paging  Paging
+	Filters []Filter[Model]
+	Orders  []Order[Model]
 }
 
-type Option[DomainModel any] func(*Selector[DomainModel])
+type Option[Model any] func(*Selector[Model])
 
-func New[DomainModel any](options ...Option[DomainModel]) Selector[DomainModel] {
-	var s Selector[DomainModel]
+func New[Model any](options ...Option[Model]) Selector[Model] {
+	s := Selector[Model]{
+		Filters: make([]Filter[Model], 0),
+		Orders:  make([]Order[Model], 0),
+	}
+
 	for _, option := range options {
 		option(&s)
 	}
+
 	return s
 }
 
-func WithLimit[DomainModel any](limit uint) Option[DomainModel] {
-	return func(s *Selector[DomainModel]) {
+func WithLimit[Model any](limit uint) Option[Model] {
+	return func(s *Selector[Model]) {
 		s.Paging.Limit = limit
 	}
 }
 
-func WithOffset[DomainModel any](offset uint) Option[DomainModel] {
-	return func(s *Selector[DomainModel]) {
+func WithOffset[Model any](offset uint) Option[Model] {
+	return func(s *Selector[Model]) {
 		s.Paging.Offset = offset
 	}
 }
 
-func WithFilter[DomainModel any](filterBy DomainModel) Option[DomainModel] {
-	return func(s *Selector[DomainModel]) {
-		s.Filters = append(s.Filters, filter.Filter[DomainModel]{By: filterBy})
+func WithFilter[Model any](filter Model) Option[Model] {
+	return func(s *Selector[Model]) {
+		s.Filters = append(s.Filters, Filter[Model]{By: filter})
 	}
 }
 
-func WithRegexFilter[DomainModel any](filterBy DomainModel) Option[DomainModel] {
-	return func(s *Selector[DomainModel]) {
-		s.Filters = append(s.Filters, filter.Filter[DomainModel]{By: filterBy, IsRegex: true})
+func WithRegex[Model any](regex Model) Option[Model] {
+	return func(s *Selector[Model]) {
+		s.Filters = append(s.Filters, Filter[Model]{By: regex, IsRegex: true})
 	}
 }
 
-func WithOrder[DomainModel any](orderBy DomainModel) Option[DomainModel] {
-	return func(s *Selector[DomainModel]) {
-		s.Order = order.Order[DomainModel]{By: orderBy}
+func WithOrder[Model any](order Model) Option[Model] {
+	return func(s *Selector[Model]) {
+		s.Orders = append(s.Orders, Order[Model]{By: order})
 	}
 }

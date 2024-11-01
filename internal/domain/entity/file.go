@@ -8,7 +8,6 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/command"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
 
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
@@ -20,7 +19,8 @@ type IFile interface {
 	Update(ctx context.Context, id string, req FileUpdateRequest) (model.FileInfo, error)
 	Delete(ctx context.Context, id string) error
 
-	GetByID(ctx context.Context, id string) (model.FileInfo, model.FileContent, error)
+	InfoQuery() query.IFileInfo
+	ContentQuery() query.IFileContent
 }
 
 type file struct {
@@ -47,10 +47,7 @@ func (e file) CreateForJoke(ctx context.Context, jokeID string, req FileCreateRe
 			return err
 		}
 
-		return txC.FileInfoJoke.Create(ctx, model.FileInfoJoke{
-			FileInfoID: resp.FileInfo.ID,
-			JokeID:     jokeID,
-		})
+		return txC.FileInfo.LinkWithJoke(ctx, resp.FileInfo.ID, jokeID)
 	}
 
 	if err := e.RunInTX(ctx, txFunc); err != nil {
@@ -74,10 +71,7 @@ func (e file) CreateForRoom(ctx context.Context, roomID string, req FileCreateRe
 			return err
 		}
 
-		return txC.FileInfoRoom.Create(ctx, model.FileInfoRoom{
-			FileInfoID: resp.FileInfo.ID,
-			RoomID:     roomID,
-		})
+		return txC.FileInfo.LinkWithRoom(ctx, resp.FileInfo.ID, roomID)
 	}
 
 	if err := e.RunInTX(ctx, txFunc); err != nil {
@@ -144,7 +138,7 @@ func (e file) Update(ctx context.Context, id string, req FileUpdateRequest) (mod
 		return model.FileInfo{}, err
 	}
 
-	fileInfo, err := e.Q().FileInfo.GetOne(ctx, filter.By(model.FileInfo{ID: id}))
+	fileInfo, err := e.Q().FileInfo.Get(ctx, model.FileInfo{ID: id})
 	if err != nil {
 		return model.FileInfo{}, err
 	}
@@ -183,20 +177,10 @@ func (e file) Delete(ctx context.Context, id string) error {
 	return e.RunInTX(ctx, txFunc)
 }
 
-func (e file) GetByID(ctx context.Context, id string) (model.FileInfo, model.FileContent, error) {
-	var span trace.Span
-	ctx, span = global.NewSpan(ctx)
-	defer span.End()
+func (e file) InfoQuery() query.IFileInfo {
+	return e.Q().FileInfo
+}
 
-	fileInfo, err := e.Q().FileInfo.GetOne(ctx, filter.By(model.FileInfo{ID: id}))
-	if err != nil {
-		return model.FileInfo{}, model.FileContent{}, err
-	}
-
-	fileContent, err := e.Q().FileContent.GetOne(ctx, filter.By(model.FileContent{ID: id}))
-	if err != nil {
-		return model.FileInfo{}, model.FileContent{}, err
-	}
-
-	return fileInfo, fileContent, nil
+func (e file) ContentQuery() query.IFileContent {
+	return e.Q().FileContent
 }

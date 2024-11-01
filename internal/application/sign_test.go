@@ -7,7 +7,6 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
 	"github.com/google/uuid"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestSignUsecase(t *testing.T) {
@@ -32,13 +31,15 @@ func TestSignUsecase(t *testing.T) {
 			CreatedAt:      time.Now(),
 		}
 
-		dep.MockEntities.User.EXPECT().Create(instrumentedCtx, entity.UserCreateRequest{
-			Username: req.Username,
-			Email:    req.Email,
-			Password: req.Password,
-			Fullname: req.Fullname,
-			Status:   req.Status,
-		}).Return(expeted, nil)
+		dep.MockEntities.User.EXPECT().
+			Create(instrumentedCtx, entity.UserCreateRequest{
+				Username: req.Username,
+				Email:    req.Email,
+				Password: req.Password,
+				Fullname: req.Fullname,
+				Status:   req.Status,
+			}).
+			Return(expeted, nil)
 
 		dep.MockEntities.Emailer.EXPECT().
 			SendEmail(welcomeEmailTemplateFunc(req.Username, req.Email)).
@@ -63,7 +64,7 @@ func TestSignUsecase(t *testing.T) {
 
 		// TODO: remade this
 		dep.MockEntities.User.EXPECT().
-			GetOne(instrumentedContext, mock.AnythingOfType("filter.Option[github.com/abc-valera/netsly-golang/internal/domain/model.User]")).
+			Get(instrumentedContext, model.User{Email: req.Email}).
 			Return(expected, nil)
 
 		dep.MockEntities.Passworder.EXPECT().CheckPassword(req.Password, expected.HashedPassword).Return(nil)

@@ -6,8 +6,6 @@ import (
 	context "context"
 
 	entity "github.com/abc-valera/netsly-golang/internal/domain/entity"
-	filter "github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
-
 	mock "github.com/stretchr/testify/mock"
 
 	model "github.com/abc-valera/netsly-golang/internal/domain/model"
@@ -132,14 +130,71 @@ func (_c *Joke_Delete_Call) RunAndReturn(run func(context.Context, string) error
 	return _c
 }
 
-// GetMany provides a mock function with given fields: ctx, selectorOptions
-func (_m *Joke) GetMany(ctx context.Context, selectorOptions ...selector.Option[model.Joke]) ([]model.Joke, error) {
-	_va := make([]interface{}, len(selectorOptions))
-	for _i := range selectorOptions {
-		_va[_i] = selectorOptions[_i]
+// Get provides a mock function with given fields: _a0, _a1
+func (_m *Joke) Get(_a0 context.Context, _a1 model.Joke) (model.Joke, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Get")
+	}
+
+	var r0 model.Joke
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, model.Joke) (model.Joke, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, model.Joke) model.Joke); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(model.Joke)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, model.Joke) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Joke_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Get'
+type Joke_Get_Call struct {
+	*mock.Call
+}
+
+// Get is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 model.Joke
+func (_e *Joke_Expecter) Get(_a0 interface{}, _a1 interface{}) *Joke_Get_Call {
+	return &Joke_Get_Call{Call: _e.mock.On("Get", _a0, _a1)}
+}
+
+func (_c *Joke_Get_Call) Run(run func(_a0 context.Context, _a1 model.Joke)) *Joke_Get_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(model.Joke))
+	})
+	return _c
+}
+
+func (_c *Joke_Get_Call) Return(_a0 model.Joke, _a1 error) *Joke_Get_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Joke_Get_Call) RunAndReturn(run func(context.Context, model.Joke) (model.Joke, error)) *Joke_Get_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetMany provides a mock function with given fields: _a0, _a1
+func (_m *Joke) GetMany(_a0 context.Context, _a1 ...selector.Option[model.Joke]) ([]model.Joke, error) {
+	_va := make([]interface{}, len(_a1))
+	for _i := range _a1 {
+		_va[_i] = _a1[_i]
 	}
 	var _ca []interface{}
-	_ca = append(_ca, ctx)
+	_ca = append(_ca, _a0)
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
@@ -150,10 +205,10 @@ func (_m *Joke) GetMany(ctx context.Context, selectorOptions ...selector.Option[
 	var r0 []model.Joke
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, ...selector.Option[model.Joke]) ([]model.Joke, error)); ok {
-		return rf(ctx, selectorOptions...)
+		return rf(_a0, _a1...)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, ...selector.Option[model.Joke]) []model.Joke); ok {
-		r0 = rf(ctx, selectorOptions...)
+		r0 = rf(_a0, _a1...)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.Joke)
@@ -161,7 +216,7 @@ func (_m *Joke) GetMany(ctx context.Context, selectorOptions ...selector.Option[
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, ...selector.Option[model.Joke]) error); ok {
-		r1 = rf(ctx, selectorOptions...)
+		r1 = rf(_a0, _a1...)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -175,14 +230,14 @@ type Joke_GetMany_Call struct {
 }
 
 // GetMany is a helper method to define mock.On call
-//   - ctx context.Context
-//   - selectorOptions ...selector.Option[model.Joke]
-func (_e *Joke_Expecter) GetMany(ctx interface{}, selectorOptions ...interface{}) *Joke_GetMany_Call {
+//   - _a0 context.Context
+//   - _a1 ...selector.Option[model.Joke]
+func (_e *Joke_Expecter) GetMany(_a0 interface{}, _a1 ...interface{}) *Joke_GetMany_Call {
 	return &Joke_GetMany_Call{Call: _e.mock.On("GetMany",
-		append([]interface{}{ctx}, selectorOptions...)...)}
+		append([]interface{}{_a0}, _a1...)...)}
 }
 
-func (_c *Joke_GetMany_Call) Run(run func(ctx context.Context, selectorOptions ...selector.Option[model.Joke])) *Joke_GetMany_Call {
+func (_c *Joke_GetMany_Call) Run(run func(_a0 context.Context, _a1 ...selector.Option[model.Joke])) *Joke_GetMany_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		variadicArgs := make([]selector.Option[model.Joke], len(args)-1)
 		for i, a := range args[1:] {
@@ -201,77 +256,6 @@ func (_c *Joke_GetMany_Call) Return(_a0 []model.Joke, _a1 error) *Joke_GetMany_C
 }
 
 func (_c *Joke_GetMany_Call) RunAndReturn(run func(context.Context, ...selector.Option[model.Joke]) ([]model.Joke, error)) *Joke_GetMany_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetOne provides a mock function with given fields: ctx, fitlerOptions
-func (_m *Joke) GetOne(ctx context.Context, fitlerOptions ...filter.Option[model.Joke]) (model.Joke, error) {
-	_va := make([]interface{}, len(fitlerOptions))
-	for _i := range fitlerOptions {
-		_va[_i] = fitlerOptions[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetOne")
-	}
-
-	var r0 model.Joke
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, ...filter.Option[model.Joke]) (model.Joke, error)); ok {
-		return rf(ctx, fitlerOptions...)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, ...filter.Option[model.Joke]) model.Joke); ok {
-		r0 = rf(ctx, fitlerOptions...)
-	} else {
-		r0 = ret.Get(0).(model.Joke)
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, ...filter.Option[model.Joke]) error); ok {
-		r1 = rf(ctx, fitlerOptions...)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// Joke_GetOne_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetOne'
-type Joke_GetOne_Call struct {
-	*mock.Call
-}
-
-// GetOne is a helper method to define mock.On call
-//   - ctx context.Context
-//   - fitlerOptions ...filter.Option[model.Joke]
-func (_e *Joke_Expecter) GetOne(ctx interface{}, fitlerOptions ...interface{}) *Joke_GetOne_Call {
-	return &Joke_GetOne_Call{Call: _e.mock.On("GetOne",
-		append([]interface{}{ctx}, fitlerOptions...)...)}
-}
-
-func (_c *Joke_GetOne_Call) Run(run func(ctx context.Context, fitlerOptions ...filter.Option[model.Joke])) *Joke_GetOne_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		variadicArgs := make([]filter.Option[model.Joke], len(args)-1)
-		for i, a := range args[1:] {
-			if a != nil {
-				variadicArgs[i] = a.(filter.Option[model.Joke])
-			}
-		}
-		run(args[0].(context.Context), variadicArgs...)
-	})
-	return _c
-}
-
-func (_c *Joke_GetOne_Call) Return(_a0 model.Joke, _a1 error) *Joke_GetOne_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *Joke_GetOne_Call) RunAndReturn(run func(context.Context, ...filter.Option[model.Joke]) (model.Joke, error)) *Joke_GetOne_Call {
 	_c.Call.Return(run)
 	return _c
 }

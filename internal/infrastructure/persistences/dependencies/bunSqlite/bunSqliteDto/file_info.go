@@ -43,30 +43,16 @@ func (dto FileInfo) ToDomain() model.FileInfo {
 	}
 }
 
-type FileInfoJoke struct {
+type FileInfosJoke struct {
 	bun.BaseModel `bun:"table:file_info_joke"`
 
 	FileInfoID string `bun:"file_info_id,pk,type:uuid"`
 	JokeID     string `bun:"joke_id,pk,type:uuid"`
 }
 
-func NewFileInfoJoke(fileInfoJoke model.FileInfoJoke) FileInfoJoke {
-	return FileInfoJoke{
-		FileInfoID: fileInfoJoke.FileInfoID,
-		JokeID:     fileInfoJoke.JokeID,
-	}
-}
-
-type FileInfoRoom struct {
+type FileInfosRoom struct {
 	bun.BaseModel `bun:"table:file_info_room"`
 
 	FileInfoID string `bun:"file_info_id,pk,type:uuid"`
 	RoomID     string `bun:"room_id,pk,type:uuid"`
-}
-
-func NewFileInfoRoom(fileInfoRoom model.FileInfoRoom) FileInfoRoom {
-	return FileInfoRoom{
-		FileInfoID: fileInfoRoom.FileInfoID,
-		RoomID:     fileInfoRoom.RoomID,
-	}
 }

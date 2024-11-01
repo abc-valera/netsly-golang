@@ -8,7 +8,6 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
 	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/selector"
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler/session"
@@ -44,10 +43,7 @@ func (h Home) HomeGet(w http.ResponseWriter, r *http.Request) error {
 		global.Log().Error("failed to get user id from context")
 	}
 
-	user, err := h.user.GetOne(
-		r.Context(),
-		filter.By(model.User{ID: userID}),
-	)
+	user, err := h.user.Get(r.Context(), model.User{ID: userID})
 	if err != nil {
 		return err
 	}

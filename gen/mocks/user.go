@@ -6,8 +6,6 @@ import (
 	context "context"
 
 	entity "github.com/abc-valera/netsly-golang/internal/domain/entity"
-	filter "github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
-
 	mock "github.com/stretchr/testify/mock"
 
 	model "github.com/abc-valera/netsly-golang/internal/domain/model"
@@ -133,14 +131,71 @@ func (_c *User_Delete_Call) RunAndReturn(run func(context.Context, string, entit
 	return _c
 }
 
-// GetMany provides a mock function with given fields: ctx, selectorOptions
-func (_m *User) GetMany(ctx context.Context, selectorOptions ...selector.Option[model.User]) ([]model.User, error) {
-	_va := make([]interface{}, len(selectorOptions))
-	for _i := range selectorOptions {
-		_va[_i] = selectorOptions[_i]
+// Get provides a mock function with given fields: _a0, _a1
+func (_m *User) Get(_a0 context.Context, _a1 model.User) (model.User, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Get")
+	}
+
+	var r0 model.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, model.User) (model.User, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, model.User) model.User); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(model.User)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, model.User) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// User_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Get'
+type User_Get_Call struct {
+	*mock.Call
+}
+
+// Get is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - _a1 model.User
+func (_e *User_Expecter) Get(_a0 interface{}, _a1 interface{}) *User_Get_Call {
+	return &User_Get_Call{Call: _e.mock.On("Get", _a0, _a1)}
+}
+
+func (_c *User_Get_Call) Run(run func(_a0 context.Context, _a1 model.User)) *User_Get_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(model.User))
+	})
+	return _c
+}
+
+func (_c *User_Get_Call) Return(_a0 model.User, _a1 error) *User_Get_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *User_Get_Call) RunAndReturn(run func(context.Context, model.User) (model.User, error)) *User_Get_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetMany provides a mock function with given fields: _a0, _a1
+func (_m *User) GetMany(_a0 context.Context, _a1 ...selector.Option[model.User]) ([]model.User, error) {
+	_va := make([]interface{}, len(_a1))
+	for _i := range _a1 {
+		_va[_i] = _a1[_i]
 	}
 	var _ca []interface{}
-	_ca = append(_ca, ctx)
+	_ca = append(_ca, _a0)
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
@@ -151,10 +206,10 @@ func (_m *User) GetMany(ctx context.Context, selectorOptions ...selector.Option[
 	var r0 []model.User
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, ...selector.Option[model.User]) ([]model.User, error)); ok {
-		return rf(ctx, selectorOptions...)
+		return rf(_a0, _a1...)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, ...selector.Option[model.User]) []model.User); ok {
-		r0 = rf(ctx, selectorOptions...)
+		r0 = rf(_a0, _a1...)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.User)
@@ -162,7 +217,7 @@ func (_m *User) GetMany(ctx context.Context, selectorOptions ...selector.Option[
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, ...selector.Option[model.User]) error); ok {
-		r1 = rf(ctx, selectorOptions...)
+		r1 = rf(_a0, _a1...)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -176,14 +231,14 @@ type User_GetMany_Call struct {
 }
 
 // GetMany is a helper method to define mock.On call
-//   - ctx context.Context
-//   - selectorOptions ...selector.Option[model.User]
-func (_e *User_Expecter) GetMany(ctx interface{}, selectorOptions ...interface{}) *User_GetMany_Call {
+//   - _a0 context.Context
+//   - _a1 ...selector.Option[model.User]
+func (_e *User_Expecter) GetMany(_a0 interface{}, _a1 ...interface{}) *User_GetMany_Call {
 	return &User_GetMany_Call{Call: _e.mock.On("GetMany",
-		append([]interface{}{ctx}, selectorOptions...)...)}
+		append([]interface{}{_a0}, _a1...)...)}
 }
 
-func (_c *User_GetMany_Call) Run(run func(ctx context.Context, selectorOptions ...selector.Option[model.User])) *User_GetMany_Call {
+func (_c *User_GetMany_Call) Run(run func(_a0 context.Context, _a1 ...selector.Option[model.User])) *User_GetMany_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		variadicArgs := make([]selector.Option[model.User], len(args)-1)
 		for i, a := range args[1:] {
@@ -202,77 +257,6 @@ func (_c *User_GetMany_Call) Return(_a0 []model.User, _a1 error) *User_GetMany_C
 }
 
 func (_c *User_GetMany_Call) RunAndReturn(run func(context.Context, ...selector.Option[model.User]) ([]model.User, error)) *User_GetMany_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// GetOne provides a mock function with given fields: ctx, fitlerOptions
-func (_m *User) GetOne(ctx context.Context, fitlerOptions ...filter.Option[model.User]) (model.User, error) {
-	_va := make([]interface{}, len(fitlerOptions))
-	for _i := range fitlerOptions {
-		_va[_i] = fitlerOptions[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetOne")
-	}
-
-	var r0 model.User
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, ...filter.Option[model.User]) (model.User, error)); ok {
-		return rf(ctx, fitlerOptions...)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, ...filter.Option[model.User]) model.User); ok {
-		r0 = rf(ctx, fitlerOptions...)
-	} else {
-		r0 = ret.Get(0).(model.User)
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, ...filter.Option[model.User]) error); ok {
-		r1 = rf(ctx, fitlerOptions...)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// User_GetOne_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetOne'
-type User_GetOne_Call struct {
-	*mock.Call
-}
-
-// GetOne is a helper method to define mock.On call
-//   - ctx context.Context
-//   - fitlerOptions ...filter.Option[model.User]
-func (_e *User_Expecter) GetOne(ctx interface{}, fitlerOptions ...interface{}) *User_GetOne_Call {
-	return &User_GetOne_Call{Call: _e.mock.On("GetOne",
-		append([]interface{}{ctx}, fitlerOptions...)...)}
-}
-
-func (_c *User_GetOne_Call) Run(run func(ctx context.Context, fitlerOptions ...filter.Option[model.User])) *User_GetOne_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		variadicArgs := make([]filter.Option[model.User], len(args)-1)
-		for i, a := range args[1:] {
-			if a != nil {
-				variadicArgs[i] = a.(filter.Option[model.User])
-			}
-		}
-		run(args[0].(context.Context), variadicArgs...)
-	})
-	return _c
-}
-
-func (_c *User_GetOne_Call) Return(_a0 model.User, _a1 error) *User_GetOne_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *User_GetOne_Call) RunAndReturn(run func(context.Context, ...filter.Option[model.User]) (model.User, error)) *User_GetOne_Call {
 	_c.Call.Return(run)
 	return _c
 }

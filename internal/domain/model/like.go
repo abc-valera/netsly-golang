@@ -9,9 +9,8 @@ import (
 var ErrLikeNotFound = coderr.NewCodeMessage(coderr.CodeNotFound, "Like not found")
 
 type Like struct {
+	UserID    string
+	JokeID    string
 	CreatedAt time.Time
 	DeletedAt time.Time
-
-	UserID string
-	JokeID string
 }

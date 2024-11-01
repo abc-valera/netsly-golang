@@ -7,7 +7,6 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/contexts"
 	"github.com/abc-valera/netsly-golang/internal/presentation/jsonApi/rest/restDto"
 	"go.opentelemetry.io/otel/trace"
@@ -35,10 +34,7 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 		return nil, err
 	}
 
-	user, err := h.user.GetOne(
-		ctx,
-		filter.By(model.User{ID: userID}),
-	)
+	user, err := h.user.Get(ctx, model.User{ID: userID})
 	if err != nil {
 		return nil, err
 	}

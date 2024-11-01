@@ -2,22 +2,35 @@ package commandGeneric
 
 import "context"
 
-type ICreate[DomainModel any] interface {
-	Create(ctx context.Context, req DomainModel) error
+// This file contains generic interfaces for command persistence.
+//
+// Every one of these interfaces contains a some combination
+// of Create, Update, and Delete methods.
+
+type ICreate[Model any] interface {
+	Create(context.Context, Model) error
 }
 
-type ICreateDelete[DomainModel any] interface {
-	Create(ctx context.Context, req DomainModel) error
-	Delete(ctx context.Context, req DomainModel) error
+type IUpdate[Model any] interface {
+	Update(context.Context, Model) error
 }
 
-type IUpdateDelete[DomainModel any] interface {
-	Update(ctx context.Context, req DomainModel) error
-	Delete(ctx context.Context, req DomainModel) error
+type IDelete[Model any] interface {
+	Delete(context.Context, Model) error
 }
 
-type ICreateUpdateDelete[DomainModel any] interface {
-	Create(ctx context.Context, req DomainModel) error
-	Update(ctx context.Context, req DomainModel) error
-	Delete(ctx context.Context, req DomainModel) error
+type ICreateDelete[Model any] interface {
+	ICreate[Model]
+	IDelete[Model]
+}
+
+type IUpdateDelete[Model any] interface {
+	IUpdate[Model]
+	IDelete[Model]
+}
+
+type ICreateUpdateDelete[Model any] interface {
+	ICreate[Model]
+	IUpdate[Model]
+	IDelete[Model]
 }

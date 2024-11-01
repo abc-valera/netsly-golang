@@ -45,39 +45,7 @@ type FileInfoJoke struct {
 	JokeID     string `gorm:"primaryKey;not null"`
 }
 
-func NewFileInfoJoke(fileInfoJoke model.FileInfoJoke) FileInfoJoke {
-	return FileInfoJoke{
-		FileInfoID: fileInfoJoke.FileInfoID,
-		JokeID:     fileInfoJoke.JokeID,
-	}
-}
-
 type FileInfoRoom struct {
 	FileInfoID string `gorm:"primaryKey;not null"`
 	RoomID     string `gorm:"primaryKey;not null"`
-}
-
-func NewFileInfoRoom(fileInfoRoom model.FileInfoRoom) FileInfoRoom {
-	return FileInfoRoom{
-		FileInfoID: fileInfoRoom.FileInfoID,
-		RoomID:     fileInfoRoom.RoomID,
-	}
-}
-
-type FileInfos []FileInfo
-
-func NewFileInfos(domainFileInfos []model.FileInfo) FileInfos {
-	var fileInfos FileInfos
-	for _, domainFileInfo := range domainFileInfos {
-		fileInfos = append(fileInfos, NewFileInfo(domainFileInfo))
-	}
-	return fileInfos
-}
-
-func (dtos FileInfos) ToDomain() []model.FileInfo {
-	var domainFileInfos []model.FileInfo
-	for _, dto := range dtos {
-		domainFileInfos = append(domainFileInfos, dto.ToDomain())
-	}
-	return domainFileInfos
 }

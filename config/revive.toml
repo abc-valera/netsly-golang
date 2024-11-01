@@ -16,6 +16,9 @@ enableAllRules = true
     Disabled = true
 [rule.deep-exit] # Maybe enable it
     Disabled = true
+[rule.unhandled-error]    # Maybe disable it
+    Disabled = true
+    arguments = ["fmt.*"]
 [rule.redefines-builtin-id]
     Disabled = true
 [rule.function-result-limit]
@@ -40,8 +43,7 @@ enableAllRules = true
     Disabled = true
 [rule.function-length]
     Disabled = true
-[rule.unhandled-error]    # Maybe enable it
+[rule.max-public-structs]
     Disabled = true
-    arguments = ["fmt.*"]
 # [rule.unused-parameter]
 #     Disabled = true

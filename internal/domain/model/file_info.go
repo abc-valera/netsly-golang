@@ -18,16 +18,6 @@ type FileInfo struct {
 	DeletedAt time.Time
 }
 
-type FileInfoJoke struct {
-	FileInfoID string
-	JokeID     string
-}
-
-type FileInfoRoom struct {
-	FileInfoID string
-	RoomID     string
-}
-
 type FileType int
 
 const (

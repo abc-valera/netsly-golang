@@ -7,7 +7,6 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/model"
-	"github.com/abc-valera/netsly-golang/internal/domain/persistence/query/queryUtil/filter"
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -89,7 +88,7 @@ func (u signUsecase) SignIn(ctx context.Context, req SignInRequest) (model.User,
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
 
-	user, err := u.E().User.GetOne(ctx, filter.By(model.User{Email: req.Email}))
+	user, err := u.E().User.Get(ctx, model.User{Email: req.Email})
 	if err != nil {
 		return model.User{}, err
 	}
