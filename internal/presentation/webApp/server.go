@@ -1,19 +1,15 @@
 package webApp
 
 import (
-	"context"
 	"embed"
-	"errors"
 	"io/fs"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/abc-valera/netsly-golang/internal/application"
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/global"
 	"github.com/abc-valera/netsly-golang/internal/domain/service"
-	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
 	"github.com/abc-valera/netsly-golang/internal/presentation/webApp/handler"
 	"github.com/go-chi/chi/v5"
 )
@@ -23,16 +19,12 @@ var templateEmbedFS embed.FS
 
 // NewServer returns HTTP server
 func NewServer(
-	port string,
 	templatePath string,
 
 	services service.Services,
 	entities entity.Entities,
 	usecases application.Usecases,
-) (
-	serverStart func(),
-	serverGracefulStop func(),
-) {
+) http.Handler {
 	var templateFS fs.FS
 	if global.IsProduction() {
 		templateFS = templateEmbedFS
@@ -51,23 +43,5 @@ func NewServer(
 	r := chi.NewRouter()
 	newRouter(r, services, handlers)
 
-	// Init server
-	server := http.Server{
-		Addr:    port,
-		Handler: r,
-	}
-
-	return func() {
-			global.Log().Info("webApp is running", "port", port)
-			if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-				coderr.Fatal("webApp server error: ", err)
-			}
-		}, func() {
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-			defer cancel()
-
-			if err := server.Shutdown(ctx); err != nil {
-				coderr.Fatal("Shutdown server error: ", err)
-			}
-		}
+	return r
 }

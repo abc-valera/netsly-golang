@@ -18,6 +18,10 @@ func Init(
 	appMode Mode,
 	tracer trace.Tracer,
 	log ILogger,
+
+	domainName string,
+	subdomainWebApp string,
+	subdomainJsonApi string,
 ) {
 	initOnce.Do(func() {
 		// Set the timezone to UTC
@@ -28,6 +32,10 @@ func Init(
 		tracerGlobal = tracer
 		logGlobal = log
 		validateGlobal = newValidator()
+
+		domainNameGlobal = domainName
+		subdomainWebAppGlobal = subdomainWebApp
+		subdomainJsonApiGlobal = subdomainJsonApi
 	})
 }
 
@@ -63,4 +71,22 @@ var validateGlobal IValidator
 
 func Validate() IValidator {
 	return validateGlobal
+}
+
+var (
+	domainNameGlobal       string
+	subdomainWebAppGlobal  string
+	subdomainJsonApiGlobal string
+)
+
+func DomainName() string {
+	return domainNameGlobal
+}
+
+func SubdomainWebApp() string {
+	return subdomainWebAppGlobal
+}
+
+func SubdomainJsonApi() string {
+	return subdomainJsonApiGlobal
 }

@@ -3,16 +3,9 @@
 version: "3"
 
 tasks:
-  entrypoint:jsonApi:
+  run:
     dotenv: ["env/dev.env"]
-    cmd: ./bin/air -c config/air.toml -- -entrypoint jsonApi
-
-  entrypoint:webApp:
-    cmd: ./bin/air -c config/air.toml -- -entrypoint webApp
-
-  entrypoint:grpcApi:
-    dotenv: ["env/dev.env"]
-    cmd: ./bin/air -c config/air.toml -- -entrypoint grpcApi
+    cmd: ./bin/air -c config/air.toml
 
   entrypoint:seed:
     dotenv: ["env/dev.env"]

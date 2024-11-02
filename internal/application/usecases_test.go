@@ -20,6 +20,9 @@ func TestMain(m *testing.M) {
 		global.ModeProduction,
 		noop.NewTracerProvider().Tracer("testing"),
 		loggerNop.New(),
+		"example.com",
+		"web.",
+		"api.",
 	)
 
 	os.Exit(m.Run())

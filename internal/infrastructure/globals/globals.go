@@ -14,7 +14,7 @@ import (
 	traceSDK "go.opentelemetry.io/otel/sdk/trace"
 )
 
-func New(entrypoint string) {
+func New() {
 	var mode global.Mode
 	switch appMode := env.Load("APP_MODE"); appMode {
 	case "production", "prod":
@@ -49,7 +49,10 @@ func New(entrypoint string) {
 
 	global.Init(
 		mode,
-		coderr.Must(global.NewTracer(otelTraceExporter, "netsly."+entrypoint)),
+		coderr.Must(global.NewTracer(otelTraceExporter, "netsly")),
 		logger,
+		env.Load("DOMAIN_NAME"),
+		env.Load("SUBDOMAIN_WEB_APP"),
+		env.Load("SUBDOMAIN_JSON_API"),
 	)
 }

@@ -35,6 +35,9 @@ func TestMain(m *testing.M) {
 		global.ModeProduction,
 		noop.NewTracerProvider().Tracer("testing"),
 		loggerNop.New(),
+		"example.com",
+		"web.",
+		"api.",
 	)
 
 	// Get the path to the directory where the test files will be stored
