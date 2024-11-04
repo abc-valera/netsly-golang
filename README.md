@@ -12,13 +12,13 @@ The project is built based on the Clean Architecture paradigm.
 
 Here’s the circle diagram of the Architecture:
 
-<img src="images/architecture_circle_diagram.png" width="450">
+<img src=".meta/images/architecture_circle_diagram.png" width="450">
 
 The Clean Architecture separates the concerns into different layers which helps to test, maintain, and modify code more easily.The Clean Architecture allows business logic and presentation not to be dependent on specific implementations, but to depend on abstractions defined in the Domain layer.
 
 The following architecture sketch describes the relationships between the layers:
 
-<img src="images/architecture_sketch.png" width="1200">
+<img src=".meta/images/architecture_sketch.png" width="1200">
 
 ## Key technologies
 

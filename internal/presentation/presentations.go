@@ -2,6 +2,7 @@ package presentation
 
 import (
 	"context"
+	"embed"
 	"errors"
 	"net"
 	"net/http"
@@ -21,6 +22,9 @@ import (
 )
 
 func StartServer(
+	jsonApiStaticFiles embed.FS,
+	jsonApiOpenapiFile []byte,
+
 	services service.Services,
 	entities entity.Entities,
 	usecases application.Usecases,
@@ -28,15 +32,20 @@ func StartServer(
 	// Initialize http server
 	webAppHandler := webApp.NewServer(
 		env.Load("WEB_APP_TEMPLATE_PATH"),
+
 		services,
 		entities,
 		usecases,
 	)
 
-	jsonApiHandler := jsonApi.NewServer(
+	jsonApiHandler := jsonApi.NewHandler(
+		jsonApiStaticFiles,
+		jsonApiOpenapiFile,
+
 		env.Load("JWT_SIGN_KEY"),
 		env.LoadDuration("ACCESS_TOKEN_DURATION"),
 		env.LoadDuration("REFRESH_TOKEN_DURATION"),
+
 		entities,
 		services,
 		usecases,

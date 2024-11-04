@@ -1,4 +1,4 @@
-package handler
+package restHandler
 
 import (
 	"context"
@@ -12,19 +12,19 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type MeHandler struct {
+type Me struct {
 	user entity.IUser
 }
 
-func NewMeHandler(
+func newMe(
 	user entity.IUser,
-) MeHandler {
-	return MeHandler{
+) Me {
+	return Me{
 		user: user,
 	}
 }
 
-func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
+func (h Me) MeGet(ctx context.Context) (*ogen.User, error) {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
@@ -41,7 +41,7 @@ func (h MeHandler) MeGet(ctx context.Context) (*ogen.User, error) {
 	return restDto.NewUser(user), nil
 }
 
-func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, error) {
+func (h Me) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, error) {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
@@ -62,7 +62,7 @@ func (h MeHandler) MePut(ctx context.Context, req *ogen.MePutReq) (*ogen.User, e
 	return restDto.NewUser(user), nil
 }
 
-func (h MeHandler) MeDel(ctx context.Context, req *ogen.MeDelReq) error {
+func (h Me) MeDel(ctx context.Context, req *ogen.MeDelReq) error {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()

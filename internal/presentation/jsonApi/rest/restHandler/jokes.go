@@ -1,4 +1,4 @@
-package handler
+package restHandler
 
 import (
 	"context"
@@ -13,19 +13,19 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type JokesHandler struct {
+type Jokes struct {
 	joke entity.IJoke
 }
 
-func NewJokesHandler(
+func newJokes(
 	joke entity.IJoke,
-) JokesHandler {
-	return JokesHandler{
+) Jokes {
+	return Jokes{
 		joke: joke,
 	}
 }
 
-func (h JokesHandler) JokesGet(ctx context.Context, ogenParams ogen.JokesGetParams) (ogen.Jokes, error) {
+func (h Jokes) JokesGet(ctx context.Context, ogenParams ogen.JokesGetParams) (ogen.Jokes, error) {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
@@ -45,7 +45,7 @@ func (h JokesHandler) JokesGet(ctx context.Context, ogenParams ogen.JokesGetPara
 	return restDto.NewJokes(jokes), err
 }
 
-func (h JokesHandler) JokesPost(ctx context.Context, req *ogen.JokesPostReq) (*ogen.Joke, error) {
+func (h Jokes) JokesPost(ctx context.Context, req *ogen.JokesPostReq) (*ogen.Joke, error) {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
@@ -67,7 +67,7 @@ func (h JokesHandler) JokesPost(ctx context.Context, req *ogen.JokesPostReq) (*o
 	return restDto.NewJoke(joke), err
 }
 
-func (h JokesHandler) JokesPut(ctx context.Context, req *ogen.JokesPutReq) (*ogen.Joke, error) {
+func (h Jokes) JokesPut(ctx context.Context, req *ogen.JokesPutReq) (*ogen.Joke, error) {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
@@ -83,7 +83,7 @@ func (h JokesHandler) JokesPut(ctx context.Context, req *ogen.JokesPutReq) (*oge
 	return restDto.NewJoke(joke), err
 }
 
-func (h JokesHandler) JokesDel(ctx context.Context, req *ogen.JokesDelReq) error {
+func (h Jokes) JokesDel(ctx context.Context, req *ogen.JokesDelReq) error {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()

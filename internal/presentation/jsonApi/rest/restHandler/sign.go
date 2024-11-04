@@ -1,4 +1,4 @@
-package handler
+package restHandler
 
 import (
 	"context"
@@ -11,22 +11,22 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type SignHandler struct {
+type Sign struct {
 	authManager auth.Manager
 	signUsecase application.ISignUsecase
 }
 
-func NewSignHandler(
+func newSign(
 	authManager auth.Manager,
 	signUsecase application.ISignUsecase,
-) SignHandler {
-	return SignHandler{
+) Sign {
+	return Sign{
 		authManager: authManager,
 		signUsecase: signUsecase,
 	}
 }
 
-func (h SignHandler) SignUpPost(ctx context.Context, req *ogen.SignUpPostReq) error {
+func (h Sign) SignUpPost(ctx context.Context, req *ogen.SignUpPostReq) error {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
@@ -39,7 +39,7 @@ func (h SignHandler) SignUpPost(ctx context.Context, req *ogen.SignUpPostReq) er
 	return err
 }
 
-func (h SignHandler) SignInPost(ctx context.Context, req *ogen.SignInPostReq) (*ogen.SignInPostOK, error) {
+func (h Sign) SignInPost(ctx context.Context, req *ogen.SignInPostReq) (*ogen.SignInPostOK, error) {
 	var span trace.Span
 	ctx, span = global.NewSpan(ctx)
 	defer span.End()
@@ -69,7 +69,7 @@ func (h SignHandler) SignInPost(ctx context.Context, req *ogen.SignInPostReq) (*
 	}, nil
 }
 
-func (h SignHandler) SignRefreshPost(ctx context.Context, req *ogen.SignRefreshPostReq) (*ogen.SignRefreshPostOK, error) {
+func (h Sign) SignRefreshPost(ctx context.Context, req *ogen.SignRefreshPostReq) (*ogen.SignRefreshPostOK, error) {
 	_, span := global.NewSpan(ctx)
 	defer span.End()
 

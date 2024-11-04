@@ -45,5 +45,5 @@ enableAllRules = true
     Disabled = true
 [rule.max-public-structs]
     Disabled = true
-# [rule.unused-parameter]
-#     Disabled = true
+[rule.unused-parameter]
+    Disabled = true

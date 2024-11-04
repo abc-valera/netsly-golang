@@ -74,10 +74,15 @@ func Validate() IValidator {
 }
 
 var (
+	isHttpsGlobal          bool
 	domainNameGlobal       string
 	subdomainWebAppGlobal  string
 	subdomainJsonApiGlobal string
 )
+
+func IsHTTPS() bool {
+	return isHttpsGlobal
+}
 
 func DomainName() string {
 	return domainNameGlobal

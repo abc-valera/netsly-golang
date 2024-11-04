@@ -11,7 +11,7 @@ externalDocs:
   description: Learn more about the project.
   url: https://github.com/abc-valera/netsly-golang
 servers:
-  - url: http://localhost:3010/api/v1
+  - url: http://api.localhost:3000/v1
     description: Local development server
 components:
   securitySchemes:

@@ -61,7 +61,7 @@ func (e room) Create(ctx context.Context, req RoomCreateRequest) (model.Room, er
 	txFunc := func(
 		ctx context.Context,
 		txC command.Commands,
-		_ query.Queries,
+		txQ query.Queries,
 		txE Entities,
 	) error {
 		if err := txC.Room.Create(ctx, room); err != nil {

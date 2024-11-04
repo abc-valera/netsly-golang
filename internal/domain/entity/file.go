@@ -38,8 +38,8 @@ func (e file) CreateForJoke(ctx context.Context, jokeID string, req FileCreateRe
 	txFunc := func(
 		ctx context.Context,
 		txC command.Commands,
-		_ query.Queries,
-		_ Entities,
+		txQ query.Queries,
+		txE Entities,
 	) error {
 		var err error
 		resp, err = e.create(ctx, req, txC)
@@ -62,8 +62,8 @@ func (e file) CreateForRoom(ctx context.Context, roomID string, req FileCreateRe
 	txFunc := func(
 		ctx context.Context,
 		txC command.Commands,
-		_ query.Queries,
-		_ Entities,
+		txQ query.Queries,
+		txE Entities,
 	) error {
 		var err error
 		resp, err = e.create(ctx, req, txC)
@@ -164,8 +164,8 @@ func (e file) Delete(ctx context.Context, id string) error {
 	txFunc := func(
 		ctx context.Context,
 		txC command.Commands,
-		_ query.Queries,
-		_ Entities,
+		txQ query.Queries,
+		txE Entities,
 	) error {
 		if err := txC.FileInfo.Delete(ctx, model.FileInfo{ID: id}); err != nil {
 			return err

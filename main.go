@@ -1,6 +1,8 @@
 package main
 
 import (
+	"embed"
+
 	"github.com/abc-valera/netsly-golang/internal/application"
 	"github.com/abc-valera/netsly-golang/internal/domain/entity"
 	"github.com/abc-valera/netsly-golang/internal/domain/util/coderr"
@@ -9,6 +11,14 @@ import (
 	"github.com/abc-valera/netsly-golang/internal/infrastructure/services"
 	"github.com/abc-valera/netsly-golang/internal/presentation"
 )
+
+// Embedded files
+
+//go:embed internal/presentation/jsonApi/static
+var jsonApiStaticFiles embed.FS
+
+//go:embed gen/openapi/openapi.yaml
+var jsonApiOpenapiFile []byte
 
 func main() {
 	// Init Globals
@@ -34,5 +44,12 @@ func main() {
 	coderr.NoErr(coderr.CheckIfStructHasEmptyFields(usecases))
 
 	// Start the server
-	presentation.StartServer(services, entities, usecases)
+	presentation.StartServer(
+		jsonApiStaticFiles,
+		jsonApiOpenapiFile,
+
+		services,
+		entities,
+		usecases,
+	)
 }

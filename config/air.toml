@@ -3,11 +3,11 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-  include_dir = ["internal", "cmd"]
+  include_dir = ["internal"]
+  include_file = ["main.go"]
   # include_ext = []
-  # include_file = []
 
-  cmd = "go build -o bin/netsly cmd/main.go"
+  cmd = "go build -o bin/netsly main.go"
   bin = "./bin/netsly"
 
   # Delay before trigger build after file change
@@ -16,7 +16,7 @@ tmp_dir = "tmp"
   # Send Interrupt signal before killing process
   send_interrupt = true
   # Delay after sending Interrupt signal
-  kill_delay = "1s" 
+  kill_delay = "2s" 
 
   log = "build-errors.log"
 

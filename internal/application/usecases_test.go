@@ -60,7 +60,7 @@ func NewMockDependency(t *testing.T) MockDependency {
 	}
 }
 
-func (m MockDependency) BeginTX(_ context.Context) (IDependencyTX, error) {
+func (m MockDependency) BeginTX(context.Context) (IDependencyTX, error) {
 	return MockTX{
 		MockDependency: m,
 	}, nil
@@ -87,7 +87,7 @@ type MockTX struct {
 
 var _ IDependencyTX = (*MockTX)(nil)
 
-func (m MockTX) BeginTX(_ context.Context) (IDependencyTX, error) {
+func (m MockTX) BeginTX(context.Context) (IDependencyTX, error) {
 	return m, nil
 }
 
